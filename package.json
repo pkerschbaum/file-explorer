@@ -1,7 +1,7 @@
 {
   "name": "electron-react-typescript",
   "productName": "electron-react-typescript",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "My Electron application description",
   "main": ".webpack/main",
   "scripts": {
@@ -9,7 +9,7 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
-    "lint": "eslint --ext .ts,.tsx ."
+    "lint": "eslint ."
   },
   "keywords": [],
   "author": {
@@ -78,6 +78,7 @@
     "electron": "14.0.0",
     "eslint": "^7.6.0",
     "eslint-plugin-import": "^2.20.0",
+    "eslint-plugin-node": "^11.1.0",
     "fork-ts-checker-webpack-plugin": "^6.0.1",
     "node-loader": "^2.0.0",
     "prettier": "^2.3.2",
