@@ -4,7 +4,7 @@ import {
   FileServiceResolveArgs,
   FileServiceResolveReturnValue,
   FILESERVICE_RESOLVE_CHANNEL,
-} from '../common/file-service';
+} from '@app/platform/file-service/common/file-service';
 
 const fileServiceIpcRenderer = {
   resolve: (...args: FileServiceResolveArgs): FileServiceResolveReturnValue =>

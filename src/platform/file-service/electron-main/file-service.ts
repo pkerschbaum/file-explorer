@@ -9,7 +9,10 @@ import { FileService } from 'code-oss-file-service/out/vs/platform/files/common/
 import { Schemas } from 'code-oss-file-service/out/vs/base/common/network';
 import { URI } from 'code-oss-file-service/out/vs/base/common/uri';
 
-import { FileServiceResolveArgs, FILESERVICE_RESOLVE_CHANNEL } from '../common/file-service';
+import {
+  FileServiceResolveArgs,
+  FILESERVICE_RESOLVE_CHANNEL,
+} from '@app/platform/file-service/common/file-service';
 
 const logger = new ConsoleMainLogger();
 const fileService = new FileService(logger as unknown as ILogService);

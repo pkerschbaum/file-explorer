@@ -22,6 +22,7 @@ module.exports = {
     "node/no-process-env": "error",
     "node/process-exit-as-throw": "off",
     "node/no-deprecated-api": "off",
+    "import/no-unresolved": "off",
     "@typescript-eslint/ban-types": [
       "error",
       {

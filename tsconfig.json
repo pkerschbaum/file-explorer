@@ -11,6 +11,7 @@
     "baseUrl": ".",
     "outDir": "dist",
     "paths": {
+      "@app/*": ["./src/*"],
       "*": ["node_modules/*"]
     }
   },
