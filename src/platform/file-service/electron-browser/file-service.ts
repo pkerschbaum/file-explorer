@@ -1,9 +1,10 @@
-import { FileServiceIPC } from '@app/platform/file-service/common/file-service';
+import {
+  CONTEXT_BRIDGE_KEY,
+  FileServiceIpcRenderer,
+} from '@app/platform/file-service/common/file-service';
 
 declare global {
   interface Window {
-    fileService: {
-      resolve: (...args: FileServiceIPC.Resolve.Args) => FileServiceIPC.Resolve.ReturnValue;
-    };
+    [CONTEXT_BRIDGE_KEY]: FileServiceIpcRenderer;
   }
 }

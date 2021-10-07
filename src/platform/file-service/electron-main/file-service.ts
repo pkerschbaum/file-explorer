@@ -9,7 +9,7 @@ import { Schemas } from 'code-oss-file-service/out/vs/base/common/network';
 import { URI } from 'code-oss-file-service/out/vs/base/common/uri';
 
 import {
-  FileServiceIPC,
+  FileServiceIpc,
   FILESERVICE_READFILE_CHANNEL,
   FILESERVICE_RESOLVE_CHANNEL,
 } from '@app/platform/file-service/common/file-service';
@@ -21,16 +21,16 @@ fileService.registerProvider(Schemas.file, diskFileSystemProvider);
 
 async function handleResolve(
   _1: unknown,
-  ...args: FileServiceIPC.Resolve.Args
-): FileServiceIPC.Resolve.ReturnValue {
+  ...args: FileServiceIpc.Resolve.Args
+): FileServiceIpc.Resolve.ReturnValue {
   const [uri, ...otherArgs] = args;
   return await fileService.resolve(URI.from(uri), ...otherArgs);
 }
 
 async function handleReadFile(
   _1: unknown,
-  ...args: FileServiceIPC.ReadFile.Args
-): FileServiceIPC.ReadFile.ReturnValue {
+  ...args: FileServiceIpc.ReadFile.Args
+): FileServiceIpc.ReadFile.ReturnValue {
   const [uri, ...otherArgs] = args;
   return await fileService.readFile(URI.from(uri), ...otherArgs);
 }

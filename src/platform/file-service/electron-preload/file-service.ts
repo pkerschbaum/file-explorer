@@ -4,17 +4,18 @@ import { IFileStat } from 'code-oss-file-service/out/vs/platform/files/common/fi
 import { URI } from 'code-oss-file-service/out/vs/base/common/uri';
 
 import {
-  FileServiceIPC,
+  CONTEXT_BRIDGE_KEY,
+  FileServiceIpcRenderer,
   FILESERVICE_READFILE_CHANNEL,
   FILESERVICE_RESOLVE_CHANNEL,
 } from '@app/platform/file-service/common/file-service';
 
-export const fileServiceIpcRenderer = {
-  resolve: async (...args: FileServiceIPC.Resolve.Args): FileServiceIPC.Resolve.ReturnValue => {
+export const fileServiceIpcRenderer: FileServiceIpcRenderer = {
+  resolve: async (...args) => {
     const result = await ipcRenderer.invoke(FILESERVICE_RESOLVE_CHANNEL, ...args);
     return createUriInstancesRecursive(result);
   },
-  readFile: async (...args: FileServiceIPC.ReadFile.Args): FileServiceIPC.ReadFile.ReturnValue => {
+  readFile: async (...args) => {
     const result = await ipcRenderer.invoke(FILESERVICE_READFILE_CHANNEL, ...args);
     return {
       ...result,
@@ -24,7 +25,9 @@ export const fileServiceIpcRenderer = {
   },
 };
 
-contextBridge.exposeInMainWorld('fileService', fileServiceIpcRenderer);
+export function bootstrapModule() {
+  contextBridge.exposeInMainWorld(CONTEXT_BRIDGE_KEY, fileServiceIpcRenderer);
+}
 
 function createUriInstancesRecursive(original: IFileStat): IFileStat {
   return {
