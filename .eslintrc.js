@@ -37,6 +37,13 @@ module.exports = {
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-floating-promises": "error",
     "@typescript-eslint/no-implicit-any-catch": "error",
+    "@typescript-eslint/no-namespace": [
+      "error",
+      {
+        // namespace can be useful to group related typings
+        "allowDeclarations": true
+      }
+    ],
     "@typescript-eslint/no-unsafe-assignment": "off",
     "@typescript-eslint/no-unsafe-call": "off",
     "@typescript-eslint/no-unsafe-member-access": "off",

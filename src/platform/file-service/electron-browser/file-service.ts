@@ -1,12 +1,9 @@
-import {
-  FileServiceResolveArgs,
-  FileServiceResolveReturnValue,
-} from '@app/platform/file-service/common/file-service';
+import { FileServiceIPC } from '@app/platform/file-service/common/file-service';
 
 declare global {
   interface Window {
     fileService: {
-      resolve: (...args: FileServiceResolveArgs) => FileServiceResolveReturnValue;
+      resolve: (...args: FileServiceIPC.Resolve.Args) => FileServiceIPC.Resolve.ReturnValue;
     };
   }
 }

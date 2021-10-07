@@ -4,30 +4,36 @@ import {
   ILogService,
   ConsoleMainLogger,
 } from 'code-oss-file-service/out/vs/platform/log/common/log';
-import { IFileStat } from 'code-oss-file-service/out/vs/platform/files/common/files';
 import { FileService } from 'code-oss-file-service/out/vs/platform/files/common/fileService';
 import { Schemas } from 'code-oss-file-service/out/vs/base/common/network';
 import { URI } from 'code-oss-file-service/out/vs/base/common/uri';
 
 import {
-  FileServiceResolveArgs,
+  FileServiceIPC,
+  FILESERVICE_READFILE_CHANNEL,
   FILESERVICE_RESOLVE_CHANNEL,
 } from '@app/platform/file-service/common/file-service';
 
 const logger = new ConsoleMainLogger();
-const fileService = new FileService(logger as unknown as ILogService);
+export const fileService = new FileService(logger as unknown as ILogService);
 const diskFileSystemProvider = new DiskFileSystemProvider(logger as unknown as ILogService);
 fileService.registerProvider(Schemas.file, diskFileSystemProvider);
 
-ipcMain.handle(FILESERVICE_RESOLVE_CHANNEL, async (_, ...args: FileServiceResolveArgs) => {
-  const result = await fileService.resolve(URI.from(args[0]));
-  return createUriInstancesRecursive(result);
-});
-
-function createUriInstancesRecursive(original: IFileStat): IFileStat {
-  return {
-    ...original,
-    resource: URI.from(original.resource),
-    children: original.children?.map((child) => createUriInstancesRecursive(child)),
-  };
+async function handleResolve(
+  _1: unknown,
+  ...args: FileServiceIPC.Resolve.Args
+): FileServiceIPC.Resolve.ReturnValue {
+  const [uri, ...otherArgs] = args;
+  return await fileService.resolve(URI.from(uri), ...otherArgs);
 }
+
+async function handleReadFile(
+  _1: unknown,
+  ...args: FileServiceIPC.ReadFile.Args
+): FileServiceIPC.ReadFile.ReturnValue {
+  const [uri, ...otherArgs] = args;
+  return await fileService.readFile(URI.from(uri), ...otherArgs);
+}
+
+ipcMain.handle(FILESERVICE_RESOLVE_CHANNEL, handleResolve);
+ipcMain.handle(FILESERVICE_READFILE_CHANNEL, handleReadFile);
