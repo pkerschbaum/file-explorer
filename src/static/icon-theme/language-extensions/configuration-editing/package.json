@@ -51,8 +51,8 @@
           ".devcontainer.json"
         ],
         "filenamePatterns": [
-					"**/.devcontainer/devcontainer.json"
-				]
+          "**/.devcontainer/devcontainer.json"
+        ]
       }
     ],
     "jsonValidation": [

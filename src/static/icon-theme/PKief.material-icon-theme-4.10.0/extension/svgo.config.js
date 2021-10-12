@@ -8,5 +8,5 @@ module.exports = {
     'removeStyleElement',
     'removeScriptElement',
     'reusePaths',
-  ])
-}
+  ]),
+};

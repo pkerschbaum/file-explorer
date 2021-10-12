@@ -1,8 +1,23 @@
-import { bootstrapModule as bootstrapFileServiceModule } from '@app/platform/file-service/electron-preload/file-service';
-import { bootstrapModule as bootstrapFileIconThemeModule } from '@app/platform/file-icon-theme/electron-preload/file-icon-theme';
+import { bootstrapModule as bootstrapFileServiceModule } from '@app/platform/file-service/file-service';
+import {
+  bootstrapModule as bootstrapFileIconThemeModule,
+  FileIconTheme,
+} from '@app/platform/file-icon-theme/file-icon-theme';
 
-async function preloadScriptEntryPoint() {
-  await Promise.all([bootstrapFileServiceModule(), bootstrapFileIconThemeModule()]);
+declare global {
+  interface Window {
+    preload: {
+      initializationPromise: Promise<void>;
+      fileService: ReturnType<typeof bootstrapFileServiceModule>['fileService'];
+      fileIconTheme: FileIconTheme;
+    };
+  }
 }
 
-void preloadScriptEntryPoint();
+window.preload = {} as any;
+window.preload.initializationPromise = (async function preloadScriptEntryPoint() {
+  const { fileService } = bootstrapFileServiceModule();
+  const fileIconTheme = await bootstrapFileIconThemeModule(fileService);
+
+  window.preload = { ...window.preload, fileService, fileIconTheme };
+})();
