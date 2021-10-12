@@ -1,6 +1,9 @@
 import { URI } from 'code-oss-file-service/out/vs/base/common/uri';
 
-import { render } from '@app/ui/App';
+import { render } from '@app/ui/Root';
+import { NexFileSystemImpl } from '@app/platform/logic/file-system';
+import { NexClipboardImpl } from '@app/platform/logic/clipboard';
+import { NexStorageImpl } from '@app/platform/logic/storage';
 
 async function rendererScriptEntryPoint() {
   await window.preload.initializationPromise;
@@ -12,14 +15,15 @@ async function rendererScriptEntryPoint() {
   elStyle.textContent = window.preload.fileIconTheme.iconThemeCssRules;
   document.head.appendChild(elStyle);
 
-  // TODO remove me
-  // test file service module
-  const homefolder = URI.file('/home/pkerschbaum');
-  const result = await window.preload.fileService.resolve(homefolder);
-  console.dir(result);
-
   // render React application
-  render();
+  const nexFileSystem = new NexFileSystemImpl();
+  const nexClipboard = new NexClipboardImpl();
+  const nexStorage = new NexStorageImpl();
+  render({
+    fileSystem: nexFileSystem,
+    clipboard: nexClipboard,
+    storage: nexStorage,
+  });
 }
 
 void rendererScriptEntryPoint();

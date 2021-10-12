@@ -18,6 +18,7 @@ import {
   FILE_ICON_THEME_RELATIVE_PATH,
   FILE_ICON_THEME_URI,
 } from '@app/static-resources';
+import { CustomError } from '@app/base/custom-error';
 
 export type FileIconTheme = {
   iconThemeCssRules: string;
@@ -48,8 +49,7 @@ async function registerLanguagesOfExtensions(fileService: IFileService) {
       const parseErrors: json.ParseError[] = [];
       const packageJsonParsed = json.parse(packageJsonFileContent.value.toString(), parseErrors);
       if (parseErrors.length > 0) {
-        // TODO throw custom error
-        throw new Error(`could not parse json`);
+        throw new CustomError(`could not parse json`, { parseErrors });
       }
 
       if (Array.isArray(packageJsonParsed?.contributes?.languages)) {
@@ -70,12 +70,12 @@ async function loadFileIconTheme(fileService: IFileService) {
   const parseErrors: json.ParseError[] = [];
   const packageJsonParsed = json.parse(packageJsonStat.value.toString(), parseErrors);
   if (parseErrors.length > 0) {
-    // TODO throw custom error
-    throw new Error(`could not parse json`);
+    throw new CustomError(`could not parse json`, { parseErrors });
   }
   if (!Array.isArray(packageJsonParsed?.contributes?.iconThemes)) {
-    // TODO throw custom error
-    throw new Error(`package.json content does not specify a icon theme`);
+    throw new CustomError(`package.json content does not specify a icon theme`, {
+      packageJsonParsed,
+    });
   }
 
   const iconThemeExtensionPoint: IThemeExtensionPoint = packageJsonParsed.contributes.iconThemes[0];
@@ -94,7 +94,6 @@ async function loadFileIconTheme(fileService: IFileService) {
 
   let cssRules = await fileIconTheme.ensureLoaded(fileService as any);
   if (!cssRules) {
-    // TODO throw custom error
     throw new Error(`loading the file icon theme did not result in any css rules`);
   }
 

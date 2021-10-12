@@ -23,6 +23,7 @@ const createWindow = (): void => {
       contextIsolation: false,
     },
   });
+  mainWindow.setMenuBarVisibility(false);
 
   // and load the index.html of the app.
   void mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
@@ -55,3 +56,5 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
+import { registerListeners } from '@app/ipc/electron-main/file-drag-start';
+registerListeners();

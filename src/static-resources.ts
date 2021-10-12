@@ -10,3 +10,9 @@ export const FILE_ICON_THEME_URI = URI.file(
 );
 export const FILE_ICON_THEME_PATH_REPLACE_REGEX = /vscode-file:.+\/static\/icon-theme\//g;
 export const FILE_ICON_THEME_RELATIVE_PATH = './static/icon-theme/';
+
+export const OUTLINE_INSERT_DRIVE_FILE_ICON_PATH = path.join(
+  __dirname,
+  'static',
+  'outline_insert_drive_file_black_24dp.png',
+);
