@@ -23,6 +23,14 @@
     "npm": "^6.14.15",
     "yarn": "^1.22.15"
   },
+  "lint-staged": {
+    "**/*.{ts,tsx}": [
+      "eslint --max-warnings 0"
+    ],
+    "**/*": [
+      "prettier --write --ignore-unknown"
+    ]
+  },
   "config": {
     "forge": {
       "packagerConfig": {},
