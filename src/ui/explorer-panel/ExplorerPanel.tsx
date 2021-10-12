@@ -15,6 +15,7 @@ import { HeadCell } from '@app/ui/elements/DataTable/HeadCell';
 import { Row } from '@app/ui/elements/DataTable/Row';
 import { TableBody } from '@app/ui/elements/DataTable/TableBody';
 import { TableHead } from '@app/ui/elements/DataTable/TableHead';
+import { useNexNativeHost } from '@app/ui/NexNativeHost.context';
 import {
   FileForUI,
   useFileProviderCwd,
@@ -143,6 +144,8 @@ const FilesTableRow: React.FC<FilesTableRowProps> = ({
   fileForRow,
   idxOfFileForRow,
 }) => {
+  const nativeHost = useNexNativeHost();
+
   const explorerId = useExplorerId();
   const selectedFiles = useSelectedFiles();
   const fileToRename = useFileToRename();
@@ -169,7 +172,7 @@ const FilesTableRow: React.FC<FilesTableRowProps> = ({
       }
 
       async function doFetchIcon() {
-        const icon = await window.preload.getNativeFileIconDataURL({ fsPath });
+        const icon = await nativeHost.getNativeFileIconDataURL({ fsPath });
         setNativeIconDataURL(icon);
       }
       doFetchIcon();
@@ -204,9 +207,7 @@ const FilesTableRow: React.FC<FilesTableRowProps> = ({
     <Row
       key={fileForRow.id}
       draggable
-      onDragStart={() =>
-        window.preload.onFileDragStart({ fsPath: URI.from(fileForRow.uri).fsPath })
-      }
+      onDragStart={() => nativeHost.startNativeFileDnD({ fsPath: URI.from(fileForRow.uri).fsPath })}
       onClick={(e) => {
         if (e.ctrlKey) {
           // toggle selection of file which was clicked on
@@ -304,7 +305,10 @@ const RenameInput: React.FC<RenameInputProps> = ({ file, onSubmit, abortRename }
   return (
     <form
       css={commonStyles.fullWidth}
-      onSubmit={() => onSubmit(value)}
+      onSubmit={(e) => {
+        e.preventDefault();
+        onSubmit(value);
+      }}
       onBlur={abortRename}
       onKeyDown={(e) => {
         if (e.key === KEYS.ESC) {

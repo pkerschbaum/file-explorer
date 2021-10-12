@@ -11,6 +11,7 @@ import { IFileStat } from 'code-oss-file-service/out/vs/platform/files/common/fi
 
 import { actions } from '@app/platform/store/file-provider/file-provider.slice';
 import { useNexFileSystem } from '@app/ui/NexFileSystem.context';
+import { useNexNativeHost } from '@app/ui/NexNativeHost.context';
 import { useClipboardResources } from '@app/ui/NexClipboard.context';
 import { useDispatch } from '@app/platform/store/store';
 import { PASTE_PROCESS_STATUS } from '@app/platform/file-types';
@@ -284,10 +285,10 @@ export function useCreateFolder(explorerId: string) {
 export function useRevealCwdInOSExplorer(explorerId: string) {
   const cwd = useFileProviderCwd(explorerId);
 
-  const fileSystem = useNexFileSystem();
+  const nativeHost = useNexNativeHost();
 
   function revealCwdInOSExplorer() {
-    fileSystem.revealResourcesInOS([cwd]);
+    nativeHost.revealResourcesInOS([cwd]);
   }
 
   return {

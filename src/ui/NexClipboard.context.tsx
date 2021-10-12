@@ -19,20 +19,8 @@ export const ClipboardResourcesContext: React.FC<{ children: React.ReactElement 
 
   React.useEffect(
     function registerOnClipboardChangedHandler() {
-      let lastPromise;
-
-      const disposable = clipboard.onClipboardChanged(async () => {
-        const thisPromise = clipboard.readResources();
-        lastPromise = thisPromise;
-        const resources = await thisPromise;
-
-        // discard result if event listener got triggered in the meantime (and thus, a newer
-        // readResources promise is currently inflight)
-        if (thisPromise !== lastPromise) {
-          return;
-        }
-
-        setClipboardResources(resources);
+      const disposable = clipboard.onClipboardChanged(() => {
+        setClipboardResources(clipboard.readResources());
       });
 
       return () => disposable.dispose();

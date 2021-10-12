@@ -3,9 +3,9 @@ import { useQuery, useQueryClient } from 'react-query';
 
 import { URI, UriComponents } from 'code-oss-file-service/out/vs/base/common/uri';
 import { FileKind } from 'code-oss-file-service/out/vs/platform/files/common/files';
-import { getIconClasses } from 'code-oss-file-icon-theme/out/vs/editor/common/services/getIconClasses';
 
 import { createLogger } from '@app/base/logger/logger';
+import { useNexFileIconTheme } from '@app/ui/NexFileIconTheme.context';
 import { useNexFileSystem } from '@app/ui/NexFileSystem.context';
 import { useSelector } from '@app/platform/store/store';
 import { File, FILE_TYPE, PASTE_PROCESS_STATUS, PROCESS_TYPE, Tag } from '@app/platform/file-types';
@@ -121,6 +121,7 @@ type FilesLoadingResult =
     };
 export const useFileProviderFiles = (explorerId: string): FilesLoadingResult => {
   const fileSystem = useNexFileSystem();
+  const fileIconTheme = useNexFileIconTheme();
   const queryClient = useQueryClient();
 
   const cwd = useSelector((state) => state.fileProvider.explorers[explorerId].cwd);
@@ -222,7 +223,7 @@ export const useFileProviderFiles = (explorerId: string): FilesLoadingResult => 
       const { fileName, extension } = uriHelper.extractNameAndExtension(file.uri);
       const fileType = mapFileTypeToFileKind(file.fileType);
 
-      const iconClasses = window.preload.fileIconTheme.getIconClasses(URI.from(file.uri), fileType);
+      const iconClasses = fileIconTheme.getIconClasses(URI.from(file.uri), fileType);
 
       const fileForUI: FileForUI = {
         ...file,

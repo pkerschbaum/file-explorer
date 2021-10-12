@@ -56,7 +56,12 @@ export const CreateFolder: React.FC<CreateFolderProps> = ({ onSubmit }) => {
         }}
         BackdropProps={{ invisible: false }}
       >
-        <form onSubmit={handleSubmit}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmit();
+          }}
+        >
           <Stack direction="column" alignItems="stretch" sx={{ padding: 1.5 }}>
             <TextField
               autoFocus

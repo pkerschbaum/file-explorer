@@ -7,19 +7,19 @@ import { arrays } from '@app/base/utils/arrays.util';
 export type NexFileSystem = Pick<
   IFileService,
   'resolve' | 'del' | 'copy' | 'move' | 'createFolder'
-> & {
-  revealResourcesInOS(resources: UriComponents[]): void;
+>;
+
+export const createNexFileSystem = () => {
+  const instance: NexFileSystem = {
+    resolve: window.preload.fileService.resolve.bind(window.preload.fileService),
+    del: window.preload.fileService.del.bind(window.preload.fileService),
+    copy: window.preload.fileService.copy.bind(window.preload.fileService),
+    move: window.preload.fileService.move.bind(window.preload.fileService),
+    createFolder: window.preload.fileService.createFolder.bind(window.preload.fileService),
+  };
+
+  return instance;
 };
-
-export class NexFileSystemImpl implements NexFileSystem {
-  public resolve = window.preload.fileService.resolve.bind(window.preload.fileService);
-  public del = window.preload.fileService.del.bind(window.preload.fileService);
-  public copy = window.preload.fileService.copy.bind(window.preload.fileService);
-  public move = window.preload.fileService.move.bind(window.preload.fileService);
-  public createFolder = window.preload.fileService.createFolder.bind(window.preload.fileService);
-
-  public revealResourcesInOS = window.preload.revealResourcesInOS;
-}
 
 export function mapFileStatToFile(file: IFileStat): File {
   const fileType = file.isDirectory

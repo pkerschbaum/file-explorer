@@ -1,11 +1,11 @@
-import { URI } from 'code-oss-file-service/out/vs/base/common/uri';
-
 import { render } from '@app/ui/Root';
-import { NexFileSystemImpl } from '@app/platform/logic/file-system';
-import { NexClipboardImpl } from '@app/platform/logic/clipboard';
-import { NexStorageImpl } from '@app/platform/logic/storage';
+import { createNexClipboard } from '@app/platform/logic/clipboard';
+import { createNexFileSystem } from '@app/platform/logic/file-system';
+import { createNexNativeHost } from '@app/platform/logic/native-host';
+import { createNexStorage } from '@app/platform/logic/storage';
 
 async function rendererScriptEntryPoint() {
+  // wait for preload script to finish
   await window.preload.initializationPromise;
 
   // add CSS styles for file icon theme
@@ -16,13 +16,16 @@ async function rendererScriptEntryPoint() {
   document.head.appendChild(elStyle);
 
   // render React application
-  const nexFileSystem = new NexFileSystemImpl();
-  const nexClipboard = new NexClipboardImpl();
-  const nexStorage = new NexStorageImpl();
+  const nexClipboard = createNexClipboard();
+  const nexFileSystem = createNexFileSystem();
+  const nexStorage = createNexStorage();
+  const nexNativeHost = createNexNativeHost();
   render({
-    fileSystem: nexFileSystem,
     clipboard: nexClipboard,
+    fileIconTheme: window.preload.fileIconTheme,
+    fileSystem: nexFileSystem,
     storage: nexStorage,
+    nativeHost: nexNativeHost,
   });
 }
 

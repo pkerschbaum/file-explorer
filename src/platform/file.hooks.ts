@@ -7,8 +7,9 @@ import { CancellationTokenSource } from 'code-oss-file-service/out/vs/base/commo
 import { IFileStatWithMetadata } from 'code-oss-file-service/out/vs/platform/files/common/files';
 
 import { actions } from '@app/platform/store/file-provider/file-provider.slice';
-import { useNexFileSystem } from '@app/ui/NexFileSystem.context';
 import { useNexClipboard } from '@app/ui/NexClipboard.context';
+import { useNexFileSystem } from '@app/ui/NexFileSystem.context';
+import { useNexNativeHost } from '@app/ui/NexNativeHost.context';
 import { useNexStorage } from '@app/ui/NexStorage.context';
 import { useDispatch } from '@app/platform/store/store';
 import {
@@ -28,7 +29,6 @@ import { createLogger } from '@app/base/logger/logger';
 import { CustomError } from '@app/base/custom-error';
 import * as tagHooks from '@app/platform/tag.hooks';
 import { useRerenderOnEventFire } from '@app/ui/utils/react.util';
-import { strings } from '@app/base/utils/strings.util';
 import { objects } from '@app/base/utils/objects.util';
 
 const logger = createLogger('file.hooks');
@@ -117,13 +117,11 @@ export function useRemoveProcess() {
 }
 
 export function useOpenFile() {
+  const nativeHost = useNexNativeHost();
+
   async function openFile(uri: UriComponents) {
     const executablePath = URI.from(uri).fsPath;
-
-    const errorMessage = await window.preload.shellOpenPath(executablePath);
-    if (!strings.isNullishOrEmpty(errorMessage)) {
-      logger.error(`electron shell openItem did not succeed`, undefined, { uri, errorMessage });
-    }
+    await nativeHost.openPath(executablePath);
   }
 
   return {

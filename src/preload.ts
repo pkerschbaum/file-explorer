@@ -18,7 +18,7 @@ declare global {
       initializationPromise: Promise<void>;
       fileService: ReturnType<typeof bootstrapFileServiceModule>['fileService'];
       fileIconTheme: FileIconTheme;
-      onFileDragStart: (args: FileDragStart.Args) => FileDragStart.ReturnValue;
+      startNativeFileDnD: (args: FileDragStart.Args) => FileDragStart.ReturnValue;
       getNativeFileIconDataURL: (args: { fsPath: string }) => Promise<string | undefined>;
       shellOpenPath: typeof shell.openPath;
       clipboardReadResources: () => URI[];
@@ -43,7 +43,7 @@ window.preload.initializationPromise = (async function preloadScriptEntryPoint()
     ...window.preload,
     fileService,
     fileIconTheme,
-    onFileDragStart: (args) => {
+    startNativeFileDnD: (args) => {
       ipcRenderer.send(FILEDRAGSTART_CHANNEL, args);
     },
     getNativeFileIconDataURL: async ({ fsPath }) => {

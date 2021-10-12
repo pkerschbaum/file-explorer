@@ -8,19 +8,19 @@ export type NexClipboard = {
   onClipboardChanged: Event<void>;
 };
 
-export class NexClipboardImpl implements NexClipboard {
-  private readonly _onClipboardChanged = new Emitter<void>();
+export const createNexClipboard = () => {
+  const onClipboardChanged = new Emitter<void>();
 
-  public readResources: NexClipboard['readResources'] = () => {
-    return window.preload.clipboardReadResources();
+  const instance: NexClipboard = {
+    readResources: window.preload.clipboardReadResources,
+    writeResources: (resources) => {
+      if (resources.length) {
+        window.preload.clipboardWriteResources(resources);
+        onClipboardChanged.fire();
+      }
+    },
+    onClipboardChanged: onClipboardChanged.event,
   };
 
-  public writeResources: NexClipboard['writeResources'] = (resources) => {
-    if (resources.length) {
-      window.preload.clipboardWriteResources(resources);
-      this._onClipboardChanged.fire();
-    }
-  };
-
-  public onClipboardChanged = this._onClipboardChanged.event;
-}
+  return instance;
+};

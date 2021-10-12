@@ -18,17 +18,19 @@ export type NexStorage = {
   onDataChanged: Event<STORAGE_KEY>;
 };
 
-export class NexStorageImpl implements NexStorage {
-  private readonly _onDataChanged = new Emitter<STORAGE_KEY>();
+export const createNexStorage = () => {
+  const onDataChanged = new Emitter<STORAGE_KEY>();
 
-  public store = <T extends STORAGE_KEY>(key: T, value: STORAGE_TYPE[T]) => {
-    window.preload.storeSet(key, value);
-    this._onDataChanged.fire(key);
+  const instance: NexStorage = {
+    store: (key, value) => {
+      window.preload.storeSet(key, value);
+      onDataChanged.fire(key);
+    },
+    get: (key) => {
+      return window.preload.storeGet(key) as any;
+    },
+    onDataChanged: onDataChanged.event,
   };
 
-  public get = <T extends STORAGE_KEY>(key: T): STORAGE_TYPE[T] => {
-    return window.preload.storeGet(key) as STORAGE_TYPE[T];
-  };
-
-  public onDataChanged = this._onDataChanged.event;
-}
+  return instance;
+};
