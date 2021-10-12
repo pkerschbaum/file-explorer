@@ -1,4 +1,4 @@
-import { DiskFileSystemProvider } from 'code-oss-file-service/out/vs/platform/files/node/diskFileSystemProvider';
+import { DiskFileSystemProvider } from 'code-oss-file-service/out/vs/platform/files/electron-browser/diskFileSystemProvider';
 import {
   ILogService,
   ConsoleMainLogger,
