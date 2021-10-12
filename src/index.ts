@@ -58,5 +58,7 @@ app.on('activate', () => {
 // code. You can also put them in separate files and import them here.
 import { registerListeners as registerFileDragStartListeners } from '@app/ipc/electron-main/file-drag-start';
 import { registerListeners as registerTrashItemListeners } from '@app/ipc/electron-main/trash-item';
+import { registerListeners as registerNativeFileIconListeners } from '@app/ipc/electron-main/native-file-icon';
 registerFileDragStartListeners();
 registerTrashItemListeners();
+registerNativeFileIconListeners();

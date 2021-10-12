@@ -1,4 +1,4 @@
-import { app, clipboard, ipcRenderer, shell } from 'electron';
+import { clipboard, ipcRenderer, shell } from 'electron';
 import Store from 'electron-store';
 
 import { URI } from 'code-oss-file-service/out/vs/base/common/uri';
@@ -12,6 +12,7 @@ import {
 } from '@app/platform/logic/file-icon-theme/file-icon-theme';
 import { FileDragStart, FILEDRAGSTART_CHANNEL } from '@app/ipc/common/file-drag-start';
 import { TRASHITEM_CHANNEL } from '@app/ipc/common/trash-item';
+import { GetNativeFileIconDataURL, NATIVEFILEICON_CHANNEL } from '@app/ipc/common/native-file-icon';
 
 declare global {
   interface Window {
@@ -20,7 +21,9 @@ declare global {
       fileService: ReturnType<typeof bootstrapFileServiceModule>['fileService'];
       fileIconTheme: FileIconTheme;
       startNativeFileDnD: (args: FileDragStart.Args) => FileDragStart.ReturnValue;
-      getNativeFileIconDataURL: (args: { fsPath: string }) => Promise<string | undefined>;
+      getNativeFileIconDataURL: (
+        args: GetNativeFileIconDataURL.Args,
+      ) => GetNativeFileIconDataURL.ReturnValue;
       shellOpenPath: typeof shell.openPath;
       shellTrashItem: typeof shell.trashItem;
       clipboardReadResources: () => URI[];
@@ -48,10 +51,7 @@ window.preload.initializationPromise = (async function preloadScriptEntryPoint()
     startNativeFileDnD: (args) => {
       ipcRenderer.send(FILEDRAGSTART_CHANNEL, args);
     },
-    getNativeFileIconDataURL: async ({ fsPath }) => {
-      const icon = await app.getFileIcon(fsPath, { size: 'large' });
-      return icon.toDataURL();
-    },
+    getNativeFileIconDataURL: (...args) => ipcRenderer.invoke(NATIVEFILEICON_CHANNEL, ...args),
     shellOpenPath: (...args) => shell.openPath(...args),
     shellTrashItem: (...args) => ipcRenderer.invoke(TRASHITEM_CHANNEL, ...args),
     clipboardReadResources: () =>
