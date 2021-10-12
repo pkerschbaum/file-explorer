@@ -11,6 +11,7 @@ import {
   FileIconTheme,
 } from '@app/platform/logic/file-icon-theme/file-icon-theme';
 import { FileDragStart, FILEDRAGSTART_CHANNEL } from '@app/ipc/common/file-drag-start';
+import { TRASHITEM_CHANNEL } from '@app/ipc/common/trash-item';
 
 declare global {
   interface Window {
@@ -21,6 +22,7 @@ declare global {
       startNativeFileDnD: (args: FileDragStart.Args) => FileDragStart.ReturnValue;
       getNativeFileIconDataURL: (args: { fsPath: string }) => Promise<string | undefined>;
       shellOpenPath: typeof shell.openPath;
+      shellTrashItem: typeof shell.trashItem;
       clipboardReadResources: () => URI[];
       clipboardWriteResources: (resources: URI[]) => void;
       storeSet: (key: string, value: unknown) => void;
@@ -51,6 +53,7 @@ window.preload.initializationPromise = (async function preloadScriptEntryPoint()
       return icon.toDataURL();
     },
     shellOpenPath: (...args) => shell.openPath(...args),
+    shellTrashItem: (...args) => ipcRenderer.invoke(TRASHITEM_CHANNEL, ...args),
     clipboardReadResources: () =>
       bufferToResources(clipboard.readBuffer(CLIPBOARD_FILELIST_FORMAT)),
     clipboardWriteResources: (resources) =>
