@@ -95,15 +95,17 @@ const ExplorerActionsImpl: React.FC = () => {
     scheduleMoveFilesToTrash(selectedFiles.map((file) => file.uri));
   };
 
-  const openSelectedFiles = () => {
+  async function openSelectedFiles() {
     if (selectedFiles.length === 1 && selectedFiles[0].fileType === FILE_TYPE.DIRECTORY) {
-      changeDirectory(selectedFiles[0].uri.path);
+      await changeDirectory(selectedFiles[0].uri.path);
     } else {
-      selectedFiles
-        .filter((selectedFile) => selectedFile.fileType === FILE_TYPE.FILE)
-        .forEach((selectedFile) => openFile(selectedFile.uri));
+      await Promise.all(
+        selectedFiles
+          .filter((selectedFile) => selectedFile.fileType === FILE_TYPE.FILE)
+          .map((selectedFile) => openFile(selectedFile.uri)),
+      );
     }
-  };
+  }
 
   const cutOrCopySelectedFiles = (cut: boolean) => () => {
     return cutOrCopyFiles(
@@ -121,8 +123,8 @@ const ExplorerActionsImpl: React.FC = () => {
     setFileToRenameId(selectedFiles[0].id);
   };
 
-  function navigateUp() {
-    changeDirectory(URI.joinPath(URI.from(cwd), '..').path);
+  async function navigateUp() {
+    await changeDirectory(URI.joinPath(URI.from(cwd), '..').path);
   }
 
   function changeSelectedFile(e: KeyboardEvent) {

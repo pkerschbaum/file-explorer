@@ -55,7 +55,7 @@ export function useChangeDirectory(explorerId: string) {
     const stats = await fileSystem.resolve(parsedUri);
     if (!stats.isDirectory) {
       throw Error(
-        `could not change directory, reason: uri is not a valid directory. uri: ${parsedUri}`,
+        `could not change directory, reason: uri is not a valid directory. uri: ${parsedUri.toString()}`,
       );
     }
 
@@ -309,6 +309,7 @@ function findValidPasteFileTarget(
 
   const cmpFunction = (child: IFileStat) => child.resource.toString() === candidate.toString();
 
+  // eslint-disable-next-line no-constant-condition
   while (true) {
     const conflict = targetFolder.children.find(cmpFunction);
     if (!conflict) {
@@ -338,10 +339,13 @@ function incrementFileName(name: string, isFolder: boolean): string {
       namePrefix.replace(suffixRegex, (_, g1?, g2?) => {
         const number = g2 ? parseInt(g2) : 1;
         return number === 0
-          ? `${g1}`
+          ? // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            `${g1}`
           : number < Constants.MAX_SAFE_SMALL_INTEGER
-          ? `${g1} ${number + 1}`
-          : `${g1}${g2} copy`;
+          ? // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            `${g1} ${number + 1}`
+          : // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            `${g1}${g2} copy`;
       }) + extSuffix
     );
   }

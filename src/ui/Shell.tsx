@@ -36,7 +36,7 @@ export const Shell: React.FC = () => {
 
   // on mount, add first (initial) explorer panel
   React.useEffect(() => {
-    addExplorerPanel();
+    void addExplorerPanel();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

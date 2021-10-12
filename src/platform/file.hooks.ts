@@ -134,8 +134,8 @@ export function useCutOrCopyFiles() {
 
   const clipboard = useNexClipboard();
 
-  async function cutOrCopyFiles(files: UriComponents[], cut: boolean) {
-    await clipboard.writeResources(files.map((file) => URI.from(file)));
+  function cutOrCopyFiles(files: UriComponents[], cut: boolean) {
+    clipboard.writeResources(files.map((file) => URI.from(file)));
     dispatch(actions.cutOrCopyFiles({ cut }));
   }
 
@@ -286,9 +286,10 @@ export function useAddTags() {
 
         let existingTagsOfFile = fileToTagsMap[URI.from(file).toString()];
         if (existingTagsOfFile === undefined || existingTagsOfFile.ctimeOfFile !== fileStat.ctime) {
-          fileToTagsMap[URI.from(file).toString()] = { ctimeOfFile: fileStat.ctime, tags: [] };
+          existingTagsOfFile = { ctimeOfFile: fileStat.ctime, tags: [] };
+          fileToTagsMap[URI.from(file).toString()] = existingTagsOfFile;
         }
-        fileToTagsMap[URI.from(file).toString()]!.tags.push(...tagIds);
+        existingTagsOfFile.tags.push(...tagIds);
       }),
     );
 
@@ -321,11 +322,12 @@ export function useRemoveTags() {
     }
 
     for (const file of files) {
-      const existingTagsOfFile = fileToTagsMap[URI.from(file).toString()]?.tags;
+      const existingTagsOfFile = fileToTagsMap[URI.from(file).toString()];
       if (existingTagsOfFile !== undefined) {
-        fileToTagsMap[URI.from(file).toString()]!.tags = existingTagsOfFile.filter(
+        existingTagsOfFile.tags = existingTagsOfFile.tags.filter(
           (existingTagId) => !tagIds.some((tagIdToRemove) => tagIdToRemove === existingTagId),
         );
+        fileToTagsMap[URI.from(file).toString()] = existingTagsOfFile;
       }
     }
 

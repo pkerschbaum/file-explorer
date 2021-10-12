@@ -59,7 +59,7 @@ export const CreateFolder: React.FC<CreateFolderProps> = ({ onSubmit }) => {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            handleSubmit();
+            void handleSubmit();
           }}
         >
           <Stack direction="column" alignItems="stretch" sx={{ padding: 1.5 }}>

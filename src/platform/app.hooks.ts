@@ -16,7 +16,7 @@ export function useAddExplorerPanel() {
     const stats = await fileSystem.resolve(parsedUri);
     if (!stats.isDirectory) {
       throw Error(
-        `could not set intial directory, reason: uri is not a valid directory. uri: ${parsedUri}`,
+        `could not set intial directory, reason: uri is not a valid directory. uri: ${parsedUri.toString()}`,
       );
     }
 

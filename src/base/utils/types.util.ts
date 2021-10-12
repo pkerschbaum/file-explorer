@@ -18,6 +18,7 @@ export type IsJsonable<T> =
       ? // Arrays are special; just check array element type
         IsJsonable<U>[]
       : // Otherwise check if object
+      // eslint-disable-next-line @typescript-eslint/ban-types
       T extends object
       ? // It's an object
         {
@@ -92,7 +93,8 @@ export type FlattenUnion<T> = {
   [K in keyof UnionToIntersection<T>]: K extends keyof T
     ? T[K] extends any[]
       ? T[K]
-      : T[K] extends object
+      : // eslint-disable-next-line @typescript-eslint/ban-types
+      T[K] extends object
       ? FlattenUnion<T[K]>
       : T[K]
     : UnionToIntersection<T>[K] | undefined;
@@ -144,6 +146,7 @@ export type RemoveIndexSignature<T> = {
 export type Id<T> = {} & { [P in keyof T]: T[P] };
 
 // https://stackoverflow.com/a/58993872/1700319
+// eslint-disable-next-line @typescript-eslint/ban-types
 type ImmutablePrimitive = undefined | null | boolean | string | number | Function;
 type ImmutableArray<T> = ReadonlyArray<Immutable<T>>;
 type ImmutableMap<K, V> = ReadonlyMap<Immutable<K>, Immutable<V>>;

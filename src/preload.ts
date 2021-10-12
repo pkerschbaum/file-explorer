@@ -83,7 +83,7 @@ function bufferToResources(buffer: Uint8Array): URI[] {
 
   try {
     return bufferValue.split('\n').map((f) => URI.parse(f));
-  } catch (error) {
+  } catch {
     return []; // do not trust clipboard data
   }
 }

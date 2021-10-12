@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useDispatch } from 'react-redux';
 import { atom, useAtom } from 'jotai';
-import { PrimitiveAtom, Scope, SetAtom, WritableAtom } from 'jotai/core/atom';
+import { PrimitiveAtom, Scope, WritableAtom } from 'jotai/core/atom';
 
 import { Event } from 'code-oss-file-service/out/vs/base/common/event';
 
@@ -53,7 +53,7 @@ export const useActionsWithDispatch = <T extends {}>(actions: T) => {
   const actionsWithDispatch: any = {};
 
   for (const action in actions) {
-    if (actions.hasOwnProperty(action)) {
+    if (Object.hasOwnProperty.call(actions, action)) {
       actionsWithDispatch[action] = (...args: any[]) => dispatch((actions as any)[action](...args));
     }
   }
@@ -123,7 +123,14 @@ export function createContext<T>(name: string) {
   return { useContextValue, Provider };
 }
 
-/* Jotai "scoped atoms" */
+/* Jotai "scoped atoms" and sync set update*/
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export type SyncSetAtom<AtomType> = AtomType extends WritableAtom<infer _1, infer Update>
+  ? undefined extends Update
+    ? (update?: Update) => void
+    : (update: Update) => void
+  : never;
+
 const SYMBOL_NO_VALUE_PRESENT = Symbol('NO_VALUE_PRESENT');
 
 export function scopedAtom<Value extends unknown>(): PrimitiveAtom<Value> {
@@ -133,7 +140,7 @@ export function scopedAtom<Value extends unknown>(): PrimitiveAtom<Value> {
 export function useScopedAtom<Value, Update>(
   atom: WritableAtom<Value, Update>,
   scope: Scope,
-): [Value, SetAtom<Update>] {
+): [Value, SyncSetAtom<WritableAtom<Value, Update>>] {
   const [value, setValue] = useAtom(atom, scope);
   if ((value as unknown) === SYMBOL_NO_VALUE_PRESENT) {
     throw new Error('useScopedAtom was not used inside a jotai provider');

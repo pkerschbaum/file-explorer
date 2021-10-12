@@ -11,7 +11,7 @@ import {
   FileForUI,
   useFileProviderFiles,
 } from '@app/platform/store/file-provider/file-provider.hooks';
-import { scopedAtom, usePrevious, useScopedAtom } from '@app/ui/utils/react.util';
+import { scopedAtom, SyncSetAtom, usePrevious, useScopedAtom } from '@app/ui/utils/react.util';
 
 const filterInputAtom = scopedAtom<string>();
 const selectionAtom = scopedAtom<{
@@ -180,11 +180,26 @@ const DerivedValuesAtomsContainer: React.FC<DerivedValuesAtomsContainerProps> = 
   children,
 }) => {
   // propagate computed/pass-through values
-  const setExplorerId = useUpdateAtom(explorerIdAtom, SYMBOL_DERIVED_VALUES_ATOMS_SCOPE);
-  const setDataAvailable = useUpdateAtom(dataAvailableAtom, SYMBOL_DERIVED_VALUES_ATOMS_SCOPE);
-  const setFiles = useUpdateAtom(filesAtom, SYMBOL_DERIVED_VALUES_ATOMS_SCOPE);
-  const setFilesToShow = useUpdateAtom(filesToShowAtom, SYMBOL_DERIVED_VALUES_ATOMS_SCOPE);
-  const setSelectedFiles = useUpdateAtom(selectedFilesAtom, SYMBOL_DERIVED_VALUES_ATOMS_SCOPE);
+  const setExplorerId: SyncSetAtom<typeof explorerIdAtom> = useUpdateAtom(
+    explorerIdAtom,
+    SYMBOL_DERIVED_VALUES_ATOMS_SCOPE,
+  );
+  const setDataAvailable: SyncSetAtom<typeof dataAvailableAtom> = useUpdateAtom(
+    dataAvailableAtom,
+    SYMBOL_DERIVED_VALUES_ATOMS_SCOPE,
+  );
+  const setFiles: SyncSetAtom<typeof filesAtom> = useUpdateAtom(
+    filesAtom,
+    SYMBOL_DERIVED_VALUES_ATOMS_SCOPE,
+  );
+  const setFilesToShow: SyncSetAtom<typeof filesToShowAtom> = useUpdateAtom(
+    filesToShowAtom,
+    SYMBOL_DERIVED_VALUES_ATOMS_SCOPE,
+  );
+  const setSelectedFiles: SyncSetAtom<typeof selectedFilesAtom> = useUpdateAtom(
+    selectedFilesAtom,
+    SYMBOL_DERIVED_VALUES_ATOMS_SCOPE,
+  );
 
   React.useEffect(() => {
     setExplorerId(explorerId);
@@ -258,14 +273,18 @@ export function useFileToRename() {
 }
 
 export function useSetFilterInput() {
-  return useUpdateAtom(filterInputAtom, SYMBOL_STATE_ATOMS_SCOPE);
+  const setFilterInput: SyncSetAtom<typeof filterInputAtom> = useUpdateAtom(
+    filterInputAtom,
+    SYMBOL_STATE_ATOMS_SCOPE,
+  );
+  return setFilterInput;
 }
 
 export function useSetIdsOfSelectedFiles() {
   const setSelection = useUpdateAtom(selectionAtom, SYMBOL_STATE_ATOMS_SCOPE);
   const setIdsOfSelectedFiles = React.useCallback(
     (newIds: string[]) => {
-      setSelection((oldState) => ({
+      void setSelection((oldState) => ({
         idsOfSelectedFiles: newIds,
         fileIdSelectionGotStartedWith:
           newIds.length === 1 ? newIds[0] : oldState.fileIdSelectionGotStartedWith,
@@ -277,5 +296,9 @@ export function useSetIdsOfSelectedFiles() {
 }
 
 export function useSetFileToRenameId() {
-  return useUpdateAtom(fileToRenameIdAtom, SYMBOL_STATE_ATOMS_SCOPE);
+  const setFileToRenameId: SyncSetAtom<typeof fileToRenameIdAtom> = useUpdateAtom(
+    fileToRenameIdAtom,
+    SYMBOL_STATE_ATOMS_SCOPE,
+  );
+  return setFileToRenameId;
 }

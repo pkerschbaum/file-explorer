@@ -138,9 +138,9 @@ export const useFileProviderFiles = (explorerId: string): FilesLoadingResult => 
         return;
       }
 
-      async function doPreloadContents() {
+      const doPreloadContents = async () => {
         await Promise.all(
-          filesQueryWithMetadataData!
+          filesQueryWithMetadataData
             .filter((file) => file.fileType === FILE_TYPE.DIRECTORY)
             .filter((file) => {
               const cachedQueryData = queryClient.getQueryData(
@@ -180,7 +180,7 @@ export const useFileProviderFiles = (explorerId: string): FilesLoadingResult => 
               );
             }),
         );
-      }
+      };
 
       let preloadingIsNotNeccessaryAnymore = false;
       requestIdleCallback(() => {

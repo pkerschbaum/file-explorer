@@ -10,7 +10,7 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
-    "lint": "eslint ."
+    "lint": "eslint --max-warnings 0 ."
   },
   "keywords": [],
   "author": {
@@ -18,6 +18,11 @@
     "email": "patrick.kerschbaum@gmail.com"
   },
   "license": "MIT",
+  "engines": {
+    "node": "^14.18.0",
+    "npm": "^6.14.15",
+    "yarn": "^1.22.15"
+  },
   "config": {
     "forge": {
       "packagerConfig": {},
@@ -81,10 +86,16 @@
     "copy-webpack-plugin": "^9.0.1",
     "css-loader": "^6.0.0",
     "electron": "14.0.0",
-    "eslint": "^8.0.0",
+    "eslint": "^7.32.0",
+    "eslint-config-react-app": "^6.0.0",
     "eslint-plugin-import": "^2.24.2",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-react": "^7.26.1",
+    "eslint-plugin-react-hooks": "^4.2.0",
     "fork-ts-checker-webpack-plugin": "^6.0.1",
+    "husky": "^7.0.2",
+    "lint-staged": "^11.2.3",
     "node-loader": "^2.0.0",
     "prettier": "^2.4.1",
     "rimraf": "^3.0.2",

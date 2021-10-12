@@ -68,8 +68,8 @@ export const ExplorerPanel: React.FC<{ explorerId: string }> = ({ explorerId }) 
               ? `${pathPart[0].toLocaleUpperCase()}${pathPart.slice(1)}`
               : pathPart;
 
-            function handleClick() {
-              changeDirectory(
+            async function handleClick() {
+              await changeDirectory(
                 URI.joinPath(
                   cwdRootPart,
                   ...(isFirstPart ? ['/'] : cwdStringifiedParts.slice(1, idx + 1)),
@@ -175,16 +175,16 @@ const FilesTableRow: React.FC<FilesTableRowProps> = ({
         const icon = await nativeHost.getNativeFileIconDataURL({ fsPath });
         setNativeIconDataURL(icon);
       }
-      doFetchIcon();
+      void doFetchIcon();
     },
-    [fsPath, extension],
+    [fsPath, extension, nativeHost],
   );
 
-  function openFileOrDirectory(file: FileForUI) {
+  async function openFileOrDirectory(file: FileForUI) {
     if (file.fileType === FILE_TYPE.DIRECTORY) {
-      changeDirectory(file.uri.path);
+      await changeDirectory(file.uri.path);
     } else {
-      openFile(file.uri);
+      await openFile(file.uri);
     }
   }
 
@@ -310,11 +310,6 @@ const RenameInput: React.FC<RenameInputProps> = ({ file, onSubmit, abortRename }
         onSubmit(value);
       }}
       onBlur={abortRename}
-      onKeyDown={(e) => {
-        if (e.key === KEYS.ESC) {
-          abortRename();
-        }
-      }}
     >
       <TextField
         fullWidth
@@ -322,6 +317,11 @@ const RenameInput: React.FC<RenameInputProps> = ({ file, onSubmit, abortRename }
         label="Rename"
         value={value}
         onChange={(e) => setValue(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === KEYS.ESC) {
+            abortRename();
+          }
+        }}
       />
     </form>
   );

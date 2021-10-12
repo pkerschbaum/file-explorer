@@ -35,6 +35,7 @@ declare module '@mui/material/styles' {
 }
 
 declare module '@emotion/react' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface -- emotion's Theme should have the same properties as that of MUI, no more. That's why it's empty (besides the "extends" clause)
   export interface Theme extends MuiTheme {}
   type ThemeOptions = MuiThemeOptions;
 }

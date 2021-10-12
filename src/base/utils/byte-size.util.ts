@@ -20,6 +20,7 @@ const units = [
 ] as const;
 
 function probe(numberOfBytes: number) {
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   return units.find((unit) => numberOfBytes >= unit.from && numberOfBytes < unit.to)!;
 }
 
@@ -28,6 +29,7 @@ function transform(numberOfBytes: number, unit: ByteUnit): number {
     return numberOfBytes;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const unitToApply = units.find((unit2) => unit2.unit === unit)!;
 
   if (unitToApply.from === 0) {
