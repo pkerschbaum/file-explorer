@@ -6,16 +6,14 @@ import type { ProgressCbArgs } from 'code-oss-file-service/out/vs/base/common/re
 import { CancellationTokenSource } from 'code-oss-file-service/out/vs/base/common/cancellation';
 import { IFileStatWithMetadata } from 'code-oss-file-service/out/vs/platform/files/common/files';
 
-import { actions } from '@app/global-state/file-provider/file-provider.slice';
+import { actions } from '@app/global-state/slices/processes.slice';
 import { useNexClipboard } from '@app/ui/NexClipboard.context';
 import { useNexFileSystem } from '@app/ui/NexFileSystem.context';
 import { useNexNativeHost } from '@app/ui/NexNativeHost.context';
 import { useNexStorage } from '@app/ui/NexStorage.context';
 import { useDispatch } from '@app/global-state/store';
-import {
-  useFileProviderProcesses,
-  useRefreshFiles,
-} from '@app/global-state/file-provider/file-provider.hooks';
+import { useRefreshFiles } from '@app/global-state/slices/explorers.hooks';
+import { useProcesses } from '@app/global-state/slices/processes.hooks';
 import {
   DeleteProcess,
   DELETE_PROCESS_STATUS,
@@ -52,7 +50,7 @@ export function useScheduleMoveFilesToTrash() {
 
 export function useRunDeleteProcess() {
   const dispatch = useDispatch();
-  const processes = useFileProviderProcesses();
+  const processes = useProcesses();
 
   const fileSystem = useNexFileSystem();
 

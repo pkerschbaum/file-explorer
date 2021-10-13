@@ -2,8 +2,11 @@ import { configureStore } from '@reduxjs/toolkit';
 import { createSelectorHook, useDispatch as useReduxDispatch } from 'react-redux';
 
 import { numbers } from '@app/base/utils/numbers.util';
+import { typedPath } from '@app/base/utils/types.util';
 import loggerMiddleware from '@app/global-state/logger.middleware';
 import rootReducer from '@app/global-state/reducers';
+
+export type RootState = ReturnType<typeof rootReducer>;
 
 /*
  * @reduxjs/toolkit does not allow to specifiy ignoredPaths for the serializable- and immutablechecks.
@@ -13,8 +16,9 @@ import rootReducer from '@app/global-state/reducers';
  */
 const ignoredPaths = numbers
   .sequence({ fromInclusive: 0, toInclusive: 999 })
-  .map((num) => `fileProvider.processes.${num}.cancellationTokenSource`);
-
+  .map((num) =>
+    typedPath<RootState>()('processesSlice', 'processes', num, 'cancellationTokenSource'),
+  );
 export const store = configureStore({
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) => [
@@ -31,7 +35,6 @@ export const store = configureStore({
   ],
 });
 
-export type RootState = ReturnType<typeof rootReducer>;
 export type RootStore = typeof store;
 export type AppDispatch = RootStore['dispatch'];
 

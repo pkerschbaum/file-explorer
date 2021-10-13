@@ -16,7 +16,7 @@ import { Row } from '@app/ui/elements/DataTable/Row';
 import { TableBody } from '@app/ui/elements/DataTable/TableBody';
 import { TableHead } from '@app/ui/elements/DataTable/TableHead';
 import { useNexNativeHost } from '@app/ui/NexNativeHost.context';
-import { FileForUI, useFileProviderCwd } from '@app/global-state/file-provider/file-provider.hooks';
+import { FileForUI, useCwd } from '@app/global-state/slices/explorers.hooks';
 import { useOpenFile, useRemoveTags, useRenameFile } from '@app/operations/file.hooks';
 import { useChangeDirectory } from '@app/operations/explorer.hooks';
 import {
@@ -39,7 +39,7 @@ import { ExplorerActions } from '@app/ui/explorer-actions/ExplorerActions';
 const USE_NATIVE_ICON_FOR_REGEX = /(?:exe|ico|dll)/i;
 
 export const ExplorerPanel: React.FC<{ explorerId: string }> = ({ explorerId }) => {
-  const cwd = useFileProviderCwd(explorerId);
+  const cwd = useCwd(explorerId);
   const dataAvailable = useDataAvailable();
   const { changeDirectory } = useChangeDirectory(explorerId);
 

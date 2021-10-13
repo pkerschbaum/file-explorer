@@ -17,11 +17,8 @@ import { Stack } from '@app/ui/layouts/Stack';
 import { TextBox } from '@app/ui/elements/TextBox';
 import { AddTag } from '@app/ui/explorer-actions/AddTag';
 import { CreateFolder } from '@app/ui/explorer-actions/CreateFolder';
-import {
-  useFileProviderCwd,
-  useFileProviderDraftPasteState,
-  useFileProviderFocusedExplorerId,
-} from '@app/global-state/file-provider/file-provider.hooks';
+import { useCwd, useFocusedExplorerId } from '@app/global-state/slices/explorers.hooks';
+import { useDraftPasteState } from '@app/global-state/slices/processes.hooks';
 import {
   useAddTags,
   useCutOrCopyFiles,
@@ -56,7 +53,7 @@ const EXPLORER_FILTER_INPUT_ID = 'explorer-filter-input';
 
 export const ExplorerActions: React.FC = () => {
   const explorerId = useExplorerId();
-  const focusedExplorerId = useFileProviderFocusedExplorerId();
+  const focusedExplorerId = useFocusedExplorerId();
 
   if (explorerId !== focusedExplorerId) {
     return null;
@@ -67,9 +64,9 @@ export const ExplorerActions: React.FC = () => {
 
 const ExplorerActionsImpl: React.FC = () => {
   const explorerId = useExplorerId();
-  const cwd = useFileProviderCwd(explorerId);
+  const cwd = useCwd(explorerId);
   const filesToShow = useFilesToShow();
-  const draftPasteState = useFileProviderDraftPasteState();
+  const draftPasteState = useDraftPasteState();
   const idsOfSelectedFiles = useIdsOfSelectedFiles();
   const setIdsOfSelectedFiles = useSetIdsOfSelectedFiles();
   const selectedFiles = useSelectedFiles();
@@ -455,7 +452,7 @@ const FilterInput: React.FC<FilterInputProps> = ({ filterInputRef }) => {
 
 const PasteInfoBadge: React.FC = () => {
   const clipboardResources = useClipboardResources();
-  const draftPasteState = useFileProviderDraftPasteState();
+  const draftPasteState = useDraftPasteState();
 
   if (draftPasteState === undefined || clipboardResources.length === 0) {
     return null;

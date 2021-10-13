@@ -1,6 +1,5 @@
 import { createAction, createReducer } from '@reduxjs/toolkit';
 
-import * as uuid from 'code-oss-file-service/out/vs/base/common/uuid';
 import { UriComponents } from 'code-oss-file-service/out/vs/base/common/uri';
 import { CancellationTokenSource } from 'code-oss-file-service/out/vs/base/common/cancellation';
 
@@ -14,36 +13,11 @@ import {
 } from '@app/domain/types';
 import { arrays } from '@app/base/utils/arrays.util';
 
-export type FileProviderState = {
-  explorers: {
-    [id: string]: {
-      cwd: UriComponents;
-      scheduledToRemove?: boolean;
-    };
-  };
-  focusedExplorerId?: string;
+export type ProcessesSliceState = {
   draftPasteState?: {
     pasteShouldMove: boolean;
   };
   processes: Process[];
-};
-
-type AddExplorerPayload = {
-  explorerId: string;
-  cwd: UriComponents;
-};
-
-type RemoveExplorerPayload = {
-  explorerId: string;
-};
-
-type ChangeCwdPayload = {
-  explorerId: string;
-  newCwd: UriComponents;
-};
-
-type ChangeFocusedExplorerPayload = {
-  explorerId: string;
 };
 
 type CutOrCopyFilesPayload = {
@@ -97,19 +71,13 @@ type RemoveProcessPayload = {
   id: string;
 };
 
-const INITIAL_STATE: FileProviderState = {
-  explorers: {},
+const INITIAL_STATE: ProcessesSliceState = {
   processes: [],
 };
 
-const logger = createLogger('file-provider.slice');
+const logger = createLogger('processes.slice');
 
 export const actions = {
-  addExplorer: createAction<AddExplorerPayload>('EXPLORER_ADDED'),
-  markExplorerForRemoval: createAction<RemoveExplorerPayload>('EXPLORER_MARKED_FOR_REMOVAL'),
-  removeExplorer: createAction<RemoveExplorerPayload>('EXPLORER_REMOVED'),
-  changeCwd: createAction<ChangeCwdPayload>('CWD_CHANGED'),
-  changeFocusedExplorer: createAction<ChangeFocusedExplorerPayload>('FOCUSED_EXPLORER_CHANGED'),
   cutOrCopyFiles: createAction<CutOrCopyFilesPayload>('FILES_CUT_OR_COPIED'),
   addPasteProcess: createAction<AddPasteProcessPayload>('PASTE_PROCESS_ADDED'),
   updatePasteProcess: createAction<UpdatePasteProcessPayload>('PASTE_PROCESS_UPDATED'),
@@ -120,67 +88,6 @@ export const actions = {
 };
 export const reducer = createReducer(INITIAL_STATE, (builder) =>
   builder
-    .addCase(actions.addExplorer, (state, action) => {
-      const { explorerId, cwd } = action.payload;
-
-      if (isExplorerIdPresent(state, explorerId)) {
-        throw new Error(
-          `event "EXPLORER_ADDED" must be dispatched with a new, unused explorerId, ` +
-            `but given explorerId is already used! explorerId=${explorerId}`,
-        );
-      }
-
-      state.explorers[explorerId] = { cwd };
-      if (state.focusedExplorerId === undefined) {
-        state.focusedExplorerId = explorerId;
-      }
-    })
-    .addCase(actions.markExplorerForRemoval, (state, action) => {
-      const { explorerId } = action.payload;
-
-      state.explorers[explorerId].scheduledToRemove = true;
-
-      if (explorerId === state.focusedExplorerId) {
-        // focused explorer got removed --> focus another explorer
-
-        const activeExplorer = Object.entries(state.explorers)
-          .map(([explorerId, value]) => ({ explorerId, ...value }))
-          .find((explorer) => !explorer.scheduledToRemove);
-
-        if (activeExplorer !== undefined) {
-          state.focusedExplorerId = activeExplorer.explorerId;
-        }
-      }
-    })
-    .addCase(actions.removeExplorer, (state, action) => {
-      const { explorerId } = action.payload;
-
-      delete state.explorers[explorerId];
-    })
-    .addCase(actions.changeCwd, (state, action) => {
-      const { explorerId, newCwd } = action.payload;
-
-      if (!isExplorerIdPresent(state, explorerId)) {
-        throw new Error(
-          `event must be dispatched with an existing explorerId, ` +
-            `but given explorerId is not present in state! explorerId=${explorerId}`,
-        );
-      }
-
-      state.explorers[explorerId] = { cwd: newCwd };
-    })
-    .addCase(actions.changeFocusedExplorer, (state, action) => {
-      const { explorerId } = action.payload;
-
-      if (!isExplorerIdPresent(state, explorerId)) {
-        throw new Error(
-          `event must be dispatched with an existing explorerId, ` +
-            `but given explorerId is not present in state! explorerId=${explorerId}`,
-        );
-      }
-
-      state.focusedExplorerId = explorerId;
-    })
     .addCase(actions.cutOrCopyFiles, (state, action) => {
       state.draftPasteState = { pasteShouldMove: action.payload.cut };
     })
@@ -280,13 +187,3 @@ export const reducer = createReducer(INITIAL_STATE, (builder) =>
       state.draftPasteState = undefined;
     }),
 );
-
-export function generateExplorerId() {
-  return uuid.generateUuid();
-}
-
-function isExplorerIdPresent(state: FileProviderState, explorerId: string): boolean {
-  return !!Object.keys(state.explorers).find(
-    (existingExplorerId) => existingExplorerId === explorerId,
-  );
-}

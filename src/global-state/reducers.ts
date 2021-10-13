@@ -1,7 +1,11 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { reducer as fileProviderReducer } from '@app/global-state/file-provider/file-provider.slice';
+import { reducer as explorersReducer } from '@app/global-state/slices/explorers.slice';
+import { reducer as processesReducer } from '@app/global-state/slices/processes.slice';
 
-const rootReducer = combineReducers({ fileProvider: fileProviderReducer });
+const rootReducer = combineReducers({
+  explorersSlice: explorersReducer,
+  processesSlice: processesReducer,
+});
 
 export default rootReducer;

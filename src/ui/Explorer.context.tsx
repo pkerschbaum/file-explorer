@@ -7,10 +7,7 @@ import { arrays } from '@app/base/utils/arrays.util';
 import { strings } from '@app/base/utils/strings.util';
 import { FILE_TYPE } from '@app/domain/types';
 import { useGetTagsOfFile } from '@app/operations/file.hooks';
-import {
-  FileForUI,
-  useFileProviderFiles,
-} from '@app/global-state/file-provider/file-provider.hooks';
+import { FileForUI, useFilesForUI } from '@app/global-state/slices/explorers.hooks';
 import { scopedAtom, SyncSetAtom, usePrevious, useScopedAtom } from '@app/ui/utils/react.util';
 
 const filterInputAtom = scopedAtom<string>();
@@ -61,7 +58,7 @@ const StateAtomsContainer: React.FC<ExplorerContextProviderProps> = (props) => {
   const [filterInput] = useScopedAtom(filterInputAtom, SYMBOL_STATE_ATOMS_SCOPE);
   const [selection, setSelection] = useScopedAtom(selectionAtom, SYMBOL_STATE_ATOMS_SCOPE);
 
-  const { files, dataAvailable } = useFileProviderFiles(explorerId);
+  const { files, dataAvailable } = useFilesForUI(explorerId);
   const { getTagsOfFile } = useGetTagsOfFile();
 
   const setIdsOfSelectedFiles = React.useCallback(

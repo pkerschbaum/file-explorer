@@ -8,44 +8,26 @@ import { createLogger } from '@app/base/logger/logger';
 import { useNexFileIconTheme } from '@app/ui/NexFileIconTheme.context';
 import { useNexFileSystem } from '@app/ui/NexFileSystem.context';
 import { useSelector } from '@app/global-state/store';
-import { File, FILE_TYPE, PASTE_PROCESS_STATUS, PROCESS_TYPE, Tag } from '@app/domain/types';
+import { File, FILE_TYPE, Tag } from '@app/domain/types';
 import { mapFileStatToFile, NexFileSystem } from '@app/platform/file-system';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { objects } from '@app/base/utils/objects.util';
 
-const logger = createLogger('file-provider.hooks');
+const logger = createLogger('explorers.hooks');
 
-export const useFileProviderExplorers = () =>
-  Object.entries(useSelector((state) => state.fileProvider.explorers)).map(
+export const useExplorers = () =>
+  Object.entries(useSelector((state) => state.explorersSlice.explorers)).map(
     ([explorerId, value]) => ({
       explorerId,
       ...value,
     }),
   );
 
-export const useFileProviderCwd = (explorerId: string) =>
-  useSelector((state) => state.fileProvider.explorers[explorerId].cwd);
+export const useCwd = (explorerId: string) =>
+  useSelector((state) => state.explorersSlice.explorers[explorerId].cwd);
 
-export const useFileProviderFocusedExplorerId = () =>
-  useSelector((state) => state.fileProvider.focusedExplorerId);
-
-export const useFileProviderDraftPasteState = () =>
-  useSelector((state) => state.fileProvider.draftPasteState);
-
-export const useFileProviderProcesses = () =>
-  useSelector((state) => state.fileProvider.processes).map((process) => {
-    if (process.type === PROCESS_TYPE.PASTE) {
-      return {
-        ...process,
-        bytesProcessed:
-          process.status === PASTE_PROCESS_STATUS.SUCCESS
-            ? process.totalSize
-            : process.bytesProcessed,
-      };
-    }
-
-    return process;
-  });
+export const useFocusedExplorerId = () =>
+  useSelector((state) => state.explorersSlice.focusedExplorerId);
 
 export const QUERY_KEYS = {
   FILES: (directory: string, options: { resolveMetadata?: boolean }) => [
@@ -119,12 +101,12 @@ type FilesLoadingResult =
       dataAvailable: true;
       files: FileForUI[];
     };
-export const useFileProviderFiles = (explorerId: string): FilesLoadingResult => {
+export const useFilesForUI = (explorerId: string): FilesLoadingResult => {
   const fileSystem = useNexFileSystem();
   const fileIconTheme = useNexFileIconTheme();
   const queryClient = useQueryClient();
 
-  const cwd = useSelector((state) => state.fileProvider.explorers[explorerId].cwd);
+  const cwd = useCwd(explorerId);
   const { data: filesQueryWithMetadataData, isFetching: filesQueryWithMetadataIsFetching } =
     useFiles({ directory: cwd, resolveMetadata: true });
   const { data: filesQueryWithoutMetadataData } = useFiles(

@@ -9,7 +9,8 @@ import { CancellationTokenSource } from 'code-oss-file-service/out/vs/base/commo
 import { Schemas } from 'code-oss-file-service/out/vs/base/common/network';
 import { IFileStat } from 'code-oss-file-service/out/vs/platform/files/common/files';
 
-import { actions } from '@app/global-state/file-provider/file-provider.slice';
+import { actions as explorerActions } from '@app/global-state/slices/explorers.slice';
+import { actions as processesActions } from '@app/global-state/slices/processes.slice';
 import { useNexFileSystem } from '@app/ui/NexFileSystem.context';
 import { useNexNativeHost } from '@app/ui/NexNativeHost.context';
 import { useClipboardResources } from '@app/ui/NexClipboard.context';
@@ -17,11 +18,8 @@ import { useDispatch } from '@app/global-state/store';
 import { PASTE_PROCESS_STATUS } from '@app/domain/types';
 import { createLogger } from '@app/base/logger/logger';
 import { CustomError } from '@app/base/custom-error';
-import {
-  useFileProviderCwd,
-  useFileProviderDraftPasteState,
-  useRefreshFiles,
-} from '@app/global-state/file-provider/file-provider.hooks';
+import { useCwd, useRefreshFiles } from '@app/global-state/slices/explorers.hooks';
+import { useDraftPasteState } from '@app/global-state/slices/processes.hooks';
 import {
   executeCopyOrMove,
   useAddTags,
@@ -60,7 +58,7 @@ export function useChangeDirectory(explorerId: string) {
 
     // change to the new directory and reload files
     const newCwd = parsedUri.toJSON();
-    dispatch(actions.changeCwd({ explorerId, newCwd }));
+    dispatch(explorerActions.changeCwd({ explorerId, newCwd }));
     await refreshFiles(newCwd);
   }
 
@@ -71,8 +69,8 @@ export function useChangeDirectory(explorerId: string) {
 
 export function usePasteFiles(explorerId: string) {
   const dispatch = useDispatch();
-  const cwd = useFileProviderCwd(explorerId);
-  const draftPasteState = useFileProviderDraftPasteState();
+  const cwd = useCwd(explorerId);
+  const draftPasteState = useDraftPasteState();
 
   const fileSystem = useNexFileSystem();
   const clipboardResources = useClipboardResources();
@@ -94,11 +92,11 @@ export function usePasteFiles(explorerId: string) {
     const cancellationTokenSource = new CancellationTokenSource();
 
     // clear draft paste state (neither cut&paste nor copy&paste is designed to be repeatable)
-    dispatch(actions.clearDraftPasteState());
+    dispatch(processesActions.clearDraftPasteState());
 
     // add the paste process about to start
     dispatch(
-      actions.addPasteProcess({
+      processesActions.addPasteProcess({
         id,
         pasteShouldMove: draftPasteState.pasteShouldMove,
         sourceUris: clipboardResources.map((resource) => resource.toJSON()),
@@ -109,7 +107,9 @@ export function usePasteFiles(explorerId: string) {
 
     // register listener on cancellation token so that if cancellation gets requested, "ABORT_REQUESTED" state gets dispatched
     cancellationTokenSource.token.onCancellationRequested(() => {
-      dispatch(actions.updatePasteProcess({ id, status: PASTE_PROCESS_STATUS.ABORT_REQUESTED }));
+      dispatch(
+        processesActions.updatePasteProcess({ id, status: PASTE_PROCESS_STATUS.ABORT_REQUESTED }),
+      );
     });
 
     // for each file/folder to paste, check for some required conditions and prepare target URI
@@ -152,7 +152,9 @@ export function usePasteFiles(explorerId: string) {
 
     // if cancellation was requested in the meantime, abort paste process
     if (cancellationTokenSource.token.isCancellationRequested) {
-      dispatch(actions.updatePasteProcess({ id, status: PASTE_PROCESS_STATUS.ABORT_SUCCESS }));
+      dispatch(
+        processesActions.updatePasteProcess({ id, status: PASTE_PROCESS_STATUS.ABORT_SUCCESS }),
+      );
       return;
     }
 
@@ -179,12 +181,14 @@ export function usePasteFiles(explorerId: string) {
 
     // if cancellation was requested in the meantime, abort paste process
     if (cancellationTokenSource.token.isCancellationRequested) {
-      dispatch(actions.updatePasteProcess({ id, status: PASTE_PROCESS_STATUS.ABORT_SUCCESS }));
+      dispatch(
+        processesActions.updatePasteProcess({ id, status: PASTE_PROCESS_STATUS.ABORT_SUCCESS }),
+      );
       return;
     }
 
     dispatch(
-      actions.updatePasteProcess({
+      processesActions.updatePasteProcess({
         id,
         status: PASTE_PROCESS_STATUS.RUNNING_PERFORMING_PASTE,
         totalSize,
@@ -193,7 +197,10 @@ export function usePasteFiles(explorerId: string) {
       }),
     );
     dispatch(
-      actions.updatePasteProcess({ id, status: PASTE_PROCESS_STATUS.RUNNING_PERFORMING_PASTE }),
+      processesActions.updatePasteProcess({
+        id,
+        status: PASTE_PROCESS_STATUS.RUNNING_PERFORMING_PASTE,
+      }),
     );
 
     // perform paste
@@ -209,7 +216,7 @@ export function usePasteFiles(explorerId: string) {
     }
     const intervalId = setInterval(function dispatchProgress() {
       dispatch(
-        actions.updatePasteProcess({
+        processesActions.updatePasteProcess({
           id,
           bytesProcessed,
           progressOfAtLeastOneSourceIsIndeterminate,
@@ -237,13 +244,15 @@ export function usePasteFiles(explorerId: string) {
       );
 
       if (!cancellationTokenSource.token.isCancellationRequested) {
-        dispatch(actions.updatePasteProcess({ id, status: PASTE_PROCESS_STATUS.SUCCESS }));
+        dispatch(processesActions.updatePasteProcess({ id, status: PASTE_PROCESS_STATUS.SUCCESS }));
       } else {
-        dispatch(actions.updatePasteProcess({ id, status: PASTE_PROCESS_STATUS.ABORT_SUCCESS }));
+        dispatch(
+          processesActions.updatePasteProcess({ id, status: PASTE_PROCESS_STATUS.ABORT_SUCCESS }),
+        );
       }
     } catch (err: unknown) {
       dispatch(
-        actions.updatePasteProcess({
+        processesActions.updatePasteProcess({
           id,
           status: PASTE_PROCESS_STATUS.FAILURE,
           error: err instanceof Error ? err.message : `Unknown error occured`,
@@ -261,7 +270,7 @@ export function usePasteFiles(explorerId: string) {
 }
 
 export function useCreateFolder(explorerId: string) {
-  const cwd = useFileProviderCwd(explorerId);
+  const cwd = useCwd(explorerId);
 
   const fileSystem = useNexFileSystem();
 
@@ -282,7 +291,7 @@ export function useCreateFolder(explorerId: string) {
 }
 
 export function useRevealCwdInOSExplorer(explorerId: string) {
-  const cwd = useFileProviderCwd(explorerId);
+  const cwd = useCwd(explorerId);
 
   const nativeHost = useNexNativeHost();
 

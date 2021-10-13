@@ -2,7 +2,7 @@ import { Schemas } from 'code-oss-file-service/out/vs/base/common/network';
 
 import { useNexFileSystem } from '@app/ui/NexFileSystem.context';
 import { useDispatch } from '@app/global-state/store';
-import { actions, generateExplorerId } from '@app/global-state/file-provider/file-provider.slice';
+import { actions, generateExplorerId } from '@app/global-state/slices/explorers.slice';
 import { uriHelper } from '@app/base/utils/uri-helper';
 
 export function useAddExplorerPanel() {

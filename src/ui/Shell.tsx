@@ -8,11 +8,8 @@ import { commonStyles } from '@app/ui/Common.styles';
 import { Stack } from '@app/ui/layouts/Stack';
 import { ExplorerPanelContainer } from '@app/ui/ExplorerPanelContainer';
 import { ProcessCard } from '@app/ui/process/ProcessCard';
-import {
-  useFileProviderExplorers,
-  useFileProviderFocusedExplorerId,
-  useFileProviderProcesses,
-} from '@app/global-state/file-provider/file-provider.hooks';
+import { useExplorers, useFocusedExplorerId } from '@app/global-state/slices/explorers.hooks';
+import { useProcesses } from '@app/global-state/slices/processes.hooks';
 import {
   useAddExplorerPanel,
   useChangeFocusedExplorer,
@@ -26,9 +23,9 @@ import { arrays } from '@app/base/utils/arrays.util';
 import { objects } from '@app/base/utils/objects.util';
 
 export const Shell: React.FC = () => {
-  const explorers = useFileProviderExplorers();
-  const focusedExplorerId = useFileProviderFocusedExplorerId();
-  const processes = useFileProviderProcesses();
+  const explorers = useExplorers();
+  const focusedExplorerId = useFocusedExplorerId();
+  const processes = useProcesses();
 
   const { addExplorerPanel } = useAddExplorerPanel();
   const { changeFocusedExplorer } = useChangeFocusedExplorer();
