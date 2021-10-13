@@ -8,11 +8,8 @@ import { URI } from 'code-oss-file-service/out/vs/base/common/uri';
 
 import { Stack } from '@app/ui/layouts/Stack';
 import { TextBox } from '@app/ui/elements/TextBox';
-import {
-  DeleteProcess as DeleteProcessType,
-  DELETE_PROCESS_STATUS,
-} from '@app/platform/file-types';
-import { useRemoveProcess, useRunDeleteProcess } from '@app/platform/file.hooks';
+import { DeleteProcess as DeleteProcessType, DELETE_PROCESS_STATUS } from '@app/domain/types';
+import { useRemoveProcess, useRunDeleteProcess } from '@app/operations/file.hooks';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { formatter } from '@app/base/utils/formatter.util';
 import { assertUnreachable } from '@app/base/utils/types.util';

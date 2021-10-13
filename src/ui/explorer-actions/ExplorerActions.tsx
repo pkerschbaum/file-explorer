@@ -21,20 +21,20 @@ import {
   useFileProviderCwd,
   useFileProviderDraftPasteState,
   useFileProviderFocusedExplorerId,
-} from '@app/platform/store/file-provider/file-provider.hooks';
+} from '@app/global-state/file-provider/file-provider.hooks';
 import {
   useAddTags,
   useCutOrCopyFiles,
   useOpenFile,
   useScheduleMoveFilesToTrash,
-} from '@app/platform/file.hooks';
+} from '@app/operations/file.hooks';
 import {
   useChangeDirectory,
   useCreateFolder,
   usePasteFiles,
   useRevealCwdInOSExplorer,
-} from '@app/platform/explorer.hooks';
-import { useAddTag, useGetTags, useRemoveTags } from '@app/platform/tag.hooks';
+} from '@app/operations/explorer.hooks';
+import { useAddTag, useGetTags, useRemoveTags } from '@app/operations/tag.hooks';
 import {
   useExplorerId,
   useFileIdSelectionGotStartedWith,
@@ -47,7 +47,7 @@ import {
   useSetIdsOfSelectedFiles,
 } from '@app/ui/Explorer.context';
 import { useClipboardResources } from '@app/ui/NexClipboard.context';
-import { FILE_TYPE } from '@app/platform/file-types';
+import { FILE_TYPE } from '@app/domain/types';
 import { KEYS, MOUSE_BUTTONS } from '@app/ui/constants';
 import { useWindowEvent } from '@app/ui/utils/react.util';
 import { functions } from '@app/base/utils/functions.util';

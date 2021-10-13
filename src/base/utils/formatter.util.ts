@@ -1,6 +1,6 @@
 import { byteSize, ByteUnit } from '@app/base/utils/byte-size.util';
 import { numbers } from '@app/base/utils/numbers.util';
-import { i18n } from '@app/base/domain/i18n';
+import { i18n } from '@app/domain/i18n';
 
 export const formatter = { bytes, file };
 

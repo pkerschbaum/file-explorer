@@ -9,26 +9,26 @@ import { CancellationTokenSource } from 'code-oss-file-service/out/vs/base/commo
 import { Schemas } from 'code-oss-file-service/out/vs/base/common/network';
 import { IFileStat } from 'code-oss-file-service/out/vs/platform/files/common/files';
 
-import { actions } from '@app/platform/store/file-provider/file-provider.slice';
+import { actions } from '@app/global-state/file-provider/file-provider.slice';
 import { useNexFileSystem } from '@app/ui/NexFileSystem.context';
 import { useNexNativeHost } from '@app/ui/NexNativeHost.context';
 import { useClipboardResources } from '@app/ui/NexClipboard.context';
-import { useDispatch } from '@app/platform/store/store';
-import { PASTE_PROCESS_STATUS } from '@app/platform/file-types';
+import { useDispatch } from '@app/global-state/store';
+import { PASTE_PROCESS_STATUS } from '@app/domain/types';
 import { createLogger } from '@app/base/logger/logger';
 import { CustomError } from '@app/base/custom-error';
 import {
   useFileProviderCwd,
   useFileProviderDraftPasteState,
   useRefreshFiles,
-} from '@app/platform/store/file-provider/file-provider.hooks';
+} from '@app/global-state/file-provider/file-provider.hooks';
 import {
   executeCopyOrMove,
   useAddTags,
   useGetTagsOfFile,
   useRemoveTags,
   useResolveDeep,
-} from '@app/platform/file.hooks';
+} from '@app/operations/file.hooks';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { objects } from '@app/base/utils/objects.util';
 
@@ -37,7 +37,6 @@ const logger = createLogger('explorer.hooks');
 
 export function useChangeDirectory(explorerId: string) {
   const dispatch = useDispatch();
-  const cwd = useFileProviderCwd(explorerId);
 
   const fileSystem = useNexFileSystem();
 
@@ -62,7 +61,7 @@ export function useChangeDirectory(explorerId: string) {
     // change to the new directory and reload files
     const newCwd = parsedUri.toJSON();
     dispatch(actions.changeCwd({ explorerId, newCwd }));
-    await refreshFiles(cwd);
+    await refreshFiles(newCwd);
   }
 
   return {

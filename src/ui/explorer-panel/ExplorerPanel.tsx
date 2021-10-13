@@ -16,12 +16,9 @@ import { Row } from '@app/ui/elements/DataTable/Row';
 import { TableBody } from '@app/ui/elements/DataTable/TableBody';
 import { TableHead } from '@app/ui/elements/DataTable/TableHead';
 import { useNexNativeHost } from '@app/ui/NexNativeHost.context';
-import {
-  FileForUI,
-  useFileProviderCwd,
-} from '@app/platform/store/file-provider/file-provider.hooks';
-import { useOpenFile, useRemoveTags, useRenameFile } from '@app/platform/file.hooks';
-import { useChangeDirectory } from '@app/platform/explorer.hooks';
+import { FileForUI, useFileProviderCwd } from '@app/global-state/file-provider/file-provider.hooks';
+import { useOpenFile, useRemoveTags, useRenameFile } from '@app/operations/file.hooks';
+import { useChangeDirectory } from '@app/operations/explorer.hooks';
 import {
   useDataAvailable,
   useExplorerId,
@@ -32,7 +29,7 @@ import {
   useSetFileToRenameId,
   useSetIdsOfSelectedFiles,
 } from '@app/ui/Explorer.context';
-import { FILE_TYPE } from '@app/platform/file-types';
+import { FILE_TYPE } from '@app/domain/types';
 import { KEYS } from '@app/ui/constants';
 import { strings } from '@app/base/utils/strings.util';
 import { formatter } from '@app/base/utils/formatter.util';

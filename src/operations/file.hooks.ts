@@ -6,28 +6,28 @@ import type { ProgressCbArgs } from 'code-oss-file-service/out/vs/base/common/re
 import { CancellationTokenSource } from 'code-oss-file-service/out/vs/base/common/cancellation';
 import { IFileStatWithMetadata } from 'code-oss-file-service/out/vs/platform/files/common/files';
 
-import { actions } from '@app/platform/store/file-provider/file-provider.slice';
+import { actions } from '@app/global-state/file-provider/file-provider.slice';
 import { useNexClipboard } from '@app/ui/NexClipboard.context';
 import { useNexFileSystem } from '@app/ui/NexFileSystem.context';
 import { useNexNativeHost } from '@app/ui/NexNativeHost.context';
 import { useNexStorage } from '@app/ui/NexStorage.context';
-import { useDispatch } from '@app/platform/store/store';
+import { useDispatch } from '@app/global-state/store';
 import {
   useFileProviderProcesses,
   useRefreshFiles,
-} from '@app/platform/store/file-provider/file-provider.hooks';
+} from '@app/global-state/file-provider/file-provider.hooks';
 import {
   DeleteProcess,
   DELETE_PROCESS_STATUS,
   FileStatMap,
   PROCESS_TYPE,
   Tag,
-} from '@app/platform/file-types';
-import { STORAGE_KEY } from '@app/platform/logic/storage';
-import { getDistinctParents, NexFileSystem } from '@app/platform/logic/file-system';
+} from '@app/domain/types';
+import { STORAGE_KEY } from '@app/platform/storage';
+import { getDistinctParents, NexFileSystem } from '@app/platform/file-system';
 import { createLogger } from '@app/base/logger/logger';
 import { CustomError } from '@app/base/custom-error';
-import * as tagHooks from '@app/platform/tag.hooks';
+import * as tagHooks from '@app/operations/tag.hooks';
 import { useRerenderOnEventFire } from '@app/ui/utils/react.util';
 import { objects } from '@app/base/utils/objects.util';
 

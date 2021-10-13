@@ -3,8 +3,8 @@ import { nanoid } from '@reduxjs/toolkit';
 
 import { createLogger } from '@app/base/logger/logger';
 import { useNexStorage } from '@app/ui/NexStorage.context';
-import { STORAGE_KEY } from '@app/platform/logic/storage';
-import { Tag } from '@app/platform/file-types';
+import { STORAGE_KEY } from '@app/platform/storage';
+import { Tag } from '@app/domain/types';
 import { useRerenderOnEventFire } from '@app/ui/utils/react.util';
 
 const logger = createLogger('tag.hooks');

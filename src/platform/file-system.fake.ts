@@ -1,7 +1,7 @@
 import { URI } from 'code-oss-file-service/out/vs/base/common/uri';
 import { IFileStatWithMetadata } from 'code-oss-file-service/out/vs/platform/files/common/files';
 
-import { NexFileSystem } from '@app/platform/logic/file-system';
+import { NexFileSystem } from '@app/platform/file-system';
 
 const fakeFileStat: IFileStatWithMetadata = {
   isDirectory: false,

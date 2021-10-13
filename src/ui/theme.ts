@@ -6,7 +6,7 @@ import {
 import { Localization } from '@mui/material/locale';
 import { css } from '@mui/styled-engine';
 
-import { DELETE_PROCESS_STATUS, PASTE_PROCESS_STATUS } from '@app/platform/file-types';
+import { DELETE_PROCESS_STATUS, PASTE_PROCESS_STATUS } from '@app/domain/types';
 
 declare module '@mui/material/styles' {
   interface Theme {

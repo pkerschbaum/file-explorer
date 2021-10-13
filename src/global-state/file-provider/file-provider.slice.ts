@@ -11,7 +11,7 @@ import {
   DeleteProcess,
   PROCESS_TYPE,
   DELETE_PROCESS_STATUS,
-} from '@app/platform/file-types';
+} from '@app/domain/types';
 import { arrays } from '@app/base/utils/arrays.util';
 
 export type FileProviderState = {

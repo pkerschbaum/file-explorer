@@ -12,12 +12,12 @@ import {
   useFileProviderExplorers,
   useFileProviderFocusedExplorerId,
   useFileProviderProcesses,
-} from '@app/platform/store/file-provider/file-provider.hooks';
+} from '@app/global-state/file-provider/file-provider.hooks';
 import {
   useAddExplorerPanel,
   useChangeFocusedExplorer,
   useRemoveExplorerPanel,
-} from '@app/platform/app.hooks';
+} from '@app/operations/app.hooks';
 import { BACKGROUND_COLOR, tabIndicatorSpanClassName } from '@app/ui/theme';
 import { KEYS } from '@app/ui/constants';
 import { useWindowEvent } from '@app/ui/utils/react.util';

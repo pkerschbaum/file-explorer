@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { URI } from 'code-oss-file-service/out/vs/base/common/uri';
 
-import { NexClipboard } from '@app/platform/logic/clipboard';
+import { NexClipboard } from '@app/platform/clipboard';
 import { createContext } from '@app/ui/utils/react.util';
 
 const context = createContext<NexClipboard>('NexClipboard');

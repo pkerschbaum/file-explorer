@@ -1,8 +1,8 @@
 import { Schemas } from 'code-oss-file-service/out/vs/base/common/network';
 
 import { useNexFileSystem } from '@app/ui/NexFileSystem.context';
-import { useDispatch } from '@app/platform/store/store';
-import { actions, generateExplorerId } from '@app/platform/store/file-provider/file-provider.slice';
+import { useDispatch } from '@app/global-state/store';
+import { actions, generateExplorerId } from '@app/global-state/file-provider/file-provider.slice';
 import { uriHelper } from '@app/base/utils/uri-helper';
 
 export function useAddExplorerPanel() {
@@ -12,7 +12,7 @@ export function useAddExplorerPanel() {
 
   async function addExplorerPanel() {
     const explorerId = generateExplorerId();
-    const parsedUri = uriHelper.parseUri(Schemas.file, '/home/pkerschbaum');
+    const parsedUri = uriHelper.parseUri(Schemas.file, 'C:/data/TEMP');
     const stats = await fileSystem.resolve(parsedUri);
     if (!stats.isDirectory) {
       throw Error(

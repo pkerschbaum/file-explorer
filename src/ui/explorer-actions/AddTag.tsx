@@ -17,7 +17,7 @@ import styled from '@mui/styled-engine';
 
 import { commonStyles } from '@app/ui/Common.styles';
 import { Stack } from '@app/ui/layouts/Stack';
-import { Tag } from '@app/platform/file-types';
+import { Tag } from '@app/domain/types';
 import { strings } from '@app/base/utils/strings.util';
 import { arrays } from '@app/base/utils/arrays.util';
 

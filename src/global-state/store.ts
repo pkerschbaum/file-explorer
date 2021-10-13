@@ -2,8 +2,8 @@ import { configureStore } from '@reduxjs/toolkit';
 import { createSelectorHook, useDispatch as useReduxDispatch } from 'react-redux';
 
 import { numbers } from '@app/base/utils/numbers.util';
-import loggerMiddleware from '@app/platform/store/logger.middleware';
-import rootReducer from '@app/platform/store/reducers';
+import loggerMiddleware from '@app/global-state/logger.middleware';
+import rootReducer from '@app/global-state/reducers';
 
 /*
  * @reduxjs/toolkit does not allow to specifiy ignoredPaths for the serializable- and immutablechecks.
@@ -37,4 +37,3 @@ export type AppDispatch = RootStore['dispatch'];
 
 export const useSelector = createSelectorHook<RootState>();
 export const useDispatch = () => useReduxDispatch<AppDispatch>();
-export const dispatch = store.dispatch;

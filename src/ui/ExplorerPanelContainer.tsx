@@ -4,7 +4,7 @@ import { URI } from 'code-oss-file-service/out/vs/base/common/uri';
 
 import { ExplorerContextProvider } from '@app/ui/Explorer.context';
 import { ExplorerPanel } from '@app/ui/explorer-panel/ExplorerPanel';
-import { useFileProviderCwd } from '@app/platform/store/file-provider/file-provider.hooks';
+import { useFileProviderCwd } from '@app/global-state/file-provider/file-provider.hooks';
 
 type ExplorerPanelContainerProps = { explorerId: string };
 

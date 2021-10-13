@@ -1,8 +1,8 @@
 import { render } from '@app/ui/Root';
-import { createNexClipboard } from '@app/platform/logic/clipboard';
-import { createNexFileSystem } from '@app/platform/logic/file-system';
-import { createNexNativeHost } from '@app/platform/logic/native-host';
-import { createNexStorage } from '@app/platform/logic/storage';
+import { createNexClipboard } from '@app/platform/clipboard';
+import { createNexFileSystem } from '@app/platform/file-system';
+import { createNexNativeHost } from '@app/platform/native-host';
+import { createNexStorage } from '@app/platform/storage';
 
 async function rendererScriptEntryPoint() {
   // wait for preload script to finish

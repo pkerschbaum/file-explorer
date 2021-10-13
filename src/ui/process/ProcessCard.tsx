@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Paper, useTheme } from '@mui/material';
 import styled from '@mui/styled-engine';
 
-import { Process, PROCESS_TYPE } from '@app/platform/file-types';
+import { Process, PROCESS_TYPE } from '@app/domain/types';
 import { PasteProcess } from '@app/ui/process/PasteProcess';
 import { DeleteProcess } from '@app/ui/process/DeleteProcess';
 import { assertUnreachable } from '@app/base/utils/types.util';

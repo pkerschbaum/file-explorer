@@ -1,6 +1,6 @@
 import { Emitter } from 'code-oss-file-service/out/vs/base/common/event';
 
-import { NexClipboard } from '@app/platform/logic/clipboard';
+import { NexClipboard } from '@app/platform/clipboard';
 import { functions } from '@app/base/utils/functions.util';
 
 export const fakeClipboard: NexClipboard = {

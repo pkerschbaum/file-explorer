@@ -5,11 +5,11 @@ import { URI } from 'code-oss-file-service/out/vs/base/common/uri';
 import { VSBuffer } from 'code-oss-file-service/out/vs/base/common/buffer';
 import { Schemas } from 'code-oss-file-service/out/vs/base/common/network';
 
-import { bootstrapModule as bootstrapFileServiceModule } from '@app/platform/logic/file-service/file-service';
+import { bootstrapModule as bootstrapFileServiceModule } from '@app/platform/file-service';
 import {
   bootstrapModule as bootstrapFileIconThemeModule,
   FileIconTheme,
-} from '@app/platform/logic/file-icon-theme/file-icon-theme';
+} from '@app/platform/file-icon-theme';
 import { FileDragStart, FILEDRAGSTART_CHANNEL } from '@app/ipc/common/file-drag-start';
 import { TRASHITEM_CHANNEL } from '@app/ipc/common/trash-item';
 import { GetNativeFileIconDataURL, NATIVEFILEICON_CHANNEL } from '@app/ipc/common/native-file-icon';

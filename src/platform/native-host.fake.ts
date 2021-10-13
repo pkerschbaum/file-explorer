@@ -1,4 +1,4 @@
-import { NexNativeHost } from '@app/platform/logic/native-host';
+import { NexNativeHost } from '@app/platform/native-host';
 
 export const fakeNativeHost: NexNativeHost = {
   revealResourcesInOS: () => undefined,

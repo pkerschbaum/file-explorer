@@ -5,12 +5,12 @@ import { useUpdateAtom } from 'jotai/utils';
 
 import { arrays } from '@app/base/utils/arrays.util';
 import { strings } from '@app/base/utils/strings.util';
-import { FILE_TYPE } from '@app/platform/file-types';
-import { useGetTagsOfFile } from '@app/platform/file.hooks';
+import { FILE_TYPE } from '@app/domain/types';
+import { useGetTagsOfFile } from '@app/operations/file.hooks';
 import {
   FileForUI,
   useFileProviderFiles,
-} from '@app/platform/store/file-provider/file-provider.hooks';
+} from '@app/global-state/file-provider/file-provider.hooks';
 import { scopedAtom, SyncSetAtom, usePrevious, useScopedAtom } from '@app/ui/utils/react.util';
 
 const filterInputAtom = scopedAtom<string>();

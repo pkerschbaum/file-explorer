@@ -1,6 +1,6 @@
 import { Emitter, Event } from 'code-oss-file-service/out/vs/base/common/event';
 
-import { FileToTags, Tag } from '@app/platform/file-types';
+import { FileToTags, Tag } from '@app/domain/types';
 
 export enum STORAGE_KEY {
   TAGS = 'tags',

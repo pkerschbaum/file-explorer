@@ -7,9 +7,9 @@ import { FileKind } from 'code-oss-file-service/out/vs/platform/files/common/fil
 import { createLogger } from '@app/base/logger/logger';
 import { useNexFileIconTheme } from '@app/ui/NexFileIconTheme.context';
 import { useNexFileSystem } from '@app/ui/NexFileSystem.context';
-import { useSelector } from '@app/platform/store/store';
-import { File, FILE_TYPE, PASTE_PROCESS_STATUS, PROCESS_TYPE, Tag } from '@app/platform/file-types';
-import { mapFileStatToFile, NexFileSystem } from '@app/platform/logic/file-system';
+import { useSelector } from '@app/global-state/store';
+import { File, FILE_TYPE, PASTE_PROCESS_STATUS, PROCESS_TYPE, Tag } from '@app/domain/types';
+import { mapFileStatToFile, NexFileSystem } from '@app/platform/file-system';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { objects } from '@app/base/utils/objects.util';
 
