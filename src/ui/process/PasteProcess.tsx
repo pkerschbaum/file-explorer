@@ -1,12 +1,11 @@
 import * as React from 'react';
 import { Box, Button, IconButton, Tooltip } from '@mui/material';
+import styled from '@mui/styled-engine';
 import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
 import ClearAllIcon from '@mui/icons-material/ClearAll';
 
 import { URI } from 'code-oss-file-service/out/vs/base/common/uri';
 
-import { styles } from '@app/ui/process/PasteProcess.styles';
-import { commonStyles } from '@app/ui/Common.styles';
 import { Stack } from '@app/ui/layouts/Stack';
 import { TextBox } from '@app/ui/elements/TextBox';
 import { LinearProgress } from '@app/ui/elements/LinearProgress';
@@ -119,14 +118,14 @@ export const PasteProcess: React.FC<{ process: PasteProcessType }> = ({ process 
       {content}
 
       {process.status !== PASTE_PROCESS_STATUS.ABORT_SUCCESS && (
-        <Box css={[commonStyles.fullWidth, styles.linearProgressBox]}>
+        <LinearProgressBox>
           <LinearProgress
             // disable animation from indeterminate to determinate variant by resetting component on variant change (via key prop)
             key={progressIndicatorVariant}
             variant={progressIndicatorVariant}
             value={percentageBytesProcessed}
           />
-        </Box>
+        </LinearProgressBox>
       )}
 
       {process.status !== PASTE_PROCESS_STATUS.SUCCESS &&
@@ -149,3 +148,8 @@ export const PasteProcess: React.FC<{ process: PasteProcessType }> = ({ process 
     </Stack>
   );
 };
+
+const LinearProgressBox = styled(Box)`
+  width: 100%;
+  padding-top: 2px;
+`;

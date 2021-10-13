@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { Box, Tabs, Tab, Button, IconButton, Tooltip } from '@mui/material';
+import styled from '@mui/styled-engine';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 
-import { styles } from '@app/ui/Shell.styles';
 import { commonStyles } from '@app/ui/Common.styles';
 import { Stack } from '@app/ui/layouts/Stack';
 import { ExplorerPanelContainer } from '@app/ui/ExplorerPanelContainer';
@@ -18,7 +18,7 @@ import {
   useChangeFocusedExplorer,
   useRemoveExplorerPanel,
 } from '@app/platform/app.hooks';
-import { tabIndicatorSpanClassName } from '@app/ui/theme';
+import { BACKGROUND_COLOR, tabIndicatorSpanClassName } from '@app/ui/theme';
 import { KEYS } from '@app/ui/constants';
 import { useWindowEvent } from '@app/ui/utils/react.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
@@ -78,8 +78,8 @@ export const Shell: React.FC = () => {
   const removeExplorerActionDisabled = explorersToShow.length < 2;
 
   return (
-    <Box className="show-file-icons" css={[styles.container, commonStyles.fullHeight]}>
-      <Stack css={styles.tabsArea} direction="column" alignItems="stretch">
+    <RootContainer className="show-file-icons">
+      <TabsArea direction="column" alignItems="stretch">
         <Tabs
           orientation="vertical"
           variant="scrollable"
@@ -109,26 +109,19 @@ export const Shell: React.FC = () => {
             Add tab
           </Stack>
         </Button>
-      </Stack>
+      </TabsArea>
 
-      <Box
-        css={[
-          styles.activeExplorerArea,
-          commonStyles.fullHeight,
-          commonStyles.flex.shrinkAndFitHorizontal,
-        ]}
-      >
+      <ActiveExplorerArea>
         {focusedExplorerId !== undefined &&
           explorersToShow.map(({ explorerId }) => (
             <TabPanel key={explorerId} value={focusedExplorerId} index={explorerId}>
               <ExplorerPanelContainer explorerId={explorerId} />
             </TabPanel>
           ))}
-      </Box>
+      </ActiveExplorerArea>
 
       {processes.length > 0 && (
-        <Stack
-          css={[styles.processesArea, commonStyles.flex.disableShrinkChildren]}
+        <ProcessesArea
           spacing={2}
           alignItems="flex-start"
           boxProps={{
@@ -141,9 +134,9 @@ export const Shell: React.FC = () => {
           {arrays.reverse(processes).map((process) => (
             <ProcessCard key={process.id} process={process} />
           ))}
-        </Stack>
+        </ProcessesArea>
       )}
-    </Box>
+    </RootContainer>
   );
 };
 
@@ -155,13 +148,12 @@ type ExplorerPanelTabProps = {
 
 const ExplorerPanelTab = React.memo<ExplorerPanelTabProps>(function ExplorerPanelTab(props) {
   return (
-    <Button css={commonStyles.fullWidth} component="div">
-      <Stack css={commonStyles.fullWidth} justifyContent="space-between">
+    <Button component="div" sx={{ width: '100%' }}>
+      <Stack justifyContent="space-between" sx={{ width: '100%' }}>
         <Box component="span">{props.label}</Box>
         <Tooltip title={props.removeExplorerActionDisabled ? '' : 'Close tab'}>
           <Box component="span">
-            <IconButton
-              css={styles.tabIconButton}
+            <TabIconButton
               size="small"
               disabled={props.removeExplorerActionDisabled}
               onClick={(e) => {
@@ -170,7 +162,7 @@ const ExplorerPanelTab = React.memo<ExplorerPanelTabProps>(function ExplorerPane
               }}
             >
               <CloseOutlinedIcon />
-            </IconButton>
+            </TabIconButton>
           </Box>
         </Tooltip>
       </Stack>
@@ -185,16 +177,67 @@ type TabPanelProps = {
 };
 
 const TabPanel: React.FC<TabPanelProps> = ({ value, index, children }) => {
-  return (
-    <Box
-      css={[
-        commonStyles.overlayChild,
-        commonStyles.fullHeight,
-        commonStyles.fullWidth,
-        value !== index ? commonStyles.hidden : undefined,
-      ]}
-    >
-      {children}
-    </Box>
-  );
+  return <OverlayTabPanel panelHidden={value !== index}>{children}</OverlayTabPanel>;
 };
+
+const RootContainer = styled(Box)`
+  height: 100%;
+  background-color: ${BACKGROUND_COLOR};
+  padding-top: ${(props) => props.theme.spacing()};
+
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  grid-template-rows: 1fr max-content;
+  grid-template-areas:
+    'explorer-tabs active-explorer-panel'
+    'processes processes';
+  grid-column-gap: ${(props) => props.theme.spacing()};
+`;
+
+const TabsArea = styled(Stack)`
+  grid-area: explorer-tabs;
+  padding-top: ${(props) => props.theme.spacing()};
+  padding-bottom: ${(props) => props.theme.spacing()};
+  padding-left: ${(props) => props.theme.spacing()};
+`;
+
+const ActiveExplorerArea = styled(Box)`
+  height: 100%;
+  grid-area: active-explorer-panel;
+  padding-top: ${(props) => props.theme.spacing(0.5)};
+  padding-right: ${(props) => props.theme.spacing()};
+  padding-bottom: ${(props) => props.theme.spacing(2)};
+
+  ${commonStyles.flex.shrinkAndFitHorizontal}
+`;
+
+const ProcessesArea = styled(Stack)`
+  padding-bottom: ${(props) => props.theme.spacing()};
+  grid-area: processes;
+  overflow-x: auto;
+
+  & > *:first-of-type {
+    margin-left: ${(props) => props.theme.spacing()};
+  }
+  & > *:last-of-type {
+    margin-right: ${(props) => props.theme.spacing()};
+  }
+
+  & > * {
+    flex-shrink: 0;
+  }
+`;
+
+const TabIconButton = styled(IconButton)`
+  border-radius: 0;
+  padding: 0;
+`;
+
+const OverlayTabPanel = styled(Box)<{ panelHidden: boolean }>`
+  height: 100%;
+  width: 100%;
+  grid-column: 1;
+  grid-row: 1;
+
+  display: ${(props) => props.panelHidden && 'none'};
+`;

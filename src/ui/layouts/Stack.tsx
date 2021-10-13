@@ -1,9 +1,7 @@
 import * as React from 'react';
-import { Box, BoxProps } from '@mui/material';
+import { Box, BoxProps, useTheme } from '@mui/material';
+import styled, { css, FlattenInterpolation } from '@mui/styled-engine';
 import { Property } from 'csstype';
-
-import { styles } from '@app/ui/layouts/Stack.styles';
-import { commonStyles } from '@app/ui/Common.styles';
 
 type StackProps = {
   direction?: 'row' | 'column' | 'row-reverse' | 'column-reverse';
@@ -21,51 +19,63 @@ type StackProps = {
   boxProps?: BoxProps;
 };
 
-export const Stack = React.forwardRef<HTMLElement, StackProps>(
-  (
-    {
-      direction = 'row',
-      justifyContent,
-      alignItems,
-      wrap,
-      growItems,
-      shrinkItems,
-      itemsBasis,
-      spacing,
-      stretchContainer = false,
-      children,
-      boxProps,
-      ...rest
-    },
-    ref,
-  ) => {
-    const stackStyle = styles.stack({
-      direction,
-      justifyContent,
-      alignItems: alignItems ?? 'center',
-      wrap,
-      growItems,
-      shrinkItems,
-      itemsBasis,
-      spacing: spacing ?? 1,
-    });
-
-    return (
-      <Box
-        css={(theme) => [
-          stackStyle(theme),
-          stretchContainer &&
-            (direction === 'column' ? commonStyles.fullWidth : commonStyles.fullHeight),
-        ]}
-        ref={ref}
-        /* we spread any additional props onto the box to support the Tooltip component
-         * see https://material-ui.com/components/tooltips/#custom-child-element
-         */
-        {...rest}
-        {...boxProps}
-      >
-        {children}
-      </Box>
-    );
+export const Stack = React.forwardRef<HTMLElement, StackProps>(function Stack(
+  {
+    direction = 'row',
+    justifyContent,
+    alignItems = 'center',
+    wrap,
+    growItems,
+    shrinkItems,
+    itemsBasis,
+    spacing = 1,
+    stretchContainer = false,
+    children,
+    boxProps,
+    ...rest
   },
-);
+  ref,
+) {
+  const theme = useTheme();
+  const stackStyles = css`
+    height: ${stretchContainer && (direction === 'row' || direction === 'row-reverse') && '100%'};
+    width: ${stretchContainer &&
+    (direction === 'column' || direction === 'column-reverse') &&
+    '100%'};
+
+    display: flex;
+    flex-direction: ${direction};
+    justify-content: ${justifyContent};
+    align-items: ${alignItems};
+    flex-wrap: ${typeof wrap === 'string' ? wrap : !!wrap ? 'wrap' : undefined};
+    gap: ${theme.spacing(spacing)};
+
+    & > * {
+      flex-grow: ${growItems && 1};
+      flex-shrink: ${shrinkItems && 1};
+      flex-basis: ${itemsBasis};
+    }
+  `;
+
+  return (
+    <StyledBox
+      stackStyles={stackStyles}
+      ref={ref}
+      /* we spread any additional props onto the box to support the Tooltip component
+       * see https://material-ui.com/components/tooltips/#custom-child-element
+       */
+      {...rest}
+      {...boxProps}
+    >
+      {children}
+    </StyledBox>
+  );
+});
+
+type StyleParams = {
+  stackStyles: FlattenInterpolation<any>;
+};
+
+const StyledBox = styled(Box)<StyleParams>`
+  ${(props) => props.stackStyles}
+`;

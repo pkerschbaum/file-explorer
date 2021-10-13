@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { Box, Breadcrumbs, Button, Chip, Skeleton, TextField } from '@mui/material';
+import styled, { css } from '@mui/styled-engine';
 
 import { URI } from 'code-oss-file-service/out/vs/base/common/uri';
 import { posix, win32 } from 'code-oss-file-service/out/vs/base/common/path';
 import { isWindows } from 'code-oss-file-service/out/vs/base/common/platform';
 
-import { styles } from '@app/ui/explorer-panel/ExplorerPanel.styles';
 import { commonStyles } from '@app/ui/Common.styles';
 import { Stack } from '@app/ui/layouts/Stack';
 import { TextBox } from '@app/ui/elements/TextBox';
@@ -52,15 +52,11 @@ export const ExplorerPanel: React.FC<{ explorerId: string }> = ({ explorerId }) 
   const cwdRootPart = uriHelper.parseUri(cwd.scheme, cwdStringifiedParts[0]);
 
   return (
-    <Stack css={commonStyles.fullHeight} direction="column" alignItems="stretch" stretchContainer>
+    <Stack direction="column" alignItems="stretch" stretchContainer sx={{ height: '100%' }}>
       <ExplorerActions />
 
-      <Stack
-        direction="column"
-        alignItems="stretch"
-        css={[commonStyles.fullHeight, commonStyles.flex.shrinkAndFitVertical]}
-      >
-        <Breadcrumbs css={styles.cwdBreadcrumbs}>
+      <BreadcrumbsAndFileTable direction="column" alignItems="stretch">
+        <BreadcrumbsRow>
           {cwdStringifiedParts.map((pathPart, idx) => {
             const isFirstPart = idx === 0;
             const isLastPart = idx === cwdStringifiedParts.length - 1;
@@ -87,7 +83,7 @@ export const ExplorerPanel: React.FC<{ explorerId: string }> = ({ explorerId }) 
               </TextBox>
             );
           })}
-        </Breadcrumbs>
+        </BreadcrumbsRow>
 
         <DataTable>
           <TableHead>
@@ -111,7 +107,7 @@ export const ExplorerPanel: React.FC<{ explorerId: string }> = ({ explorerId }) 
             )}
           </TableBody>
         </DataTable>
-      </Stack>
+      </BreadcrumbsAndFileTable>
     </Stack>
   );
 };
@@ -248,18 +244,15 @@ const FilesTableRow: React.FC<FilesTableRowProps> = ({
     >
       <Cell>
         <Stack>
-          <Stack
-            css={[commonStyles.fullWidth, styles.fileIcon]}
-            className={nativeIconDataURL ? undefined : fileForRow.iconClasses.join(' ')}
-          >
+          <FileIcon className={nativeIconDataURL ? undefined : fileForRow.iconClasses.join(' ')}>
             {nativeIconDataURL && (
-              <Box css={styles.icon}>
+              <IconWrapper>
                 <img
                   src={nativeIconDataURL}
                   alt="application icon"
                   style={{ maxHeight: '100%', maxWidth: '100%' }}
                 />
-              </Box>
+              </IconWrapper>
             )}
             {fileToRename && fileToRename.id === fileForRow.id ? (
               <RenameInput
@@ -270,7 +263,7 @@ const FilesTableRow: React.FC<FilesTableRowProps> = ({
             ) : (
               <TextBox fontSize="sm">{formatter.file(fileForRow)}</TextBox>
             )}
-          </Stack>
+          </FileIcon>
 
           {fileForRow.tags.map((tag) => (
             <Chip
@@ -304,7 +297,7 @@ const RenameInput: React.FC<RenameInputProps> = ({ file, onSubmit, abortRename }
 
   return (
     <form
-      css={commonStyles.fullWidth}
+      style={{ width: '100%' }}
       onSubmit={(e) => {
         e.preventDefault();
         onSubmit(value);
@@ -345,3 +338,56 @@ const SkeletonRow: React.FC<SkeletonRowProps> = ({ opacity }) => (
     </Cell>
   </Row>
 );
+
+const BreadcrumbsAndFileTable = styled(Stack)`
+  height: 100%;
+  ${commonStyles.flex.shrinkAndFitVertical}
+`;
+
+const BreadcrumbsRow = styled(Breadcrumbs)`
+  padding-inline-start: ${(props) => props.theme.spacing()};
+
+  & .MuiBreadcrumbs-li > * {
+    min-width: 0;
+    padding-inline: ${(props) => props.theme.spacing(1.5)};
+  }
+
+  & .MuiBreadcrumbs-li > *:not(button) {
+    /* MUI outlined button height */
+    height: 30.8px;
+    /* compensate for inline border of MUI outlined button */
+    padding-inline: calc(${(props) => props.theme.spacing(1.5)} + 1px);
+
+    display: flex;
+    align-items: center;
+  }
+`;
+
+const iconStyles = css`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  max-width: 24px;
+  height: 1em;
+  max-height: 1em;
+`;
+
+const FileIcon = styled(Stack)`
+  width: 100%;
+
+  ::before {
+    /* icon-theme.ts sets a unwanted font-size, use !important to overrule that*/
+    font-size: 2em !important;
+
+    ${iconStyles}
+
+    background-size: 24px 1em;
+    background-repeat: no-repeat;
+    -webkit-font-smoothing: antialiased;
+  }
+`;
+
+const IconWrapper = styled(Box)`
+  ${iconStyles}
+`;

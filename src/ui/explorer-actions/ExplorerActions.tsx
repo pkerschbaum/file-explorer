@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Box, Button, Divider, TextField, Tooltip } from '@mui/material';
+import styled from '@mui/styled-engine';
 import ArrowUpwardOutlinedIcon from '@mui/icons-material/ArrowUpwardOutlined';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import LaunchOutlinedIcon from '@mui/icons-material/LaunchOutlined';
@@ -12,8 +13,6 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import { URI, UriComponents } from 'code-oss-file-service/out/vs/base/common/uri';
 
 import { config } from '@app/config';
-import { styles } from '@app/ui/explorer-actions/ExplorerActions.styles';
-import { commonStyles } from '@app/ui/Common.styles';
 import { Stack } from '@app/ui/layouts/Stack';
 import { TextBox } from '@app/ui/elements/TextBox';
 import { AddTag } from '@app/ui/explorer-actions/AddTag';
@@ -465,7 +464,7 @@ const PasteInfoBadge: React.FC = () => {
   return (
     <Tooltip
       title={
-        <Stack direction="column" alignItems="flex-start" css={commonStyles.text.breakAll}>
+        <Stack direction="column" alignItems="flex-start" sx={{ wordBreak: 'break-all' }}>
           {clipboardResources.map((resource) => (
             <TextBox key={resource.fsPath} fontSize="sm">
               {resource.fsPath}
@@ -476,13 +475,29 @@ const PasteInfoBadge: React.FC = () => {
       arrow
       disableInteractive={false}
     >
-      <Box css={styles.pasteInfoBadge}>
+      <StyledBadge>
         {draftPasteState.pasteShouldMove ? (
           <ContentCutOutlinedIcon fontSize="small" />
         ) : (
           <ContentCopyOutlinedIcon fontSize="small" />
         )}
-      </Box>
+      </StyledBadge>
     </Tooltip>
   );
 };
+
+const StyledBadge = styled(Box)`
+  position: absolute;
+  right: -8px;
+  bottom: -16px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  color: ${(props) => props.theme.palette.text.primary};
+  background-color: ${(props) => props.theme.palette.background.paper};
+  border: 2px solid ${(props) => props.theme.palette.background.default};
+  padding: 3px;
+  border-radius: 50%;
+`;

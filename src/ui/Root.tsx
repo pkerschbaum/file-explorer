@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { CssBaseline } from '@mui/material';
 import { enUS } from '@mui/material/locale';
+import { ThemeProvider } from '@mui/material/styles';
 
 import { NexClipboard } from '@app/platform/logic/clipboard';
 import { NexFileSystem } from '@app/platform/logic/file-system';
@@ -11,7 +12,6 @@ import { NexNativeHost } from '@app/platform/logic/native-host';
 import { NexStorage } from '@app/platform/logic/storage';
 import { Shell } from '@app/ui/Shell';
 import { createTheme } from '@app/ui/theme';
-import { ThemeProvider } from '@app/ui/theme.provider';
 import { store } from '@app/platform/store/store';
 import { ClipboardResourcesContext, NexClipboardProvider } from '@app/ui/NexClipboard.context';
 import { NexFileIconThemeProvider } from '@app/ui/NexFileIconTheme.context';

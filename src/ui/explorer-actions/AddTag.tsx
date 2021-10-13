@@ -13,9 +13,8 @@ import {
   useTheme,
 } from '@mui/material';
 import CancelIcon from '@mui/icons-material/Cancel';
-import { css } from '@emotion/react';
+import styled from '@mui/styled-engine';
 
-import { styles } from '@app/ui/explorer-actions/AddTag.styles';
 import { commonStyles } from '@app/ui/Common.styles';
 import { Stack } from '@app/ui/layouts/Stack';
 import { Tag } from '@app/platform/file-types';
@@ -71,8 +70,7 @@ export const AddTag: React.FC<AddTagProps> = ({
 
   return (
     <React.Fragment>
-      <Autocomplete
-        css={styles.tagAutocomplete}
+      <TagAutocomplete
         disabled={disabled}
         value={null as WithInput<Tag> | null}
         onChange={(_, newValue) => {
@@ -122,16 +120,15 @@ export const AddTag: React.FC<AddTagProps> = ({
         handleHomeEndKeys
         renderOption={(props, option) => (
           <li {...props}>
-            <Stack css={commonStyles.fullWidth}>
+            <Stack sx={{ width: '100%' }}>
               {strings.isNullishOrEmpty(option.inputValue) && (
-                <Button
-                  css={styles.colorButton}
+                <ColorButton
                   disableElevation
                   variant="contained"
                   style={{ backgroundColor: option.colorHex }}
                 />
               )}
-              <span css={commonStyles.flex.shrinkAndFitHorizontal}>{option.name}</span>
+              <OptionLabel>{option.name}</OptionLabel>
               <IconButton onClick={() => onValueDeleted(option)}>
                 <CancelIcon />
               </IconButton>
@@ -143,21 +140,15 @@ export const AddTag: React.FC<AddTagProps> = ({
       <Dialog open={open} onClose={handleClose}>
         <form onSubmit={handleSubmit}>
           <DialogTitle>Add a new tag</DialogTitle>
-          <DialogContent
-            css={css`
-              overflow-y: initial;
-            `}
-          >
+          <DialogContent sx={{ overflowY: 'initial' }}>
             <Stack direction="column" alignItems="start">
               <Stack>
-                <Button
-                  css={styles.colorButton}
+                <ColorButton
                   disableElevation
                   variant="contained"
                   style={{ backgroundColor: dialogValue.colorHex }}
                 />
-                <TextField
-                  css={styles.tagNameInput}
+                <TagNameInput
                   autoFocus
                   label="Name of tag"
                   value={dialogValue.name}
@@ -169,14 +160,7 @@ export const AddTag: React.FC<AddTagProps> = ({
                   }
                 />
               </Stack>
-              <Paper
-                variant="outlined"
-                css={(theme) =>
-                  css`
-                    padding: ${theme.spacing()};
-                  `
-                }
-              >
+              <Paper variant="outlined" sx={{ padding: 1 }}>
                 <Stack direction="column" alignItems="start">
                   {arrays
                     .partitionArray(availableTagColors, { itemsPerPartition: 5 })
@@ -185,9 +169,8 @@ export const AddTag: React.FC<AddTagProps> = ({
                         {partition.map((colorHex) => {
                           const isSelected = dialogValue.colorHex === colorHex;
                           return (
-                            <Button
+                            <ColorButton
                               key={colorHex}
-                              css={styles.colorButton}
                               style={{
                                 backgroundColor: colorHex,
                                 opacity: isSelected ? '0.35' : undefined,
@@ -218,3 +201,23 @@ export const AddTag: React.FC<AddTagProps> = ({
     </React.Fragment>
   );
 };
+
+const TagAutocomplete: typeof Autocomplete = styled(Autocomplete)`
+  min-width: 150px;
+`;
+
+const OptionLabel = styled('span')`
+  ${commonStyles.flex.shrinkAndFitHorizontal}
+`;
+
+const ColorButton = styled(Button)`
+  min-height: 0;
+  min-width: 0;
+  padding: 0;
+  height: 24px;
+  width: 24px;
+`;
+
+const TagNameInput = styled(TextField)`
+  width: 170px;
+`;

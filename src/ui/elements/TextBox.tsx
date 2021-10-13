@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { Box, BoxProps } from '@mui/material';
+import styled from '@mui/styled-engine';
 
-import { styles } from '@app/ui/elements/TextBox.styles';
-import { commonStyles } from '@app/ui/Common.styles';
 import { assertUnreachable } from '@app/base/utils/types.util';
 
 // adapted from https://github.com/mui-org/material-ui/blob/next/packages/material-ui/src/Typography/Typography.js
@@ -33,45 +32,12 @@ export const TextBox = React.forwardRef<HTMLElement, TextBoxProps>(function Text
     boxProps,
   } = props;
 
-  let fontSizeStyle;
-  switch (fontSize) {
-    case 'sm': {
-      fontSizeStyle = styles.textBox_sm;
-      break;
-    }
-    case 'lg': {
-      fontSizeStyle = styles.textBox_lg;
-      break;
-    }
-    case 'xl': {
-      fontSizeStyle = styles.textBox_xl;
-      break;
-    }
-    case 'xxl': {
-      fontSizeStyle = styles.textBox_xxl;
-      break;
-    }
-    case 'xxxl': {
-      fontSizeStyle = styles.textBox_xxxl;
-      break;
-    }
-    case 'md': {
-      break;
-    }
-    default: {
-      assertUnreachable(fontSize);
-    }
-  }
-
   return (
-    <Box
+    <StyledBox
       className={className}
-      css={[
-        styles.textBox,
-        fontSizeStyle,
-        fontBold && styles.textBox_bold,
-        !disablePreserveNewlines && commonStyles.preserveNewlines,
-      ]}
+      fontSize={fontSize}
+      fontBold={fontBold}
+      disablePreserveNewlines={disablePreserveNewlines}
       fontStyle={fontItalic ? 'italic' : undefined}
       sx={sx}
       component="span"
@@ -80,6 +46,41 @@ export const TextBox = React.forwardRef<HTMLElement, TextBoxProps>(function Text
       {...boxProps}
     >
       {children}
-    </Box>
+    </StyledBox>
   );
 });
+
+const StyledBox = styled(Box)<{
+  fontSize: TextBoxProps['fontSize'];
+  fontBold: boolean;
+  disablePreserveNewlines?: boolean;
+}>`
+  font-size: ${(props) => {
+    switch (props.fontSize) {
+      case undefined:
+      case 'md': {
+        return props.theme.typography.body1.fontSize;
+      }
+      case 'sm': {
+        return props.theme.typography.body2.fontSize;
+      }
+      case 'lg': {
+        return '1.25rem';
+      }
+      case 'xl': {
+        return '1.5rem';
+      }
+      case 'xxl': {
+        return '2.125rem';
+      }
+      case 'xxxl': {
+        return '3.75rem';
+      }
+      default: {
+        assertUnreachable(props.fontSize);
+      }
+    }
+  }};
+  font-weight: ${(props) => props.fontBold && 700};
+  white-space: ${(props) => !props.disablePreserveNewlines && 'pre-wrap'};
+`;

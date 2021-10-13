@@ -1,11 +1,10 @@
 import {
   // https://github.com/mui-org/material-ui/issues/13394
   createTheme as createMuiTheme,
-  ThemeOptions as MuiThemeOptions,
   Theme as MuiTheme,
 } from '@mui/material/styles';
 import { Localization } from '@mui/material/locale';
-import { css } from '@emotion/react';
+import { css } from '@mui/styled-engine';
 
 import { DELETE_PROCESS_STATUS, PASTE_PROCESS_STATUS } from '@app/platform/file-types';
 
@@ -34,10 +33,9 @@ declare module '@mui/material/styles' {
   }
 }
 
-declare module '@emotion/react' {
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface -- emotion's Theme should have the same properties as that of MUI, no more. That's why it's empty (besides the "extends" clause)
-  export interface Theme extends MuiTheme {}
-  type ThemeOptions = MuiThemeOptions;
+declare module 'styled-components' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface -- styled-component's theme should have the same properties as that of MUI, no more. That's why it's empty (besides the "extends" clause)
+  export interface DefaultTheme extends MuiTheme {}
 }
 
 export const BACKGROUND_COLOR = '#241F1A';
@@ -46,7 +44,7 @@ const PRIMARY_COLOR = '#30E5FF';
 export const tabIndicatorSpanClassName = 'MuiTabs-indicatorSpan';
 
 export const createTheme = (locale: Localization) => {
-  const theme: MuiThemeOptions = {
+  const theme: Parameters<typeof createMuiTheme>[0] = {
     components: {
       MuiButton: {
         defaultProps: {
@@ -70,13 +68,13 @@ export const createTheme = (locale: Localization) => {
               border-color: ${PAPER_COLOR};
               background-color: rgba(255, 255, 255, 0.08);
             }
-          `,
+          ` as any,
           outlined: css`
             color: white;
             background-color: ${PAPER_COLOR};
             outline-color: initial;
             border-color: ${PAPER_COLOR};
-          `,
+          ` as any,
         },
       },
 
@@ -87,7 +85,7 @@ export const createTheme = (locale: Localization) => {
             padding-bottom: 6px;
             padding-left: 12px;
             padding-right: 12px;
-          `,
+          ` as any,
         },
       },
 
@@ -103,7 +101,7 @@ export const createTheme = (locale: Localization) => {
         styleOverrides: {
           flexContainer: css`
             gap: 8px;
-          `,
+          ` as any,
 
           indicator: css`
             right: initial;
@@ -119,7 +117,7 @@ export const createTheme = (locale: Localization) => {
               background-color: ${PRIMARY_COLOR};
               border-radius: 4px;
             }
-          `,
+          ` as any,
         },
       },
 
@@ -129,7 +127,7 @@ export const createTheme = (locale: Localization) => {
             text-transform: none;
             padding: 0;
             min-height: 0;
-          `,
+          ` as any,
         },
       },
     },

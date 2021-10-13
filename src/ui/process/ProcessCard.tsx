@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Paper, useTheme } from '@mui/material';
+import styled from '@mui/styled-engine';
 
-import { styles } from '@app/ui/process/ProcessCard.styles';
 import { Process, PROCESS_TYPE } from '@app/platform/file-types';
 import { PasteProcess } from '@app/ui/process/PasteProcess';
 import { DeleteProcess } from '@app/ui/process/DeleteProcess';
@@ -25,7 +25,7 @@ export const ProcessCard: React.FC<{ process: Process }> = ({ process }) => {
   }
 
   return (
-    <Paper css={styles.card} style={{ backgroundColor }}>
+    <Card sx={{ backgroundColor }}>
       {process.type === PROCESS_TYPE.PASTE ? (
         <PasteProcess process={process} />
       ) : process.type === PROCESS_TYPE.DELETE ? (
@@ -33,6 +33,13 @@ export const ProcessCard: React.FC<{ process: Process }> = ({ process }) => {
       ) : (
         assertUnreachable(process)
       )}
-    </Paper>
+    </Card>
   );
 };
+
+const Card = styled(Paper)`
+  padding-top: ${(props) => props.theme.spacing()};
+  padding-bottom: ${(props) => props.theme.spacing()};
+  padding-right: ${(props) => props.theme.spacing(1.5)};
+  padding-left: ${(props) => props.theme.spacing(1.5)};
+`;
