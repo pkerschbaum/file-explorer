@@ -12,8 +12,8 @@ import { useNexFileSystem } from '@app/ui/NexFileSystem.context';
 import { useNexNativeHost } from '@app/ui/NexNativeHost.context';
 import { useNexStorage } from '@app/ui/NexStorage.context';
 import { useDispatch } from '@app/global-state/store';
-import { useRefreshFiles } from '@app/global-state/slices/explorers.hooks';
 import { useProcesses } from '@app/global-state/slices/processes.hooks';
+import { useRefreshFiles } from '@app/global-cache/files';
 import {
   DeleteProcess,
   DELETE_PROCESS_STATUS,

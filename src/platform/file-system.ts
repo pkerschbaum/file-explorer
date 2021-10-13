@@ -54,3 +54,16 @@ export function getDistinctParents(files: UriComponents[]): UriComponents[] {
     (item) => item.toString(),
   );
 }
+
+export async function fetchFiles(
+  fileSystem: NexFileSystem,
+  directory: UriComponents,
+  resolveMetadata: boolean,
+): Promise<File[]> {
+  const statsWithMetadata = await fileSystem.resolve(URI.from(directory), { resolveMetadata });
+
+  if (!statsWithMetadata.children) {
+    return [];
+  }
+  return statsWithMetadata.children.map(mapFileStatToFile);
+}

@@ -16,9 +16,9 @@ import { Row } from '@app/ui/elements/DataTable/Row';
 import { TableBody } from '@app/ui/elements/DataTable/TableBody';
 import { TableHead } from '@app/ui/elements/DataTable/TableHead';
 import { useNexNativeHost } from '@app/ui/NexNativeHost.context';
-import { FileForUI, useCwd } from '@app/global-state/slices/explorers.hooks';
+import { useCwd } from '@app/global-state/slices/explorers.hooks';
 import { useOpenFile, useRemoveTags, useRenameFile } from '@app/operations/file.hooks';
-import { useChangeDirectory } from '@app/operations/explorer.hooks';
+import { FileForUI, useChangeDirectory } from '@app/operations/explorer.hooks';
 import {
   useDataAvailable,
   useExplorerId,

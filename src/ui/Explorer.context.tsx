@@ -7,7 +7,7 @@ import { arrays } from '@app/base/utils/arrays.util';
 import { strings } from '@app/base/utils/strings.util';
 import { FILE_TYPE } from '@app/domain/types';
 import { useGetTagsOfFile } from '@app/operations/file.hooks';
-import { FileForUI, useFilesForUI } from '@app/global-state/slices/explorers.hooks';
+import { FileForUI, useFilesForUI } from '@app/operations/explorer.hooks';
 import { scopedAtom, SyncSetAtom, usePrevious, useScopedAtom } from '@app/ui/utils/react.util';
 
 const filterInputAtom = scopedAtom<string>();
