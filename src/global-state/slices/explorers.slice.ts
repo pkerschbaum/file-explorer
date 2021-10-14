@@ -4,13 +4,13 @@ import * as uuid from 'code-oss-file-service/out/vs/base/common/uuid';
 import { UriComponents } from 'code-oss-file-service/out/vs/base/common/uri';
 
 export type ExplorerSliceState = {
-  explorers: {
+  explorerPanels: {
     [id: string]: {
       cwd: UriComponents;
       scheduledToRemove?: boolean;
     };
   };
-  focusedExplorerId?: string;
+  focusedExplorerPanelId?: string;
 };
 
 type AddExplorerPayload = {
@@ -32,7 +32,7 @@ type ChangeFocusedExplorerPayload = {
 };
 
 const INITIAL_STATE: ExplorerSliceState = {
-  explorers: {},
+  explorerPanels: {},
 };
 
 export const actions = {
@@ -54,32 +54,32 @@ export const reducer = createReducer(INITIAL_STATE, (builder) =>
         );
       }
 
-      state.explorers[explorerId] = { cwd };
-      if (state.focusedExplorerId === undefined) {
-        state.focusedExplorerId = explorerId;
+      state.explorerPanels[explorerId] = { cwd };
+      if (state.focusedExplorerPanelId === undefined) {
+        state.focusedExplorerPanelId = explorerId;
       }
     })
     .addCase(actions.markExplorerForRemoval, (state, action) => {
       const { explorerId } = action.payload;
 
-      state.explorers[explorerId].scheduledToRemove = true;
+      state.explorerPanels[explorerId].scheduledToRemove = true;
 
-      if (explorerId === state.focusedExplorerId) {
+      if (explorerId === state.focusedExplorerPanelId) {
         // focused explorer got removed --> focus another explorer
 
-        const activeExplorer = Object.entries(state.explorers)
+        const activeExplorer = Object.entries(state.explorerPanels)
           .map(([explorerId, value]) => ({ explorerId, ...value }))
           .find((explorer) => !explorer.scheduledToRemove);
 
         if (activeExplorer !== undefined) {
-          state.focusedExplorerId = activeExplorer.explorerId;
+          state.focusedExplorerPanelId = activeExplorer.explorerId;
         }
       }
     })
     .addCase(actions.removeExplorer, (state, action) => {
       const { explorerId } = action.payload;
 
-      delete state.explorers[explorerId];
+      delete state.explorerPanels[explorerId];
     })
     .addCase(actions.changeCwd, (state, action) => {
       const { explorerId, newCwd } = action.payload;
@@ -91,7 +91,7 @@ export const reducer = createReducer(INITIAL_STATE, (builder) =>
         );
       }
 
-      state.explorers[explorerId] = { cwd: newCwd };
+      state.explorerPanels[explorerId] = { cwd: newCwd };
     })
     .addCase(actions.changeFocusedExplorer, (state, action) => {
       const { explorerId } = action.payload;
@@ -103,7 +103,7 @@ export const reducer = createReducer(INITIAL_STATE, (builder) =>
         );
       }
 
-      state.focusedExplorerId = explorerId;
+      state.focusedExplorerPanelId = explorerId;
     }),
 );
 
@@ -112,7 +112,7 @@ export function generateExplorerId() {
 }
 
 function isExplorerIdPresent(state: ExplorerSliceState, explorerId: string): boolean {
-  return !!Object.keys(state.explorers).find(
+  return !!Object.keys(state.explorerPanels).find(
     (existingExplorerId) => existingExplorerId === explorerId,
   );
 }

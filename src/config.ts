@@ -4,6 +4,7 @@ const isDevEnviroment = process.env.NODE_ENV === 'development';
 
 export const config = {
   isDevEnviroment,
+  productName: 'file-explorer',
   featureFlags: {
     tags: false,
   },

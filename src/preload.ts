@@ -5,10 +5,11 @@ import { URI } from 'code-oss-file-service/out/vs/base/common/uri';
 import { VSBuffer } from 'code-oss-file-service/out/vs/base/common/buffer';
 import { Schemas } from 'code-oss-file-service/out/vs/base/common/network';
 
+import { config } from '@app/config';
 import { bootstrapModule as bootstrapFileServiceModule } from '@app/platform/file-service';
 import {
   bootstrapModule as bootstrapFileIconThemeModule,
-  FileIconTheme,
+  PlatformFileIconTheme,
 } from '@app/platform/file-icon-theme';
 import { FileDragStart, FILEDRAGSTART_CHANNEL } from '@app/ipc/common/file-drag-start';
 import { TRASHITEM_CHANNEL } from '@app/ipc/common/trash-item';
@@ -19,7 +20,7 @@ declare global {
     preload: {
       initializationPromise: Promise<void>;
       fileService: ReturnType<typeof bootstrapFileServiceModule>['fileService'];
-      fileIconTheme: FileIconTheme;
+      fileIconTheme: PlatformFileIconTheme;
       startNativeFileDnD: (args: FileDragStart.Args) => FileDragStart.ReturnValue;
       getNativeFileIconDataURL: (
         args: GetNativeFileIconDataURL.Args,
@@ -35,7 +36,7 @@ declare global {
   }
 }
 
-const CLIPBOARD_FILELIST_FORMAT = 'nex/file-list';
+const CLIPBOARD_FILELIST_FORMAT = `${config.productName}/file-list`;
 
 const store = new Store();
 

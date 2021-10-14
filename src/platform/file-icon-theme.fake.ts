@@ -1,6 +1,6 @@
-import { FileIconTheme } from '@app/platform/file-icon-theme';
+import { PlatformFileIconTheme } from '@app/platform/file-icon-theme';
 
-export const fakeFileIconTheme: FileIconTheme = {
+export const fakeFileIconTheme: PlatformFileIconTheme = {
   getIconClasses: () => [],
   iconThemeCssRules: '',
 };

@@ -12,16 +12,16 @@ type STORAGE_TYPE = {
   resourcesToTags?: FileToTags;
 };
 
-export type NexStorage = {
+export type PlatformStorage = {
   store: <T extends STORAGE_KEY>(key: T, value: STORAGE_TYPE[T]) => void;
   get: <T extends STORAGE_KEY>(key: T) => STORAGE_TYPE[T];
   onDataChanged: Event<STORAGE_KEY>;
 };
 
-export const createNexStorage = () => {
+export const createStorage = () => {
   const onDataChanged = new Emitter<STORAGE_KEY>();
 
-  const instance: NexStorage = {
+  const instance: PlatformStorage = {
     store: (key, value) => {
       window.preload.storeSet(key, value);
       onDataChanged.fire(key);

@@ -1,8 +1,8 @@
 import { render } from '@app/ui/Root';
-import { createNexClipboard } from '@app/platform/clipboard';
-import { createNexFileSystem } from '@app/platform/file-system';
-import { createNexNativeHost } from '@app/platform/native-host';
-import { createNexStorage } from '@app/platform/storage';
+import { createClipboard } from '@app/platform/clipboard';
+import { createFileSystem } from '@app/platform/file-system';
+import { createNativeHost } from '@app/platform/native-host';
+import { createStorage } from '@app/platform/storage';
 
 async function rendererScriptEntryPoint() {
   // wait for preload script to finish
@@ -16,16 +16,16 @@ async function rendererScriptEntryPoint() {
   document.head.appendChild(elStyle);
 
   // render React application
-  const nexClipboard = createNexClipboard();
-  const nexFileSystem = createNexFileSystem();
-  const nexStorage = createNexStorage();
-  const nexNativeHost = createNexNativeHost();
+  const clipboard = createClipboard();
+  const fileSystem = createFileSystem();
+  const storage = createStorage();
+  const nativeHost = createNativeHost();
   render({
-    clipboard: nexClipboard,
+    clipboard,
     fileIconTheme: window.preload.fileIconTheme,
-    fileSystem: nexFileSystem,
-    storage: nexStorage,
-    nativeHost: nexNativeHost,
+    fileSystem,
+    storage,
+    nativeHost,
   });
 }
 

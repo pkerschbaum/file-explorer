@@ -2,16 +2,16 @@
 import { Emitter, Event } from 'code-oss-file-service/out/vs/base/common/event';
 import { URI } from 'code-oss-file-service/out/vs/base/common/uri';
 
-export type NexClipboard = {
+export type PlatformClipboard = {
   readResources(): URI[];
   writeResources(resources: URI[]): void;
   onClipboardChanged: Event<void>;
 };
 
-export const createNexClipboard = () => {
+export const createClipboard = () => {
   const onClipboardChanged = new Emitter<void>();
 
-  const instance: NexClipboard = {
+  const instance: PlatformClipboard = {
     readResources: window.preload.clipboardReadResources,
     writeResources: (resources) => {
       if (resources.length) {

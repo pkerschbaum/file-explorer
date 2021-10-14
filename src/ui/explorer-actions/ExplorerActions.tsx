@@ -17,7 +17,7 @@ import { Stack } from '@app/ui/layouts/Stack';
 import { TextBox } from '@app/ui/elements/TextBox';
 import { AddTag } from '@app/ui/explorer-actions/AddTag';
 import { CreateFolder } from '@app/ui/explorer-actions/CreateFolder';
-import { useCwd, useFocusedExplorerId } from '@app/global-state/slices/explorers.hooks';
+import { useCwd, useIdOfFocusedExplorerPanel } from '@app/global-state/slices/explorers.hooks';
 import { useDraftPasteState } from '@app/global-state/slices/processes.hooks';
 import {
   addTags,
@@ -54,7 +54,7 @@ const EXPLORER_FILTER_INPUT_ID = 'explorer-filter-input';
 
 export const ExplorerActions: React.FC = () => {
   const explorerId = useExplorerId();
-  const focusedExplorerId = useFocusedExplorerId();
+  const focusedExplorerId = useIdOfFocusedExplorerPanel();
 
   if (explorerId !== focusedExplorerId) {
     return null;

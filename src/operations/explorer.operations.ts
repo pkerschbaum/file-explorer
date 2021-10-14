@@ -58,7 +58,7 @@ export async function pasteFiles(explorerId: string) {
     return;
   }
 
-  const cwd = storeRef.current.getState().explorersSlice.explorers[explorerId].cwd;
+  const cwd = storeRef.current.getState().explorersSlice.explorerPanels[explorerId].cwd;
   const destinationFolder = URI.from(cwd);
   const destinationFolderStat = await fileSystemRef.current.resolve(destinationFolder);
   const id = uuid.generateUuid();
@@ -239,7 +239,7 @@ export async function pasteFiles(explorerId: string) {
 }
 
 export async function createFolder(explorerId: string, folderName: string) {
-  const cwd = storeRef.current.getState().explorersSlice.explorers[explorerId].cwd;
+  const cwd = storeRef.current.getState().explorersSlice.explorerPanels[explorerId].cwd;
 
   // create folder
   const folderUri = URI.joinPath(URI.from(cwd), folderName);
@@ -250,7 +250,7 @@ export async function createFolder(explorerId: string, folderName: string) {
 }
 
 export function revealCwdInOSExplorer(explorerId: string) {
-  const cwd = storeRef.current.getState().explorersSlice.explorers[explorerId].cwd;
+  const cwd = storeRef.current.getState().explorersSlice.explorerPanels[explorerId].cwd;
   nativeHostRef.current.revealResourcesInOS([cwd]);
 }
 

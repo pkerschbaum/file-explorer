@@ -1,7 +1,7 @@
 import { useSelector } from '@app/global-state/store';
 
-export const useExplorers = () =>
-  Object.entries(useSelector((state) => state.explorersSlice.explorers)).map(
+export const useExplorerPanels = () =>
+  Object.entries(useSelector((state) => state.explorersSlice.explorerPanels)).map(
     ([explorerId, value]) => ({
       explorerId,
       ...value,
@@ -9,7 +9,7 @@ export const useExplorers = () =>
   );
 
 export const useCwd = (explorerId: string) =>
-  useSelector((state) => state.explorersSlice.explorers[explorerId].cwd);
+  useSelector((state) => state.explorersSlice.explorerPanels[explorerId].cwd);
 
-export const useFocusedExplorerId = () =>
-  useSelector((state) => state.explorersSlice.focusedExplorerId);
+export const useIdOfFocusedExplorerPanel = () =>
+  useSelector((state) => state.explorersSlice.focusedExplorerPanelId);

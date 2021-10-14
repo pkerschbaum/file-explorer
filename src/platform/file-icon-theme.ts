@@ -20,7 +20,7 @@ import {
 } from '@app/static-resources';
 import { CustomError } from '@app/base/custom-error';
 
-export type FileIconTheme = {
+export type PlatformFileIconTheme = {
   iconThemeCssRules: string;
   getIconClasses: (resource: URI | undefined, fileKind?: FileKind) => string[];
 };
@@ -109,11 +109,11 @@ async function loadFileIconTheme(fileService: IFileService) {
 
 const modeService = new ModeServiceImpl();
 
-export async function bootstrapModule(fileService: IFileService): Promise<FileIconTheme> {
+export async function bootstrapModule(fileService: IFileService): Promise<PlatformFileIconTheme> {
   await registerLanguagesOfExtensions(fileService);
   const iconThemeCssRules = await loadFileIconTheme(fileService);
 
-  const result: FileIconTheme = {
+  const result: PlatformFileIconTheme = {
     iconThemeCssRules,
     getIconClasses: (resource, fileKind) => {
       return getIconClassesOriginal(undefined, modeService, resource, fileKind);

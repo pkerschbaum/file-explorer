@@ -8,7 +8,10 @@ import { commonStyles } from '@app/ui/Common.styles';
 import { Stack } from '@app/ui/layouts/Stack';
 import { ExplorerPanelContainer } from '@app/ui/ExplorerPanelContainer';
 import { ProcessCard } from '@app/ui/process/ProcessCard';
-import { useExplorers, useFocusedExplorerId } from '@app/global-state/slices/explorers.hooks';
+import {
+  useExplorerPanels,
+  useIdOfFocusedExplorerPanel,
+} from '@app/global-state/slices/explorers.hooks';
 import { useProcesses } from '@app/global-state/slices/processes.hooks';
 import {
   addExplorerPanel,
@@ -23,25 +26,24 @@ import { arrays } from '@app/base/utils/arrays.util';
 import { objects } from '@app/base/utils/objects.util';
 
 export const Shell: React.FC = () => {
-  const explorers = useExplorers();
-  const focusedExplorerId = useFocusedExplorerId();
+  const explorerPanels = useExplorerPanels();
+  const idOfFocusedExplorerPanel = useIdOfFocusedExplorerPanel();
   const processes = useProcesses();
 
   // on mount, add first (initial) explorer panel
   React.useEffect(() => {
     void addExplorerPanel();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function switchFocusedExplorer(direction: 'UP' | 'DOWN') {
-    const focusedExplorerIdx = explorers.findIndex(
-      (explorer) => explorer.explorerId === focusedExplorerId,
+  function switchFocusedExplorerPanel(direction: 'UP' | 'DOWN') {
+    const focusedExplorerIdx = explorerPanels.findIndex(
+      (explorer) => explorer.explorerId === idOfFocusedExplorerPanel,
     );
 
     if (
       focusedExplorerIdx === -1 ||
       (direction === 'UP' && focusedExplorerIdx === 0) ||
-      (direction === 'DOWN' && focusedExplorerIdx === explorers.length - 1)
+      (direction === 'DOWN' && focusedExplorerIdx === explorerPanels.length - 1)
     ) {
       return;
     }
@@ -49,17 +51,17 @@ export const Shell: React.FC = () => {
     const explorerIdxToSwitchTo =
       direction === 'UP' ? focusedExplorerIdx - 1 : focusedExplorerIdx + 1;
 
-    changeFocusedExplorer(explorers[explorerIdxToSwitchTo].explorerId);
+    changeFocusedExplorer(explorerPanels[explorerIdxToSwitchTo].explorerId);
   }
 
   useWindowEvent('keydown', [
     {
       condition: (e) => e.ctrlKey && e.key === KEYS.PAGE_UP,
-      handler: () => switchFocusedExplorer('UP'),
+      handler: () => switchFocusedExplorerPanel('UP'),
     },
     {
       condition: (e) => e.ctrlKey && e.key === KEYS.PAGE_DOWN,
-      handler: () => switchFocusedExplorer('DOWN'),
+      handler: () => switchFocusedExplorerPanel('DOWN'),
     },
     {
       condition: (e) => e.ctrlKey && e.key === KEYS.T,
@@ -67,7 +69,7 @@ export const Shell: React.FC = () => {
     },
   ]);
 
-  const explorersToShow = explorers.filter((explorer) => !explorer.scheduledToRemove);
+  const explorersToShow = explorerPanels.filter((explorer) => !explorer.scheduledToRemove);
   const removeExplorerActionDisabled = explorersToShow.length < 2;
 
   return (
@@ -76,7 +78,7 @@ export const Shell: React.FC = () => {
         <Tabs
           orientation="vertical"
           variant="scrollable"
-          value={focusedExplorerId}
+          value={idOfFocusedExplorerPanel}
           onChange={(_, newValue) => changeFocusedExplorer(newValue)}
           TabIndicatorProps={{ children: <span className={tabIndicatorSpanClassName} /> }}
         >
@@ -105,9 +107,9 @@ export const Shell: React.FC = () => {
       </TabsArea>
 
       <ActiveExplorerArea>
-        {focusedExplorerId !== undefined &&
+        {idOfFocusedExplorerPanel !== undefined &&
           explorersToShow.map(({ explorerId }) => (
-            <TabPanel key={explorerId} value={focusedExplorerId} index={explorerId}>
+            <TabPanel key={explorerId} value={idOfFocusedExplorerPanel} index={explorerId}>
               <ExplorerPanelContainer explorerId={explorerId} />
             </TabPanel>
           ))}

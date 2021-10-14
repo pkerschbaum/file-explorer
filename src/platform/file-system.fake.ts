@@ -1,7 +1,7 @@
 import { URI } from 'code-oss-file-service/out/vs/base/common/uri';
 import { IFileStatWithMetadata } from 'code-oss-file-service/out/vs/platform/files/common/files';
 
-import { NexFileSystem } from '@app/platform/file-system';
+import { PlatformFileSystem } from '@app/platform/file-system';
 
 const fakeFileStat: IFileStatWithMetadata = {
   isDirectory: false,
@@ -16,7 +16,7 @@ const fakeFileStat: IFileStatWithMetadata = {
   etag: '',
 };
 
-export const fakeFileSystem: NexFileSystem = {
+export const fakeFileSystem: PlatformFileSystem = {
   resolve: () => Promise.resolve(fakeFileStat),
   copy: () => Promise.resolve(fakeFileStat),
   move: () => Promise.resolve(fakeFileStat),

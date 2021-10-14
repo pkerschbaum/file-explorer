@@ -5,13 +5,13 @@ import { IFileService, IFileStat } from 'code-oss-file-service/out/vs/platform/f
 import { File, FILE_TYPE } from '@app/domain/types';
 import { arrays } from '@app/base/utils/arrays.util';
 
-export type NexFileSystem = Pick<
+export type PlatformFileSystem = Pick<
   IFileService,
   'resolve' | 'del' | 'copy' | 'move' | 'createFolder'
 >;
 
-export const createNexFileSystem = () => {
-  const instance: NexFileSystem = {
+export const createFileSystem = () => {
+  const instance: PlatformFileSystem = {
     resolve: window.preload.fileService.resolve.bind(window.preload.fileService),
     del: async (resource, options) => {
       if (options?.useTrash) {
@@ -56,7 +56,7 @@ export function getDistinctParents(files: UriComponents[]): UriComponents[] {
 }
 
 export async function fetchFiles(
-  fileSystem: NexFileSystem,
+  fileSystem: PlatformFileSystem,
   directory: UriComponents,
   resolveMetadata: boolean,
 ): Promise<File[]> {
