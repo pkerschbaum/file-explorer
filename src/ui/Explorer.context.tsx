@@ -6,7 +6,7 @@ import { useUpdateAtom } from 'jotai/utils';
 import { arrays } from '@app/base/utils/arrays.util';
 import { strings } from '@app/base/utils/strings.util';
 import { FILE_TYPE } from '@app/domain/types';
-import { useGetTagsOfFile } from '@app/operations/file.hooks';
+import { useEnrichFilesWithTags } from '@app/ui/hooks/tag.hooks';
 import { FileForUI, useFilesForUI } from '@app/operations/explorer.hooks';
 import { scopedAtom, SyncSetAtom, usePrevious, useScopedAtom } from '@app/ui/utils/react.util';
 
@@ -59,7 +59,6 @@ const StateAtomsContainer: React.FC<ExplorerContextProviderProps> = (props) => {
   const [selection, setSelection] = useScopedAtom(selectionAtom, SYMBOL_STATE_ATOMS_SCOPE);
 
   const { files, dataAvailable } = useFilesForUI(explorerId);
-  const { getTagsOfFile } = useGetTagsOfFile();
 
   const setIdsOfSelectedFiles = React.useCallback(
     (newIds: string[]) => {
@@ -78,14 +77,7 @@ const StateAtomsContainer: React.FC<ExplorerContextProviderProps> = (props) => {
     [files, idsOfSelectedFiles],
   );
 
-  const filesWithTags: FileForUI[] = React.useMemo(
-    () =>
-      files.map((file) => ({
-        ...file,
-        tags: file.ctime === undefined ? [] : getTagsOfFile({ uri: file.uri, ctime: file.ctime }),
-      })),
-    [files, getTagsOfFile],
-  );
+  const filesWithTags = useEnrichFilesWithTags(files);
 
   /*
    * Compute files to show:

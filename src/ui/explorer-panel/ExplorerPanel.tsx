@@ -15,10 +15,10 @@ import { HeadCell } from '@app/ui/elements/DataTable/HeadCell';
 import { Row } from '@app/ui/elements/DataTable/Row';
 import { TableBody } from '@app/ui/elements/DataTable/TableBody';
 import { TableHead } from '@app/ui/elements/DataTable/TableHead';
-import { useNexNativeHost } from '@app/ui/NexNativeHost.context';
 import { useCwd } from '@app/global-state/slices/explorers.hooks';
-import { useOpenFile, useRemoveTags, useRenameFile } from '@app/operations/file.hooks';
-import { FileForUI, useChangeDirectory } from '@app/operations/explorer.hooks';
+import { nativeHostRef } from '@app/operations/global-modules';
+import { openFile, removeTags, renameFile } from '@app/operations/file.hooks';
+import { changeDirectory, FileForUI } from '@app/operations/explorer.hooks';
 import {
   useDataAvailable,
   useExplorerId,
@@ -41,7 +41,6 @@ const USE_NATIVE_ICON_FOR_REGEX = /(?:exe|ico|dll)/i;
 export const ExplorerPanel: React.FC<{ explorerId: string }> = ({ explorerId }) => {
   const cwd = useCwd(explorerId);
   const dataAvailable = useDataAvailable();
-  const { changeDirectory } = useChangeDirectory(explorerId);
 
   const cwdStringifiedParts = URI.from(cwd)
     .fsPath.split(isWindows ? win32.sep : posix.sep)
@@ -63,6 +62,7 @@ export const ExplorerPanel: React.FC<{ explorerId: string }> = ({ explorerId }) 
 
             async function handleClick() {
               await changeDirectory(
+                explorerId,
                 URI.joinPath(
                   cwdRootPart,
                   ...(isFirstPart ? ['/'] : cwdStringifiedParts.slice(1, idx + 1)),
@@ -137,18 +137,12 @@ const FilesTableRow: React.FC<FilesTableRowProps> = ({
   fileForRow,
   idxOfFileForRow,
 }) => {
-  const nativeHost = useNexNativeHost();
-
   const explorerId = useExplorerId();
   const selectedFiles = useSelectedFiles();
   const fileToRename = useFileToRename();
   const fileIdSelectionGotStartedWith = useFileIdSelectionGotStartedWith();
   const setIdsOfSelectedFiles = useSetIdsOfSelectedFiles();
   const setFileToRenameId = useSetFileToRenameId();
-  const { changeDirectory } = useChangeDirectory(explorerId);
-  const { openFile } = useOpenFile();
-  const { renameFile } = useRenameFile();
-  const { removeTags } = useRemoveTags();
 
   const [nativeIconDataURL, setNativeIconDataURL] = React.useState<string | undefined>();
 
@@ -165,17 +159,17 @@ const FilesTableRow: React.FC<FilesTableRowProps> = ({
       }
 
       async function doFetchIcon() {
-        const icon = await nativeHost.getNativeFileIconDataURL({ fsPath });
+        const icon = await nativeHostRef.current.getNativeFileIconDataURL({ fsPath });
         setNativeIconDataURL(icon);
       }
       void doFetchIcon();
     },
-    [fsPath, extension, nativeHost],
+    [fsPath, extension],
   );
 
   async function openFileOrDirectory(file: FileForUI) {
     if (file.fileType === FILE_TYPE.DIRECTORY) {
-      await changeDirectory(file.uri.path);
+      await changeDirectory(explorerId, file.uri.path);
     } else {
       await openFile(file.uri);
     }
@@ -200,7 +194,9 @@ const FilesTableRow: React.FC<FilesTableRowProps> = ({
     <Row
       key={fileForRow.id}
       draggable
-      onDragStart={() => nativeHost.startNativeFileDnD({ fsPath: URI.from(fileForRow.uri).fsPath })}
+      onDragStart={() =>
+        nativeHostRef.current.startNativeFileDnD({ fsPath: URI.from(fileForRow.uri).fsPath })
+      }
       onClick={(e) => {
         if (e.ctrlKey) {
           // toggle selection of file which was clicked on

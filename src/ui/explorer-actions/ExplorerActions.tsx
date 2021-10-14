@@ -20,18 +20,18 @@ import { CreateFolder } from '@app/ui/explorer-actions/CreateFolder';
 import { useCwd, useFocusedExplorerId } from '@app/global-state/slices/explorers.hooks';
 import { useDraftPasteState } from '@app/global-state/slices/processes.hooks';
 import {
-  useAddTags,
-  useCutOrCopyFiles,
-  useOpenFile,
-  useScheduleMoveFilesToTrash,
+  addTags,
+  cutOrCopyFiles,
+  openFile,
+  scheduleMoveFilesToTrash,
 } from '@app/operations/file.hooks';
 import {
-  useChangeDirectory,
-  useCreateFolder,
-  usePasteFiles,
-  useRevealCwdInOSExplorer,
+  changeDirectory,
+  createFolder,
+  pasteFiles,
+  revealCwdInOSExplorer,
 } from '@app/operations/explorer.hooks';
-import { useAddTag, useGetTags, useRemoveTags } from '@app/operations/tag.hooks';
+import { addTag, removeTags } from '@app/operations/tag.hooks';
 import {
   useExplorerId,
   useFileIdSelectionGotStartedWith,
@@ -44,6 +44,7 @@ import {
   useSetIdsOfSelectedFiles,
 } from '@app/ui/Explorer.context';
 import { useClipboardResources } from '@app/ui/NexClipboard.context';
+import { useGetTags } from '@app/ui/hooks/tag.hooks';
 import { FILE_TYPE } from '@app/domain/types';
 import { KEYS, MOUSE_BUTTONS } from '@app/ui/constants';
 import { useWindowEvent } from '@app/ui/utils/react.util';
@@ -73,17 +74,7 @@ const ExplorerActionsImpl: React.FC = () => {
   const fileIdSelectionGotStartedWith = useFileIdSelectionGotStartedWith();
   const setFileToRenameId = useSetFileToRenameId();
 
-  const { changeDirectory } = useChangeDirectory(explorerId);
-  const { openFile } = useOpenFile();
-  const { cutOrCopyFiles } = useCutOrCopyFiles();
-  const { pasteFiles } = usePasteFiles(explorerId);
-  const { scheduleMoveFilesToTrash } = useScheduleMoveFilesToTrash();
-  const { revealCwdInOSExplorer } = useRevealCwdInOSExplorer(explorerId);
-  const { createFolder } = useCreateFolder(explorerId);
   const { getTags } = useGetTags();
-  const { addTag } = useAddTag();
-  const { addTags } = useAddTags();
-  const { removeTags } = useRemoveTags();
 
   const filterInputRef = React.useRef<HTMLDivElement>(null);
 
@@ -93,7 +84,7 @@ const ExplorerActionsImpl: React.FC = () => {
 
   async function openSelectedFiles() {
     if (selectedFiles.length === 1 && selectedFiles[0].fileType === FILE_TYPE.DIRECTORY) {
-      await changeDirectory(selectedFiles[0].uri.path);
+      await changeDirectory(explorerId, selectedFiles[0].uri.path);
     } else {
       await Promise.all(
         selectedFiles
@@ -120,7 +111,7 @@ const ExplorerActionsImpl: React.FC = () => {
   };
 
   async function navigateUp() {
-    await changeDirectory(URI.joinPath(URI.from(cwd), '..').path);
+    await changeDirectory(explorerId, URI.joinPath(URI.from(cwd), '..').path);
   }
 
   function changeSelectedFile(e: KeyboardEvent) {
@@ -242,7 +233,7 @@ const ExplorerActionsImpl: React.FC = () => {
     },
     { condition: (e) => e.ctrlKey && e.key === KEYS.C, handler: copySelectedFiles },
     { condition: (e) => e.ctrlKey && e.key === KEYS.X, handler: cutSelectedFiles },
-    { condition: (e) => e.ctrlKey && e.key === KEYS.V, handler: pasteFiles },
+    { condition: (e) => e.ctrlKey && e.key === KEYS.V, handler: () => pasteFiles(explorerId) },
     { condition: (e) => e.key === KEYS.F2, handler: triggerRenameForSelectedFiles },
     {
       condition: (e) =>
@@ -292,7 +283,7 @@ const ExplorerActionsImpl: React.FC = () => {
       <Divider orientation="vertical" flexItem />
       <Stack alignItems="flex-end">
         <Stack>
-          <CwdInput cwd={cwd} onSubmit={changeDirectory} />
+          <CwdInput cwd={cwd} onSubmit={(newDir) => changeDirectory(explorerId, newDir)} />
           <Button onClick={navigateUp}>
             <Stack>
               <ArrowUpwardOutlinedIcon fontSize="small" />
@@ -300,7 +291,7 @@ const ExplorerActionsImpl: React.FC = () => {
             </Stack>
           </Button>
           <Tooltip title="Reveal in OS File Explorer">
-            <Button onClick={revealCwdInOSExplorer}>
+            <Button onClick={() => revealCwdInOSExplorer(explorerId)}>
               <Stack>
                 <FolderOutlinedIcon fontSize="small" />
                 Reveal
@@ -333,7 +324,7 @@ const ExplorerActionsImpl: React.FC = () => {
         </Button>
         <Button
           variant={draftPasteState === undefined ? undefined : 'contained'}
-          onClick={pasteFiles}
+          onClick={() => pasteFiles(explorerId)}
           disabled={draftPasteState === undefined}
         >
           <Stack>
@@ -354,7 +345,7 @@ const ExplorerActionsImpl: React.FC = () => {
             Delete
           </Stack>
         </Button>
-        <CreateFolder onSubmit={createFolder} />
+        <CreateFolder onSubmit={(folderName) => createFolder(explorerId, folderName)} />
         {config.featureFlags.tags && (
           <AddTag
             options={Object.entries(getTags()).map(([id, otherValues]) => ({

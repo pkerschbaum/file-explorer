@@ -5,53 +5,23 @@ import { CssBaseline, ThemeProvider } from '@mui/material';
 import { enUS } from '@mui/material/locale';
 import styled from '@mui/styled-engine';
 
-import { NexClipboard } from '@app/platform/clipboard';
-import { NexFileSystem } from '@app/platform/file-system';
-import { NexNativeHost } from '@app/platform/native-host';
-import { NexStorage } from '@app/platform/storage';
 import { BACKGROUND_COLOR, createTheme } from '@app/ui/theme';
 import { store } from '@app/global-state/store';
-import { ClipboardResourcesContext, NexClipboardProvider } from '@app/ui/NexClipboard.context';
-import { NexFileIconThemeProvider } from '@app/ui/NexFileIconTheme.context';
-import { NexFileSystemProvider } from '@app/ui/NexFileSystem.context';
-import { NexNativeHostProvider } from '@app/ui/NexNativeHost.context';
-import { NexStorageProvider } from '@app/ui/NexStorage.context';
-import { FileIconTheme } from '@app/platform/file-icon-theme';
+import { ClipboardResourcesContext } from '@app/ui/NexClipboard.context';
 
-const queryClient = new QueryClient();
+export const queryClient = new QueryClient();
 const theme = createTheme(enUS);
 
-export type AppDependencies = {
-  clipboard: NexClipboard;
-  fileIconTheme: FileIconTheme;
-  fileSystem: NexFileSystem;
-  nativeHost: NexNativeHost;
-  storage: NexStorage;
-};
-
-export const Providers: React.FC<{ appDependencies: AppDependencies }> = ({
-  appDependencies,
-  children,
-}) => (
+export const Providers: React.FC = ({ children }) => (
   <QueryClientProvider client={queryClient}>
-    <NexClipboardProvider value={appDependencies.clipboard}>
-      <NexFileIconThemeProvider value={appDependencies.fileIconTheme}>
-        <NexFileSystemProvider value={appDependencies.fileSystem}>
-          <NexNativeHostProvider value={appDependencies.nativeHost}>
-            <NexStorageProvider value={appDependencies.storage}>
-              <ClipboardResourcesContext>
-                <ThemeProvider theme={theme}>
-                  <Provider store={store}>
-                    <CssBaseline />
-                    <RootContainer className="show-file-icons">{children}</RootContainer>
-                  </Provider>
-                </ThemeProvider>
-              </ClipboardResourcesContext>
-            </NexStorageProvider>
-          </NexNativeHostProvider>
-        </NexFileSystemProvider>
-      </NexFileIconThemeProvider>
-    </NexClipboardProvider>
+    <ClipboardResourcesContext>
+      <ThemeProvider theme={theme}>
+        <Provider store={store}>
+          <CssBaseline />
+          <RootContainer className="show-file-icons">{children}</RootContainer>
+        </Provider>
+      </ThemeProvider>
+    </ClipboardResourcesContext>
   </QueryClientProvider>
 );
 

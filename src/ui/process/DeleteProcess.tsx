@@ -9,15 +9,12 @@ import { URI } from 'code-oss-file-service/out/vs/base/common/uri';
 import { Stack } from '@app/ui/layouts/Stack';
 import { TextBox } from '@app/ui/elements/TextBox';
 import { DeleteProcess as DeleteProcessType, DELETE_PROCESS_STATUS } from '@app/domain/types';
-import { useRemoveProcess, useRunDeleteProcess } from '@app/operations/file.hooks';
+import { removeProcess, runDeleteProcess } from '@app/operations/file.hooks';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { formatter } from '@app/base/utils/formatter.util';
 import { assertUnreachable } from '@app/base/utils/types.util';
 
 export const DeleteProcess: React.FC<{ process: DeleteProcessType }> = ({ process }) => {
-  const { runDeleteProcess } = useRunDeleteProcess();
-  const { removeProcess } = useRemoveProcess();
-
   let contentToRender;
   switch (process.status) {
     case DELETE_PROCESS_STATUS.PENDING_FOR_USER_INPUT: {
@@ -81,8 +78,6 @@ type DeleteProcessCardProps = {
 };
 
 const DeleteProcessCard: React.FC<DeleteProcessCardProps> = ({ process, children }) => {
-  const { removeProcess } = useRemoveProcess();
-
   return (
     <Stack key={process.id} direction="column" alignItems="stretch">
       <Stack spacing={4} justifyContent="space-between">

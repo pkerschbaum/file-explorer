@@ -2,12 +2,8 @@ import * as React from 'react';
 
 import { URI } from 'code-oss-file-service/out/vs/base/common/uri';
 
-import { NexClipboard } from '@app/platform/clipboard';
 import { createContext } from '@app/ui/utils/react.util';
-
-const context = createContext<NexClipboard>('NexClipboard');
-export const useNexClipboard = context.useContextValue;
-export const NexClipboardProvider = context.Provider;
+import { clipboardRef } from '@app/operations/global-modules';
 
 const resourcesContext = createContext<URI[]>('ClipboardResources');
 export const useClipboardResources = resourcesContext.useContextValue;
@@ -15,18 +11,14 @@ export const ClipboardResourcesContext: React.FC<{ children: React.ReactElement 
   children,
 }) => {
   const [clipboardResources, setClipboardResources] = React.useState<URI[]>([]);
-  const clipboard = useNexClipboard();
 
-  React.useEffect(
-    function registerOnClipboardChangedHandler() {
-      const disposable = clipboard.onClipboardChanged(() => {
-        setClipboardResources(clipboard.readResources());
-      });
+  React.useEffect(function registerOnClipboardChangedHandler() {
+    const disposable = clipboardRef.current.onClipboardChanged(() => {
+      setClipboardResources(clipboardRef.current.readResources());
+    });
 
-      return () => disposable.dispose();
-    },
-    [clipboard],
-  );
+    return () => disposable.dispose();
+  }, []);
 
   return (
     <resourcesContext.Provider value={clipboardResources}>{children}</resourcesContext.Provider>

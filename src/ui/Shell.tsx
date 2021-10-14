@@ -11,9 +11,9 @@ import { ProcessCard } from '@app/ui/process/ProcessCard';
 import { useExplorers, useFocusedExplorerId } from '@app/global-state/slices/explorers.hooks';
 import { useProcesses } from '@app/global-state/slices/processes.hooks';
 import {
-  useAddExplorerPanel,
-  useChangeFocusedExplorer,
-  useRemoveExplorerPanel,
+  addExplorerPanel,
+  changeFocusedExplorer,
+  removeExplorerPanel,
 } from '@app/operations/app.hooks';
 import { BACKGROUND_COLOR, tabIndicatorSpanClassName } from '@app/ui/theme';
 import { KEYS } from '@app/ui/constants';
@@ -26,10 +26,6 @@ export const Shell: React.FC = () => {
   const explorers = useExplorers();
   const focusedExplorerId = useFocusedExplorerId();
   const processes = useProcesses();
-
-  const { addExplorerPanel } = useAddExplorerPanel();
-  const { changeFocusedExplorer } = useChangeFocusedExplorer();
-  const { removeExplorerPanel } = useRemoveExplorerPanel();
 
   // on mount, add first (initial) explorer panel
   React.useEffect(() => {

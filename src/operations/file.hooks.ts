@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import * as uuid from 'code-oss-file-service/out/vs/base/common/uuid';
 import { URI, UriComponents } from 'code-oss-file-service/out/vs/base/common/uri';
 import type { ProgressCbArgs } from 'code-oss-file-service/out/vs/base/common/resources';
@@ -7,13 +5,16 @@ import { CancellationTokenSource } from 'code-oss-file-service/out/vs/base/commo
 import { IFileStatWithMetadata } from 'code-oss-file-service/out/vs/platform/files/common/files';
 
 import { actions } from '@app/global-state/slices/processes.slice';
-import { useNexClipboard } from '@app/ui/NexClipboard.context';
-import { useNexFileSystem } from '@app/ui/NexFileSystem.context';
-import { useNexNativeHost } from '@app/ui/NexNativeHost.context';
-import { useNexStorage } from '@app/ui/NexStorage.context';
-import { useDispatch } from '@app/global-state/store';
-import { useProcesses } from '@app/global-state/slices/processes.hooks';
-import { useRefreshFiles } from '@app/global-cache/files';
+import {
+  clipboardRef,
+  dispatchRef,
+  fileSystemRef,
+  nativeHostRef,
+  storageRef,
+  storeRef,
+} from '@app/operations/global-modules';
+import { mapProcess } from '@app/global-state/slices/processes.hooks';
+import { refreshFiles } from '@app/global-cache/files';
 import {
   DeleteProcess,
   DELETE_PROCESS_STATUS,
@@ -22,321 +23,208 @@ import {
   Tag,
 } from '@app/domain/types';
 import { STORAGE_KEY } from '@app/platform/storage';
-import { getDistinctParents, NexFileSystem } from '@app/platform/file-system';
+import { getDistinctParents } from '@app/platform/file-system';
 import { createLogger } from '@app/base/logger/logger';
 import { CustomError } from '@app/base/custom-error';
 import * as tagHooks from '@app/operations/tag.hooks';
-import { useRerenderOnEventFire } from '@app/ui/utils/react.util';
 import { objects } from '@app/base/utils/objects.util';
 
 const logger = createLogger('file.hooks');
 
-export function useScheduleMoveFilesToTrash() {
-  const dispatch = useDispatch();
-
-  function scheduleMoveFilesToTrash(uris: UriComponents[]) {
-    const deleteProcess: Omit<DeleteProcess, 'status'> = {
-      type: PROCESS_TYPE.DELETE,
-      id: uuid.generateUuid(),
-      uris,
-    };
-    dispatch(actions.addDeleteProcess(deleteProcess));
-  }
-
-  return {
-    scheduleMoveFilesToTrash,
+export function scheduleMoveFilesToTrash(uris: UriComponents[]) {
+  const deleteProcess: Omit<DeleteProcess, 'status'> = {
+    type: PROCESS_TYPE.DELETE,
+    id: uuid.generateUuid(),
+    uris,
   };
+  dispatchRef.current(actions.addDeleteProcess(deleteProcess));
 }
 
-export function useRunDeleteProcess() {
-  const dispatch = useDispatch();
-  const processes = useProcesses();
-
-  const fileSystem = useNexFileSystem();
-
-  const refreshFiles = useRefreshFiles();
-
-  async function runDeleteProcess(deleteProcessId: string, options: { useTrash: boolean }) {
-    const deleteProcess = processes.find((process) => process.id === deleteProcessId);
-    if (!deleteProcess || deleteProcess.type !== PROCESS_TYPE.DELETE) {
-      throw new Error(`could not find delete process, deleteProcessId=${deleteProcessId}`);
-    }
-
-    dispatch(
-      actions.updateDeleteProcess({ id: deleteProcessId, status: DELETE_PROCESS_STATUS.RUNNING }),
-    );
-
-    // delete all files (in parallel)
-    try {
-      await Promise.all(
-        deleteProcess.uris.map(async (uri) => {
-          try {
-            await fileSystem.del(URI.from(uri), { useTrash: options.useTrash, recursive: true });
-          } catch (err) {
-            logger.error(`could not delete files`, err);
-            throw err;
-          }
-        }),
-      );
-    } catch (err: unknown) {
-      dispatch(
-        actions.updateDeleteProcess({
-          id: deleteProcessId,
-          status: DELETE_PROCESS_STATUS.FAILURE,
-          error: err instanceof Error ? err.message : `Unknown error occured`,
-        }),
-      );
-    }
-
-    dispatch(
-      actions.updateDeleteProcess({ id: deleteProcessId, status: DELETE_PROCESS_STATUS.SUCCESS }),
-    );
-
-    // invalidate files of all affected directories
-    const distinctParents = getDistinctParents(deleteProcess.uris);
-    await Promise.all(distinctParents.map((directory) => refreshFiles(directory)));
+export async function runDeleteProcess(deleteProcessId: string, options: { useTrash: boolean }) {
+  const processes = storeRef.current.getState().processesSlice.processes.map(mapProcess);
+  const deleteProcess = processes.find((process) => process.id === deleteProcessId);
+  if (!deleteProcess || deleteProcess.type !== PROCESS_TYPE.DELETE) {
+    throw new Error(`could not find delete process, deleteProcessId=${deleteProcessId}`);
   }
 
-  return {
-    runDeleteProcess,
-  };
-}
-
-export function useRemoveProcess() {
-  const dispatch = useDispatch();
-
-  function removeProcess(processId: string) {
-    dispatch(actions.removeProcess({ id: processId }));
-  }
-
-  return {
-    removeProcess,
-  };
-}
-
-export function useOpenFile() {
-  const nativeHost = useNexNativeHost();
-
-  async function openFile(uri: UriComponents) {
-    const executablePath = URI.from(uri).fsPath;
-    await nativeHost.openPath(executablePath);
-  }
-
-  return {
-    openFile,
-  };
-}
-
-export function useCutOrCopyFiles() {
-  const dispatch = useDispatch();
-
-  const clipboard = useNexClipboard();
-
-  function cutOrCopyFiles(files: UriComponents[], cut: boolean) {
-    clipboard.writeResources(files.map((file) => URI.from(file)));
-    dispatch(actions.cutOrCopyFiles({ cut }));
-  }
-
-  return {
-    cutOrCopyFiles,
-  };
-}
-
-export function useRenameFile() {
-  const fileSystem = useNexFileSystem();
-
-  const refreshFiles = useRefreshFiles();
-
-  const { getTagsOfFile } = useGetTagsOfFile();
-  const { addTags } = useAddTags();
-  const { removeTags } = useRemoveTags();
-
-  async function renameFile(sourceFileURI: UriComponents, newName: string) {
-    const sourceFileStat = await fileSystem.resolve(URI.from(sourceFileURI), {
-      resolveMetadata: true,
-    });
-    const targetFileURI = URI.joinPath(URI.from(sourceFileURI), '..', newName);
-    await executeCopyOrMove({
-      sourceFileURI: URI.from(sourceFileURI),
-      sourceFileStat,
-      targetFileURI,
-      pasteShouldMove: true,
-      fileTagActions: {
-        getTagsOfFile,
-        addTags,
-        removeTags,
-      },
-      refreshFiles,
-      fileSystem,
-    });
-    const distinctParents = getDistinctParents([sourceFileURI, targetFileURI]);
-    await Promise.all(distinctParents.map((directory) => refreshFiles(directory)));
-  }
-
-  return {
-    renameFile,
-  };
-}
-
-export function useResolveDeep() {
-  const fileSystem = useNexFileSystem();
-
-  async function resolveDeep(targetToResolve: UriComponents, targetStat: IFileStatWithMetadata) {
-    const fileStatMap: FileStatMap = {};
-    await resolveDeepRecursive(targetToResolve, targetStat, fileStatMap);
-    return fileStatMap;
-  }
-
-  async function resolveDeepRecursive(
-    targetToResolve: UriComponents,
-    targetStat: IFileStatWithMetadata,
-    resultMap: FileStatMap,
-  ) {
-    if (!targetStat.isDirectory) {
-      resultMap[URI.from(targetToResolve).toString()] = targetStat;
-    } else if (targetStat.children && targetStat.children.length > 0) {
-      // recursive resolve
-      await Promise.all(
-        targetStat.children.map(async (child) => {
-          const childStat = await fileSystem.resolve(child.resource, { resolveMetadata: true });
-          return resolveDeepRecursive(child.resource, childStat, resultMap);
-        }),
-      );
-    }
-  }
-
-  return {
-    resolveDeep,
-  };
-}
-
-export function useGetTagsOfFile() {
-  const storage = useNexStorage();
-
-  const { getTags } = tagHooks.useGetTags();
-
-  useRerenderOnEventFire(
-    storage.onDataChanged,
-    React.useCallback((storageKey) => storageKey === STORAGE_KEY.RESOURCES_TO_TAGS, []),
+  dispatchRef.current(
+    actions.updateDeleteProcess({ id: deleteProcessId, status: DELETE_PROCESS_STATUS.RUNNING }),
   );
 
-  const getTagsOfFile = React.useCallback(
-    (file: { uri: UriComponents; ctime: number }): Tag[] => {
-      const tagIdsOfFile = storage.get(STORAGE_KEY.RESOURCES_TO_TAGS)?.[
-        URI.from(file.uri).toString()
-      ];
-
-      if (
-        tagIdsOfFile === undefined ||
-        tagIdsOfFile.tags.length === 0 ||
-        tagIdsOfFile.ctimeOfFile !== file.ctime
-      ) {
-        return [];
-      }
-
-      const tags = getTags();
-      const tagsOfFile = Object.entries(tags)
-        .map(([id, otherValues]) => ({ ...otherValues, id }))
-        .filter((tag) => tagIdsOfFile.tags.some((tagId) => tagId === tag.id));
-
-      logger.debug(`got tags of file from storage`, { file, tagsOfFile });
-
-      return tagsOfFile;
-    },
-    [storage, getTags],
-  );
-
-  return {
-    getTagsOfFile,
-  };
-}
-
-export function useAddTags() {
-  const fileSystem = useNexFileSystem();
-  const storage = useNexStorage();
-
-  const { getTags } = tagHooks.useGetTags();
-
-  useRerenderOnEventFire(
-    storage.onDataChanged,
-    React.useCallback((storageKey) => storageKey === STORAGE_KEY.RESOURCES_TO_TAGS, []),
-  );
-
-  async function addTags(files: UriComponents[], tagIds: string[]) {
-    logger.debug(`adding tags to files...`, { files, tagIds });
-
-    const existingTagIds = Object.keys(getTags());
-    const invalidTagIds = tagIds.filter(
-      (tagId) => !existingTagIds.find((existing) => existing === tagId),
-    );
-    if (invalidTagIds.length > 0) {
-      throw new CustomError(
-        `at least one tag which should be added is not present in the storage`,
-        { invalidTagIds },
-      );
-    }
-
-    const fileToTagsMap = storage.get(STORAGE_KEY.RESOURCES_TO_TAGS) ?? {};
-
+  // delete all files (in parallel)
+  try {
     await Promise.all(
-      files.map(async (file) => {
-        const fileStat = await fileSystem.resolve(URI.from(file), { resolveMetadata: true });
-
-        let existingTagsOfFile = fileToTagsMap[URI.from(file).toString()];
-        if (existingTagsOfFile === undefined || existingTagsOfFile.ctimeOfFile !== fileStat.ctime) {
-          existingTagsOfFile = { ctimeOfFile: fileStat.ctime, tags: [] };
-          fileToTagsMap[URI.from(file).toString()] = existingTagsOfFile;
+      deleteProcess.uris.map(async (uri) => {
+        try {
+          await fileSystemRef.current.del(URI.from(uri), {
+            useTrash: options.useTrash,
+            recursive: true,
+          });
+        } catch (err) {
+          logger.error(`could not delete files`, err);
+          throw err;
         }
-        existingTagsOfFile.tags.push(...tagIds);
       }),
     );
-
-    storage.store(STORAGE_KEY.RESOURCES_TO_TAGS, fileToTagsMap);
-
-    logger.debug(`tags to files added and stored in storage!`);
+  } catch (err: unknown) {
+    dispatchRef.current(
+      actions.updateDeleteProcess({
+        id: deleteProcessId,
+        status: DELETE_PROCESS_STATUS.FAILURE,
+        error: err instanceof Error ? err.message : `Unknown error occured`,
+      }),
+    );
   }
 
-  return {
-    addTags,
-  };
-}
-
-export function useRemoveTags() {
-  const storage = useNexStorage();
-
-  useRerenderOnEventFire(
-    storage.onDataChanged,
-    React.useCallback((storageKey) => storageKey === STORAGE_KEY.RESOURCES_TO_TAGS, []),
+  dispatchRef.current(
+    actions.updateDeleteProcess({ id: deleteProcessId, status: DELETE_PROCESS_STATUS.SUCCESS }),
   );
 
-  function removeTags(files: UriComponents[], tagIds: string[]) {
-    logger.debug(`removing tags from files...`, { files, tagIds });
+  // invalidate files of all affected directories
+  const distinctParents = getDistinctParents(deleteProcess.uris);
+  await Promise.all(distinctParents.map((directory) => refreshFiles(directory)));
+}
 
-    const fileToTagsMap = storage.get(STORAGE_KEY.RESOURCES_TO_TAGS);
+export function removeProcess(processId: string) {
+  dispatchRef.current(actions.removeProcess({ id: processId }));
+}
 
-    if (fileToTagsMap === undefined) {
-      logger.debug(`tags from files removed (no tags were present at all)`);
-      return;
-    }
+export async function openFile(uri: UriComponents) {
+  const executablePath = URI.from(uri).fsPath;
+  await nativeHostRef.current.openPath(executablePath);
+}
 
-    for (const file of files) {
-      const existingTagsOfFile = fileToTagsMap[URI.from(file).toString()];
-      if (existingTagsOfFile !== undefined) {
-        existingTagsOfFile.tags = existingTagsOfFile.tags.filter(
-          (existingTagId) => !tagIds.some((tagIdToRemove) => tagIdToRemove === existingTagId),
-        );
-        fileToTagsMap[URI.from(file).toString()] = existingTagsOfFile;
-      }
-    }
+export function cutOrCopyFiles(files: UriComponents[], cut: boolean) {
+  clipboardRef.current.writeResources(files.map((file) => URI.from(file)));
+  dispatchRef.current(actions.cutOrCopyFiles({ cut }));
+}
 
-    storage.store(STORAGE_KEY.RESOURCES_TO_TAGS, fileToTagsMap);
+export async function renameFile(sourceFileURI: UriComponents, newName: string) {
+  const sourceFileStat = await fileSystemRef.current.resolve(URI.from(sourceFileURI), {
+    resolveMetadata: true,
+  });
+  const targetFileURI = URI.joinPath(URI.from(sourceFileURI), '..', newName);
+  await executeCopyOrMove({
+    sourceFileURI: URI.from(sourceFileURI),
+    sourceFileStat,
+    targetFileURI,
+    pasteShouldMove: true,
+    refreshFiles,
+  });
+  const distinctParents = getDistinctParents([sourceFileURI, targetFileURI]);
+  await Promise.all(distinctParents.map((directory) => refreshFiles(directory)));
+}
 
-    logger.debug(`tags from files removed!`);
+export async function resolveDeep(
+  targetToResolve: UriComponents,
+  targetStat: IFileStatWithMetadata,
+) {
+  const fileStatMap: FileStatMap = {};
+  await resolveDeepRecursive(targetToResolve, targetStat, fileStatMap);
+  return fileStatMap;
+}
+
+async function resolveDeepRecursive(
+  targetToResolve: UriComponents,
+  targetStat: IFileStatWithMetadata,
+  resultMap: FileStatMap,
+) {
+  if (!targetStat.isDirectory) {
+    resultMap[URI.from(targetToResolve).toString()] = targetStat;
+  } else if (targetStat.children && targetStat.children.length > 0) {
+    // recursive resolve
+    await Promise.all(
+      targetStat.children.map(async (child) => {
+        const childStat = await fileSystemRef.current.resolve(child.resource, {
+          resolveMetadata: true,
+        });
+        return resolveDeepRecursive(child.resource, childStat, resultMap);
+      }),
+    );
+  }
+}
+
+export function getTagsOfFile(file: { uri: UriComponents; ctime: number }): Tag[] {
+  const tagIdsOfFile = storageRef.current.get(STORAGE_KEY.RESOURCES_TO_TAGS)?.[
+    URI.from(file.uri).toString()
+  ];
+
+  if (
+    tagIdsOfFile === undefined ||
+    tagIdsOfFile.tags.length === 0 ||
+    tagIdsOfFile.ctimeOfFile !== file.ctime
+  ) {
+    return [];
   }
 
-  return {
-    removeTags,
-  };
+  const tags = tagHooks.getTags();
+  const tagsOfFile = Object.entries(tags)
+    .map(([id, otherValues]) => ({ ...otherValues, id }))
+    .filter((tag) => tagIdsOfFile.tags.some((tagId) => tagId === tag.id));
+
+  logger.debug(`got tags of file from storage`, { file, tagsOfFile });
+
+  return tagsOfFile;
+}
+
+export async function addTags(files: UriComponents[], tagIds: string[]) {
+  logger.debug(`adding tags to files...`, { files, tagIds });
+
+  const existingTagIds = Object.keys(tagHooks.getTags());
+  const invalidTagIds = tagIds.filter(
+    (tagId) => !existingTagIds.find((existing) => existing === tagId),
+  );
+  if (invalidTagIds.length > 0) {
+    throw new CustomError(`at least one tag which should be added is not present in the storage`, {
+      invalidTagIds,
+    });
+  }
+
+  const fileToTagsMap = storageRef.current.get(STORAGE_KEY.RESOURCES_TO_TAGS) ?? {};
+
+  await Promise.all(
+    files.map(async (file) => {
+      const fileStat = await fileSystemRef.current.resolve(URI.from(file), {
+        resolveMetadata: true,
+      });
+
+      let existingTagsOfFile = fileToTagsMap[URI.from(file).toString()];
+      if (existingTagsOfFile === undefined || existingTagsOfFile.ctimeOfFile !== fileStat.ctime) {
+        existingTagsOfFile = { ctimeOfFile: fileStat.ctime, tags: [] };
+        fileToTagsMap[URI.from(file).toString()] = existingTagsOfFile;
+      }
+      existingTagsOfFile.tags.push(...tagIds);
+    }),
+  );
+
+  storageRef.current.store(STORAGE_KEY.RESOURCES_TO_TAGS, fileToTagsMap);
+
+  logger.debug(`tags to files added and stored in storage!`);
+}
+
+export function removeTags(files: UriComponents[], tagIds: string[]) {
+  logger.debug(`removing tags from files...`, { files, tagIds });
+
+  const fileToTagsMap = storageRef.current.get(STORAGE_KEY.RESOURCES_TO_TAGS);
+
+  if (fileToTagsMap === undefined) {
+    logger.debug(`tags from files removed (no tags were present at all)`);
+    return;
+  }
+
+  for (const file of files) {
+    const existingTagsOfFile = fileToTagsMap[URI.from(file).toString()];
+    if (existingTagsOfFile !== undefined) {
+      existingTagsOfFile.tags = existingTagsOfFile.tags.filter(
+        (existingTagId) => !tagIds.some((tagIdToRemove) => tagIdToRemove === existingTagId),
+      );
+      fileToTagsMap[URI.from(file).toString()] = existingTagsOfFile;
+    }
+  }
+
+  storageRef.current.store(STORAGE_KEY.RESOURCES_TO_TAGS, fileToTagsMap);
+
+  logger.debug(`tags from files removed!`);
 }
 
 export async function executeCopyOrMove({
@@ -346,9 +234,7 @@ export async function executeCopyOrMove({
   pasteShouldMove,
   cancellationTokenSource,
   progressCb,
-  fileTagActions,
   refreshFiles,
-  fileSystem,
 }: {
   sourceFileURI: URI;
   targetFileURI: URI;
@@ -356,21 +242,15 @@ export async function executeCopyOrMove({
   pasteShouldMove: boolean;
   cancellationTokenSource?: CancellationTokenSource;
   progressCb?: (args: ProgressCbArgs) => void;
-  fileTagActions: {
-    getTagsOfFile: ReturnType<typeof useGetTagsOfFile>['getTagsOfFile'];
-    addTags: ReturnType<typeof useAddTags>['addTags'];
-    removeTags: ReturnType<typeof useRemoveTags>['removeTags'];
-  };
   refreshFiles: (directory: UriComponents) => Promise<void>;
-  fileSystem: NexFileSystem;
 }) {
   // Move/Copy File
   const operation = pasteShouldMove
-    ? fileSystem.move(sourceFileURI, targetFileURI, false, {
+    ? fileSystemRef.current.move(sourceFileURI, targetFileURI, false, {
         token: cancellationTokenSource?.token,
         progressCb,
       })
-    : fileSystem.copy(sourceFileURI, targetFileURI, false, {
+    : fileSystemRef.current.copy(sourceFileURI, targetFileURI, false, {
         token: cancellationTokenSource?.token,
         progressCb,
       });
@@ -379,17 +259,15 @@ export async function executeCopyOrMove({
     await operation;
 
     // Also copy tags to destination
-    const tagsOfSourceFile = fileTagActions
-      .getTagsOfFile({
-        uri: sourceFileURI,
-        ctime: sourceFileStat.ctime,
-      })
-      .map((t) => t.id);
-    await fileTagActions.addTags([targetFileURI], tagsOfSourceFile);
+    const tagsOfSourceFile = getTagsOfFile({
+      uri: sourceFileURI,
+      ctime: sourceFileStat.ctime,
+    }).map((t) => t.id);
+    await addTags([targetFileURI], tagsOfSourceFile);
 
     // If move operation was performed, remove tags from source URI
     if (pasteShouldMove) {
-      fileTagActions.removeTags([sourceFileURI], tagsOfSourceFile);
+      removeTags([sourceFileURI], tagsOfSourceFile);
     }
   } catch (err: unknown) {
     /*
@@ -398,7 +276,7 @@ export async function executeCopyOrMove({
      * since "findValidPasteFileTarget" makes sure that the paste target URI is new, without conflict.
      */
     try {
-      await fileSystem.del(targetFileURI, { useTrash: false, recursive: true });
+      await fileSystemRef.current.del(targetFileURI, { useTrash: false, recursive: true });
     } catch {
       // ignore
     }
