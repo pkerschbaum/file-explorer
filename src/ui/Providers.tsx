@@ -6,12 +6,12 @@ import { enUS } from '@mui/material/locale';
 import styled from '@mui/styled-engine';
 
 import { BACKGROUND_COLOR, createTheme } from '@app/ui/theme';
-import { store } from '@app/global-state/store';
+import { RootStore } from '@app/global-state/store';
 
 export const queryClient = new QueryClient();
 const theme = createTheme(enUS);
 
-export const Providers: React.FC = ({ children }) => (
+export const Providers: React.FC<{ store: RootStore }> = ({ store, children }) => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider theme={theme}>
       <Provider store={store}>

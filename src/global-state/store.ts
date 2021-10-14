@@ -4,7 +4,9 @@ import { createSelectorHook, useDispatch as useReduxDispatch } from 'react-redux
 import { numbers } from '@app/base/utils/numbers.util';
 import { typedPath } from '@app/base/utils/types.util';
 import loggerMiddleware from '@app/global-state/logger.middleware';
+import { persistMiddleware } from '@app/global-state/persist-state.middleware';
 import rootReducer from '@app/global-state/reducers';
+import { StorageState } from '@app/global-state/slices/persisted.slice';
 
 export type RootState = ReturnType<typeof rootReducer>;
 
@@ -19,23 +21,34 @@ const ignoredPaths = numbers
   .map((num) =>
     typedPath<RootState>()('processesSlice', 'processes', num, 'cancellationTokenSource'),
   );
-export const store = configureStore({
-  reducer: rootReducer,
-  middleware: (getDefaultMiddleware) => [
-    loggerMiddleware,
-    ...getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActionPaths: ['payload.cancellationTokenSource'],
-        ignoredPaths,
-      },
-      immutableCheck: {
-        ignoredPaths,
-      },
-    }),
-  ],
-});
+export function createStoreInstance() {
+  const initialPersistedData = {
+    tags: {},
+    resourcesToTags: {},
+    ...(window.preload.readPersistedData() as StorageState | Partial<StorageState>),
+  };
+  window.preload.persistData(initialPersistedData);
 
-export type RootStore = typeof store;
+  return configureStore({
+    preloadedState: { persistedSlice: initialPersistedData },
+    reducer: rootReducer,
+    middleware: (getDefaultMiddleware) => [
+      loggerMiddleware,
+      persistMiddleware,
+      ...getDefaultMiddleware({
+        serializableCheck: {
+          ignoredActionPaths: ['payload.cancellationTokenSource'],
+          ignoredPaths,
+        },
+        immutableCheck: {
+          ignoredPaths,
+        },
+      }),
+    ],
+  });
+}
+
+export type RootStore = ReturnType<typeof createStoreInstance>;
 export type AppDispatch = RootStore['dispatch'];
 
 export const useSelector = createSelectorHook<RootState>();

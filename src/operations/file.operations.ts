@@ -19,15 +19,18 @@ import {
   dispatchRef,
   fileSystemRef,
   nativeHostRef,
-  storageRef,
   storeRef,
 } from '@app/operations/global-modules';
 import * as tagOperations from '@app/operations/tag.operations';
 import { refreshFiles } from '@app/global-cache/files';
+import { RootState } from '@app/global-state/store';
+import {
+  actions as persistedSliceActions,
+  STORAGE_KEY,
+} from '@app/global-state/slices/persisted.slice';
 import { actions } from '@app/global-state/slices/processes.slice';
 import { mapProcess } from '@app/global-state/slices/processes.hooks';
 import { getDistinctParents } from '@app/platform/file-system';
-import { STORAGE_KEY } from '@app/platform/storage';
 
 const logger = createLogger('file.hooks');
 
@@ -144,10 +147,11 @@ async function resolveDeepRecursive(
   }
 }
 
-export function getTagsOfFile(file: { uri: UriComponents; ctime: number }): Tag[] {
-  const tagIdsOfFile = storageRef.current.get(STORAGE_KEY.RESOURCES_TO_TAGS)?.[
-    URI.from(file.uri).toString()
-  ];
+export function getTagsOfFile(
+  state: RootState,
+  file: { uri: UriComponents; ctime: number },
+): Tag[] {
+  const tagIdsOfFile = state.persistedSlice.resourcesToTags[URI.from(file.uri).toString()];
 
   if (
     tagIdsOfFile === undefined ||
@@ -180,7 +184,9 @@ export async function addTags(files: UriComponents[], tagIds: string[]) {
     });
   }
 
-  const fileToTagsMap = storageRef.current.get(STORAGE_KEY.RESOURCES_TO_TAGS) ?? {};
+  const fileToTagsMap = objects.deepCopyJson(
+    storeRef.current.getState().persistedSlice.resourcesToTags,
+  );
 
   await Promise.all(
     files.map(async (file) => {
@@ -197,7 +203,9 @@ export async function addTags(files: UriComponents[], tagIds: string[]) {
     }),
   );
 
-  storageRef.current.store(STORAGE_KEY.RESOURCES_TO_TAGS, fileToTagsMap);
+  dispatchRef.current(
+    persistedSliceActions.storeValue({ key: STORAGE_KEY.RESOURCES_TO_TAGS, value: fileToTagsMap }),
+  );
 
   logger.debug(`tags to files added and stored in storage!`);
 }
@@ -205,12 +213,9 @@ export async function addTags(files: UriComponents[], tagIds: string[]) {
 export function removeTags(files: UriComponents[], tagIds: string[]) {
   logger.debug(`removing tags from files...`, { files, tagIds });
 
-  const fileToTagsMap = storageRef.current.get(STORAGE_KEY.RESOURCES_TO_TAGS);
-
-  if (fileToTagsMap === undefined) {
-    logger.debug(`tags from files removed (no tags were present at all)`);
-    return;
-  }
+  const fileToTagsMap = objects.deepCopyJson(
+    storeRef.current.getState().persistedSlice.resourcesToTags,
+  );
 
   for (const file of files) {
     const existingTagsOfFile = fileToTagsMap[URI.from(file).toString()];
@@ -222,7 +227,9 @@ export function removeTags(files: UriComponents[], tagIds: string[]) {
     }
   }
 
-  storageRef.current.store(STORAGE_KEY.RESOURCES_TO_TAGS, fileToTagsMap);
+  dispatchRef.current(
+    persistedSliceActions.storeValue({ key: STORAGE_KEY.RESOURCES_TO_TAGS, value: fileToTagsMap }),
+  );
 
   logger.debug(`tags from files removed!`);
 }
@@ -259,7 +266,7 @@ export async function executeCopyOrMove({
     await operation;
 
     // Also copy tags to destination
-    const tagsOfSourceFile = getTagsOfFile({
+    const tagsOfSourceFile = getTagsOfFile(storeRef.current.getState(), {
       uri: sourceFileURI,
       ctime: sourceFileStat.ctime,
     }).map((t) => t.id);

@@ -6,8 +6,8 @@ import { useUpdateAtom } from 'jotai/utils';
 import { arrays } from '@app/base/utils/arrays.util';
 import { strings } from '@app/base/utils/strings.util';
 import { FileForUI, FILE_TYPE } from '@app/domain/types';
+import { useEnrichFilesWithTags } from '@app/global-state/slices/persisted.hooks';
 import { useFilesForUI } from '@app/ui/hooks/files.hooks';
-import { useEnrichFilesWithTags } from '@app/ui/hooks/tag.hooks';
 import { scopedAtom, SyncSetAtom, usePrevious, useScopedAtom } from '@app/ui/utils/react.util';
 
 const filterInputAtom = scopedAtom<string>();

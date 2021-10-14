@@ -18,6 +18,7 @@ import { TextBox } from '@app/ui/elements/TextBox';
 import { AddTag } from '@app/ui/explorer-actions/AddTag';
 import { CreateFolder } from '@app/ui/explorer-actions/CreateFolder';
 import { useCwd, useIdOfFocusedExplorerPanel } from '@app/global-state/slices/explorers.hooks';
+import { useTags } from '@app/global-state/slices/persisted.hooks';
 import { useDraftPasteState } from '@app/global-state/slices/processes.hooks';
 import {
   addTags,
@@ -44,7 +45,6 @@ import {
   useSetIdsOfSelectedFiles,
 } from '@app/ui/Explorer.context';
 import { useClipboardResources } from '@app/ui/hooks/clipboard-resources.hooks';
-import { useGetTags } from '@app/ui/hooks/tag.hooks';
 import { FILE_TYPE } from '@app/domain/types';
 import { KEYS, MOUSE_BUTTONS } from '@app/ui/constants';
 import { useWindowEvent } from '@app/ui/utils/react.util';
@@ -74,7 +74,7 @@ const ExplorerActionsImpl: React.FC = () => {
   const fileIdSelectionGotStartedWith = useFileIdSelectionGotStartedWith();
   const setFileToRenameId = useSetFileToRenameId();
 
-  const { getTags } = useGetTags();
+  const tags = useTags();
 
   const filterInputRef = React.useRef<HTMLDivElement>(null);
 
@@ -348,7 +348,7 @@ const ExplorerActionsImpl: React.FC = () => {
         <CreateFolder onSubmit={(folderName) => createFolder(explorerId, folderName)} />
         {config.featureFlags.tags && (
           <AddTag
-            options={Object.entries(getTags()).map(([id, otherValues]) => ({
+            options={Object.entries(tags).map(([id, otherValues]) => ({
               ...otherValues,
               id,
             }))}

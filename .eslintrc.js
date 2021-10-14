@@ -20,6 +20,7 @@ module.exports = {
   plugins: ['node', 'jsx-a11y', 'import'],
   ignorePatterns: ['**/*.js'],
   rules: {
+    'no-console': 'error',
     'no-extra-boolean-cast': 'off',
     'no-inner-declarations': 'off',
     'node/no-process-env': 'error',

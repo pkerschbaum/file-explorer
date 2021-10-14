@@ -5,8 +5,7 @@ import { fakeClipboard } from '@app/platform/clipboard.fake';
 import { fakeFileIconTheme } from '@app/platform/file-icon-theme.fake';
 import { fakeFileSystem } from '@app/platform/file-system.fake';
 import { fakeNativeHost } from '@app/platform/native-host.fake';
-import { fakeStorage } from '@app/platform/storage.fake';
-import { store } from '@app/global-state/store';
+import { createStoreInstance } from '@app/global-state/store';
 import {
   storeRef,
   dispatchRef,
@@ -15,7 +14,6 @@ import {
   fileIconThemeRef,
   fileSystemRef,
   nativeHostRef,
-  storageRef,
 } from '@app/operations/global-modules';
 import { Providers, queryClient } from '@app/ui/Providers';
 import { ProcessCard } from '@app/ui/process/ProcessCard';
@@ -28,6 +26,7 @@ export default {
     (story) => {
       queryClientRef.current = queryClient;
 
+      const store = createStoreInstance();
       storeRef.current = store;
       dispatchRef.current = store.dispatch;
 
@@ -35,9 +34,8 @@ export default {
       fileIconThemeRef.current = fakeFileIconTheme;
       fileSystemRef.current = fakeFileSystem;
       nativeHostRef.current = fakeNativeHost;
-      storageRef.current = fakeStorage;
 
-      return <Providers>{story()}</Providers>;
+      return <Providers store={store}>{story()}</Providers>;
     },
   ],
 } as ComponentMeta<typeof ProcessCard>;

@@ -129,7 +129,12 @@ export const AddTag: React.FC<AddTagProps> = ({
                 />
               )}
               <OptionLabel>{option.name}</OptionLabel>
-              <IconButton onClick={() => onValueDeleted(option)}>
+              <IconButton
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onValueDeleted(option);
+                }}
+              >
                 <CancelIcon />
               </IconButton>
             </Stack>

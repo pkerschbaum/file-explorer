@@ -2,7 +2,6 @@ import { render } from '@app/ui/Root';
 import { createClipboard } from '@app/platform/clipboard';
 import { createFileSystem } from '@app/platform/file-system';
 import { createNativeHost } from '@app/platform/native-host';
-import { createStorage } from '@app/platform/storage';
 
 async function rendererScriptEntryPoint() {
   // wait for preload script to finish
@@ -18,13 +17,11 @@ async function rendererScriptEntryPoint() {
   // render React application
   const clipboard = createClipboard();
   const fileSystem = createFileSystem();
-  const storage = createStorage();
   const nativeHost = createNativeHost();
   render({
     clipboard,
     fileIconTheme: window.preload.fileIconTheme,
     fileSystem,
-    storage,
     nativeHost,
   });
 }

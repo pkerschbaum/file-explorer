@@ -1,7 +1,7 @@
 // taken from https://github.com/microsoft/TypeScript/issues/1897#issuecomment-710744173
 type primitive = null | boolean | number | string;
 
-type DefinitelyNotJsonable = ((...args: any[]) => any) | undefined;
+type DefinitelyNotJsonable = (...args: any[]) => any;
 
 export type JsonObject<T> = { [prop: string]: IsJsonable<T> };
 export type IsJsonable<T> =
@@ -12,6 +12,10 @@ export type IsJsonable<T> =
     ? // Non-jsonable type union was found empty
       T extends primitive
       ? // Primitive is acceptable
+        T
+      : // check if undefined
+      T extends undefined
+      ? // undefined is acceptable (will just get removed)
         T
       : // Otherwise check if array
       T extends (infer U)[]

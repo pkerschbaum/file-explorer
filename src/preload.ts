@@ -29,8 +29,8 @@ declare global {
       shellTrashItem: typeof shell.trashItem;
       clipboardReadResources: () => URI[];
       clipboardWriteResources: (resources: URI[]) => void;
-      storeSet: (key: string, value: unknown) => void;
-      storeGet: (key: string) => unknown;
+      persistData: (entireValue: Record<string, unknown>) => void;
+      readPersistedData: () => unknown;
       revealResourcesInOS: (resources: URI[]) => void;
     };
   }
@@ -63,8 +63,10 @@ window.preload.initializationPromise = (async function preloadScriptEntryPoint()
         Buffer.from(resourcesToBuffer(resources)),
         undefined,
       ),
-    storeSet: (...args) => store.set(...args),
-    storeGet: (...args) => store.get(...args),
+    persistData: (entireData) => {
+      store.store = entireData;
+    },
+    readPersistedData: () => store.store,
     revealResourcesInOS: (resources) => {
       for (const r of resources) {
         if (r.scheme === Schemas.file || r.scheme === Schemas.userData) {
