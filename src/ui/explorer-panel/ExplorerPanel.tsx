@@ -2,9 +2,9 @@ import * as React from 'react';
 import { Box, Breadcrumbs, Button, Chip, Skeleton, TextField } from '@mui/material';
 import styled, { css } from '@mui/styled-engine';
 
-import { URI } from 'code-oss-file-service/out/vs/base/common/uri';
-import { posix, win32 } from 'code-oss-file-service/out/vs/base/common/path';
-import { isWindows } from 'code-oss-file-service/out/vs/base/common/platform';
+import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import { posix, win32 } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/path';
+import { isWindows } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/platform';
 
 import { FileForUI, FILE_TYPE } from '@app/domain/types';
 import { commonStyles } from '@app/ui/Common.styles';

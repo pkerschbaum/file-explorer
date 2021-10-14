@@ -10,7 +10,7 @@ import ContentPasteOutlinedIcon from '@mui/icons-material/ContentPasteOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 
-import { URI, UriComponents } from 'code-oss-file-service/out/vs/base/common/uri';
+import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 
 import { config } from '@app/config';
 import { Stack } from '@app/ui/layouts/Stack';

@@ -1,6 +1,9 @@
-import { URI, UriComponents } from 'code-oss-file-service/out/vs/base/common/uri';
-import { normalize } from 'code-oss-file-service/out/vs/base/common/path';
-import { IFileService, IFileStat } from 'code-oss-file-service/out/vs/platform/files/common/files';
+import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import { normalize } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/path';
+import {
+  IFileService,
+  IFileStat,
+} from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 
 import { File, FILE_TYPE } from '@app/domain/types';
 import { arrays } from '@app/base/utils/arrays.util';

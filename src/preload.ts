@@ -1,9 +1,9 @@
 import { clipboard, ipcRenderer, shell } from 'electron';
 import Store from 'electron-store';
 
-import { URI } from 'code-oss-file-service/out/vs/base/common/uri';
-import { VSBuffer } from 'code-oss-file-service/out/vs/base/common/buffer';
-import { Schemas } from 'code-oss-file-service/out/vs/base/common/network';
+import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import { VSBuffer } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/buffer';
+import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
 
 import { config } from '@app/config';
 import { bootstrapModule as bootstrapFileServiceModule } from '@app/platform/file-service';

@@ -1,5 +1,5 @@
-import { URI } from 'code-oss-file-service/out/vs/base/common/uri';
-import { IFileStatWithMetadata } from 'code-oss-file-service/out/vs/platform/files/common/files';
+import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import { IFileStatWithMetadata } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 
 import { PlatformFileSystem } from '@app/platform/file-system';
 

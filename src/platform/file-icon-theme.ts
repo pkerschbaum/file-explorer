@@ -1,15 +1,18 @@
-import { URI } from 'code-oss-file-icon-theme/out/vs/base/common/uri';
-import * as json from 'code-oss-file-icon-theme/out/vs/base/common/json';
-import { ILanguageExtensionPoint } from 'code-oss-file-icon-theme/out/vs/editor/common/services/modeService';
-import { ModesRegistry } from 'code-oss-file-icon-theme/out/vs/editor/common/modes/modesRegistry';
-import { ModeServiceImpl } from 'code-oss-file-icon-theme/out/vs/editor/common/services/modeServiceImpl';
-import { getIconClasses as getIconClassesOriginal } from 'code-oss-file-icon-theme/out/vs/editor/common/services/getIconClasses';
-import { FileIconThemeData } from 'code-oss-file-icon-theme/out/vs/workbench/services/themes/browser/fileIconThemeData';
+import { URI } from '@pkerschbaum/code-oss-file-icon-theme/out/vs/base/common/uri';
+import * as json from '@pkerschbaum/code-oss-file-icon-theme/out/vs/base/common/json';
+import { ILanguageExtensionPoint } from '@pkerschbaum/code-oss-file-icon-theme/out/vs/editor/common/services/modeService';
+import { ModesRegistry } from '@pkerschbaum/code-oss-file-icon-theme/out/vs/editor/common/modes/modesRegistry';
+import { ModeServiceImpl } from '@pkerschbaum/code-oss-file-icon-theme/out/vs/editor/common/services/modeServiceImpl';
+import { getIconClasses as getIconClassesOriginal } from '@pkerschbaum/code-oss-file-icon-theme/out/vs/editor/common/services/getIconClasses';
+import { FileIconThemeData } from '@pkerschbaum/code-oss-file-icon-theme/out/vs/workbench/services/themes/browser/fileIconThemeData';
 import {
   IThemeExtensionPoint,
   ExtensionData,
-} from 'code-oss-file-icon-theme/out/vs/workbench/services/themes/common/workbenchThemeService';
-import { IFileService, FileKind } from 'code-oss-file-service/out/vs/platform/files/common/files';
+} from '@pkerschbaum/code-oss-file-icon-theme/out/vs/workbench/services/themes/common/workbenchThemeService';
+import {
+  IFileService,
+  FileKind,
+} from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 
 import {
   EXTENSIONS_DIRECTORY_URI,

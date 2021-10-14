@@ -1,7 +1,7 @@
 import { createAction, createReducer } from '@reduxjs/toolkit';
 
-import { UriComponents } from 'code-oss-file-service/out/vs/base/common/uri';
-import { CancellationTokenSource } from 'code-oss-file-service/out/vs/base/common/cancellation';
+import { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import { CancellationTokenSource } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/cancellation';
 
 import { createLogger } from '@app/base/logger/logger';
 import {

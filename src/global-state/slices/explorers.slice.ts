@@ -1,7 +1,7 @@
 import { createAction, createReducer } from '@reduxjs/toolkit';
 
-import * as uuid from 'code-oss-file-service/out/vs/base/common/uuid';
-import { UriComponents } from 'code-oss-file-service/out/vs/base/common/uri';
+import * as uuid from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uuid';
+import { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 
 export type ExplorerSliceState = {
   explorerPanels: {

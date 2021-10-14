@@ -1,5 +1,5 @@
-import { URI } from 'code-oss-file-icon-theme/out/vs/base/common/uri';
-import * as path from 'code-oss-file-icon-theme/out/vs/base/common/path';
+import { URI } from '@pkerschbaum/code-oss-file-icon-theme/out/vs/base/common/uri';
+import * as path from '@pkerschbaum/code-oss-file-icon-theme/out/vs/base/common/path';
 
 export const EXTENSIONS_DIRECTORY_URI = URI.file(
   path.join(__dirname, 'static', 'icon-theme', 'language-extensions'),

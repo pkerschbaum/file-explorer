@@ -1,4 +1,4 @@
-import { Emitter, Event } from 'code-oss-file-service/out/vs/base/common/event';
+import { Emitter, Event } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/event';
 
 import { FileToTags, Tag } from '@app/domain/types';
 

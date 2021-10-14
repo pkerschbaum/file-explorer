@@ -1,13 +1,13 @@
-import * as resources from 'code-oss-file-service/out/vs/base/common/resources';
-import * as uuid from 'code-oss-file-service/out/vs/base/common/uuid';
-import { extname, basename } from 'code-oss-file-service/out/vs/base/common/path';
-import type { ProgressCbArgs } from 'code-oss-file-service/out/vs/base/common/resources';
-import { Constants } from 'code-oss-file-service/out/vs/base/common/uint';
-import { isLinux } from 'code-oss-file-service/out/vs/base/common/platform';
-import { URI, UriComponents } from 'code-oss-file-service/out/vs/base/common/uri';
-import { CancellationTokenSource } from 'code-oss-file-service/out/vs/base/common/cancellation';
-import { Schemas } from 'code-oss-file-service/out/vs/base/common/network';
-import { IFileStat } from 'code-oss-file-service/out/vs/platform/files/common/files';
+import * as resources from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
+import * as uuid from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uuid';
+import { extname, basename } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/path';
+import type { ProgressCbArgs } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
+import { Constants } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uint';
+import { isLinux } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/platform';
+import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import { CancellationTokenSource } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/cancellation';
+import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
+import { IFileStat } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 
 import { CustomError } from '@app/base/custom-error';
 import { createLogger } from '@app/base/logger/logger';

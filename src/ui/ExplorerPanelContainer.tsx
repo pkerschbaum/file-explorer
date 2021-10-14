@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { URI } from 'code-oss-file-service/out/vs/base/common/uri';
+import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 
 import { ExplorerContextProvider } from '@app/ui/Explorer.context';
 import { ExplorerPanel } from '@app/ui/explorer-panel/ExplorerPanel';

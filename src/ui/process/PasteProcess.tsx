@@ -4,7 +4,7 @@ import styled from '@mui/styled-engine';
 import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
 import ClearAllIcon from '@mui/icons-material/ClearAll';
 
-import { URI } from 'code-oss-file-service/out/vs/base/common/uri';
+import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 
 import { Stack } from '@app/ui/layouts/Stack';
 import { TextBox } from '@app/ui/elements/TextBox';

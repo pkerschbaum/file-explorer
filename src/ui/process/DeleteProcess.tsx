@@ -4,7 +4,7 @@ import ClearAllIcon from '@mui/icons-material/ClearAll';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 
-import { URI } from 'code-oss-file-service/out/vs/base/common/uri';
+import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 
 import { Stack } from '@app/ui/layouts/Stack';
 import { TextBox } from '@app/ui/elements/TextBox';

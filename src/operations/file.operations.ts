@@ -1,8 +1,8 @@
-import * as uuid from 'code-oss-file-service/out/vs/base/common/uuid';
-import { URI, UriComponents } from 'code-oss-file-service/out/vs/base/common/uri';
-import type { ProgressCbArgs } from 'code-oss-file-service/out/vs/base/common/resources';
-import { CancellationTokenSource } from 'code-oss-file-service/out/vs/base/common/cancellation';
-import { IFileStatWithMetadata } from 'code-oss-file-service/out/vs/platform/files/common/files';
+import * as uuid from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uuid';
+import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import type { ProgressCbArgs } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
+import { CancellationTokenSource } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/cancellation';
+import { IFileStatWithMetadata } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 
 import { CustomError } from '@app/base/custom-error';
 import { createLogger } from '@app/base/logger/logger';

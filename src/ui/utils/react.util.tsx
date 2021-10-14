@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { atom, useAtom } from 'jotai';
 import { PrimitiveAtom, Scope, WritableAtom } from 'jotai/core/atom';
 
-import { Event } from 'code-oss-file-service/out/vs/base/common/event';
+import { Event } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/event';
 
 type EventHandlers<E extends keyof WindowEventMap> = Array<{
   condition: (e: WindowEventMap[E]) => boolean;

@@ -1,4 +1,4 @@
-import { Schemas } from 'code-oss-file-service/out/vs/base/common/network';
+import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
 
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { dispatchRef, fileSystemRef } from '@app/operations/global-modules';

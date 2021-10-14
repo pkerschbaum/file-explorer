@@ -1,4 +1,4 @@
-import { UriComponents } from 'code-oss-file-service/out/vs/base/common/uri';
+import { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 
 import { strings } from '@app/base/utils/strings.util';
 import { FileDragStart } from '@app/ipc/common/file-drag-start';

@@ -1,6 +1,6 @@
-import { URI, UriComponents } from 'code-oss-file-service/out/vs/base/common/uri';
-import { basename, extname } from 'code-oss-file-service/out/vs/base/common/resources';
-import { Schemas } from 'code-oss-file-service/out/vs/base/common/network';
+import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import { basename, extname } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
+import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
 
 import { strings } from '@app/base/utils/strings.util';
 

@@ -1,6 +1,6 @@
 import { useQuery } from 'react-query';
 
-import { URI, UriComponents } from 'code-oss-file-service/out/vs/base/common/uri';
+import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 
 import { File } from '@app/domain/types';
 import { QUERY_KEYS } from '@app/global-cache/query-keys';

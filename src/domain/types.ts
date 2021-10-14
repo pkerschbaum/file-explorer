@@ -1,6 +1,6 @@
-import { UriComponents } from 'code-oss-file-service/out/vs/base/common/uri';
-import { CancellationTokenSource } from 'code-oss-file-service/out/vs/base/common/cancellation';
-import { IFileStatWithMetadata } from 'code-oss-file-service/out/vs/platform/files/common/files';
+import { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import { CancellationTokenSource } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/cancellation';
+import { IFileStatWithMetadata } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 
 export enum FILE_TYPE {
   FILE = 'FILE',
