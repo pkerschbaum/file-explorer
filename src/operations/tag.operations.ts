@@ -1,9 +1,9 @@
 import { nanoid } from '@reduxjs/toolkit';
 
 import { createLogger } from '@app/base/logger/logger';
-import { STORAGE_KEY } from '@app/platform/storage';
 import { Tag } from '@app/domain/types';
 import { storageRef } from '@app/operations/global-modules';
+import { STORAGE_KEY } from '@app/platform/storage';
 
 const logger = createLogger('tag.hooks');
 

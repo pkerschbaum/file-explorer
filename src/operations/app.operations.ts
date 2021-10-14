@@ -1,8 +1,8 @@
 import { Schemas } from 'code-oss-file-service/out/vs/base/common/network';
 
 import { uriHelper } from '@app/base/utils/uri-helper';
-import { actions, generateExplorerId } from '@app/global-state/slices/explorers.slice';
 import { dispatchRef, fileSystemRef } from '@app/operations/global-modules';
+import { actions, generateExplorerId } from '@app/global-state/slices/explorers.slice';
 
 export async function addExplorerPanel() {
   const explorerId = generateExplorerId();

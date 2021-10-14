@@ -10,7 +10,7 @@ import { Stack } from '@app/ui/layouts/Stack';
 import { TextBox } from '@app/ui/elements/TextBox';
 import { LinearProgress } from '@app/ui/elements/LinearProgress';
 import { PasteProcess as PasteProcessType, PASTE_PROCESS_STATUS } from '@app/domain/types';
-import { removeProcess } from '@app/operations/file.hooks';
+import { removeProcess } from '@app/operations/file.operations';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { formatter } from '@app/base/utils/formatter.util';
 import { byteSize } from '@app/base/utils/byte-size.util';

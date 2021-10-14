@@ -6,6 +6,7 @@ import { URI } from 'code-oss-file-service/out/vs/base/common/uri';
 import { posix, win32 } from 'code-oss-file-service/out/vs/base/common/path';
 import { isWindows } from 'code-oss-file-service/out/vs/base/common/platform';
 
+import { FileForUI, FILE_TYPE } from '@app/domain/types';
 import { commonStyles } from '@app/ui/Common.styles';
 import { Stack } from '@app/ui/layouts/Stack';
 import { TextBox } from '@app/ui/elements/TextBox';
@@ -17,8 +18,8 @@ import { TableBody } from '@app/ui/elements/DataTable/TableBody';
 import { TableHead } from '@app/ui/elements/DataTable/TableHead';
 import { useCwd } from '@app/global-state/slices/explorers.hooks';
 import { nativeHostRef } from '@app/operations/global-modules';
-import { openFile, removeTags, renameFile } from '@app/operations/file.hooks';
-import { changeDirectory, FileForUI } from '@app/operations/explorer.hooks';
+import { openFile, removeTags, renameFile } from '@app/operations/file.operations';
+import { changeDirectory } from '@app/operations/explorer.operations';
 import {
   useDataAvailable,
   useExplorerId,
@@ -29,7 +30,6 @@ import {
   useSetFileToRenameId,
   useSetIdsOfSelectedFiles,
 } from '@app/ui/Explorer.context';
-import { FILE_TYPE } from '@app/domain/types';
 import { KEYS } from '@app/ui/constants';
 import { strings } from '@app/base/utils/strings.util';
 import { formatter } from '@app/base/utils/formatter.util';

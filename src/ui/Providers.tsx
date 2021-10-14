@@ -7,21 +7,18 @@ import styled from '@mui/styled-engine';
 
 import { BACKGROUND_COLOR, createTheme } from '@app/ui/theme';
 import { store } from '@app/global-state/store';
-import { ClipboardResourcesContext } from '@app/ui/NexClipboard.context';
 
 export const queryClient = new QueryClient();
 const theme = createTheme(enUS);
 
 export const Providers: React.FC = ({ children }) => (
   <QueryClientProvider client={queryClient}>
-    <ClipboardResourcesContext>
-      <ThemeProvider theme={theme}>
-        <Provider store={store}>
-          <CssBaseline />
-          <RootContainer className="show-file-icons">{children}</RootContainer>
-        </Provider>
-      </ThemeProvider>
-    </ClipboardResourcesContext>
+    <ThemeProvider theme={theme}>
+      <Provider store={store}>
+        <CssBaseline />
+        <RootContainer className="show-file-icons">{children}</RootContainer>
+      </Provider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 

@@ -4,7 +4,16 @@ import type { ProgressCbArgs } from 'code-oss-file-service/out/vs/base/common/re
 import { CancellationTokenSource } from 'code-oss-file-service/out/vs/base/common/cancellation';
 import { IFileStatWithMetadata } from 'code-oss-file-service/out/vs/platform/files/common/files';
 
-import { actions } from '@app/global-state/slices/processes.slice';
+import { CustomError } from '@app/base/custom-error';
+import { createLogger } from '@app/base/logger/logger';
+import { objects } from '@app/base/utils/objects.util';
+import {
+  DeleteProcess,
+  DELETE_PROCESS_STATUS,
+  FileStatMap,
+  PROCESS_TYPE,
+  Tag,
+} from '@app/domain/types';
 import {
   clipboardRef,
   dispatchRef,
@@ -13,21 +22,12 @@ import {
   storageRef,
   storeRef,
 } from '@app/operations/global-modules';
-import { mapProcess } from '@app/global-state/slices/processes.hooks';
+import * as tagOperations from '@app/operations/tag.operations';
 import { refreshFiles } from '@app/global-cache/files';
-import {
-  DeleteProcess,
-  DELETE_PROCESS_STATUS,
-  FileStatMap,
-  PROCESS_TYPE,
-  Tag,
-} from '@app/domain/types';
-import { STORAGE_KEY } from '@app/platform/storage';
+import { actions } from '@app/global-state/slices/processes.slice';
+import { mapProcess } from '@app/global-state/slices/processes.hooks';
 import { getDistinctParents } from '@app/platform/file-system';
-import { createLogger } from '@app/base/logger/logger';
-import { CustomError } from '@app/base/custom-error';
-import * as tagHooks from '@app/operations/tag.hooks';
-import { objects } from '@app/base/utils/objects.util';
+import { STORAGE_KEY } from '@app/platform/storage';
 
 const logger = createLogger('file.hooks');
 
@@ -157,7 +157,7 @@ export function getTagsOfFile(file: { uri: UriComponents; ctime: number }): Tag[
     return [];
   }
 
-  const tags = tagHooks.getTags();
+  const tags = tagOperations.getTags();
   const tagsOfFile = Object.entries(tags)
     .map(([id, otherValues]) => ({ ...otherValues, id }))
     .filter((tag) => tagIdsOfFile.tags.some((tagId) => tagId === tag.id));
@@ -170,7 +170,7 @@ export function getTagsOfFile(file: { uri: UriComponents; ctime: number }): Tag[
 export async function addTags(files: UriComponents[], tagIds: string[]) {
   logger.debug(`adding tags to files...`, { files, tagIds });
 
-  const existingTagIds = Object.keys(tagHooks.getTags());
+  const existingTagIds = Object.keys(tagOperations.getTags());
   const invalidTagIds = tagIds.filter(
     (tagId) => !existingTagIds.find((existing) => existing === tagId),
   );

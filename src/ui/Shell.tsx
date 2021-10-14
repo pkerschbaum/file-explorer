@@ -14,7 +14,7 @@ import {
   addExplorerPanel,
   changeFocusedExplorer,
   removeExplorerPanel,
-} from '@app/operations/app.hooks';
+} from '@app/operations/app.operations';
 import { BACKGROUND_COLOR, tabIndicatorSpanClassName } from '@app/ui/theme';
 import { KEYS } from '@app/ui/constants';
 import { useWindowEvent } from '@app/ui/utils/react.util';

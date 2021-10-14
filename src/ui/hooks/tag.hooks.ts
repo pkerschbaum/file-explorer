@@ -1,11 +1,11 @@
 import * as React from 'react';
 
+import { FileForUI } from '@app/domain/types';
 import { storageRef } from '@app/operations/global-modules';
 import { STORAGE_KEY } from '@app/platform/storage';
 import { useRerenderOnEventFire } from '@app/ui/utils/react.util';
-import { getTagsOfFile } from '@app/operations/file.hooks';
-import { FileForUI } from '@app/operations/explorer.hooks';
-import { getTags } from '@app/operations/tag.hooks';
+import { getTagsOfFile } from '@app/operations/file.operations';
+import { getTags } from '@app/operations/tag.operations';
 
 export function useEnrichFilesWithTags(files: FileForUI[]) {
   useRerenderOnEventFire(

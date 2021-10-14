@@ -94,3 +94,10 @@ export type FileStatMap = {
 type TagId = string;
 export type FileToTags = { [uri: string]: { ctimeOfFile: number; tags: TagId[] } | undefined };
 export type Tag = { id: TagId; name: string; colorHex: string };
+
+export type FileForUI = File & {
+  name: string;
+  extension?: string;
+  tags: Tag[];
+  iconClasses: string[];
+};

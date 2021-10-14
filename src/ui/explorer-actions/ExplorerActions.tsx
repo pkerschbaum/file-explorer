@@ -24,14 +24,14 @@ import {
   cutOrCopyFiles,
   openFile,
   scheduleMoveFilesToTrash,
-} from '@app/operations/file.hooks';
+} from '@app/operations/file.operations';
 import {
   changeDirectory,
   createFolder,
   pasteFiles,
   revealCwdInOSExplorer,
-} from '@app/operations/explorer.hooks';
-import { addTag, removeTags } from '@app/operations/tag.hooks';
+} from '@app/operations/explorer.operations';
+import { addTag, removeTags } from '@app/operations/tag.operations';
 import {
   useExplorerId,
   useFileIdSelectionGotStartedWith,
@@ -43,7 +43,7 @@ import {
   useSetFilterInput,
   useSetIdsOfSelectedFiles,
 } from '@app/ui/Explorer.context';
-import { useClipboardResources } from '@app/ui/NexClipboard.context';
+import { useClipboardResources } from '@app/ui/hooks/clipboard-resources.hooks';
 import { useGetTags } from '@app/ui/hooks/tag.hooks';
 import { FILE_TYPE } from '@app/domain/types';
 import { KEYS, MOUSE_BUTTONS } from '@app/ui/constants';
