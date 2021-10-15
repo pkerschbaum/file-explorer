@@ -1806,10 +1806,10 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
-"@pkerschbaum/code-oss-file-icon-theme@^1.61.0":
-  version "1.61.0"
-  resolved "https://registry.yarnpkg.com/@pkerschbaum/code-oss-file-icon-theme/-/code-oss-file-icon-theme-1.61.0.tgz#7db36299ab90ac5e1d5140f918642705e379bd6a"
-  integrity sha512-Szv8feloK4OLwP2PLEjaazyThR1KuSbCL+tuxcvK6J9kBomGe/9dYTNMZ+h4sHQa8bvU7PIq3U9iwX1WkdQxTQ==
+"@pkerschbaum/code-oss-file-icon-theme@^1.61.1":
+  version "1.61.1"
+  resolved "https://registry.yarnpkg.com/@pkerschbaum/code-oss-file-icon-theme/-/code-oss-file-icon-theme-1.61.1.tgz#8398672ae852c5d2ee7d3aec9748c8fd65ec940d"
+  integrity sha512-GJd9Skzr2ih5qB99HI8W19qPezkVJY4QdblZL39K4GT8HqmNwJDBgWKOFtkXv+u2nDisY2+1BNRZ+vFH+nQKfA==
   dependencies:
     vscode-nls "^5.0.0"
 
