@@ -1,4 +1,5 @@
 import { render } from '@app/ui/Root';
+import { StorageState } from '@app/global-state/slices/persisted.slice';
 import { createClipboard } from '@app/platform/clipboard';
 import { createFileSystem } from '@app/platform/file-system';
 import { createNativeHost } from '@app/platform/native-host';
@@ -14,15 +15,27 @@ async function rendererScriptEntryPoint() {
   elStyle.textContent = window.preload.fileIconTheme.iconThemeCssRules;
   document.head.appendChild(elStyle);
 
-  // render React application
+  // read persisted data and initialize platform modules
+  const storageState: StorageState | Partial<StorageState> =
+    await window.preload.readPersistedData();
+  const preloadedPersistedData = {
+    tags: {},
+    resourcesToTags: {},
+    ...storageState,
+  };
+  await window.preload.persistData(preloadedPersistedData);
+
   const clipboard = createClipboard();
   const fileSystem = createFileSystem();
   const nativeHost = createNativeHost();
+
+  // render React application
   render({
     clipboard,
     fileIconTheme: window.preload.fileIconTheme,
     fileSystem,
     nativeHost,
+    preloadedPersistedData,
   });
 }
 

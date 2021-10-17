@@ -6,7 +6,6 @@ import { typedPath } from '@app/base/utils/types.util';
 import loggerMiddleware from '@app/global-state/logger.middleware';
 import { persistMiddleware } from '@app/global-state/persist-state.middleware';
 import rootReducer from '@app/global-state/reducers';
-import { StorageState } from '@app/global-state/slices/persisted.slice';
 
 export type RootState = ReturnType<typeof rootReducer>;
 
@@ -21,16 +20,13 @@ const ignoredPaths = numbers
   .map((num) =>
     typedPath<RootState>()('processesSlice', 'processes', num, 'cancellationTokenSource'),
   );
-export function createStoreInstance() {
-  const initialPersistedData = {
-    tags: {},
-    resourcesToTags: {},
-    ...(window.preload.readPersistedData() as StorageState | Partial<StorageState>),
-  };
-  window.preload.persistData(initialPersistedData);
+export function createStoreInstance(preloaded?: {
+  preloadedPersistedData?: RootState['persistedSlice'];
+}) {
+  const { preloadedPersistedData } = preloaded ?? {};
 
   return configureStore({
-    preloadedState: { persistedSlice: initialPersistedData },
+    preloadedState: { persistedSlice: preloadedPersistedData },
     reducer: rootReducer,
     middleware: (getDefaultMiddleware) => [
       loggerMiddleware,

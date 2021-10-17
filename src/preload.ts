@@ -1,5 +1,4 @@
 import { clipboard, ipcRenderer, shell } from 'electron';
-import Store from 'electron-store';
 
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { VSBuffer } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/buffer';
@@ -12,8 +11,9 @@ import {
   PlatformFileIconTheme,
 } from '@app/platform/file-icon-theme';
 import { FileDragStart, FILEDRAGSTART_CHANNEL } from '@app/ipc/common/file-drag-start';
-import { TRASHITEM_CHANNEL } from '@app/ipc/common/trash-item';
 import { GetNativeFileIconDataURL, NATIVEFILEICON_CHANNEL } from '@app/ipc/common/native-file-icon';
+import { PERSISTDATA_CHANNEL, READPERSISTEDDATA_CHANNEL } from '@app/ipc/common/persistent-store';
+import { TRASHITEM_CHANNEL } from '@app/ipc/common/trash-item';
 
 declare global {
   interface Window {
@@ -29,16 +29,14 @@ declare global {
       shellTrashItem: typeof shell.trashItem;
       clipboardReadResources: () => URI[];
       clipboardWriteResources: (resources: URI[]) => void;
-      persistData: (entireValue: Record<string, unknown>) => void;
-      readPersistedData: () => unknown;
+      persistData: (entireValue: Record<string, unknown>) => Promise<void>;
+      readPersistedData: () => Promise<Record<string, unknown>>;
       revealResourcesInOS: (resources: URI[]) => void;
     };
   }
 }
 
 const CLIPBOARD_FILELIST_FORMAT = `${config.productName}/file-list`;
-
-const store = new Store();
 
 window.preload = {} as any;
 window.preload.initializationPromise = (async function preloadScriptEntryPoint() {
@@ -63,10 +61,8 @@ window.preload.initializationPromise = (async function preloadScriptEntryPoint()
         Buffer.from(resourcesToBuffer(resources)),
         undefined,
       ),
-    persistData: (entireData) => {
-      store.store = entireData;
-    },
-    readPersistedData: () => store.store,
+    persistData: (...args) => ipcRenderer.invoke(PERSISTDATA_CHANNEL, ...args),
+    readPersistedData: (...args) => ipcRenderer.invoke(READPERSISTEDDATA_CHANNEL, ...args),
     revealResourcesInOS: (resources) => {
       for (const r of resources) {
         if (r.scheme === Schemas.file || r.scheme === Schemas.userData) {

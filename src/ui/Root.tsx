@@ -13,6 +13,7 @@ import {
   storeRef,
 } from '@app/operations/global-modules';
 import { createStoreInstance } from '@app/global-state/store';
+import { StorageState } from '@app/global-state/slices/persisted.slice';
 import { PlatformClipboard } from '@app/platform/clipboard';
 import { PlatformFileIconTheme } from '@app/platform/file-icon-theme';
 import { PlatformFileSystem } from '@app/platform/file-system';
@@ -23,12 +24,15 @@ export type AppDependencies = {
   fileIconTheme: PlatformFileIconTheme;
   fileSystem: PlatformFileSystem;
   nativeHost: PlatformNativeHost;
+  preloadedPersistedData: StorageState;
 };
 
 export function render(appDependencies: AppDependencies) {
   queryClientRef.current = queryClient;
 
-  const store = createStoreInstance();
+  const store = createStoreInstance({
+    preloadedPersistedData: appDependencies.preloadedPersistedData,
+  });
   storeRef.current = store;
   dispatchRef.current = store.dispatch;
 

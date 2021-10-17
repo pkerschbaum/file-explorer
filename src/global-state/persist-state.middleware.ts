@@ -8,8 +8,7 @@ const logger = createLogger('store-persist-middleware');
 export const persistMiddleware = (store: any) => (next: any) => (action: PayloadAction) => {
   const result = next(action);
   const { persistedSlice } = store.getState() as RootState;
-  logger.debug('persisting state...', { persistedSlice });
-  window.preload.persistData(persistedSlice);
-  logger.debug('state persisted!');
+  logger.debug('persisting state (asynchronously)...', { persistedSlice });
+  void window.preload.persistData(persistedSlice).then(() => logger.debug('state persisted!'));
   return result;
 };
