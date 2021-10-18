@@ -3,7 +3,7 @@ import { IFileStatWithMetadata } from '@pkerschbaum/code-oss-file-service/out/vs
 
 import { PlatformFileSystem } from '@app/platform/file-system';
 
-const fakeFileStat: IFileStatWithMetadata = {
+export const fakeFileStat: IFileStatWithMetadata = {
   isDirectory: false,
   isFile: true,
   isSymbolicLink: false,

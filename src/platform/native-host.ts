@@ -12,15 +12,15 @@ export type PlatformNativeHost = {
 
 export const createNativeHost = () => {
   const instance: PlatformNativeHost = {
-    revealResourcesInOS: window.preload.revealResourcesInOS,
+    revealResourcesInOS: window.privileged.shell.revealResourcesInOS,
     openPath: async (path) => {
-      const errorMessage = await window.preload.shellOpenPath(path);
+      const errorMessage = await window.privileged.shell.openPath(path);
       if (strings.isNotNullishOrEmpty(errorMessage)) {
         throw new Error(`Could not open path, reason: ${errorMessage}`);
       }
     },
-    getNativeFileIconDataURL: window.preload.getNativeFileIconDataURL,
-    startNativeFileDnD: window.preload.startNativeFileDnD,
+    getNativeFileIconDataURL: window.privileged.shell.getNativeFileIconDataURL,
+    startNativeFileDnD: window.privileged.webContents.fileDragStart,
   };
 
   return instance;

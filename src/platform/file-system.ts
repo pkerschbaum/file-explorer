@@ -5,8 +5,8 @@ import {
   IFileStat,
 } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 
-import { File, FILE_TYPE } from '@app/domain/types';
 import { arrays } from '@app/base/utils/arrays.util';
+import { File, FILE_TYPE } from '@app/domain/types';
 
 export type PlatformFileSystem = Pick<
   IFileService,
@@ -15,18 +15,18 @@ export type PlatformFileSystem = Pick<
 
 export const createFileSystem = () => {
   const instance: PlatformFileSystem = {
-    resolve: window.preload.fileService.resolve.bind(window.preload.fileService),
+    resolve: window.privileged.fileService.resolve.bind(window.privileged.fileService),
     del: async (resource, options) => {
       if (options?.useTrash) {
         // handle trash operation specifically via IPC because of https://github.com/electron/electron/issues/29598
-        return await window.preload.shellTrashItem(normalize(resource.fsPath));
+        return await window.privileged.shell.trashItem(normalize(resource.fsPath));
       } else {
-        return await window.preload.fileService.del(resource, options);
+        return await window.privileged.fileService.del(resource, options);
       }
     },
-    copy: window.preload.fileService.copy.bind(window.preload.fileService),
-    move: window.preload.fileService.move.bind(window.preload.fileService),
-    createFolder: window.preload.fileService.createFolder.bind(window.preload.fileService),
+    copy: window.privileged.fileService.copy.bind(window.privileged.fileService),
+    move: window.privileged.fileService.move.bind(window.privileged.fileService),
+    createFolder: window.privileged.fileService.createFolder.bind(window.privileged.fileService),
   };
 
   return instance;

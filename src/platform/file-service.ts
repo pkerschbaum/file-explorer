@@ -14,3 +14,5 @@ export function bootstrapModule() {
 
   return { fileService };
 }
+
+export type PlatformFileService = ReturnType<typeof bootstrapModule>['fileService'];

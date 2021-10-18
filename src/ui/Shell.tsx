@@ -73,7 +73,7 @@ export const Shell: React.FC = () => {
   const removeExplorerActionDisabled = explorersToShow.length < 2;
 
   return (
-    <RootContainer className="show-file-icons">
+    <RootContainer>
       <TabsArea direction="column" alignItems="stretch">
         <Tabs
           orientation="vertical"
@@ -109,9 +109,13 @@ export const Shell: React.FC = () => {
       <ActiveExplorerArea>
         {idOfFocusedExplorerPanel !== undefined &&
           explorersToShow.map(({ explorerId }) => (
-            <TabPanel key={explorerId} value={idOfFocusedExplorerPanel} index={explorerId}>
+            <HiddenIfInactiveTabPanel
+              key={explorerId}
+              value={idOfFocusedExplorerPanel}
+              index={explorerId}
+            >
               <ExplorerPanelContainer explorerId={explorerId} />
-            </TabPanel>
+            </HiddenIfInactiveTabPanel>
           ))}
       </ActiveExplorerArea>
 
@@ -165,13 +169,17 @@ const ExplorerPanelTab = React.memo<ExplorerPanelTabProps>(function ExplorerPane
   );
 }, objects.shallowIsEqualIgnoreFunctions);
 
-type TabPanelProps = {
+type HiddenIfInactiveTabPanelProps = {
   index: string;
   value: string;
   children: React.ReactNode;
 };
 
-const TabPanel: React.FC<TabPanelProps> = ({ value, index, children }) => {
+const HiddenIfInactiveTabPanel: React.FC<HiddenIfInactiveTabPanelProps> = ({
+  value,
+  index,
+  children,
+}) => {
   return <OverlayTabPanel panelHidden={value !== index}>{children}</OverlayTabPanel>;
 };
 

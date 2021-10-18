@@ -1,4 +1,5 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { CombinedState, configureStore, PreloadedState } from '@reduxjs/toolkit';
+import { NoInfer } from '@reduxjs/toolkit/dist/tsHelpers';
 import { createSelectorHook, useDispatch as useReduxDispatch } from 'react-redux';
 
 import { numbers } from '@app/base/utils/numbers.util';
@@ -23,10 +24,14 @@ const ignoredPaths = numbers
 export function createStoreInstance(preloaded?: {
   preloadedPersistedData?: RootState['persistedSlice'];
 }) {
-  const { preloadedPersistedData } = preloaded ?? {};
+  const preloadedPersistedData = preloaded?.preloadedPersistedData;
+  let preloadedState: undefined | PreloadedState<CombinedState<NoInfer<RootState>>>;
+  if (preloadedPersistedData) {
+    preloadedState = { persistedSlice: preloadedPersistedData };
+  }
 
   return configureStore({
-    preloadedState: { persistedSlice: preloadedPersistedData },
+    preloadedState,
     reducer: rootReducer,
     middleware: (getDefaultMiddleware) => [
       loggerMiddleware,

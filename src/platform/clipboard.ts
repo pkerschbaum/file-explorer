@@ -12,10 +12,10 @@ export const createClipboard = () => {
   const onClipboardChanged = new Emitter<void>();
 
   const instance: PlatformClipboard = {
-    readResources: window.preload.clipboardReadResources,
+    readResources: window.privileged.clipboard.readResources,
     writeResources: (resources) => {
       if (resources.length) {
-        window.preload.clipboardWriteResources(resources);
+        window.privileged.clipboard.writeResources(resources);
         onClipboardChanged.fire();
       }
     },

@@ -9,6 +9,7 @@ import {
   fileIconThemeRef,
   fileSystemRef,
   nativeHostRef,
+  persistentStorageRef,
   queryClientRef,
   storeRef,
 } from '@app/operations/global-modules';
@@ -18,12 +19,14 @@ import { PlatformClipboard } from '@app/platform/clipboard';
 import { PlatformFileIconTheme } from '@app/platform/file-icon-theme';
 import { PlatformFileSystem } from '@app/platform/file-system';
 import { PlatformNativeHost } from '@app/platform/native-host';
+import { PlatformPersistentStorage } from '@app/platform/persistent-storage';
 
 export type AppDependencies = {
   clipboard: PlatformClipboard;
   fileIconTheme: PlatformFileIconTheme;
   fileSystem: PlatformFileSystem;
   nativeHost: PlatformNativeHost;
+  persistentStorage: PlatformPersistentStorage;
   preloadedPersistedData: StorageState;
 };
 
@@ -40,6 +43,7 @@ export function render(appDependencies: AppDependencies) {
   fileIconThemeRef.current = appDependencies.fileIconTheme;
   fileSystemRef.current = appDependencies.fileSystem;
   nativeHostRef.current = appDependencies.nativeHost;
+  persistentStorageRef.current = appDependencies.persistentStorage;
 
   ReactDOM.render(
     <React.StrictMode>
