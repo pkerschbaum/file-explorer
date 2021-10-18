@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import { Providers, queryClient } from '@app/ui/Providers';
+import { Globals, queryClient } from '@app/ui/Globals';
 import { Shell } from '@app/ui/Shell';
 import {
   clipboardRef,
@@ -47,9 +47,9 @@ export function render(appDependencies: AppDependencies) {
 
   ReactDOM.render(
     <React.StrictMode>
-      <Providers store={store}>
+      <Globals store={store}>
         <Shell />
-      </Providers>
+      </Globals>
     </React.StrictMode>,
     document.getElementById('root'),
   );

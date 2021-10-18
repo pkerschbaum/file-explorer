@@ -18,7 +18,9 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-export const Providers: React.FC<{ store: RootStore }> = ({ store, children }) => (
+type GlobalsProps = { store: RootStore };
+
+export const Globals: React.FC<GlobalsProps> = ({ store, children }) => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider theme={theme}>
       <Provider store={store}>

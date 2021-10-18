@@ -18,7 +18,7 @@ import {
   nativeHostRef,
   persistentStorageRef,
 } from '@app/operations/global-modules';
-import { Providers, queryClient } from '@app/ui/Providers';
+import { Globals, queryClient } from '@app/ui/Globals';
 import { Shell } from '@app/ui/Shell';
 import { createFakePersistentStorage } from '@app/platform/persistent-storage.fake';
 
@@ -65,11 +65,7 @@ export default {
       const fakePersistentStorage = createFakePersistentStorage();
       persistentStorageRef.current = fakePersistentStorage;
 
-      return (
-        <div style={{ minHeight: '100%', height: '100%' }}>
-          <Providers store={store}>{story()}</Providers>
-        </div>
-      );
+      return <Globals store={store}>{story()}</Globals>;
     },
   ],
 } as ComponentMeta<typeof Shell>;

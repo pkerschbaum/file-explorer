@@ -15,7 +15,7 @@ import {
   fileSystemRef,
   nativeHostRef,
 } from '@app/operations/global-modules';
-import { Providers, queryClient } from '@app/ui/Providers';
+import { Globals, queryClient } from '@app/ui/Globals';
 import { ProcessCard } from '@app/ui/process/ProcessCard';
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -35,7 +35,7 @@ export default {
       fileSystemRef.current = fakeFileSystem;
       nativeHostRef.current = fakeNativeHost;
 
-      return <Providers store={store}>{story()}</Providers>;
+      return <Globals store={store}>{story()}</Globals>;
     },
   ],
 } as ComponentMeta<typeof ProcessCard>;
