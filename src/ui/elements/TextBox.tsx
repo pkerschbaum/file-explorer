@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Box, BoxProps } from '@mui/material';
-import styled from '@mui/styled-engine';
+import styled from 'styled-components';
 
 import { assertUnreachable } from '@app/base/utils/types.util';
 

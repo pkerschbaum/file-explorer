@@ -1,3 +1,12 @@
+const path = require('path');
+const createStyledComponentsTransformer = require('typescript-plugin-styled-components').default;
+const styledComponentsTransformer = createStyledComponentsTransformer({
+  getDisplayName: (filename, bindingName) => {
+    const parsedPath = path.parse(filename);
+    return `${parsedPath.name}__${bindingName}`;
+  },
+});
+
 module.exports = [
   // Add support for native node modules
   {
@@ -23,6 +32,7 @@ module.exports = [
       loader: 'ts-loader',
       options: {
         transpileOnly: true,
+        getCustomTransformers: () => ({ before: [styledComponentsTransformer] }),
       },
     },
   },

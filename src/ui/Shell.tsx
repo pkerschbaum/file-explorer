@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Box, Tabs, Tab, Button, IconButton, Tooltip } from '@mui/material';
-import styled from '@mui/styled-engine';
+import styled from 'styled-components';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 

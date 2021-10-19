@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Box, Breadcrumbs, Button, Chip, Skeleton, TextField } from '@mui/material';
-import styled, { css } from '@mui/styled-engine';
+import styled, { css } from 'styled-components';
 
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { posix, win32 } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/path';

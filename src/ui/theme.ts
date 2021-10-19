@@ -4,7 +4,7 @@ import {
   Theme as MuiTheme,
 } from '@mui/material/styles';
 import { Localization } from '@mui/material/locale';
-import { css } from '@mui/styled-engine';
+import { css } from 'styled-components';
 
 import { DELETE_PROCESS_STATUS, PASTE_PROCESS_STATUS } from '@app/domain/types';
 

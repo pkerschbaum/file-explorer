@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Paper, Table, TableContainer } from '@mui/material';
-import styled from '@mui/styled-engine';
+import styled from 'styled-components';
 
 import { Stack } from '@app/ui/layouts/Stack';
 import { TableBody } from '@app/ui/elements/DataTable/TableBody';

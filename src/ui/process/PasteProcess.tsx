@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Box, Button, IconButton, Tooltip } from '@mui/material';
-import styled from '@mui/styled-engine';
+import styled from 'styled-components';
 import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
 import ClearAllIcon from '@mui/icons-material/ClearAll';
 

@@ -3,8 +3,7 @@ import { Provider } from 'react-redux';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { enUS } from '@mui/material/locale';
-import styled from '@mui/styled-engine';
-import { createGlobalStyle } from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
 
 import { BACKGROUND_COLOR, createTheme } from '@app/ui/theme';
 import { RootStore } from '@app/global-state/store';
@@ -33,7 +32,7 @@ export const Globals: React.FC<GlobalsProps> = ({ store, children }) => (
   </QueryClientProvider>
 );
 
-const RootContainer = styled('div')`
+const RootContainer = styled.div`
   height: 100%;
   background-color: ${BACKGROUND_COLOR};
 `;

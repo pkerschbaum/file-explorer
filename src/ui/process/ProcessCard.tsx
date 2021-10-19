@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Paper, useTheme } from '@mui/material';
-import styled from '@mui/styled-engine';
+import styled from 'styled-components';
 
 import { Process, PROCESS_TYPE } from '@app/domain/types';
 import { PasteProcess } from '@app/ui/process/PasteProcess';

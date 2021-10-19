@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Box, BoxProps, useTheme } from '@mui/material';
-import styled, { css, FlattenInterpolation } from '@mui/styled-engine';
+import styled, { css, FlattenInterpolation } from 'styled-components';
 import { Property } from 'csstype';
 
 type StackProps = {

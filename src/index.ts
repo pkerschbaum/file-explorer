@@ -17,8 +17,8 @@ if (require('electron-squirrel-startup')) {
 const createWindow = (): void => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    height: 600,
-    width: 800,
+    height: 768,
+    width: 1366,
     // https://stackoverflow.com/a/62468670/1700319
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
@@ -39,7 +39,17 @@ const createWindow = (): void => {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
+app.on('ready', () => {
+  async function installExtensionsAndCreateWindow() {
+    if (config.isDevEnviroment && !process.argv.includes('--noDevServer')) {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      await require('./electron-devtools').installExtensions();
+    }
+    createWindow();
+  }
+
+  void installExtensionsAndCreateWindow();
+});
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits

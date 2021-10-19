@@ -15,4 +15,9 @@ module.exports = {
       },
     },
   }),
+
+  babel: (config) => ({
+    ...config,
+    plugins: [...config.plugins, 'babel-plugin-styled-components'],
+  }),
 };

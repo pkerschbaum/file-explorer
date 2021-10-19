@@ -13,7 +13,7 @@ import {
   useTheme,
 } from '@mui/material';
 import CancelIcon from '@mui/icons-material/Cancel';
-import styled from '@mui/styled-engine';
+import styled from 'styled-components';
 
 import { commonStyles } from '@app/ui/Common.styles';
 import { Stack } from '@app/ui/layouts/Stack';
@@ -80,7 +80,7 @@ export const AddTag: React.FC<AddTagProps> = ({
               name: newValue,
               colorHex: availableTagColors[0],
             });
-          } else if (newValue && newValue.inputValue) {
+          } else if (newValue?.inputValue) {
             toggleOpen(true);
             setDialogValue({
               name: newValue.inputValue,
