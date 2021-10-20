@@ -1,15 +1,16 @@
 import { DiskFileSystemProvider } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/electron-browser/diskFileSystemProvider';
 import {
-  ILogService,
   ConsoleMainLogger,
+  LogService,
 } from '@pkerschbaum/code-oss-file-service/out/vs/platform/log/common/log';
 import { FileService } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/fileService';
 import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
 
 export function bootstrapModule() {
   const logger = new ConsoleMainLogger();
-  const fileService = new FileService(logger as unknown as ILogService);
-  const diskFileSystemProvider = new DiskFileSystemProvider(logger as unknown as ILogService);
+  const logService = new LogService(logger);
+  const fileService = new FileService(logService);
+  const diskFileSystemProvider = new DiskFileSystemProvider(logService);
   fileService.registerProvider(Schemas.file, diskFileSystemProvider);
 
   return { fileService };

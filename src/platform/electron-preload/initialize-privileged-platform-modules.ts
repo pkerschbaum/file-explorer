@@ -52,7 +52,7 @@ const CLIPBOARD_FILELIST_FORMAT = `${config.productName}/file-list`;
 
 export async function initializePrivilegedPlatformModules() {
   const { fileService } = bootstrapFileServiceModule();
-  const fileIconTheme = await bootstrapFileIconThemeModule(fileService);
+  const fileIconTheme = await bootstrapFileIconThemeModule();
 
   window.privileged = {
     fileService,

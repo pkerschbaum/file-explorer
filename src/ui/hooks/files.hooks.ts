@@ -4,7 +4,6 @@ import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { FileKind } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 
 import { createLogger } from '@app/base/logger/logger';
-import { objects } from '@app/base/utils/objects.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { FileForUI, FILE_TYPE } from '@app/domain/types';
 import { useFiles, getCachedQueryData, setCachedQueryData } from '@app/global-cache/files';
@@ -108,23 +107,21 @@ export const useFilesForUI = (explorerId: string): FilesLoadingResult => {
     return { dataAvailable: false, files: [] };
   }
 
-  const filesForUI = Object.values(filesToUse)
-    .filter(objects.isNotNullish)
-    .map((file) => {
-      const { fileName, extension } = uriHelper.extractNameAndExtension(file.uri);
-      const fileType = mapFileTypeToFileKind(file.fileType);
+  const filesForUI = filesToUse.map((file) => {
+    const { fileName, extension } = uriHelper.extractNameAndExtension(file.uri);
+    const fileType = mapFileTypeToFileKind(file.fileType);
 
-      const iconClasses = fileIconThemeRef.current.getIconClasses(URI.from(file.uri), fileType);
+    const iconClasses = fileIconThemeRef.current.getIconClasses(URI.from(file.uri), fileType);
 
-      const fileForUI: FileForUI = {
-        ...file,
-        extension,
-        iconClasses,
-        name: fileName,
-        tags: [],
-      };
-      return fileForUI;
-    });
+    const fileForUI: FileForUI = {
+      ...file,
+      extension,
+      iconClasses,
+      name: fileName,
+      tags: [],
+    };
+    return fileForUI;
+  });
 
   return { dataAvailable: true, files: filesForUI };
 };

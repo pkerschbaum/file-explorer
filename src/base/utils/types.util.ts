@@ -166,3 +166,5 @@ export type Immutable<T> = T extends ImmutablePrimitive
   : T extends Set<infer M>
   ? ImmutableSet<M>
   : ImmutableObject<T>;
+
+export type Awaited<T> = T extends PromiseLike<infer U> ? U : T;
