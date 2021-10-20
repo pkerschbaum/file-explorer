@@ -18,7 +18,7 @@ module.exports = {
     'plugin:jsx-a11y/recommended',
   ],
   plugins: ['node', 'jsx-a11y', 'import'],
-  ignorePatterns: ['**/*.js'],
+  ignorePatterns: ['**/*.js', '!.storybook'],
   rules: {
     'no-console': 'error',
     'no-extra-boolean-cast': 'off',
@@ -56,7 +56,7 @@ module.exports = {
     '@typescript-eslint/no-unsafe-call': 'off',
     '@typescript-eslint/no-unsafe-member-access': 'off',
     '@typescript-eslint/no-unsafe-return': 'off',
-    '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+    '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_\\d+' }],
     '@typescript-eslint/non-nullable-type-assertion-style': 'error',
     '@typescript-eslint/prefer-enum-initializers': 'error',
     '@typescript-eslint/prefer-for-of': 'error',

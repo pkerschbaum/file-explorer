@@ -6,9 +6,10 @@ import { FileKind } from '@pkerschbaum/code-oss-file-service/out/vs/platform/fil
 import { createLogger } from '@app/base/logger/logger';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { FileForUI, FILE_TYPE } from '@app/domain/types';
+import { useFileIconClasses } from '@app/global-cache/file-icon-classes';
 import { useFiles, getCachedQueryData, setCachedQueryData } from '@app/global-cache/files';
 import { useCwd } from '@app/global-state/slices/explorers.hooks';
-import { fileIconThemeRef, fileSystemRef } from '@app/operations/global-modules';
+import { fileSystemRef } from '@app/operations/global-modules';
 import { fetchFiles } from '@app/platform/file-system';
 
 const logger = createLogger('files.hooks');
@@ -28,7 +29,7 @@ export const useFilesForUI = (explorerId: string): FilesLoadingResult => {
     useFiles({ directory: cwd, resolveMetadata: true });
   const { data: filesQueryWithoutMetadataData } = useFiles(
     { directory: cwd, resolveMetadata: false },
-    { disabled: filesQueryWithMetadataData !== undefined },
+    { enabled: filesQueryWithMetadataData === undefined },
   );
 
   React.useEffect(
@@ -102,21 +103,34 @@ export const useFilesForUI = (explorerId: string): FilesLoadingResult => {
     filesToUse = filesQueryWithoutMetadataData;
   }
 
-  if (filesToUse === undefined) {
+  const fileIconClassesQueries = useFileIconClasses(
+    filesToUse === undefined
+      ? []
+      : filesToUse.map((file) => ({
+          uri: file.uri,
+          fileKind: mapFileTypeToFileKind(file.fileType),
+        })),
+  );
+
+  const someFileIconQueryIsFetching = fileIconClassesQueries.some((query) => query.isFetching);
+  if (filesToUse === undefined || someFileIconQueryIsFetching) {
     // files queries do not have any (possibly cached) data yet
     return { dataAvailable: false, files: [] };
   }
 
   const filesForUI = filesToUse.map((file) => {
     const { fileName, extension } = uriHelper.extractNameAndExtension(file.uri);
-    const fileType = mapFileTypeToFileKind(file.fileType);
 
-    const iconClasses = fileIconThemeRef.current.getIconClasses(URI.from(file.uri), fileType);
+    const iconClasses = fileIconClassesQueries.find(
+      (query) =>
+        query.data !== undefined &&
+        URI.from(query.data.uri).toString() === URI.from(file.uri).toString(),
+    );
 
     const fileForUI: FileForUI = {
       ...file,
       extension,
-      iconClasses,
+      iconClasses: iconClasses?.data?.iconClasses ?? [],
       name: fileName,
       tags: [],
     };
@@ -132,6 +146,7 @@ function mapFileTypeToFileKind(fileType: FILE_TYPE) {
   } else if (fileType === FILE_TYPE.DIRECTORY) {
     return FileKind.FOLDER;
   } else {
-    return undefined;
+    logger.warn(`could not map FILE_TYPE to FileKind, fallback to FileKind.FILE`, { fileType });
+    return FileKind.FILE;
   }
 }

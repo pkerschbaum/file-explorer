@@ -1,3 +1,5 @@
+import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import { FileKind } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 import {
   registerLanguagesOfExtensions,
   loadFileIconTheme,
@@ -5,13 +7,18 @@ import {
 
 import {
   EXTENSIONS_DIRECTORY_URI,
-  FILE_ICON_THEME_PATH_REPLACE_REGEX,
   FILE_ICON_THEME_RELATIVE_PATH,
   FILE_ICON_THEME_URI,
 } from '@app/static-resources';
-import { Awaited } from '@app/base/utils/types.util';
 
-export async function bootstrapModule() {
+export type PlatformFileIconTheme = {
+  loadCssRules: () => string | Promise<string>;
+  loadIconClasses: (resource: URI, fileKind: FileKind) => string[] | Promise<string[]>;
+};
+
+export const FILE_ICON_THEME_PATH_REPLACE_REGEX = /vscode-file:.+\/static\/icon-theme\//g;
+
+export async function bootstrapModule(): Promise<PlatformFileIconTheme> {
   await registerLanguagesOfExtensions(EXTENSIONS_DIRECTORY_URI);
   const iconTheme = await loadFileIconTheme(FILE_ICON_THEME_URI);
 
@@ -25,12 +32,10 @@ export async function bootstrapModule() {
     FILE_ICON_THEME_RELATIVE_PATH,
   );
 
-  const result = {
-    ...iconTheme,
-    iconThemeCssRules: cssRules,
+  const result: PlatformFileIconTheme = {
+    loadCssRules: () => cssRules,
+    loadIconClasses: iconTheme.getIconClasses,
   };
 
   return result;
 }
-
-export type PlatformFileIconTheme = Awaited<ReturnType<typeof bootstrapModule>>;

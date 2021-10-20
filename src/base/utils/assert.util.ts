@@ -5,7 +5,7 @@ export const assertThat = {
 };
 
 // https://www.typescriptlang.org/docs/handbook/2/narrowing.html#exhaustiveness-checking
-export function isUnreachable(_: never): never {
+export function isUnreachable(_1: never): never {
   throw new Error('should be unreachable, but got here');
 }
 

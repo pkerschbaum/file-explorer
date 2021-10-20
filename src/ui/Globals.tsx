@@ -8,7 +8,15 @@ import styled, { createGlobalStyle } from 'styled-components';
 import { BACKGROUND_COLOR, createTheme } from '@app/ui/theme';
 import { RootStore } from '@app/global-state/store';
 
-export const queryClient = new QueryClient();
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      retry: false,
+    },
+  },
+});
 const theme = createTheme(enUS);
 
 const GlobalStyle = createGlobalStyle`

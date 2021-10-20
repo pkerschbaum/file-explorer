@@ -15,17 +15,12 @@ export function useFiles(
     directory: UriComponents;
     resolveMetadata: boolean;
   },
-  queryOptions?: { disabled?: boolean },
+  queryOptions?: { enabled?: boolean },
 ) {
   const filesQuery = useQuery(
     QUERY_KEYS.FILES_WITH_OPTIONS(URI.from(directory).toString(), { resolveMetadata }),
     () => fetchFiles(fileSystemRef.current, directory, resolveMetadata),
-    {
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
-      retry: false,
-      ...queryOptions,
-    },
+    queryOptions,
   );
 
   return filesQuery;

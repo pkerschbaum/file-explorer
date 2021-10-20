@@ -3,24 +3,9 @@ import { ComponentMeta, ComponentStory } from '@storybook/react';
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { IFileStatWithMetadata } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 
-import { fakeClipboard } from '@app/platform/clipboard.fake';
-import { fakeFileIconTheme } from '@app/platform/file-icon-theme.fake';
 import { fakeFileStat, fakeFileSystem } from '@app/platform/file-system.fake';
-import { fakeNativeHost } from '@app/platform/native-host.fake';
-import { createStoreInstance } from '@app/global-state/store';
-import {
-  storeRef,
-  dispatchRef,
-  queryClientRef,
-  clipboardRef,
-  fileIconThemeRef,
-  fileSystemRef,
-  nativeHostRef,
-  persistentStorageRef,
-} from '@app/operations/global-modules';
-import { Globals, queryClient } from '@app/ui/Globals';
+import { fileSystemRef } from '@app/operations/global-modules';
 import { Shell } from '@app/ui/Shell';
-import { createFakePersistentStorage } from '@app/platform/persistent-storage.fake';
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
@@ -28,14 +13,6 @@ export default {
   component: Shell,
   decorators: [
     (story) => {
-      queryClientRef.current = queryClient;
-
-      const store = createStoreInstance();
-      storeRef.current = store;
-      dispatchRef.current = store.dispatch;
-
-      clipboardRef.current = fakeClipboard;
-      fileIconThemeRef.current = fakeFileIconTheme;
       fileSystemRef.current = {
         ...fakeFileSystem,
         resolve: (resource) => {
@@ -61,11 +38,8 @@ export default {
           return Promise.resolve(fakeFileStat2);
         },
       };
-      nativeHostRef.current = fakeNativeHost;
-      const fakePersistentStorage = createFakePersistentStorage();
-      persistentStorageRef.current = fakePersistentStorage;
 
-      return <Globals store={store}>{story()}</Globals>;
+      return story();
     },
   ],
 } as ComponentMeta<typeof Shell>;
