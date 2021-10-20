@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { Process, PROCESS_TYPE } from '@app/domain/types';
 import { PasteProcess } from '@app/ui/process/PasteProcess';
 import { DeleteProcess } from '@app/ui/process/DeleteProcess';
-import { assertUnreachable } from '@app/base/utils/types.util';
+import { assertThat } from '@app/base/utils/assert.util';
 
 export const ProcessCard: React.FC<{ process: Process }> = ({ process }) => {
   const { processStatusColors } = useTheme();
@@ -20,8 +20,9 @@ export const ProcessCard: React.FC<{ process: Process }> = ({ process }) => {
       backgroundColor = processStatusColors.deleteProcess[process.status];
       break;
     }
-    default:
-      assertUnreachable(process);
+    default: {
+      assertThat.isUnreachable(process);
+    }
   }
 
   return (
@@ -31,7 +32,7 @@ export const ProcessCard: React.FC<{ process: Process }> = ({ process }) => {
       ) : process.type === PROCESS_TYPE.DELETE ? (
         <DeleteProcess process={process} />
       ) : (
-        assertUnreachable(process)
+        assertThat.isUnreachable(process)
       )}
     </Card>
   );

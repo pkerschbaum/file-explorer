@@ -34,23 +34,11 @@ export type IsJsonable<T> =
     : // Otherwise non-jsonable type union was found not empty
       never;
 
-export function assertUnreachable(_: never): never {
-  throw new Error('should be unreachable, but got here');
-}
-
 export type ObjectLiteral = { [key: string]: any };
 
 export type EmptyObject = { [prop: string]: never };
 
 export type ArrayElement<A> = A extends readonly (infer T)[] ? T : never;
-
-export function isValueInEnum<T extends string, TEnumValue extends string>(
-  enumVariable: { [key in T]: TEnumValue },
-  value: string,
-): value is TEnumValue {
-  const enumValues = Object.values(enumVariable);
-  return enumValues.includes(value);
-}
 
 // https://github.com/Microsoft/TypeScript/issues/15480#issuecomment-601714262
 type PrependNextNum<A extends Array<unknown>> = A['length'] extends infer T

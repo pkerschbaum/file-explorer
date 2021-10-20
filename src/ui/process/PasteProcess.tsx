@@ -11,11 +11,11 @@ import { TextBox } from '@app/ui/elements/TextBox';
 import { LinearProgress } from '@app/ui/elements/LinearProgress';
 import { PasteProcess as PasteProcessType, PASTE_PROCESS_STATUS } from '@app/domain/types';
 import { removeProcess } from '@app/operations/file.operations';
+import { assertThat } from '@app/base/utils/assert.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { formatter } from '@app/base/utils/formatter.util';
 import { byteSize } from '@app/base/utils/byte-size.util';
 import { numbers } from '@app/base/utils/numbers.util';
-import { assertUnreachable } from '@app/base/utils/types.util';
 
 export const PasteProcess: React.FC<{ process: PasteProcessType }> = ({ process }) => {
   const smallestUnitOfTotalSize = byteSize.probe(process.totalSize).unit;
@@ -65,7 +65,7 @@ export const PasteProcess: React.FC<{ process: PasteProcessType }> = ({ process 
       break;
     }
     default: {
-      assertUnreachable(process);
+      assertThat.isUnreachable(process);
     }
   }
 

@@ -2,7 +2,7 @@ import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/ba
 import { basename, extname } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
 import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
 
-import { strings } from '@app/base/utils/strings.util';
+import { check } from '@app/base/utils/assert.util';
 
 export const uriHelper = {
   parseUri(scheme: string, path: string) {
@@ -19,7 +19,7 @@ export const uriHelper = {
     let fileName = basename(URI.from(uri));
     let extension: string | undefined = extname(URI.from(uri));
 
-    if (strings.isNullishOrEmpty(extension)) {
+    if (check.isEmptyString(extension)) {
       extension = undefined;
     } else {
       if (fileName.endsWith(extension)) {

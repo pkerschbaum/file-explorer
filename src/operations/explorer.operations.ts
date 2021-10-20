@@ -11,7 +11,7 @@ import { IFileStat } from '@pkerschbaum/code-oss-file-service/out/vs/platform/fi
 
 import { CustomError } from '@app/base/custom-error';
 import { createLogger } from '@app/base/logger/logger';
-import { objects } from '@app/base/utils/objects.util';
+import { check } from '@app/base/utils/assert.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { PASTE_PROCESS_STATUS } from '@app/domain/types';
 import {
@@ -123,7 +123,7 @@ export async function pasteFiles(explorerId: string) {
         return { sourceFileURI, sourceFileStat, targetFileURI };
       }),
     )
-  ).filter(objects.isNotNullish);
+  ).filter(check.isNotNullish);
 
   // if cancellation was requested in the meantime, abort paste process
   if (cancellationTokenSource.token.isCancellationRequested) {

@@ -1,7 +1,6 @@
 import { matchSorter, MatchSorterOptions } from 'match-sorter';
 
 export const arrays = {
-  isNullishOrEmpty,
   flatten,
   uniqueValues,
   shallowCopy,
@@ -10,10 +9,6 @@ export const arrays = {
   partitionArray,
   wrap,
 };
-
-function isNullishOrEmpty(arr: Array<any> | undefined | null): boolean {
-  return arr === undefined || arr === null || arr.length === 0;
-}
 
 function flatten<T>(array: T[][]): T[] {
   return array.reduce((flat, toFlatten) => {

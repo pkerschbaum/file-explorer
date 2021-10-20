@@ -18,8 +18,8 @@ import styled from 'styled-components';
 import { commonStyles } from '@app/ui/Common.styles';
 import { Stack } from '@app/ui/layouts/Stack';
 import { Tag } from '@app/domain/types';
-import { strings } from '@app/base/utils/strings.util';
 import { arrays } from '@app/base/utils/arrays.util';
+import { check } from '@app/base/utils/assert.util';
 
 // derived from https://material-ui.com/components/autocomplete/#creatable
 type WithInput<T> = T & {
@@ -56,7 +56,7 @@ export const AddTag: React.FC<AddTagProps> = ({
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!strings.isNullishOrEmpty(dialogValue.name)) {
+    if (check.isNonEmptyString(dialogValue.name)) {
       const tag = onValueCreated(dialogValue);
       onValueChosen(tag);
     }
@@ -93,7 +93,7 @@ export const AddTag: React.FC<AddTagProps> = ({
         filterOptions={(options, params) => {
           const filtered = autocompleteDefaultFilter(options, params);
 
-          if (!strings.isNullishOrEmpty(params.inputValue)) {
+          if (check.isNonEmptyString(params.inputValue)) {
             filtered.push({
               inputValue: params.inputValue,
               name: `Add "${params.inputValue}"`,
@@ -121,7 +121,7 @@ export const AddTag: React.FC<AddTagProps> = ({
         renderOption={(props, option) => (
           <li {...props}>
             <Stack sx={{ width: '100%' }}>
-              {strings.isNullishOrEmpty(option.inputValue) && (
+              {check.isNullishOrEmptyString(option.inputValue) && (
                 <ColorButton
                   disableElevation
                   variant="contained"

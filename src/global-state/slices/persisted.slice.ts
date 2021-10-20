@@ -1,6 +1,6 @@
 import { createAction, createReducer } from '@reduxjs/toolkit';
 
-import { assertUnreachable } from '@app/base/utils/types.util';
+import { assertThat } from '@app/base/utils/assert.util';
 import { FileToTags, Tag } from '@app/domain/types';
 
 export enum STORAGE_KEY {
@@ -39,7 +39,7 @@ export const reducer = createReducer(INITIAL_STATE, (builder) =>
     } else if (action.payload.key === STORAGE_KEY.RESOURCES_TO_TAGS) {
       state[action.payload.key] = action.payload.value;
     } else {
-      assertUnreachable(action.payload);
+      assertThat.isUnreachable(action.payload);
     }
   }),
 );

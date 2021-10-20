@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Box, BoxProps } from '@mui/material';
 import styled from 'styled-components';
 
-import { assertUnreachable } from '@app/base/utils/types.util';
+import { assertThat } from '@app/base/utils/assert.util';
 
 // adapted from https://github.com/mui-org/material-ui/blob/next/packages/material-ui/src/Typography/Typography.js
 
@@ -77,7 +77,7 @@ const StyledBox = styled(Box)<{
         return '3.75rem';
       }
       default: {
-        assertUnreachable(props.fontSize);
+        assertThat.isUnreachable(props.fontSize);
       }
     }
   }};

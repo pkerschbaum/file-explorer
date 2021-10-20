@@ -2,8 +2,8 @@ import * as React from 'react';
 import { Button, Popover, TextField } from '@mui/material';
 import CreateNewFolderOutlinedIcon from '@mui/icons-material/CreateNewFolderOutlined';
 
+import { check } from '@app/base/utils/assert.util';
 import { Stack } from '@app/ui/layouts/Stack';
-import { strings } from '@app/base/utils/strings.util';
 
 type CreateFolderProps = {
   onSubmit: (folderName: string) => void | Promise<void>;
@@ -25,7 +25,7 @@ export const CreateFolder: React.FC<CreateFolderProps> = ({ onSubmit }) => {
   );
 
   async function handleSubmit() {
-    if (strings.isNullishOrEmpty(createFolderValue)) {
+    if (check.isEmptyString(createFolderValue)) {
       return;
     }
 
@@ -71,9 +71,9 @@ export const CreateFolder: React.FC<CreateFolderProps> = ({ onSubmit }) => {
             />
             <Stack direction="row-reverse">
               <Button
-                variant={strings.isNullishOrEmpty(createFolderValue) ? undefined : 'contained'}
+                variant={check.isEmptyString(createFolderValue) ? undefined : 'contained'}
                 type="submit"
-                disabled={strings.isNullishOrEmpty(createFolderValue)}
+                disabled={check.isEmptyString(createFolderValue)}
               >
                 Create
               </Button>

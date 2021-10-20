@@ -12,7 +12,7 @@ import { DeleteProcess as DeleteProcessType, DELETE_PROCESS_STATUS } from '@app/
 import { removeProcess, runDeleteProcess } from '@app/operations/file.operations';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { formatter } from '@app/base/utils/formatter.util';
-import { assertUnreachable } from '@app/base/utils/types.util';
+import { isUnreachable } from '@app/base/utils/assert.util';
 
 export const DeleteProcess: React.FC<{ process: DeleteProcessType }> = ({ process }) => {
   let contentToRender;
@@ -66,7 +66,7 @@ export const DeleteProcess: React.FC<{ process: DeleteProcessType }> = ({ proces
       break;
     }
     default: {
-      assertUnreachable(process);
+      isUnreachable(process);
     }
   }
 

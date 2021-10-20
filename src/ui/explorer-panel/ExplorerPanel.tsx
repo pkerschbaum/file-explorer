@@ -31,7 +31,7 @@ import {
   useSetIdsOfSelectedFiles,
 } from '@app/ui/Explorer.context';
 import { KEYS } from '@app/ui/constants';
-import { strings } from '@app/base/utils/strings.util';
+import { check } from '@app/base/utils/assert.util';
 import { formatter } from '@app/base/utils/formatter.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { ExplorerActions } from '@app/ui/explorer-actions/ExplorerActions';
@@ -44,7 +44,7 @@ export const ExplorerPanel: React.FC<{ explorerId: string }> = ({ explorerId }) 
 
   const cwdStringifiedParts = URI.from(cwd)
     .fsPath.split(isWindows ? win32.sep : posix.sep)
-    .filter(strings.isNotNullishOrEmpty);
+    .filter(check.isNonEmptyString);
   const cwdRootPart = uriHelper.parseUri(cwd.scheme, cwdStringifiedParts[0]);
 
   return (
@@ -151,8 +151,8 @@ const FilesTableRow: React.FC<FilesTableRowProps> = ({
   React.useEffect(
     function fetchIcon() {
       if (
-        strings.isNullishOrEmpty(fsPath) ||
-        strings.isNullishOrEmpty(extension) ||
+        check.isEmptyString(fsPath) ||
+        check.isNullishOrEmptyString(extension) ||
         !USE_NATIVE_ICON_FOR_REGEX.test(extension)
       ) {
         return;

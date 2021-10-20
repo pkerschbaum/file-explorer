@@ -1,6 +1,6 @@
 import { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 
-import { strings } from '@app/base/utils/strings.util';
+import { check } from '@app/base/utils/assert.util';
 import { FileDragStart } from '@app/ipc/common/file-drag-start';
 
 export type PlatformNativeHost = {
@@ -15,7 +15,7 @@ export const createNativeHost = () => {
     revealResourcesInOS: window.privileged.shell.revealResourcesInOS,
     openPath: async (path) => {
       const errorMessage = await window.privileged.shell.openPath(path);
-      if (strings.isNotNullishOrEmpty(errorMessage)) {
+      if (check.isNonEmptyString(errorMessage)) {
         throw new Error(`Could not open path, reason: ${errorMessage}`);
       }
     },
