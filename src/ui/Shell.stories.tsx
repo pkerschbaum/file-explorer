@@ -32,6 +32,22 @@ export default {
                 name: 'testfile.txt',
                 resource: URI.joinPath(resource, 'testfile.txt'),
               },
+              {
+                ...fakeFileStat,
+                isDirectory: true,
+                isFile: false,
+                isSymbolicLink: false,
+                name: 'testfolder',
+                resource: URI.joinPath(resource, 'testfolder'),
+              },
+              {
+                ...fakeFileStat,
+                isDirectory: false,
+                isFile: true,
+                isSymbolicLink: false,
+                name: 'testfile2.docx',
+                resource: URI.joinPath(resource, 'testfile2.docx'),
+              },
             ],
           };
 

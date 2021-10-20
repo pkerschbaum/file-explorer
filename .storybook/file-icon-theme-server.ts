@@ -31,7 +31,7 @@ const EXTENSIONS_DIRECTORY_URI = URI.file(
   ),
 );
 const FILE_ICON_THEME_URI = URI.file(
-  path.join(__dirname, '..', 'src', 'static', 'icon-theme', FILE_ICON_PATH_FRAGMENT, 'extension'),
+  path.join(__dirname, '..', 'src', 'static', 'icon-theme', FILE_ICON_PATH_FRAGMENT),
 );
 
 const logger = createLogger('file-icon-theme-server');
