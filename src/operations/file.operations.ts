@@ -15,7 +15,6 @@ import {
   Tag,
 } from '@app/domain/types';
 import {
-  clipboardRef,
   dispatchRef,
   fileSystemRef,
   nativeHostRef,
@@ -98,7 +97,7 @@ export async function openFile(uri: UriComponents) {
 }
 
 export function cutOrCopyFiles(files: UriComponents[], cut: boolean) {
-  clipboardRef.current.writeResources(files.map((file) => URI.from(file)));
+  nativeHostRef.current.clipboard.writeResources(files.map((file) => URI.from(file)));
   dispatchRef.current(actions.cutOrCopyFiles({ cut }));
 }
 

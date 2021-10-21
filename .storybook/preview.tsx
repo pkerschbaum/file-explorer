@@ -1,16 +1,14 @@
 import { DecoratorFn } from '@storybook/react';
 
 import { createStoreInstance } from '@app/global-state/store';
-import { fakeClipboard } from '@app/platform/clipboard.fake';
 import { httpFileIconTheme } from '@app/platform/file-icon-theme.fake';
 import { fakeFileSystem } from '@app/platform/file-system.fake';
-import { fakeNativeHost } from '@app/platform/native-host.fake';
+import { createFakeNativeHost } from '@app/platform/native-host.fake';
 import { createFakePersistentStorage } from '@app/platform/persistent-storage.fake';
 import {
   storeRef,
   dispatchRef,
   queryClientRef,
-  clipboardRef,
   fileSystemRef,
   nativeHostRef,
   persistentStorageRef,
@@ -33,10 +31,9 @@ export const loaders = [
   () => {
     queryClientRef.current = queryClient;
 
-    clipboardRef.current = fakeClipboard;
     fileIconThemeRef.current = httpFileIconTheme;
     fileSystemRef.current = fakeFileSystem;
-    nativeHostRef.current = fakeNativeHost;
+    nativeHostRef.current = createFakeNativeHost();
     const fakePersistentStorage = createFakePersistentStorage();
     persistentStorageRef.current = fakePersistentStorage;
   },

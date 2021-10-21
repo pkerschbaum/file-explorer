@@ -4,7 +4,6 @@ import * as ReactDOM from 'react-dom';
 import { Globals, queryClient } from '@app/ui/Globals';
 import { Shell } from '@app/ui/Shell';
 import {
-  clipboardRef,
   dispatchRef,
   fileIconThemeRef,
   fileSystemRef,
@@ -15,14 +14,12 @@ import {
 } from '@app/operations/global-modules';
 import { createStoreInstance } from '@app/global-state/store';
 import { StorageState } from '@app/global-state/slices/persisted.slice';
-import { PlatformClipboard } from '@app/platform/clipboard';
 import { PlatformFileIconTheme } from '@app/platform/file-icon-theme';
 import { PlatformFileSystem } from '@app/platform/file-system';
 import { PlatformNativeHost } from '@app/platform/native-host';
 import { PlatformPersistentStorage } from '@app/platform/persistent-storage';
 
 export type AppDependencies = {
-  clipboard: PlatformClipboard;
   fileIconTheme: PlatformFileIconTheme;
   fileSystem: PlatformFileSystem;
   nativeHost: PlatformNativeHost;
@@ -39,7 +36,6 @@ export function render(appDependencies: AppDependencies) {
   storeRef.current = store;
   dispatchRef.current = store.dispatch;
 
-  clipboardRef.current = appDependencies.clipboard;
   fileIconThemeRef.current = appDependencies.fileIconTheme;
   fileSystemRef.current = appDependencies.fileSystem;
   nativeHostRef.current = appDependencies.nativeHost;

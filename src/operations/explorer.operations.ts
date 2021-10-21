@@ -15,7 +15,6 @@ import { check } from '@app/base/utils/assert.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { PASTE_PROCESS_STATUS } from '@app/domain/types';
 import {
-  clipboardRef,
   dispatchRef,
   fileSystemRef,
   nativeHostRef,
@@ -52,7 +51,7 @@ export async function changeDirectory(explorerId: string, newDir: string) {
 }
 
 export async function pasteFiles(explorerId: string) {
-  const clipboardResources = clipboardRef.current.readResources();
+  const clipboardResources = nativeHostRef.current.clipboard.readResources();
   const draftPasteState = storeRef.current.getState().processesSlice.draftPasteState;
   if (clipboardResources.length === 0 || draftPasteState === undefined) {
     return;
