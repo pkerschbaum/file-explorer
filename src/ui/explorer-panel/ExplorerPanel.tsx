@@ -31,6 +31,7 @@ import {
   useSetIdsOfSelectedFiles,
 } from '@app/ui/Explorer.context';
 import { KEYS } from '@app/ui/constants';
+import { useThemeFileIconClasses } from '@app/ui/hooks/files.hooks';
 import { check } from '@app/base/utils/assert.util';
 import { formatter } from '@app/base/utils/formatter.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
@@ -146,6 +147,8 @@ const FilesTableRow: React.FC<FilesTableRowProps> = ({
 
   const [nativeIconDataURL, setNativeIconDataURL] = React.useState<string | undefined>();
 
+  const themeFileIconClasses = useThemeFileIconClasses(fileForRow);
+
   const fsPath = URI.from(fileForRow.uri).fsPath;
   const extension = fileForRow.extension;
   React.useEffect(
@@ -237,7 +240,7 @@ const FilesTableRow: React.FC<FilesTableRowProps> = ({
     >
       <Cell>
         <Stack>
-          <FileIcon className={nativeIconDataURL ? undefined : fileForRow.iconClasses.join(' ')}>
+          <FileIcon className={nativeIconDataURL ? undefined : themeFileIconClasses}>
             {nativeIconDataURL && (
               <IconWrapper>
                 <img

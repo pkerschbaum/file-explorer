@@ -1,4 +1,4 @@
-import { useQueries, UseQueryResult } from 'react-query';
+import { useQuery } from 'react-query';
 
 import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { FileKind } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
@@ -8,27 +8,14 @@ import { fileIconThemeRef } from '@app/operations/global-modules';
 
 export declare namespace IconClassesQuery {
   export type Args = { uri: UriComponents; fileKind: FileKind };
-  export type ReturnType = { uri: UriComponents; iconClasses: string[] };
+  export type ReturnType = string[];
 }
 
-export function useFileIconClasses(files: IconClassesQuery.Args[]) {
-  const queries = useQueries(
-    files.map((file) => ({
-      queryKey: QUERY_KEYS.FILE_ICON_CLASSES(file),
-      queryFn: () => fetchIconClasses(file),
-    })),
-  );
-
-  return queries as UseQueryResult<IconClassesQuery.ReturnType>[];
+export function useFileIconClasses({ uri, fileKind }: IconClassesQuery.Args) {
+  const file = { uri: URI.from(uri).toJSON(), fileKind };
+  return useQuery(QUERY_KEYS.FILE_ICON_CLASSES(file), () => fetchIconClasses(file), {});
 }
 
 async function fetchIconClasses(file: IconClassesQuery.Args): Promise<IconClassesQuery.ReturnType> {
-  const iconClasses = await fileIconThemeRef.current.loadIconClasses(
-    URI.from(file.uri),
-    file.fileKind,
-  );
-  return {
-    uri: file.uri,
-    iconClasses,
-  };
+  return await fileIconThemeRef.current.loadIconClasses(URI.from(file.uri), file.fileKind);
 }

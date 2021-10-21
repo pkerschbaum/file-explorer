@@ -1,80 +1,83 @@
 import * as React from 'react';
 import { matchSorter } from 'match-sorter';
-import { Provider } from 'jotai';
-import { useUpdateAtom } from 'jotai/utils';
+import { useImmer, Updater } from 'use-immer';
+import { createContext, useContextSelector } from 'use-context-selector';
 
 import { arrays } from '@app/base/utils/arrays.util';
 import { check } from '@app/base/utils/assert.util';
 import { FileForUI, FILE_TYPE } from '@app/domain/types';
 import { useEnrichFilesWithTags } from '@app/global-state/slices/persisted.hooks';
 import { useFilesForUI } from '@app/ui/hooks/files.hooks';
-import { scopedAtom, SyncSetAtom, usePrevious, useScopedAtom } from '@app/ui/utils/react.util';
+import { usePrevious } from '@app/ui/utils/react.util';
 
-const filterInputAtom = scopedAtom<string>();
-const selectionAtom = scopedAtom<{
-  idsOfSelectedFiles: string[];
-  fileIdSelectionGotStartedWith: string | undefined;
-}>();
-const fileToRenameIdAtom = scopedAtom<string | undefined>();
+type ExplorerContextState = {
+  filterInput: string;
+  selection: {
+    idsOfSelectedFiles: string[];
+    fileIdSelectionGotStartedWith: string | undefined;
+  };
+  fileToRenameId: string | undefined;
+};
 
-const explorerIdAtom = scopedAtom<string>();
-const dataAvailableAtom = scopedAtom<boolean>();
-const filesAtom = scopedAtom<FileForUI[]>();
-const filesToShowAtom = scopedAtom<FileForUI[]>();
-const selectedFilesAtom = scopedAtom<FileForUI[]>();
+type ExplorerContextValues = ExplorerContextState & {
+  updateExplorerState: Updater<ExplorerContextState>;
+
+  // computed/pass-through values
+  explorerId: string;
+  dataAvailable: boolean;
+  filesToShow: FileForUI[];
+  selectedFiles: FileForUI[];
+};
+
+const explorerValuesContext = createContext<null | ExplorerContextValues>(null);
+
+function useExplorerValuesContext<Selected>(
+  selector: (explorerValues: ExplorerContextValues) => Selected,
+) {
+  return useContextSelector(explorerValuesContext, (value) => {
+    if (value === null) {
+      throw new Error(`explorerValuesContext is not available`);
+    }
+    return selector(value);
+  });
+}
 
 type ExplorerContextProviderProps = {
   explorerId: string;
   children: React.ReactElement;
 };
 
-const SYMBOL_STATE_ATOMS_SCOPE = Symbol('EXPLORER_CONTEXT_STATE_ATOMS_SCOPE_SYMBOL');
-const SYMBOL_DERIVED_VALUES_ATOMS_SCOPE = Symbol('EXPLORER_CONTEXT_DERIVED_VALUES_ATOMS_SCOPE');
-
 export const ExplorerContextProvider: React.FC<ExplorerContextProviderProps> = (props) => {
-  return (
-    <Provider
-      scope={SYMBOL_STATE_ATOMS_SCOPE}
-      initialValues={[
-        [filterInputAtom, ''],
-        [
-          selectionAtom,
-          {
-            idsOfSelectedFiles: [] as string[],
-            fileIdSelectionGotStartedWith: undefined as string | undefined,
-          },
-        ],
-        [fileToRenameIdAtom, undefined],
-      ]}
-    >
-      <StateAtomsContainer {...props} />
-    </Provider>
-  );
-};
+  const [explorerState, updateExplorerState] = useImmer<ExplorerContextState>({
+    filterInput: '',
+    selection: {
+      idsOfSelectedFiles: [],
+      fileIdSelectionGotStartedWith: undefined,
+    },
+    fileToRenameId: undefined,
+  });
 
-const StateAtomsContainer: React.FC<ExplorerContextProviderProps> = (props) => {
-  const { explorerId } = props;
-
-  const [filterInput] = useScopedAtom(filterInputAtom, SYMBOL_STATE_ATOMS_SCOPE);
-  const [selection, setSelection] = useScopedAtom(selectionAtom, SYMBOL_STATE_ATOMS_SCOPE);
-
-  const { files, dataAvailable } = useFilesForUI(explorerId);
+  const { files, dataAvailable } = useFilesForUI(props.explorerId);
 
   const setIdsOfSelectedFiles = React.useCallback(
     (newIds: string[]) => {
-      setSelection((oldState) => ({
-        idsOfSelectedFiles: newIds,
-        fileIdSelectionGotStartedWith:
-          newIds.length === 1 ? newIds[0] : oldState.fileIdSelectionGotStartedWith,
-      }));
+      updateExplorerState((draft) => {
+        draft.selection = {
+          idsOfSelectedFiles: newIds,
+          fileIdSelectionGotStartedWith:
+            newIds.length === 1 ? newIds[0] : draft.selection.fileIdSelectionGotStartedWith,
+        };
+      });
     },
-    [setSelection],
+    [updateExplorerState],
   );
 
-  const { idsOfSelectedFiles } = selection;
   const selectedFiles = React.useMemo(
-    () => files.filter((file) => !!idsOfSelectedFiles.find((id) => id === file.id)),
-    [files, idsOfSelectedFiles],
+    () =>
+      files.filter(
+        (file) => !!explorerState.selection.idsOfSelectedFiles.find((id) => id === file.id),
+      ),
+    [files, explorerState.selection.idsOfSelectedFiles],
   );
 
   const filesWithTags = useEnrichFilesWithTags(files);
@@ -85,10 +88,10 @@ const StateAtomsContainer: React.FC<ExplorerContextProviderProps> = (props) => {
    *   Directories first and files second. Each section sorted by name.
    * - otherwise, let "match-sorter" do its job for filtering and sorting.
    */
-  const filesToShow = React.useMemo(() => {
+  const filesToShow: FileForUI[] = React.useMemo(() => {
     let result;
 
-    if (check.isEmptyString(filterInput)) {
+    if (check.isEmptyString(explorerState.filterInput)) {
       result = arrays
         .wrap(filesWithTags)
         .stableSort((a, b) => {
@@ -111,7 +114,7 @@ const StateAtomsContainer: React.FC<ExplorerContextProviderProps> = (props) => {
     } else {
       result = arrays
         .wrap(filesWithTags)
-        .matchSort(filterInput, {
+        .matchSort(explorerState.filterInput, {
           // avoid "WORD STARTS WITH" ranking of match-sorter by replacing each blank with another character
           keys: [(file) => file.name.replace(' ', '_')],
           threshold: matchSorter.rankings.CONTAINS,
@@ -120,139 +123,81 @@ const StateAtomsContainer: React.FC<ExplorerContextProviderProps> = (props) => {
     }
 
     return result;
-  }, [filterInput, filesWithTags]);
+  }, [explorerState.filterInput, filesWithTags]);
 
-  // if no file is selected, and every time the filter input changes, reset selection (just select the first file)
-  const prevFilterInput = usePrevious(filterInput);
-  const filterInputChanged = filterInput !== prevFilterInput;
+  // if no file is selected, reset selection
   React.useEffect(() => {
-    if ((idsOfSelectedFiles.length === 0 || filterInputChanged) && filesToShow.length > 0) {
+    if (explorerState.selection.idsOfSelectedFiles.length === 0 && filesToShow.length > 0) {
       setIdsOfSelectedFiles([filesToShow[0].id]);
     }
-  }, [idsOfSelectedFiles, filterInputChanged, filesToShow, setIdsOfSelectedFiles]);
+  }, [explorerState.selection.idsOfSelectedFiles.length, filesToShow, setIdsOfSelectedFiles]);
+
+  // every time the filter input changes, reset selection
+  const prevFilterInput = usePrevious(explorerState.filterInput);
+  const filterInputChanged = explorerState.filterInput !== prevFilterInput;
+  React.useEffect(() => {
+    if (filterInputChanged && filesToShow.length > 0) {
+      setIdsOfSelectedFiles([filesToShow[0].id]);
+    }
+  }, [filesToShow, filterInputChanged, setIdsOfSelectedFiles]);
 
   return (
-    <Provider
-      scope={SYMBOL_DERIVED_VALUES_ATOMS_SCOPE}
-      initialValues={[
-        [explorerIdAtom, explorerId],
-        [dataAvailableAtom, dataAvailable],
-        [filesAtom, filesWithTags],
-        [filesToShowAtom, filesToShow],
-        [selectedFilesAtom, selectedFiles],
-      ]}
+    <explorerValuesContext.Provider
+      value={{
+        ...explorerState,
+        updateExplorerState,
+
+        explorerId: props.explorerId,
+        dataAvailable,
+        filesToShow,
+        selectedFiles,
+      }}
     >
-      <DerivedValuesAtomsContainer
-        {...props}
-        dataAvailable={dataAvailable}
-        filesWithTags={filesWithTags}
-        filesToShow={filesToShow}
-        selectedFiles={selectedFiles}
-      />
-    </Provider>
+      {props.children}
+    </explorerValuesContext.Provider>
   );
-};
-
-type DerivedValuesAtomsContainerProps = ExplorerContextProviderProps & {
-  dataAvailable: boolean;
-  filesWithTags: FileForUI[];
-  filesToShow: FileForUI[];
-  selectedFiles: FileForUI[];
-};
-
-const DerivedValuesAtomsContainer: React.FC<DerivedValuesAtomsContainerProps> = ({
-  explorerId,
-  dataAvailable,
-  filesWithTags,
-  filesToShow,
-  selectedFiles,
-  children,
-}) => {
-  // propagate computed/pass-through values
-  const setExplorerId: SyncSetAtom<typeof explorerIdAtom> = useUpdateAtom(
-    explorerIdAtom,
-    SYMBOL_DERIVED_VALUES_ATOMS_SCOPE,
-  );
-  const setDataAvailable: SyncSetAtom<typeof dataAvailableAtom> = useUpdateAtom(
-    dataAvailableAtom,
-    SYMBOL_DERIVED_VALUES_ATOMS_SCOPE,
-  );
-  const setFiles: SyncSetAtom<typeof filesAtom> = useUpdateAtom(
-    filesAtom,
-    SYMBOL_DERIVED_VALUES_ATOMS_SCOPE,
-  );
-  const setFilesToShow: SyncSetAtom<typeof filesToShowAtom> = useUpdateAtom(
-    filesToShowAtom,
-    SYMBOL_DERIVED_VALUES_ATOMS_SCOPE,
-  );
-  const setSelectedFiles: SyncSetAtom<typeof selectedFilesAtom> = useUpdateAtom(
-    selectedFilesAtom,
-    SYMBOL_DERIVED_VALUES_ATOMS_SCOPE,
-  );
-
-  React.useEffect(() => {
-    setExplorerId(explorerId);
-  }, [explorerId, setExplorerId]);
-  React.useEffect(() => {
-    setDataAvailable(dataAvailable);
-  }, [dataAvailable, setDataAvailable]);
-  React.useEffect(() => {
-    setFiles(filesWithTags);
-  }, [filesWithTags, setFiles]);
-  React.useEffect(() => {
-    setFilesToShow(filesToShow);
-  }, [filesToShow, setFilesToShow]);
-  React.useEffect(() => {
-    setSelectedFiles(selectedFiles);
-  }, [selectedFiles, setSelectedFiles]);
-
-  return children;
 };
 
 export function useFilterInput() {
-  const [filterInput] = useScopedAtom(filterInputAtom, SYMBOL_STATE_ATOMS_SCOPE);
-  return filterInput;
+  return useExplorerValuesContext((explorerValues) => explorerValues.filterInput);
 }
 
 export function useFileIdSelectionGotStartedWith() {
-  const [selection] = useScopedAtom(selectionAtom, SYMBOL_STATE_ATOMS_SCOPE);
-  return selection.fileIdSelectionGotStartedWith;
+  return useExplorerValuesContext(
+    (explorerValues) => explorerValues.selection.fileIdSelectionGotStartedWith,
+  );
 }
 
 export function useIdsOfSelectedFiles() {
-  const [selection] = useScopedAtom(selectionAtom, SYMBOL_STATE_ATOMS_SCOPE);
-  return selection.idsOfSelectedFiles;
+  return useExplorerValuesContext((explorerValues) => explorerValues.selection.idsOfSelectedFiles);
 }
 
 export function useFileToRenameId() {
-  const [fileToRenameId] = useScopedAtom(fileToRenameIdAtom, SYMBOL_STATE_ATOMS_SCOPE);
-  return fileToRenameId;
+  return useExplorerValuesContext((explorerValues) => explorerValues.fileToRenameId);
 }
 
 // computed/pass-through values
 export function useExplorerId() {
-  const [explorerId] = useScopedAtom(explorerIdAtom, SYMBOL_DERIVED_VALUES_ATOMS_SCOPE);
-  return explorerId;
+  return useExplorerValuesContext((explorerValues) => explorerValues.explorerId);
 }
 
 export function useFilesToShow() {
-  const [filesToShow] = useScopedAtom(filesToShowAtom, SYMBOL_DERIVED_VALUES_ATOMS_SCOPE);
-  return filesToShow;
+  return useExplorerValuesContext((explorerValues) => explorerValues.filesToShow);
 }
 
 export function useDataAvailable() {
-  const [dataAvailable] = useScopedAtom(dataAvailableAtom, SYMBOL_DERIVED_VALUES_ATOMS_SCOPE);
-  return dataAvailable;
+  return useExplorerValuesContext((explorerValues) => explorerValues.dataAvailable);
 }
 
 export function useSelectedFiles() {
-  const [selectedFiles] = useScopedAtom(selectedFilesAtom, SYMBOL_DERIVED_VALUES_ATOMS_SCOPE);
-  return selectedFiles;
+  return useExplorerValuesContext((explorerValues) => explorerValues.selectedFiles);
 }
 
 export function useFileToRename() {
-  const [fileToRenameId] = useScopedAtom(fileToRenameIdAtom, SYMBOL_STATE_ATOMS_SCOPE);
-  const [filesToShow] = useScopedAtom(filesToShowAtom, SYMBOL_DERIVED_VALUES_ATOMS_SCOPE);
+  const fileToRenameId = useExplorerValuesContext(
+    (explorerValues) => explorerValues.fileToRenameId,
+  );
+  const filesToShow = useExplorerValuesContext((explorerValues) => explorerValues.filesToShow);
 
   let fileToRename: FileForUI | undefined;
   if (fileToRenameId) {
@@ -262,32 +207,47 @@ export function useFileToRename() {
 }
 
 export function useSetFilterInput() {
-  const setFilterInput: SyncSetAtom<typeof filterInputAtom> = useUpdateAtom(
-    filterInputAtom,
-    SYMBOL_STATE_ATOMS_SCOPE,
+  const updateExplorerState = useExplorerValuesContext(
+    (explorerValues) => explorerValues.updateExplorerState,
   );
-  return setFilterInput;
+  return React.useCallback(
+    (newValue: string) => {
+      updateExplorerState((draft) => {
+        draft.filterInput = newValue;
+      });
+    },
+    [updateExplorerState],
+  );
 }
 
 export function useSetIdsOfSelectedFiles() {
-  const setSelection = useUpdateAtom(selectionAtom, SYMBOL_STATE_ATOMS_SCOPE);
-  const setIdsOfSelectedFiles = React.useCallback(
-    (newIds: string[]) => {
-      void setSelection((oldState) => ({
-        idsOfSelectedFiles: newIds,
-        fileIdSelectionGotStartedWith:
-          newIds.length === 1 ? newIds[0] : oldState.fileIdSelectionGotStartedWith,
-      }));
-    },
-    [setSelection],
+  const updateExplorerState = useExplorerValuesContext(
+    (explorerValues) => explorerValues.updateExplorerState,
   );
-  return setIdsOfSelectedFiles;
+  return React.useCallback(
+    (newIds: string[]) => {
+      updateExplorerState((draft) => {
+        draft.selection = {
+          idsOfSelectedFiles: newIds,
+          fileIdSelectionGotStartedWith:
+            newIds.length === 1 ? newIds[0] : draft.selection.fileIdSelectionGotStartedWith,
+        };
+      });
+    },
+    [updateExplorerState],
+  );
 }
 
 export function useSetFileToRenameId() {
-  const setFileToRenameId: SyncSetAtom<typeof fileToRenameIdAtom> = useUpdateAtom(
-    fileToRenameIdAtom,
-    SYMBOL_STATE_ATOMS_SCOPE,
+  const updateExplorerState = useExplorerValuesContext(
+    (explorerValues) => explorerValues.updateExplorerState,
   );
-  return setFileToRenameId;
+  return React.useCallback(
+    (newValue: string | undefined) => {
+      updateExplorerState((draft) => {
+        draft.fileToRenameId = newValue;
+      });
+    },
+    [updateExplorerState],
+  );
 }

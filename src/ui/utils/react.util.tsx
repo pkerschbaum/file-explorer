@@ -1,7 +1,5 @@
 import * as React from 'react';
 import { useDispatch } from 'react-redux';
-import { atom, useAtom } from 'jotai';
-import { PrimitiveAtom, Scope, WritableAtom } from 'jotai/core/atom';
 
 import { Event } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/event';
 
@@ -108,7 +106,7 @@ export function createContext<T>(name: string) {
   const useContextValue = () => {
     const valueOfContext = React.useContext(Context);
     if (valueOfContext === undefined) {
-      throw new Error(`${name} context not available`);
+      throw new Error(`${name} context is not available`);
     }
     return valueOfContext;
   };
@@ -121,29 +119,4 @@ export function createContext<T>(name: string) {
   };
 
   return { useContextValue, Provider };
-}
-
-/* Jotai "scoped atoms" and sync set update*/
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export type SyncSetAtom<AtomType> = AtomType extends WritableAtom<infer _1, infer Update>
-  ? undefined extends Update
-    ? (update?: Update) => void
-    : (update: Update) => void
-  : never;
-
-const SYMBOL_NO_VALUE_PRESENT = Symbol('NO_VALUE_PRESENT');
-
-export function scopedAtom<Value extends unknown>(): PrimitiveAtom<Value> {
-  return atom(SYMBOL_NO_VALUE_PRESENT) as PrimitiveAtom<any>;
-}
-
-export function useScopedAtom<Value, Update>(
-  atom: WritableAtom<Value, Update>,
-  scope: Scope,
-): [Value, SyncSetAtom<WritableAtom<Value, Update>>] {
-  const [value, setValue] = useAtom(atom, scope);
-  if ((value as unknown) === SYMBOL_NO_VALUE_PRESENT) {
-    throw new Error('useScopedAtom was not used inside a jotai provider');
-  }
-  return [value, setValue];
 }

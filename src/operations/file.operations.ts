@@ -11,6 +11,7 @@ import {
   DeleteProcess,
   DELETE_PROCESS_STATUS,
   FileStatMap,
+  FileToTags,
   PROCESS_TYPE,
   Tag,
 } from '@app/domain/types';
@@ -22,7 +23,6 @@ import {
 } from '@app/operations/global-modules';
 import * as tagOperations from '@app/operations/tag.operations';
 import { refreshFiles } from '@app/global-cache/files';
-import { RootState } from '@app/global-state/store';
 import {
   actions as persistedSliceActions,
   STORAGE_KEY,
@@ -147,10 +147,10 @@ async function resolveDeepRecursive(
 }
 
 export function getTagsOfFile(
-  state: RootState,
+  resourcesToTags: FileToTags,
   file: { uri: UriComponents; ctime: number },
 ): Tag[] {
-  const tagIdsOfFile = state.persistedSlice.resourcesToTags[URI.from(file.uri).toString()];
+  const tagIdsOfFile = resourcesToTags[URI.from(file.uri).toString()];
 
   if (
     tagIdsOfFile === undefined ||
@@ -265,10 +265,13 @@ export async function executeCopyOrMove({
     await operation;
 
     // Also copy tags to destination
-    const tagsOfSourceFile = getTagsOfFile(storeRef.current.getState(), {
-      uri: sourceFileURI,
-      ctime: sourceFileStat.ctime,
-    }).map((t) => t.id);
+    const tagsOfSourceFile = getTagsOfFile(
+      storeRef.current.getState().persistedSlice.resourcesToTags,
+      {
+        uri: sourceFileURI,
+        ctime: sourceFileStat.ctime,
+      },
+    ).map((t) => t.id);
     await addTags([targetFileURI], tagsOfSourceFile);
 
     // If move operation was performed, remove tags from source URI

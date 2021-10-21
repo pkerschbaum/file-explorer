@@ -5,7 +5,7 @@ import { FileKind } from '@pkerschbaum/code-oss-file-service/out/vs/platform/fil
 
 import { createLogger } from '@app/base/logger/logger';
 import { uriHelper } from '@app/base/utils/uri-helper';
-import { FileForUI, FILE_TYPE } from '@app/domain/types';
+import { File, FileForUI, FILE_TYPE } from '@app/domain/types';
 import { useFileIconClasses } from '@app/global-cache/file-icon-classes';
 import { useFiles, getCachedQueryData, setCachedQueryData } from '@app/global-cache/files';
 import { useCwd } from '@app/global-state/slices/explorers.hooks';
@@ -94,51 +94,47 @@ export const useFilesForUI = (explorerId: string): FilesLoadingResult => {
     [filesQueryWithMetadataData, filesQueryWithMetadataIsFetching, cwd],
   );
 
-  let filesToUse;
+  let dataAvailable: boolean;
+  let filesToUse: File[];
   if (filesQueryWithMetadataData !== undefined) {
+    dataAvailable = true;
     filesToUse = filesQueryWithMetadataData;
-  }
-
-  if (filesToUse === undefined && filesQueryWithoutMetadataData !== undefined) {
+  } else if (filesQueryWithoutMetadataData !== undefined) {
+    dataAvailable = true;
     filesToUse = filesQueryWithoutMetadataData;
+  } else {
+    // files queries do not have any (possibly cached) data yet
+    dataAvailable = false;
+    filesToUse = [];
   }
 
-  const fileIconClassesQueries = useFileIconClasses(
-    filesToUse === undefined
-      ? []
-      : filesToUse.map((file) => ({
-          uri: file.uri,
-          fileKind: mapFileTypeToFileKind(file.fileType),
-        })),
+  const filesForUI = React.useMemo(
+    () =>
+      filesToUse.map((file) => {
+        const { fileName, extension } = uriHelper.extractNameAndExtension(file.uri);
+
+        const fileForUI: FileForUI = {
+          ...file,
+          extension,
+          name: fileName,
+          tags: [],
+        };
+        return fileForUI;
+      }),
+    [filesToUse],
   );
 
-  const someFileIconQueryIsFetching = fileIconClassesQueries.some((query) => query.isFetching);
-  if (filesToUse === undefined || someFileIconQueryIsFetching) {
-    // files queries do not have any (possibly cached) data yet
-    return { dataAvailable: false, files: [] };
-  }
+  return { dataAvailable, files: filesForUI };
+};
 
-  const filesForUI = filesToUse.map((file) => {
-    const { fileName, extension } = uriHelper.extractNameAndExtension(file.uri);
-
-    const iconClasses = fileIconClassesQueries.find(
-      (query) =>
-        query.data !== undefined &&
-        URI.from(query.data.uri).toString() === URI.from(file.uri).toString(),
-    );
-
-    const fileForUI: FileForUI = {
-      ...file,
-      extension,
-      iconClasses: iconClasses?.data?.iconClasses ?? [],
-      name: fileName,
-      tags: [],
-    };
-    return fileForUI;
+export function useThemeFileIconClasses(file: FileForUI) {
+  const iconClassesQuery = useFileIconClasses({
+    uri: file.uri,
+    fileKind: mapFileTypeToFileKind(file.fileType),
   });
 
-  return { dataAvailable: true, files: filesForUI };
-};
+  return iconClassesQuery.data?.join(' ');
+}
 
 function mapFileTypeToFileKind(fileType: FILE_TYPE) {
   if (fileType === FILE_TYPE.FILE) {

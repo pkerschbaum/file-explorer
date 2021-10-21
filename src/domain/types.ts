@@ -99,5 +99,4 @@ export type FileForUI = File & {
   name: string;
   extension?: string;
   tags: Tag[];
-  iconClasses: string[];
 };
