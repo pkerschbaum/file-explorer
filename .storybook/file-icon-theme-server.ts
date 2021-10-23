@@ -8,7 +8,7 @@ import {
   loadFileIconTheme,
 } from '@pkerschbaum/code-oss-file-icon-theme';
 
-import { FILE_ICON_PATH_FRAGMENT } from '@app/static-resources';
+import { FILE_ICON_PATH_FRAGMENT } from '@app/static-resources-renderer';
 import { createLogger } from '@app/base/logger/logger';
 import { FILE_ICON_THEME_PATH_REPLACE_REGEX } from '@app/platform/file-icon-theme';
 import {

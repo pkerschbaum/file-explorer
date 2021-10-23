@@ -9,7 +9,7 @@ import {
   EXTENSIONS_DIRECTORY_URI,
   FILE_ICON_THEME_RELATIVE_PATH,
   FILE_ICON_THEME_URI,
-} from '@app/static-resources';
+} from '@app/static-resources-renderer';
 
 export type PlatformFileIconTheme = {
   loadCssRules: () => string | Promise<string>;

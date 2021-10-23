@@ -127,10 +127,10 @@ export const ExplorerContextProvider: React.FC<ExplorerContextProviderProps> = (
 
   // if no file is selected, reset selection
   React.useEffect(() => {
-    if (explorerState.selection.idsOfSelectedFiles.length === 0 && filesToShow.length > 0) {
+    if (selectedFiles.length === 0 && filesToShow.length > 0) {
       setIdsOfSelectedFiles([filesToShow[0].id]);
     }
-  }, [explorerState.selection.idsOfSelectedFiles.length, filesToShow, setIdsOfSelectedFiles]);
+  }, [selectedFiles.length, filesToShow, setIdsOfSelectedFiles]);
 
   // every time the filter input changes, reset selection
   const prevFilterInput = usePrevious(explorerState.filterInput);

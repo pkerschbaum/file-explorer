@@ -14,14 +14,8 @@ export const ExplorerPanelContainer = React.memo<ExplorerPanelContainerProps>(
 
     return (
       <ExplorerContextProvider key={URI.from(cwd).toString()} explorerId={explorerId}>
-        <MemoizedExplorerPanel explorerId={explorerId} />
+        <ExplorerPanel explorerId={explorerId} />
       </ExplorerContextProvider>
     );
-  },
-);
-
-const MemoizedExplorerPanel = React.memo<ExplorerPanelContainerProps>(
-  function MemoizedExplorerPanel({ explorerId }) {
-    return <ExplorerPanel explorerId={explorerId}></ExplorerPanel>;
   },
 );

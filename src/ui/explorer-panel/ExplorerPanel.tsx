@@ -242,9 +242,10 @@ const FilesTableRow: React.FC<FilesTableRowProps> = ({
     <Row
       key={fileForRow.id}
       draggable
-      onDragStart={() =>
-        nativeHostRef.current.startNativeFileDnD({ fsPath: URI.from(fileForRow.uri).fsPath })
-      }
+      onDragStart={(e) => {
+        e.preventDefault();
+        nativeHostRef.current.startNativeFileDnD({ fsPath: URI.from(fileForRow.uri).fsPath });
+      }}
       onClick={(e) => {
         if (e.ctrlKey) {
           // toggle selection of file which was clicked on
