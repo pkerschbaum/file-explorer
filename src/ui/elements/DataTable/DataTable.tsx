@@ -62,4 +62,9 @@ const DataTableWrapper = styled(Stack)`
 
 const StyledTableContainer: typeof TableContainer = styled(TableContainer)`
   ${commonStyles.flex.shrinkAndFitVertical}
+
+  /* material-ui TableContainer does use the "Paper" material-ui component, but this component 
+     does bring it's own background-color. 
+     We don't want any background-color to be set for DataTables, so reset it. */
+  background-color: initial;
 `;

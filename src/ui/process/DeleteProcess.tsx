@@ -20,17 +20,18 @@ export const DeleteProcess: React.FC<{ process: DeleteProcessType }> = ({ proces
     case DELETE_PROCESS_STATUS.PENDING_FOR_USER_INPUT: {
       contentToRender = (
         <DeleteProcessCard process={process}>
-          <Button autoFocus onClick={() => runDeleteProcess(process.id, { useTrash: true })}>
-            <Stack>
-              <DeleteOutlineOutlinedIcon fontSize="small" />
-              Move to trash
-            </Stack>
+          <Button
+            autoFocus
+            onClick={() => runDeleteProcess(process.id, { useTrash: true })}
+            startIcon={<DeleteOutlineOutlinedIcon />}
+          >
+            Move to trash
           </Button>
-          <Button onClick={() => runDeleteProcess(process.id, { useTrash: false })}>
-            <Stack>
-              <DeleteForeverOutlinedIcon fontSize="small" />
-              Delete permanently
-            </Stack>
+          <Button
+            onClick={() => runDeleteProcess(process.id, { useTrash: false })}
+            startIcon={<DeleteForeverOutlinedIcon />}
+          >
+            Delete permanently
           </Button>
           <Button onClick={() => removeProcess(process.id)}>Abort</Button>
         </DeleteProcessCard>

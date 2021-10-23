@@ -1,4 +1,4 @@
-import { DecoratorFn } from '@storybook/react';
+import { DecoratorFn, Parameters } from '@storybook/react';
 
 import { createStoreInstance } from '@app/global-state/store';
 import { httpFileIconTheme } from '@app/platform/file-icon-theme.fake';
@@ -17,7 +17,7 @@ import {
 import { addIconThemeCssRulesToHead } from '@app/ui/file-icon-theme';
 import { Globals, queryClient } from '@app/ui/Globals';
 
-export const parameters = {
+export const parameters: Parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },
   controls: {
     matchers: {
@@ -25,6 +25,7 @@ export const parameters = {
       date: /Date$/,
     },
   },
+  layout: 'fullscreen',
 };
 
 export const loaders = [

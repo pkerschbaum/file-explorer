@@ -7,7 +7,6 @@ import { fakeFileStat, fakeFileSystem } from '@app/platform/file-system.fake';
 import { fileSystemRef } from '@app/operations/global-modules';
 import { Shell } from '@app/ui/Shell';
 
-// More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
   title: 'Shell',
   component: Shell,
@@ -60,7 +59,6 @@ export default {
   ],
 } as ComponentMeta<typeof Shell>;
 
-// More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
 const Template: ComponentStory<typeof Shell> = (args) => <Shell {...args} />;
 
 export const DefaultCase = Template.bind({});

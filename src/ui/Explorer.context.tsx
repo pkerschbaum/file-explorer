@@ -193,19 +193,6 @@ export function useSelectedFiles() {
   return useExplorerValuesContext((explorerValues) => explorerValues.selectedFiles);
 }
 
-export function useFileToRename() {
-  const fileToRenameId = useExplorerValuesContext(
-    (explorerValues) => explorerValues.fileToRenameId,
-  );
-  const filesToShow = useExplorerValuesContext((explorerValues) => explorerValues.filesToShow);
-
-  let fileToRename: FileForUI | undefined;
-  if (fileToRenameId) {
-    fileToRename = filesToShow.find((file) => file.id === fileToRenameId);
-  }
-  return fileToRename;
-}
-
 export function useSetFilterInput() {
   const updateExplorerState = useExplorerValuesContext(
     (explorerValues) => explorerValues.updateExplorerState,

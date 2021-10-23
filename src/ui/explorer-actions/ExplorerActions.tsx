@@ -284,18 +284,15 @@ const ExplorerActionsImpl: React.FC = () => {
       <Stack alignItems="flex-end">
         <Stack>
           <CwdInput cwd={cwd} onSubmit={(newDir) => changeDirectory(explorerId, newDir)} />
-          <Button onClick={navigateUp}>
-            <Stack>
-              <ArrowUpwardOutlinedIcon fontSize="small" />
-              Up
-            </Stack>
+          <Button onClick={navigateUp} startIcon={<ArrowUpwardOutlinedIcon />}>
+            Up
           </Button>
           <Tooltip title="Reveal in OS File Explorer">
-            <Button onClick={() => revealCwdInOSExplorer(explorerId)}>
-              <Stack>
-                <FolderOutlinedIcon fontSize="small" />
-                Reveal
-              </Stack>
+            <Button
+              onClick={() => revealCwdInOSExplorer(explorerId)}
+              startIcon={<FolderOutlinedIcon />}
+            >
+              Reveal
             </Button>
           </Tooltip>
         </Stack>
@@ -304,46 +301,49 @@ const ExplorerActionsImpl: React.FC = () => {
       <Divider orientation="vertical" flexItem />
 
       <Stack wrap>
-        <Button onClick={openSelectedFiles} disabled={singleFileActionsDisabled}>
-          <Stack>
-            <LaunchOutlinedIcon fontSize="small" />
-            Open
-          </Stack>
+        <Button
+          onClick={openSelectedFiles}
+          disabled={singleFileActionsDisabled}
+          startIcon={<LaunchOutlinedIcon />}
+        >
+          Open
         </Button>
-        <Button onClick={copySelectedFiles} disabled={multipleFilesActionsDisabled}>
-          <Stack>
-            <ContentCopyOutlinedIcon fontSize="small" />
-            Copy
-          </Stack>
+        <Button
+          onClick={copySelectedFiles}
+          disabled={multipleFilesActionsDisabled}
+          startIcon={<ContentCopyOutlinedIcon />}
+        >
+          Copy
         </Button>
-        <Button onClick={cutSelectedFiles} disabled={multipleFilesActionsDisabled}>
-          <Stack>
-            <ContentCutOutlinedIcon fontSize="small" />
-            Cut
-          </Stack>
+        <Button
+          onClick={cutSelectedFiles}
+          disabled={multipleFilesActionsDisabled}
+          startIcon={<ContentCutOutlinedIcon />}
+        >
+          Cut
         </Button>
         <Button
           variant={draftPasteState === undefined ? undefined : 'contained'}
           onClick={() => pasteFiles(explorerId)}
           disabled={draftPasteState === undefined}
+          startIcon={<ContentPasteOutlinedIcon />}
         >
-          <Stack>
-            <ContentPasteOutlinedIcon fontSize="small" />
-            Paste
-            <PasteInfoBadge />
-          </Stack>
+          Paste
+          <PasteInfoBadge />
         </Button>
-        <Button onClick={triggerRenameForSelectedFiles} disabled={singleFileActionsDisabled}>
-          <Stack>
-            <EditOutlinedIcon fontSize="small" />
-            Rename
-          </Stack>
+        <Button
+          onClick={triggerRenameForSelectedFiles}
+          disabled={singleFileActionsDisabled}
+          startIcon={<EditOutlinedIcon />}
+        >
+          Rename
         </Button>
-        <Button onClick={scheduleDeleteSelectedFiles} disabled={multipleFilesActionsDisabled}>
-          <Stack>
-            <DeleteOutlinedIcon fontSize="small" />
-            Delete
-          </Stack>
+        <Button
+          onClick={scheduleDeleteSelectedFiles}
+          disabled={multipleFilesActionsDisabled}
+          startIcon={<DeleteOutlinedIcon />}
+        >
+          Delete
         </Button>
         <CreateFolder onSubmit={(folderName) => createFolder(explorerId, folderName)} />
         {config.featureFlags.tags && (

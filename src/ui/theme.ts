@@ -3,6 +3,7 @@ import {
   createTheme as createMuiTheme,
   Theme as MuiTheme,
 } from '@mui/material/styles';
+import { cyan } from '@mui/material/colors';
 import { Localization } from '@mui/material/locale';
 import { css } from 'styled-components';
 
@@ -38,12 +39,41 @@ declare module 'styled-components' {
   export interface DefaultTheme extends MuiTheme {}
 }
 
-export const BACKGROUND_COLOR = '#241F1A';
-const PAPER_COLOR = '#2F2A26';
-const PRIMARY_COLOR = '#30E5FF';
 export const tabIndicatorSpanClassName = 'MuiTabs-indicatorSpan';
 
+const THEMES = {
+  coffee: {
+    mode: 'dark',
+    backgroundColor: 'hsl(30, 16%, 12%)',
+    primaryColor: cyan[300],
+    foregroundColor: 'white',
+    MuiButton: {
+      outlined: {
+        background: 'hsl(27, 11%, 17%)',
+        hoverBackground: 'rgba(255, 255, 255, 0.08)',
+      },
+    },
+  },
+  flow: {
+    // inspired by Windows 11 "Flow" theme
+    mode: 'light',
+    backgroundColor: 'hsl(0, 0%, 100%)',
+    primaryColor: 'hsl(203, 17%, 36%)',
+    foregroundColor: 'hsl(0, 0%, 11%)',
+    MuiButton: {
+      outlined: {
+        background: 'hsl(202, 48%, 95%)',
+        hoverBackground: 'hsl(202, 48%, 84%)',
+      },
+    },
+  },
+} as const;
+type AvailableThemes = keyof typeof THEMES;
+
 export const createTheme = (locale: Localization) => {
+  const activeTheme: AvailableThemes = 'coffee';
+
+  /* the theme changes the appearance of some material-ui components to better align with the Windows 11 design language */
   const theme: Parameters<typeof createMuiTheme>[0] = {
     components: {
       MuiButton: {
@@ -54,26 +84,24 @@ export const createTheme = (locale: Localization) => {
         styleOverrides: {
           root: css`
             text-transform: initial;
-            padding-top: 4px;
-            padding-bottom: 4px;
             padding-left: 12px;
             padding-right: 12px;
-
-            transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
-              box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
-              border-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
-              color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-
-            &:hover.MuiButton-outlined {
-              border-color: ${PAPER_COLOR};
-              background-color: rgba(255, 255, 255, 0.08);
-            }
+            transition-duration: 150ms;
           ` as any,
           outlined: css`
-            color: white;
-            background-color: ${PAPER_COLOR};
-            outline-color: initial;
-            border-color: ${PAPER_COLOR};
+            color: ${THEMES[activeTheme].foregroundColor};
+            background-color: ${THEMES[activeTheme].MuiButton.outlined.background};
+            border-color: ${THEMES[activeTheme].MuiButton.outlined.background};
+
+            &:hover {
+              border-color: ${THEMES[activeTheme].backgroundColor};
+              background-color: ${THEMES[activeTheme].MuiButton.outlined.hoverBackground};
+            }
+          ` as any,
+          startIcon: css`
+            & > *:nth-of-type(1) {
+              font-size: ${18 / 16}rem;
+            }
           ` as any,
         },
       },
@@ -114,7 +142,7 @@ export const createTheme = (locale: Localization) => {
             & .${tabIndicatorSpanClassName} {
               max-height: 16px;
               height: 100%;
-              background-color: ${PRIMARY_COLOR};
+              background-color: ${THEMES[activeTheme].primaryColor};
               border-radius: 4px;
             }
           ` as any,
@@ -138,10 +166,16 @@ export const createTheme = (locale: Localization) => {
     },
 
     palette: {
-      mode: 'dark',
-      text: { secondary: '#FFFFFF' },
-      background: { default: BACKGROUND_COLOR, paper: PAPER_COLOR },
-      primary: { main: PRIMARY_COLOR },
+      mode: THEMES[activeTheme].mode,
+      background: {
+        default: THEMES[activeTheme].backgroundColor,
+      },
+      primary: {
+        main: THEMES[activeTheme].primaryColor,
+      },
+      text: {
+        secondary: THEMES[activeTheme].foregroundColor,
+      },
     },
 
     availableTagColors: [
@@ -159,16 +193,16 @@ export const createTheme = (locale: Localization) => {
 
     processStatusColors: {
       pasteProcess: {
-        [PASTE_PROCESS_STATUS.RUNNING_DETERMINING_TOTALSIZE]: PAPER_COLOR,
-        [PASTE_PROCESS_STATUS.RUNNING_PERFORMING_PASTE]: PAPER_COLOR,
+        [PASTE_PROCESS_STATUS.RUNNING_DETERMINING_TOTALSIZE]: THEMES[activeTheme].backgroundColor,
+        [PASTE_PROCESS_STATUS.RUNNING_PERFORMING_PASTE]: THEMES[activeTheme].backgroundColor,
         [PASTE_PROCESS_STATUS.SUCCESS]: '#5B7E2F',
         [PASTE_PROCESS_STATUS.FAILURE]: '#B35C54',
-        [PASTE_PROCESS_STATUS.ABORT_REQUESTED]: PAPER_COLOR,
+        [PASTE_PROCESS_STATUS.ABORT_REQUESTED]: THEMES[activeTheme].backgroundColor,
         [PASTE_PROCESS_STATUS.ABORT_SUCCESS]: '#5B7E2F',
       },
       deleteProcess: {
         [DELETE_PROCESS_STATUS.PENDING_FOR_USER_INPUT]: '#A88518',
-        [DELETE_PROCESS_STATUS.RUNNING]: PAPER_COLOR,
+        [DELETE_PROCESS_STATUS.RUNNING]: THEMES[activeTheme].backgroundColor,
         [DELETE_PROCESS_STATUS.SUCCESS]: '#5B7E2F',
         [DELETE_PROCESS_STATUS.FAILURE]: '#B35C54',
       },

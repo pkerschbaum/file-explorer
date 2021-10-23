@@ -35,11 +35,11 @@ export const CreateFolder: React.FC<CreateFolderProps> = ({ onSubmit }) => {
 
   return (
     <>
-      <Button onClick={(e) => setCreateFolderAnchorEl(e.currentTarget)}>
-        <Stack>
-          <CreateNewFolderOutlinedIcon fontSize="small" />
-          New Folder
-        </Stack>
+      <Button
+        onClick={(e) => setCreateFolderAnchorEl(e.currentTarget)}
+        startIcon={<CreateNewFolderOutlinedIcon />}
+      >
+        New Folder
       </Button>
 
       <Popover

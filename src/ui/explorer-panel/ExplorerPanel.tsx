@@ -25,7 +25,7 @@ import {
   useExplorerId,
   useFileIdSelectionGotStartedWith,
   useFilesToShow,
-  useFileToRename,
+  useFileToRenameId,
   useSelectedFiles,
   useSetFileToRenameId,
   useSetIdsOfSelectedFiles,
@@ -86,10 +86,14 @@ export const ExplorerPanel: React.FC<{ explorerId: string }> = ({ explorerId }) 
         <DataTable>
           <TableHead>
             <HeadCell>
-              <TextBox fontSize="sm">Name</TextBox>
+              <TextBox fontSize="sm" fontBold>
+                Name
+              </TextBox>
             </HeadCell>
             <HeadCell>
-              <TextBox fontSize="sm">Size</TextBox>
+              <TextBox fontSize="sm" fontBold>
+                Size
+              </TextBox>
             </HeadCell>
           </TableHead>
 
@@ -140,7 +144,7 @@ const FilesTableRow: React.FC<FilesTableRowProps> = ({
 }) => {
   const explorerId = useExplorerId();
   const selectedFiles = useSelectedFiles();
-  const fileToRename = useFileToRename();
+  const fileToRenameId = useFileToRenameId();
   const fileIdSelectionGotStartedWith = useFileIdSelectionGotStartedWith();
   const setIdsOfSelectedFiles = useSetIdsOfSelectedFiles();
   const setFileToRenameId = useSetFileToRenameId();
@@ -250,7 +254,7 @@ const FilesTableRow: React.FC<FilesTableRowProps> = ({
                 />
               </IconWrapper>
             )}
-            {fileToRename && fileToRename.id === fileForRow.id ? (
+            {fileToRenameId === fileForRow.id ? (
               <RenameInput
                 file={fileForRow}
                 onSubmit={(newName) => renameFileHandler(fileForRow, newName)}
@@ -341,8 +345,6 @@ const BreadcrumbsAndFileTable = styled(Stack)`
 `;
 
 const BreadcrumbsRow = styled(Breadcrumbs)`
-  padding-inline-start: ${(props) => props.theme.spacing()};
-
   & .MuiBreadcrumbs-li > * {
     min-width: 0;
     padding-inline: ${(props) => props.theme.spacing(1.5)};

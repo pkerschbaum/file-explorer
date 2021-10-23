@@ -18,7 +18,7 @@ import {
   changeFocusedExplorer,
   removeExplorerPanel,
 } from '@app/operations/app.operations';
-import { BACKGROUND_COLOR, tabIndicatorSpanClassName } from '@app/ui/theme';
+import { tabIndicatorSpanClassName } from '@app/ui/theme';
 import { KEYS } from '@app/ui/constants';
 import { useWindowEvent } from '@app/ui/utils/react.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
@@ -98,11 +98,8 @@ export const Shell: React.FC = () => {
             />
           ))}
         </Tabs>
-        <Button onClick={addExplorerPanel}>
-          <Stack>
-            <AddCircleOutlineOutlinedIcon fontSize="small" />
-            Add tab
-          </Stack>
+        <Button onClick={addExplorerPanel} startIcon={<AddCircleOutlineOutlinedIcon />}>
+          Add tab
         </Button>
       </TabsArea>
 
@@ -185,7 +182,6 @@ const HiddenIfInactiveTabPanel: React.FC<HiddenIfInactiveTabPanelProps> = ({
 
 const RootContainer = styled(Box)`
   height: 100%;
-  background-color: ${BACKGROUND_COLOR};
   padding-top: ${(props) => props.theme.spacing()};
 
   display: grid;

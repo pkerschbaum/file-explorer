@@ -5,7 +5,7 @@ import { CssBaseline, ThemeProvider } from '@mui/material';
 import { enUS } from '@mui/material/locale';
 import styled, { createGlobalStyle } from 'styled-components';
 
-import { BACKGROUND_COLOR, createTheme } from '@app/ui/theme';
+import { createTheme } from '@app/ui/theme';
 import { RootStore } from '@app/global-state/store';
 
 export const queryClient = new QueryClient({
@@ -42,5 +42,5 @@ export const Globals: React.FC<GlobalsProps> = ({ store, children }) => (
 
 const RootContainer = styled.div`
   height: 100%;
-  background-color: ${BACKGROUND_COLOR};
+  background-color: ${(props) => props.theme.palette.background.default};
 `;
