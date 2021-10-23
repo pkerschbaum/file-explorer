@@ -16,7 +16,7 @@ export const CreateFolder: React.FC<CreateFolderProps> = ({ onSubmit }) => {
   );
 
   React.useEffect(
-    function clearFolderValueOnPopoverClose() {
+    function resetValueOnPopoverClose() {
       if (createFolderAnchorEl === null) {
         setCreateFolderValue('');
       }
@@ -69,7 +69,7 @@ export const CreateFolder: React.FC<CreateFolderProps> = ({ onSubmit }) => {
               value={createFolderValue}
               onChange={(event) => setCreateFolderValue(event.target.value)}
             />
-            <Stack direction="row-reverse">
+            <Stack justifyContent="end">
               <Button
                 variant={check.isEmptyString(createFolderValue) ? undefined : 'contained'}
                 type="submit"

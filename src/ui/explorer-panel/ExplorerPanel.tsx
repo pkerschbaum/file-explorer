@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Box, Breadcrumbs, Button, Chip, Skeleton, TextField } from '@mui/material';
+import KeyboardArrowDownOutlined from '@mui/icons-material/KeyboardArrowDownOutlined';
 import styled, { css } from 'styled-components';
 
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
@@ -35,6 +36,7 @@ import { useThemeFileIconClasses } from '@app/ui/hooks/files.hooks';
 import { check } from '@app/base/utils/assert.util';
 import { formatter } from '@app/base/utils/formatter.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
+import { CwdActionsMenu } from '@app/ui/cwd-actions/CwdActionsMenu';
 import { ExplorerActions } from '@app/ui/explorer-actions/ExplorerActions';
 
 const USE_NATIVE_ICON_FOR_REGEX = /(?:exe|ico|dll)/i;
@@ -50,39 +52,34 @@ export const ExplorerPanel: React.FC<{ explorerId: string }> = ({ explorerId }) 
 
   return (
     <Stack direction="column" alignItems="stretch" stretchContainer sx={{ height: '100%' }}>
+      <BreadcrumbsRow>
+        {cwdStringifiedParts.map((pathPart, idx) => {
+          const isFirstPart = idx === 0;
+          const isLastPart = idx === cwdStringifiedParts.length - 1;
+
+          return (
+            <Breadcrumb
+              key={pathPart}
+              pathPart={pathPart}
+              isFirstPart={isFirstPart}
+              isLastPart={isLastPart}
+              changeDirectory={() =>
+                changeDirectory(
+                  explorerId,
+                  URI.joinPath(
+                    cwdRootPart,
+                    ...(isFirstPart ? ['/'] : cwdStringifiedParts.slice(1, idx + 1)),
+                  ).path,
+                )
+              }
+            />
+          );
+        })}
+      </BreadcrumbsRow>
+
       <ExplorerActions />
 
-      <BreadcrumbsAndFileTable direction="column" alignItems="stretch">
-        <BreadcrumbsRow>
-          {cwdStringifiedParts.map((pathPart, idx) => {
-            const isFirstPart = idx === 0;
-            const isLastPart = idx === cwdStringifiedParts.length - 1;
-            const pathPartFormatted = isFirstPart
-              ? `${pathPart[0].toLocaleUpperCase()}${pathPart.slice(1)}`
-              : pathPart;
-
-            async function handleClick() {
-              await changeDirectory(
-                explorerId,
-                URI.joinPath(
-                  cwdRootPart,
-                  ...(isFirstPart ? ['/'] : cwdStringifiedParts.slice(1, idx + 1)),
-                ).path,
-              );
-            }
-
-            return !isLastPart ? (
-              <Button key={pathPart} variant="outlined" color="inherit" onClick={handleClick}>
-                {pathPartFormatted}
-              </Button>
-            ) : (
-              <TextBox key={pathPart} fontSize="sm" boxProps={{ component: 'div' }}>
-                {pathPartFormatted}
-              </TextBox>
-            );
-          })}
-        </BreadcrumbsRow>
-
+      <DataTableContainer>
         <DataTable>
           <TableHead>
             <HeadCell>
@@ -109,8 +106,52 @@ export const ExplorerPanel: React.FC<{ explorerId: string }> = ({ explorerId }) 
             )}
           </TableBody>
         </DataTable>
-      </BreadcrumbsAndFileTable>
+      </DataTableContainer>
     </Stack>
+  );
+};
+
+type BreadcrumbProps = {
+  pathPart: string;
+  isFirstPart: boolean;
+  isLastPart: boolean;
+  changeDirectory: () => Promise<void>;
+};
+
+const Breadcrumb: React.FC<BreadcrumbProps> = ({
+  pathPart,
+  isFirstPart,
+  isLastPart,
+  changeDirectory,
+}) => {
+  const [menuAnchorEl, setMenuAnchorEl] = React.useState<HTMLElement | null>(null);
+
+  const pathPartFormatted = isFirstPart
+    ? `${pathPart[0].toLocaleUpperCase()}${pathPart.slice(1)}`
+    : pathPart;
+
+  async function handleClick(e: React.MouseEvent<HTMLElement>) {
+    if (isLastPart) {
+      setMenuAnchorEl(e.currentTarget);
+    } else {
+      await changeDirectory();
+    }
+  }
+
+  return (
+    <>
+      <Button
+        variant="outlined"
+        color="inherit"
+        onClick={handleClick}
+        endIcon={!isLastPart ? undefined : <KeyboardArrowDownOutlined />}
+      >
+        {pathPartFormatted}
+      </Button>
+      {isLastPart && (
+        <CwdActionsMenu anchorEl={menuAnchorEl} onClose={() => setMenuAnchorEl(null)} />
+      )}
+    </>
   );
 };
 
@@ -339,12 +380,10 @@ const SkeletonRow: React.FC<SkeletonRowProps> = ({ opacity }) => (
   </Row>
 );
 
-const BreadcrumbsAndFileTable = styled(Stack)`
-  height: 100%;
-  ${commonStyles.flex.shrinkAndFitVertical}
-`;
-
 const BreadcrumbsRow = styled(Breadcrumbs)`
+  margin-top: ${(props) => props.theme.spacing(0.5)};
+  margin-bottom: ${(props) => props.theme.spacing()};
+
   & .MuiBreadcrumbs-li > * {
     min-width: 0;
     padding-inline: ${(props) => props.theme.spacing(1.5)};
@@ -359,6 +398,10 @@ const BreadcrumbsRow = styled(Breadcrumbs)`
     display: flex;
     align-items: center;
   }
+`;
+
+const DataTableContainer = styled(Box)`
+  ${commonStyles.flex.shrinkAndFitVertical}
 `;
 
 const iconStyles = css`

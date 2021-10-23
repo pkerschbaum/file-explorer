@@ -20,6 +20,9 @@ declare module '@mui/material/styles' {
         [status in DELETE_PROCESS_STATUS]: string;
       };
     };
+    cardSizes: {
+      md: { width: number };
+    };
   }
   interface ThemeOptions {
     availableTagColors: string[];
@@ -30,6 +33,9 @@ declare module '@mui/material/styles' {
       deleteProcess: {
         [status in DELETE_PROCESS_STATUS]: string;
       };
+    };
+    cardSizes: {
+      md: { width: number };
     };
   }
 }
@@ -117,6 +123,19 @@ export const createTheme = (locale: Localization) => {
         },
       },
 
+      MuiMenuItem: {
+        styleOverrides: {
+          // reduce gap between icon and text
+          root: css`
+            gap: 8px;
+
+            & > .MuiListItemIcon-root {
+              min-width: 0;
+            }
+          ` as any,
+        },
+      },
+
       MuiTextField: {
         defaultProps: { size: 'small' },
       },
@@ -169,6 +188,7 @@ export const createTheme = (locale: Localization) => {
       mode: THEMES[activeTheme].mode,
       background: {
         default: THEMES[activeTheme].backgroundColor,
+        paper: THEMES[activeTheme].MuiButton.outlined.background,
       },
       primary: {
         main: THEMES[activeTheme].primaryColor,
@@ -206,6 +226,10 @@ export const createTheme = (locale: Localization) => {
         [DELETE_PROCESS_STATUS.SUCCESS]: '#5B7E2F',
         [DELETE_PROCESS_STATUS.FAILURE]: '#B35C54',
       },
+    },
+
+    cardSizes: {
+      md: { width: 280 },
     },
   };
 

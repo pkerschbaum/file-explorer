@@ -19,7 +19,7 @@ export declare namespace CssRulesHttp {
   };
 }
 
-export const PORT = 3000;
+export const PORT = 3001;
 export const ICON_CLASSES_SLUG = 'icon-classes';
 export const CSS_RULES_SLUG = 'css-rules';
 const localhostClient = axios.create({

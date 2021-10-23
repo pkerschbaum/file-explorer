@@ -10,7 +10,6 @@ export const KEYS = {
   PAGE_DOWN: 'PageDown',
   DELETE: 'Delete',
   ENTER: 'Enter',
-  BACKSPACE: 'Backspace',
   SHIFT: 'Shift',
   ESC: 'Escape',
   TAB: 'Tab',

@@ -1,8 +1,6 @@
 import * as React from 'react';
 import { Box, Button, Divider, TextField, Tooltip } from '@mui/material';
 import styled from 'styled-components';
-import ArrowUpwardOutlinedIcon from '@mui/icons-material/ArrowUpwardOutlined';
-import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import LaunchOutlinedIcon from '@mui/icons-material/LaunchOutlined';
 import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
 import ContentCutOutlinedIcon from '@mui/icons-material/ContentCutOutlined';
@@ -10,14 +8,12 @@ import ContentPasteOutlinedIcon from '@mui/icons-material/ContentPasteOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 
-import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-
 import { config } from '@app/config';
 import { Stack } from '@app/ui/layouts/Stack';
 import { TextBox } from '@app/ui/elements/TextBox';
 import { AddTag } from '@app/ui/explorer-actions/AddTag';
 import { CreateFolder } from '@app/ui/explorer-actions/CreateFolder';
-import { useCwd, useIdOfFocusedExplorerPanel } from '@app/global-state/slices/explorers.hooks';
+import { useIdOfFocusedExplorerPanel } from '@app/global-state/slices/explorers.hooks';
 import { useTags } from '@app/global-state/slices/persisted.hooks';
 import { useDraftPasteState } from '@app/global-state/slices/processes.hooks';
 import {
@@ -26,12 +22,7 @@ import {
   openFile,
   scheduleMoveFilesToTrash,
 } from '@app/operations/file.operations';
-import {
-  changeDirectory,
-  createFolder,
-  pasteFiles,
-  revealCwdInOSExplorer,
-} from '@app/operations/explorer.operations';
+import { changeDirectory, createFolder, pasteFiles } from '@app/operations/explorer.operations';
 import { addTag, removeTags } from '@app/operations/tag.operations';
 import {
   useExplorerId,
@@ -46,11 +37,11 @@ import {
 } from '@app/ui/Explorer.context';
 import { useClipboardResources } from '@app/ui/hooks/clipboard-resources.hooks';
 import { FILE_TYPE } from '@app/domain/types';
-import { KEYS, MOUSE_BUTTONS } from '@app/ui/constants';
+import { KEYS } from '@app/ui/constants';
 import { useWindowEvent } from '@app/ui/utils/react.util';
 import { functions } from '@app/base/utils/functions.util';
 
-const EXPLORER_FILTER_INPUT_ID = 'explorer-filter-input';
+export const EXPLORER_FILTER_INPUT_ID = 'explorer-filter-input';
 
 export const ExplorerActions: React.FC = () => {
   const explorerId = useExplorerId();
@@ -65,7 +56,6 @@ export const ExplorerActions: React.FC = () => {
 
 const ExplorerActionsImpl: React.FC = () => {
   const explorerId = useExplorerId();
-  const cwd = useCwd(explorerId);
   const filesToShow = useFilesToShow();
   const draftPasteState = useDraftPasteState();
   const idsOfSelectedFiles = useIdsOfSelectedFiles();
@@ -109,10 +99,6 @@ const ExplorerActionsImpl: React.FC = () => {
     }
     setFileToRenameId(selectedFiles[0].id);
   };
-
-  async function navigateUp() {
-    await changeDirectory(explorerId, URI.joinPath(URI.from(cwd), '..').path);
-  }
 
   function changeSelectedFile(e: KeyboardEvent) {
     e.preventDefault();
@@ -246,7 +232,6 @@ const ExplorerActionsImpl: React.FC = () => {
     },
     { condition: (e) => e.key === KEYS.ENTER, handler: openSelectedFiles },
     { condition: (e) => e.key === KEYS.DELETE, handler: scheduleDeleteSelectedFiles },
-    { condition: (e) => e.altKey && e.key === KEYS.ARROW_LEFT, handler: navigateUp },
     {
       condition: (e) =>
         !e.altKey &&
@@ -263,13 +248,6 @@ const ExplorerActionsImpl: React.FC = () => {
     },
   ]);
 
-  /*
-   * "auxclick" event is fired when the "back" button on a mouse (e.g. Logitech MX Master 2) is clicked.
-   */
-  useWindowEvent('auxclick', [
-    { condition: (e) => e.button === MOUSE_BUTTONS.BACK, handler: navigateUp },
-  ]);
-
   const singleFileActionsDisabled = selectedFiles.length !== 1;
   const multipleFilesActionsDisabled = selectedFiles.length < 1;
   const multipleDirectoriesActionsDisabled =
@@ -279,23 +257,6 @@ const ExplorerActionsImpl: React.FC = () => {
     <Stack alignItems="stretch">
       <Stack alignItems="flex-end">
         <FilterInput filterInputRef={filterInputRef} />
-      </Stack>
-      <Divider orientation="vertical" flexItem />
-      <Stack alignItems="flex-end">
-        <Stack>
-          <CwdInput cwd={cwd} onSubmit={(newDir) => changeDirectory(explorerId, newDir)} />
-          <Button onClick={navigateUp} startIcon={<ArrowUpwardOutlinedIcon />}>
-            Up
-          </Button>
-          <Tooltip title="Reveal in OS File Explorer">
-            <Button
-              onClick={() => revealCwdInOSExplorer(explorerId)}
-              startIcon={<FolderOutlinedIcon />}
-            >
-              Reveal
-            </Button>
-          </Tooltip>
-        </Stack>
       </Stack>
 
       <Divider orientation="vertical" flexItem />
@@ -365,30 +326,6 @@ const ExplorerActionsImpl: React.FC = () => {
         )}
       </Stack>
     </Stack>
-  );
-};
-
-type CwdInputProps = {
-  cwd: UriComponents;
-  onSubmit: (newCwdPath: string) => void;
-};
-
-const CwdInput: React.FC<CwdInputProps> = ({ cwd, onSubmit }) => {
-  const [cwdInput, setCwdInput] = React.useState(cwd.path);
-
-  return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        onSubmit(cwdInput);
-      }}
-    >
-      <TextField
-        label="Current Directory"
-        value={cwdInput}
-        onChange={(e) => setCwdInput(e.target.value)}
-      />
-    </form>
   );
 };
 

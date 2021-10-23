@@ -182,7 +182,7 @@ const HiddenIfInactiveTabPanel: React.FC<HiddenIfInactiveTabPanelProps> = ({
 
 const RootContainer = styled(Box)`
   height: 100%;
-  padding-top: ${(props) => props.theme.spacing()};
+  padding-top: ${(props) => props.theme.spacing(1.5)};
 
   display: grid;
   grid-template-columns: 200px 1fr;
@@ -190,12 +190,12 @@ const RootContainer = styled(Box)`
   grid-template-areas:
     'explorer-tabs active-explorer-panel'
     'processes processes';
-  grid-column-gap: ${(props) => props.theme.spacing()};
+  grid-column-gap: ${(props) => props.theme.spacing(2)};
 `;
 
 const TabsArea = styled(Stack)`
   grid-area: explorer-tabs;
-  padding-top: ${(props) => props.theme.spacing()};
+  padding-top: ${(props) => props.theme.spacing(0.5)};
   padding-bottom: ${(props) => props.theme.spacing()};
   padding-left: ${(props) => props.theme.spacing()};
 `;
@@ -203,7 +203,6 @@ const TabsArea = styled(Stack)`
 const ActiveExplorerArea = styled(Box)`
   height: 100%;
   grid-area: active-explorer-panel;
-  padding-top: ${(props) => props.theme.spacing(0.5)};
   padding-right: ${(props) => props.theme.spacing()};
   padding-bottom: ${(props) => props.theme.spacing(2)};
 
