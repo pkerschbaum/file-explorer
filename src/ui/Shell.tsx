@@ -144,25 +144,18 @@ type ExplorerPanelTabProps = {
 
 const ExplorerPanelTab = React.memo<ExplorerPanelTabProps>(function ExplorerPanelTab(props) {
   return (
-    <Button component="div" sx={{ width: '100%' }}>
-      <Stack justifyContent="space-between" sx={{ width: '100%' }}>
-        <Box component="span">{props.label}</Box>
-        <Tooltip title={props.removeExplorerActionDisabled ? '' : 'Close tab'}>
-          <Box component="span">
-            <TabIconButton
-              size="small"
-              disabled={props.removeExplorerActionDisabled}
-              onClick={(e) => {
-                e.stopPropagation();
-                props.onRemove();
-              }}
-            >
+    <>
+      <Button sx={{ width: '100%' }}>{props.label}</Button>
+      {!props.removeExplorerActionDisabled && (
+        <Tooltip title="Close tab">
+          <TabCloseButton>
+            <TabIconButton size="small" onClick={props.onRemove}>
               <CloseOutlinedIcon />
             </TabIconButton>
-          </Box>
+          </TabCloseButton>
         </Tooltip>
-      </Stack>
-    </Button>
+      )}
+    </>
   );
 }, objects.shallowIsEqualIgnoreFunctions);
 
@@ -198,6 +191,11 @@ const TabsArea = styled(Stack)`
   padding-top: ${(props) => props.theme.spacing(0.5)};
   padding-bottom: ${(props) => props.theme.spacing()};
   padding-left: ${(props) => props.theme.spacing()};
+`;
+
+const TabCloseButton = styled.span`
+  position: absolute;
+  right: ${(props) => props.theme.spacing()};
 `;
 
 const ActiveExplorerArea = styled(Box)`
