@@ -13,7 +13,7 @@ type DataTableProps = {
   classes?: { tableContainer?: string };
   applyIntrinsicHeight?: boolean;
 
-  children: null | React.ReactNode[];
+  children: null | React.ReactNode;
   footer?: React.ReactNode;
 };
 

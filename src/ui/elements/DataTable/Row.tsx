@@ -1,6 +1,6 @@
 import { TableRow, TableRowProps } from '@mui/material';
 
-export const ROW_HEIGHT = '3em';
+export const ROW_HEIGHT = '2rem';
 
 type RowProps = TableRowProps;
 

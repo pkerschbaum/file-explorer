@@ -21,17 +21,11 @@ const ignoredPaths = numbers
   .map((num) =>
     typedPath<RootState>()('processesSlice', 'processes', num, 'cancellationTokenSource'),
   );
-export function createStoreInstance(preloaded?: {
-  preloadedPersistedData?: RootState['persistedSlice'];
+export function createStoreInstance(creationParams?: {
+  preloadedState: PreloadedState<CombinedState<NoInfer<RootState>>>;
 }) {
-  const preloadedPersistedData = preloaded?.preloadedPersistedData;
-  let preloadedState: undefined | PreloadedState<CombinedState<NoInfer<RootState>>>;
-  if (preloadedPersistedData) {
-    preloadedState = { persistedSlice: preloadedPersistedData };
-  }
-
   return configureStore({
-    preloadedState,
+    preloadedState: creationParams?.preloadedState,
     reducer: rootReducer,
     middleware: (getDefaultMiddleware) => [
       loggerMiddleware,

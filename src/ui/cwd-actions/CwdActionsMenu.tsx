@@ -5,7 +5,7 @@ import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 
 import { KEYS, MOUSE_BUTTONS } from '@app/ui/constants';
-import { useExplorerId } from '@app/ui/Explorer.context';
+import { useExplorerId } from '@app/ui/explorer-context/Explorer.context';
 import { useWindowEvent } from '@app/ui/utils/react.util';
 import { useCwd, useIdOfFocusedExplorerPanel } from '@app/global-state/slices/explorers.hooks';
 import { changeDirectory, revealCwdInOSExplorer } from '@app/operations/explorer.operations';

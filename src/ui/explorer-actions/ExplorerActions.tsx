@@ -34,7 +34,7 @@ import {
   useSetFileToRenameId,
   useSetFilterInput,
   useSetIdsOfSelectedFiles,
-} from '@app/ui/Explorer.context';
+} from '@app/ui/explorer-context/Explorer.context';
 import { useClipboardResources } from '@app/ui/hooks/clipboard-resources.hooks';
 import { FILE_TYPE } from '@app/domain/types';
 import { KEYS } from '@app/ui/constants';

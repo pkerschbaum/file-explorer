@@ -10,6 +10,9 @@ import { Shell } from '@app/ui/Shell';
 export default {
   title: 'Shell',
   component: Shell,
+  parameters: {
+    layout: 'fullscreen',
+  },
   decorators: [
     (story) => {
       fileSystemRef.current = {

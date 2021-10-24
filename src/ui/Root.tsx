@@ -31,7 +31,9 @@ export function render(appDependencies: AppDependencies) {
   queryClientRef.current = queryClient;
 
   const store = createStoreInstance({
-    preloadedPersistedData: appDependencies.preloadedPersistedData,
+    preloadedState: {
+      persistedSlice: appDependencies.preloadedPersistedData,
+    },
   });
   storeRef.current = store;
   dispatchRef.current = store.dispatch;

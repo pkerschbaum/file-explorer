@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useDispatch } from 'react-redux';
+import * as useContextSelectorLib from 'use-context-selector';
 
 import { Event } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/event';
 
@@ -100,23 +101,55 @@ export function useRerenderOnEventFire<T>(event: Event<T>, shouldRerender: (valu
   );
 }
 
-export function createContext<T>(name: string) {
-  const Context = React.createContext<T | undefined>(undefined);
+const SYMBOL_CONTEXT_NOT_FOUND = Symbol('ContextNotFound');
+type SYMBOL_CONTEXT_NOT_FOUND = typeof SYMBOL_CONTEXT_NOT_FOUND;
 
-  const useContextValue = () => {
+export function createContext<ContextValue>(name: string) {
+  const Context = React.createContext<ContextValue | SYMBOL_CONTEXT_NOT_FOUND>(
+    SYMBOL_CONTEXT_NOT_FOUND,
+  );
+
+  function useContextValue() {
     const valueOfContext = React.useContext(Context);
-    if (valueOfContext === undefined) {
+    if (valueOfContext === SYMBOL_CONTEXT_NOT_FOUND) {
       throw new Error(`${name} context is not available`);
     }
     return valueOfContext;
-  };
+  }
 
   const Provider: React.FC<{
     children: React.ReactElement;
-    value: T;
+    value: ContextValue;
   }> = ({ children, value }) => {
     return <Context.Provider value={value}>{children}</Context.Provider>;
   };
 
   return { useContextValue, Provider };
+}
+
+/**
+ * Creates a React context using the library [use-context-selector](https://www.npmjs.com/package/use-context-selector) under-the-hood for better performance.
+ */
+export function createSelectableContext<ContextValue>(name: string) {
+  const Context = useContextSelectorLib.createContext<ContextValue | SYMBOL_CONTEXT_NOT_FOUND>(
+    SYMBOL_CONTEXT_NOT_FOUND,
+  );
+
+  function useContextSelector<Selected>(selector: (explorerValues: ContextValue) => Selected) {
+    return useContextSelectorLib.useContextSelector(Context, (value) => {
+      if (value === SYMBOL_CONTEXT_NOT_FOUND) {
+        throw new Error(`${name} context is not available`);
+      }
+      return selector(value);
+    });
+  }
+
+  const Provider: React.FC<{
+    children: React.ReactElement;
+    value: ContextValue;
+  }> = ({ children, value }) => {
+    return <Context.Provider value={value}>{children}</Context.Provider>;
+  };
+
+  return { useContextSelector, Provider };
 }
