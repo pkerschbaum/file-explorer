@@ -33,42 +33,47 @@ export const useFilesForUI = (explorerId: string): FilesLoadingResult => {
   );
 
   React.useEffect(
-    function preloadContentOfAllSubDirectories() {
+    function preloadContentOfParentAndAllSubDirectories() {
       if (filesQueryWithMetadataData === undefined || filesQueryWithMetadataIsFetching) {
         return;
       }
 
       const doPreloadContents = async () => {
+        const parentDirectoryUri = URI.joinPath(URI.from(cwd), '..');
+        const subDirectoriesUris = filesQueryWithMetadataData
+          .filter((file) => file.fileType === FILE_TYPE.DIRECTORY)
+          .map((file) => file.uri);
+        const allDirectoriesUris = [parentDirectoryUri, ...subDirectoriesUris];
+
         await Promise.all(
-          filesQueryWithMetadataData
-            .filter((file) => file.fileType === FILE_TYPE.DIRECTORY)
-            .filter((file) => {
-              const cachedQueryData = getCachedQueryData(file);
+          allDirectoriesUris
+            .filter((uri) => {
+              const cachedQueryData = getCachedQueryData(uri);
               if (cachedQueryData) {
                 logger.debug(
                   `some data is already cached --> skip preloading of directory content`,
                   {
-                    fileUri: URI.from(file.uri).toString(),
+                    fileUri: URI.from(uri).toString(),
                   },
                 );
                 return false;
               }
               return true;
             })
-            .map(async (file) => {
+            .map(async (uri) => {
               logger.debug(`start preloading of directory content`, {
-                fileUri: URI.from(file.uri).toString(),
+                fileUri: URI.from(uri).toString(),
               });
 
-              const contents = await fetchFiles(fileSystemRef.current, file.uri, false);
+              const contents = await fetchFiles(fileSystemRef.current, uri, false);
 
-              const cachedQueryData = getCachedQueryData(file);
+              const cachedQueryData = getCachedQueryData(uri);
               if (cachedQueryData) {
                 // in the meantime, some data for this query got loaded --> don't alter that data
                 return;
               }
 
-              setCachedQueryData(file, contents);
+              setCachedQueryData(uri, contents);
             }),
         );
       };
@@ -76,12 +81,12 @@ export const useFilesForUI = (explorerId: string): FilesLoadingResult => {
       let preloadingIsNotNeccessaryAnymore = false;
       requestIdleCallback(() => {
         if (preloadingIsNotNeccessaryAnymore) {
-          logger.debug(`skipped preloading contents of sub directories`, {
+          logger.debug(`skipped preloading contents of parent and sub directories`, {
             uriContentsGetPreloadedFor: URI.from(cwd).toString(),
           });
         }
 
-        logger.debug(`preloading contents of sub directories`, {
+        logger.debug(`preloading contents of parent and sub directories`, {
           uriContentsGetPreloadedFor: URI.from(cwd).toString(),
         });
         void doPreloadContents();

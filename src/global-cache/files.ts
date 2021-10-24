@@ -27,21 +27,23 @@ export function useFiles(
 }
 
 export async function refreshFiles(directory: UriComponents) {
-  await queryClientRef.current.refetchQueries(QUERY_KEYS.FILES(URI.from(directory).toString()));
+  await queryClientRef.current.refetchQueries(QUERY_KEYS.FILES(URI.from(directory).toString()), {
+    active: true,
+  });
 }
 
-export function getCachedQueryData(file: File) {
+export function getCachedQueryData(uri: UriComponents) {
   return queryClientRef.current.getQueryData(
-    QUERY_KEYS.FILES_WITH_OPTIONS(URI.from(file.uri).toString(), {}),
+    QUERY_KEYS.FILES_WITH_OPTIONS(URI.from(uri).toString(), {}),
     {
       exact: false,
     },
   );
 }
 
-export function setCachedQueryData(file: File, contents: File[]) {
+export function setCachedQueryData(uri: UriComponents, contents: File[]) {
   return queryClientRef.current.setQueryData(
-    QUERY_KEYS.FILES_WITH_OPTIONS(URI.from(file.uri).toString(), { resolveMetadata: false }),
+    QUERY_KEYS.FILES_WITH_OPTIONS(URI.from(uri).toString(), { resolveMetadata: false }),
     contents,
   );
 }
