@@ -24,8 +24,11 @@ const createWindow = (): void => {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
       contextIsolation: false,
     },
+    show: false,
   });
   mainWindow.setMenuBarVisibility(false);
+  mainWindow.maximize();
+  mainWindow.show();
 
   // and load the index.html of the app.
   void mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
