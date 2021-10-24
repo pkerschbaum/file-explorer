@@ -25,8 +25,9 @@ export const parameters: Parameters = {
       date: /Date$/,
     },
   },
-  layout: 'fullscreen',
 };
+
+const FILE_ICON_THEME_PATH_FRAGMENT = 'vscode-icons-team.vscode-icons-11.6.0';
 
 export const loaders = [
   () => {
@@ -39,7 +40,9 @@ export const loaders = [
     persistentStorageRef.current = fakePersistentStorage;
   },
   async () => {
-    const iconThemeCssRules = await fileIconThemeRef.current.loadCssRules();
+    const iconThemeCssRules = await fileIconThemeRef.current.loadCssRules(
+      FILE_ICON_THEME_PATH_FRAGMENT,
+    );
     addIconThemeCssRulesToHead(iconThemeCssRules);
   },
 ];

@@ -9,14 +9,12 @@ import { FileDragStart, FILEDRAGSTART_CHANNEL } from '@app/ipc/common/file-drag-
 import { GetNativeFileIconDataURL, NATIVEFILEICON_CHANNEL } from '@app/ipc/common/native-file-icon';
 import { PERSISTDATA_CHANNEL, READPERSISTEDDATA_CHANNEL } from '@app/ipc/common/persistent-store';
 import { TRASHITEM_CHANNEL } from '@app/ipc/common/trash-item';
-import {
-  bootstrapModule as bootstrapFileIconThemeModule,
-  PlatformFileIconTheme,
-} from '@app/platform/file-icon-theme';
+import { PlatformFileIconTheme } from '@app/platform/file-icon-theme';
+import { bootstrapModule as bootstrapFileIconThemeModule } from '@app/platform/electron-preload/file-icon-theme';
 import {
   bootstrapModule as bootstrapFileServiceModule,
   PlatformFileService,
-} from '@app/platform/file-service';
+} from '@app/platform/electron-preload/file-service';
 
 declare global {
   interface Window {

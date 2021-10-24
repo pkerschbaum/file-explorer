@@ -39,10 +39,13 @@ export const httpFileIconTheme: PlatformFileIconTheme = {
     });
     return response.data.iconClassesString;
   },
-  loadCssRules: async () => {
+  loadCssRules: async (fileIconThemePathFragment) => {
     const response = await localhostClient.request<CssRulesHttp.Response>({
       method: 'GET',
       url: CSS_RULES_SLUG,
+      params: {
+        fileIconThemePathFragment,
+      },
     });
     return response.data.cssRules;
   },
