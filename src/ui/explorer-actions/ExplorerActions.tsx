@@ -205,16 +205,17 @@ const ExplorerActionsImpl: React.FC = () => {
   /*
    * The following keydown handlers allow navigation of the directory content.
    *
-   * The first event handler determines whether the event target is any input field. If so, no
-   * navigation handler is executed. This allows the user to type in input fields without triggering
-   * navigation actions.
-   * The only exception of this rule is the filter input field. Navigation actions get triggered even
-   * if the filter field is focused. This allows the user to filter and navigate using the keyboard only.
+   * All keydown events which are targeted at specific HTML elements (like buttons) should not be overridden,
+   * that's why the first keydown handler will just execute NOOP if the target of the keydown event is
+   * _not_ the <body> element.
+   * There is one exception though: if the keydown event is targeted at the explorer filter component,
+   * keydown handlers should still be active to allow rapid filtering/navigation via keyboard.
    */
   useWindowEvent('keydown', [
     {
       condition: (e) =>
-        e.target instanceof HTMLInputElement && e.target.id !== EXPLORER_FILTER_INPUT_ID,
+        !(e.target instanceof HTMLBodyElement) &&
+        (e.target as any)?.id !== EXPLORER_FILTER_INPUT_ID,
       handler: functions.noop,
     },
     { condition: (e) => e.ctrlKey && e.key === KEYS.C, handler: copySelectedFiles },

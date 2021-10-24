@@ -119,6 +119,11 @@ export const FilesTableRow: React.FC<FilesTableRowProps> = ({
         e.preventDefault();
         nativeHostRef.current.startNativeFileDnD({ fsPath: URI.from(fileForRow.uri).fsPath });
       }}
+      onFocus={(e) => {
+        // make <tr> elem not focusable (https://stackoverflow.com/a/50204493/1700319)
+        e.preventDefault();
+        e.currentTarget.blur();
+      }}
       onClick={(e) => {
         if (e.ctrlKey) {
           // toggle selection of file which was clicked on
