@@ -76,8 +76,10 @@ app.on('activate', () => {
 import { registerListeners as registerFileDragStartListeners } from '@app/ipc/electron-main/file-drag-start';
 import { registerListeners as registerNativeFileIconListeners } from '@app/ipc/electron-main/native-file-icon';
 import { registerListeners as registerPersistentStoreListeners } from '@app/ipc/electron-main/persistent-store';
+import { registerListeners as registerShellListeners } from '@app/ipc/electron-main/shell';
 import { registerListeners as registerTrashItemListeners } from '@app/ipc/electron-main/trash-item';
 registerFileDragStartListeners();
 registerNativeFileIconListeners();
 registerPersistentStoreListeners();
+registerShellListeners();
 registerTrashItemListeners();

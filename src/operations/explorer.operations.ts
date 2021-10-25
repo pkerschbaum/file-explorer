@@ -248,9 +248,9 @@ export async function createFolder(explorerId: string, folderName: string) {
   await refreshFiles(cwd);
 }
 
-export function revealCwdInOSExplorer(explorerId: string) {
+export async function revealCwdInOSExplorer(explorerId: string) {
   const cwd = storeRef.current.getState().explorersSlice.explorerPanels[explorerId].cwd;
-  nativeHostRef.current.revealResourcesInOS([cwd]);
+  await nativeHostRef.current.revealResourcesInOS([cwd]);
 }
 
 function findValidPasteFileTarget(

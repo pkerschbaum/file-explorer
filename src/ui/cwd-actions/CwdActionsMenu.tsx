@@ -49,8 +49,8 @@ const CwdActionsMenuImpl: React.FC<CwdActionsMenuProps> = ({ anchorEl, onClose }
   return (
     <Menu open={anchorEl !== null} anchorEl={anchorEl} onClose={onClose}>
       <MenuItem
-        onClick={() => {
-          revealCwdInOSExplorer(explorerId);
+        onClick={async () => {
+          await revealCwdInOSExplorer(explorerId);
           onClose();
         }}
       >

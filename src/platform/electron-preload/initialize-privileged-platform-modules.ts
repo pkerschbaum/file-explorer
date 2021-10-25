@@ -2,7 +2,6 @@ import { clipboard, ipcRenderer, shell } from 'electron';
 
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { VSBuffer } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/buffer';
-import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
 
 import { config } from '@app/config';
 import { FileDragStart, FILEDRAGSTART_CHANNEL } from '@app/ipc/common/file-drag-start';
@@ -15,6 +14,12 @@ import {
   bootstrapModule as bootstrapFileServiceModule,
   PlatformFileService,
 } from '@app/platform/electron-preload/file-service';
+import {
+  ShellOpenPath,
+  ShellShowItemInFolder,
+  SHELL_OPENPATH_CHANNEL,
+  SHELL_SHOWITEMINFOLDER_CHANNEL,
+} from '@app/ipc/common/shell';
 
 declare global {
   interface Window {
@@ -29,9 +34,9 @@ type Privileged = {
     fileDragStart: (args: FileDragStart.Args) => FileDragStart.ReturnValue;
   };
   shell: {
-    openPath: typeof shell.openPath;
+    openPath: (args: ShellOpenPath.Args) => ShellOpenPath.ReturnValue;
     trashItem: typeof shell.trashItem;
-    revealResourcesInOS: (resources: URI[]) => void;
+    revealResourcesInOS: (args: ShellShowItemInFolder.Args) => ShellShowItemInFolder.ReturnValue;
     getNativeFileIconDataURL: (
       args: GetNativeFileIconDataURL.Args,
     ) => GetNativeFileIconDataURL.ReturnValue;
@@ -61,15 +66,9 @@ export async function initializePrivilegedPlatformModules() {
       },
     },
     shell: {
-      openPath: (...args) => shell.openPath(...args),
+      openPath: (...args) => ipcRenderer.invoke(SHELL_OPENPATH_CHANNEL, ...args),
       trashItem: (...args) => ipcRenderer.invoke(TRASHITEM_CHANNEL, ...args),
-      revealResourcesInOS: (resources) => {
-        for (const r of resources) {
-          if (r.scheme === Schemas.file || r.scheme === Schemas.userData) {
-            shell.showItemInFolder(r.fsPath);
-          }
-        }
-      },
+      revealResourcesInOS: (...args) => ipcRenderer.invoke(SHELL_SHOWITEMINFOLDER_CHANNEL, ...args),
       getNativeFileIconDataURL: (...args) => ipcRenderer.invoke(NATIVEFILEICON_CHANNEL, ...args),
     },
     clipboard: {

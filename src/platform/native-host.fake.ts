@@ -10,7 +10,7 @@ export function createFakeNativeHost(): PlatformNativeHost {
       writeResources: functions.noop,
       onClipboardChanged: new Emitter<void>().event,
     },
-    revealResourcesInOS: functions.noop,
+    revealResourcesInOS: () => Promise.resolve(),
     openPath: () => Promise.resolve(),
     getNativeFileIconDataURL: () => Promise.resolve(undefined),
     startNativeFileDnD: functions.noop,

@@ -1,7 +1,6 @@
 import { Emitter, Event } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/event';
 import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 
-import { check } from '@app/base/utils/assert.util';
 import { FileDragStart } from '@app/ipc/common/file-drag-start';
 
 export type PlatformNativeHost = {
@@ -10,8 +9,8 @@ export type PlatformNativeHost = {
     writeResources(resources: URI[]): void;
     onClipboardChanged: Event<void>;
   };
-  revealResourcesInOS(resources: UriComponents[]): void;
-  openPath: (path: string) => Promise<void>;
+  revealResourcesInOS(resources: UriComponents[]): Promise<void>;
+  openPath: (resources: UriComponents[]) => Promise<void>;
   getNativeFileIconDataURL: (args: { fsPath: string }) => Promise<string | undefined>;
   startNativeFileDnD: (args: FileDragStart.Args) => FileDragStart.ReturnValue;
 };
@@ -30,11 +29,14 @@ export const createNativeHost = () => {
       },
       onClipboardChanged: onClipboardChanged.event,
     },
-    revealResourcesInOS: window.privileged.shell.revealResourcesInOS,
-    openPath: async (path) => {
-      const errorMessage = await window.privileged.shell.openPath(path);
-      if (check.isNonEmptyString(errorMessage)) {
-        throw new Error(`Could not open path, reason: ${errorMessage}`);
+    revealResourcesInOS: async (resources) => {
+      for (const resource of resources) {
+        await window.privileged.shell.revealResourcesInOS({ fsPath: URI.from(resource).fsPath });
+      }
+    },
+    openPath: async (resources) => {
+      for (const resource of resources) {
+        await window.privileged.shell.openPath({ fsPath: URI.from(resource).fsPath });
       }
     },
     getNativeFileIconDataURL: window.privileged.shell.getNativeFileIconDataURL,
