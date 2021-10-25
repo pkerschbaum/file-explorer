@@ -6,6 +6,7 @@ import * as useContextSelectorLib from 'use-context-selector';
 type EventHandlers<E extends keyof WindowEventMap> = Array<{
   condition: (e: WindowEventMap[E]) => boolean;
   handler: (e: WindowEventMap[E]) => void;
+  continuePropagation?: boolean;
 }>;
 
 export function useWindowEvent<E extends keyof WindowEventMap>(
@@ -18,14 +19,17 @@ export function useWindowEvent<E extends keyof WindowEventMap>(
     }
 
     const keyUpHandler = (e: WindowEventMap[E]) => {
-      const handlerToFire = eventHandlers.find((handler) => handler.condition(e))?.handler;
-      if (handlerToFire) {
-        handlerToFire(e);
+      const eventHandler = eventHandlers.find((handler) => handler.condition(e));
+      if (eventHandler) {
+        eventHandler.handler(e);
+        if (!eventHandler.continuePropagation) {
+          e.stopPropagation();
+        }
       }
     };
 
-    window.addEventListener(event, keyUpHandler);
-    return () => window.removeEventListener(event, keyUpHandler);
+    window.addEventListener(event, keyUpHandler, { capture: true });
+    return () => window.removeEventListener(event, keyUpHandler, { capture: true });
   }, [event, eventHandlers]);
 }
 

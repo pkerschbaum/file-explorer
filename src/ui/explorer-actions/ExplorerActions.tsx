@@ -222,11 +222,15 @@ const ExplorerActionsImpl: React.FC = () => {
         !(e.target instanceof HTMLElement) ||
         e.target.dataset[DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED.attrCamelCased] !== 'true',
       handler: functions.noop,
+      continuePropagation: true,
     },
     { condition: (e) => e.ctrlKey && e.key === KEYS.C, handler: copySelectedFiles },
     { condition: (e) => e.ctrlKey && e.key === KEYS.X, handler: cutSelectedFiles },
     { condition: (e) => e.ctrlKey && e.key === KEYS.V, handler: () => pasteFiles(explorerId) },
-    { condition: (e) => e.key === KEYS.F2, handler: triggerRenameForSelectedFiles },
+    {
+      condition: (e) => e.key === KEYS.F2 || (e.altKey && e.key === KEYS.R),
+      handler: triggerRenameForSelectedFiles,
+    },
     {
       condition: (e) =>
         e.key === KEYS.ARROW_UP ||
@@ -244,6 +248,7 @@ const ExplorerActionsImpl: React.FC = () => {
         !e.ctrlKey &&
         e.key !== KEYS.SHIFT &&
         e.key !== KEYS.TAB &&
+        e.key !== KEYS.ESC &&
         e.key !== KEYS.F2 &&
         filterInputRef.current !== null,
       handler: () => {
@@ -348,27 +353,6 @@ const FilterInput: React.FC<FilterInputProps> = ({ filterInputRef }) => {
       inputRef={filterInputRef}
       inputProps={DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED.datasetAttr}
       InputLabelProps={{ shrink: true }}
-      onKeyDown={(e) => {
-        /*
-         * For some keys, the default action should be stopped (e.g. in case of ARROW_UP and
-         * ARROW_DOWN, the cursor in the input field jumps to the start/end of the field). The event
-         * must get propagated to the parent, this is needed for navigating the files using the
-         * keyboard. For all other events, we stop propagation to avoid interference with the
-         * keyboard navigation (e.g. CTRL+X would not only cut the text of the input field, but
-         * also the files currently selected)
-         */
-        if (
-          e.ctrlKey ||
-          e.altKey ||
-          e.key === KEYS.ARROW_UP ||
-          e.key === KEYS.ARROW_DOWN ||
-          e.key === KEYS.PAGE_UP ||
-          e.key === KEYS.PAGE_DOWN ||
-          e.key === KEYS.ENTER
-        ) {
-          e.preventDefault();
-        }
-      }}
       label="Filter"
       value={filterInput}
       onChange={(e) => {

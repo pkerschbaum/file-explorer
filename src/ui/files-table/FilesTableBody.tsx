@@ -225,6 +225,9 @@ const RenameInput: React.FC<RenameInputProps> = ({ file, onSubmit, abortRename }
         autoFocus
         value={value}
         onChange={(e) => setValue(e.target.value)}
+        onBlur={() => {
+          abortRename();
+        }}
         onKeyDown={(e) => {
           if (e.key === KEYS.ESC) {
             abortRename();

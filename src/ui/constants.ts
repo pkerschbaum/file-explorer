@@ -1,5 +1,6 @@
 export const KEYS = {
   C: 'c',
+  R: 'r',
   X: 'x',
   V: 'v',
   ARROW_UP: 'ArrowUp',
