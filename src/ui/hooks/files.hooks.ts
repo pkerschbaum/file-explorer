@@ -133,12 +133,12 @@ export const useFilesForUI = (explorerId: string): FilesLoadingResult => {
 };
 
 export function useThemeFileIconClasses(file: FileForUI) {
-  const iconClassesQuery = useFileIconClasses({
+  const iconClasses = useFileIconClasses({
     uri: file.uri,
     fileKind: mapFileTypeToFileKind(file.fileType),
   });
 
-  return iconClassesQuery.data?.join(' ');
+  return iconClasses?.join(' ');
 }
 
 function mapFileTypeToFileKind(fileType: FILE_TYPE) {
