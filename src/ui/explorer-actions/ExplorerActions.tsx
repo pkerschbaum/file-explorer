@@ -41,7 +41,12 @@ import { KEYS } from '@app/ui/constants';
 import { useWindowEvent } from '@app/ui/utils/react.util';
 import { functions } from '@app/base/utils/functions.util';
 
-export const EXPLORER_FILTER_INPUT_ID = 'explorer-filter-input';
+export const DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED = {
+  datasetAttr: {
+    'data-window-keydownhandlers-enabled': 'true',
+  },
+  attrCamelCased: 'windowKeydownhandlersEnabled',
+} as const;
 
 export const ExplorerActions: React.FC = () => {
   const explorerId = useExplorerId();
@@ -214,8 +219,8 @@ const ExplorerActionsImpl: React.FC = () => {
   useWindowEvent('keydown', [
     {
       condition: (e) =>
-        !(e.target instanceof HTMLBodyElement) &&
-        (e.target as any)?.id !== EXPLORER_FILTER_INPUT_ID,
+        !(e.target instanceof HTMLElement) ||
+        e.target.dataset[DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED.attrCamelCased] !== 'true',
       handler: functions.noop,
     },
     { condition: (e) => e.ctrlKey && e.key === KEYS.C, handler: copySelectedFiles },
@@ -340,8 +345,8 @@ const FilterInput: React.FC<FilterInputProps> = ({ filterInputRef }) => {
 
   return (
     <TextField
-      id={EXPLORER_FILTER_INPUT_ID}
       inputRef={filterInputRef}
+      inputProps={DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED.datasetAttr}
       InputLabelProps={{ shrink: true }}
       onKeyDown={(e) => {
         /*

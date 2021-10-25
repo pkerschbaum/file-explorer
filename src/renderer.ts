@@ -3,6 +3,7 @@ import { createFileIconTheme } from '@app/platform/file-icon-theme';
 import { createFileSystem } from '@app/platform/file-system';
 import { createNativeHost } from '@app/platform/native-host';
 import { createPersistentStorage } from '@app/platform/persistent-storage';
+import { DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED } from '@app/ui/explorer-actions/ExplorerActions';
 import { addIconThemeCssRulesToHead } from '@app/ui/file-icon-theme';
 import { render } from '@app/ui/Root';
 
@@ -21,6 +22,13 @@ async function rendererScriptEntryPoint() {
   // load file icon theme and put it into the <head> section
   const iconThemeCssRules = await fileIconTheme.loadCssRules(FILE_ICON_THEME_PATH_FRAGMENT);
   addIconThemeCssRulesToHead(iconThemeCssRules);
+
+  // set data attribute which will enable window keydown handlers whenever the <body> element has focus
+  const bodyElement = document.querySelector('body');
+  if (!bodyElement) {
+    throw new Error(`Could not query body element`);
+  }
+  bodyElement.dataset[DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED.attrCamelCased] = 'true';
 
   /**
    * Read (possibly) persisted data, fill it up with default values, and execute a write afterwards.
