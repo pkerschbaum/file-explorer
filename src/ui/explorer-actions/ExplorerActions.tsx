@@ -18,7 +18,7 @@ import { changeDirectory, createFolder, pasteFiles } from '@app/operations/explo
 import {
   addTags,
   cutOrCopyFiles,
-  openFile,
+  openFiles,
   scheduleMoveFilesToTrash,
 } from '@app/operations/file.operations';
 import { addTag, removeTags } from '@app/operations/tag.operations';
@@ -31,8 +31,7 @@ import {
   useFileIdSelectionGotStartedWith,
   useFilesToShow,
   useFilterInput,
-  useIdsOfSelectedFiles,
-  useSelectedFiles,
+  useSelectedShownFiles,
   useSetFileToRenameId,
   useSetFilterInput,
   useSetIdsOfSelectedFiles,
@@ -63,9 +62,8 @@ const ExplorerActionsImpl: React.FC = () => {
   const explorerId = useExplorerId();
   const filesToShow = useFilesToShow();
   const draftPasteState = useDraftPasteState();
-  const idsOfSelectedFiles = useIdsOfSelectedFiles();
   const setIdsOfSelectedFiles = useSetIdsOfSelectedFiles();
-  const selectedFiles = useSelectedFiles();
+  const selectedShownFiles = useSelectedShownFiles();
   const fileIdSelectionGotStartedWith = useFileIdSelectionGotStartedWith();
   const setFileToRenameId = useSetFileToRenameId();
 
@@ -74,24 +72,24 @@ const ExplorerActionsImpl: React.FC = () => {
   const filterInputRef = React.useRef<HTMLDivElement>(null);
 
   const scheduleDeleteSelectedFiles = () => {
-    scheduleMoveFilesToTrash(selectedFiles.map((file) => file.uri));
+    scheduleMoveFilesToTrash(selectedShownFiles.map((file) => file.uri));
   };
 
   async function openSelectedFiles() {
-    if (selectedFiles.length === 1 && selectedFiles[0].fileType === FILE_TYPE.DIRECTORY) {
-      await changeDirectory(explorerId, selectedFiles[0].uri.path);
+    if (selectedShownFiles.length === 1 && selectedShownFiles[0].fileType === FILE_TYPE.DIRECTORY) {
+      await changeDirectory(explorerId, selectedShownFiles[0].uri.path);
     } else {
-      await Promise.all(
-        selectedFiles
+      await openFiles(
+        selectedShownFiles
           .filter((selectedFile) => selectedFile.fileType === FILE_TYPE.FILE)
-          .map((selectedFile) => openFile(selectedFile.uri)),
+          .map((selectedFile) => selectedFile.uri),
       );
     }
   }
 
   const cutOrCopySelectedFiles = (cut: boolean) => () => {
     return cutOrCopyFiles(
-      selectedFiles.map((file) => file.uri),
+      selectedShownFiles.map((file) => file.uri),
       cut,
     );
   };
@@ -99,10 +97,10 @@ const ExplorerActionsImpl: React.FC = () => {
   const cutSelectedFiles = cutOrCopySelectedFiles(true);
 
   const triggerRenameForSelectedFiles = () => {
-    if (selectedFiles.length !== 1) {
+    if (selectedShownFiles.length !== 1) {
       return;
     }
-    setFileToRenameId(selectedFiles[0].id);
+    setFileToRenameId(selectedShownFiles[0].id);
   };
 
   function changeSelectedFile(e: KeyboardEvent) {
@@ -113,11 +111,12 @@ const ExplorerActionsImpl: React.FC = () => {
     }
 
     if (e.key === KEYS.ARROW_UP || e.key === KEYS.ARROW_DOWN) {
+      const idsOfSelectedShownFiles = selectedShownFiles.map((file) => file.id);
       const selectedFilesInfos = filesToShow
         .map((file, idx) => ({
           file,
           idx,
-          isSelected: selectedFiles.some((selectedFile) => selectedFile.id === file.id),
+          isSelected: idsOfSelectedShownFiles.includes(file.id),
         }))
         .filter((entry) => entry.isSelected);
       const fileIdSelectionGotStartedWithIndex = selectedFilesInfos.find(
@@ -161,7 +160,7 @@ const ExplorerActionsImpl: React.FC = () => {
              * --> The user wants to remove the last file from the selection.
              */
             setIdsOfSelectedFiles(
-              idsOfSelectedFiles.filter(
+              idsOfSelectedShownFiles.filter(
                 (id) => id !== selectedFilesInfos[selectedFilesInfos.length - 1].file.id,
               ),
             );
@@ -172,7 +171,7 @@ const ExplorerActionsImpl: React.FC = () => {
              */
             setIdsOfSelectedFiles([
               filesToShow[firstSelectedFileIndex - 1].id,
-              ...idsOfSelectedFiles,
+              ...idsOfSelectedShownFiles,
             ]);
           }
         } else if (e.key === KEYS.ARROW_DOWN) {
@@ -182,7 +181,7 @@ const ExplorerActionsImpl: React.FC = () => {
              * --> The user wants to remove the first file from the selection.
              */
             setIdsOfSelectedFiles(
-              idsOfSelectedFiles.filter((id) => id !== selectedFilesInfos[0].file.id),
+              idsOfSelectedShownFiles.filter((id) => id !== selectedFilesInfos[0].file.id),
             );
           } else if (filesToShow.length > lastSelectedFileIndex + 1) {
             /*
@@ -190,7 +189,7 @@ const ExplorerActionsImpl: React.FC = () => {
              * --> The user wants to add the file after all selected files to the selection.
              */
             setIdsOfSelectedFiles([
-              ...idsOfSelectedFiles,
+              ...idsOfSelectedShownFiles,
               filesToShow[lastSelectedFileIndex + 1].id,
             ]);
           }
@@ -259,10 +258,11 @@ const ExplorerActionsImpl: React.FC = () => {
     },
   ]);
 
-  const singleFileActionsDisabled = selectedFiles.length !== 1;
-  const multipleFilesActionsDisabled = selectedFiles.length < 1;
+  const singleFileActionsDisabled = selectedShownFiles.length !== 1;
+  const multipleFilesActionsDisabled = selectedShownFiles.length < 1;
   const multipleDirectoriesActionsDisabled =
-    selectedFiles.length < 1 || selectedFiles.some((file) => file.fileType !== FILE_TYPE.DIRECTORY);
+    selectedShownFiles.length < 1 ||
+    selectedShownFiles.some((file) => file.fileType !== FILE_TYPE.DIRECTORY);
 
   return (
     <Stack alignItems="stretch">
@@ -327,7 +327,7 @@ const ExplorerActionsImpl: React.FC = () => {
             onValueCreated={(tag) => addTag(tag)}
             onValueChosen={async (chosenTag) => {
               await addTags(
-                selectedFiles.map((file) => file.uri),
+                selectedShownFiles.map((file) => file.uri),
                 [chosenTag.id],
               );
             }}

@@ -34,6 +34,10 @@ import { getDistinctParents } from '@app/platform/file-system';
 const logger = createLogger('file.hooks');
 
 export function scheduleMoveFilesToTrash(uris: UriComponents[]) {
+  if (uris.length < 1) {
+    return;
+  }
+
   const deleteProcess: Omit<DeleteProcess, 'status'> = {
     type: PROCESS_TYPE.DELETE,
     id: uuid.generateUuid(),
@@ -91,11 +95,15 @@ export function removeProcess(processId: string) {
   dispatchRef.current(actions.removeProcess({ id: processId }));
 }
 
-export async function openFile(uri: UriComponents) {
-  await nativeHostRef.current.openPath([uri]);
+export async function openFiles(uris: UriComponents[]) {
+  await nativeHostRef.current.openPath(uris);
 }
 
 export function cutOrCopyFiles(files: UriComponents[], cut: boolean) {
+  if (files.length < 1) {
+    return;
+  }
+
   nativeHostRef.current.clipboard.writeResources(files.map((file) => URI.from(file)));
   dispatchRef.current(actions.cutOrCopyFiles({ cut }));
 }

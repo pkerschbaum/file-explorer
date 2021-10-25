@@ -93,10 +93,6 @@ export function useFileIdSelectionGotStartedWith() {
   );
 }
 
-export function useIdsOfSelectedFiles() {
-  return useExplorerStateSelector((explorerValues) => explorerValues.selection.idsOfSelectedFiles);
-}
-
 export function useFileToRenameId() {
   return useExplorerStateSelector((explorerValues) => explorerValues.fileToRenameId);
 }

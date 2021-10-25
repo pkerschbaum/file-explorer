@@ -17,7 +17,7 @@ type ExplorerDerivedValuesContext = {
   explorerId: string;
   dataAvailable: boolean;
   filesToShow: FileForUI[];
-  selectedFiles: FileForUI[];
+  selectedShownFiles: FileForUI[];
 };
 
 const selectableContext =
@@ -33,14 +33,6 @@ type ExplorerDerivedValuesContextProviderProps = ExplorerContextProviderProps & 
 export const ExplorerDerivedValuesContextProvider: React.FC<ExplorerDerivedValuesContextProviderProps> =
   ({ explorerState, setIdsOfSelectedFiles, explorerId, ...delegated }) => {
     const { files, dataAvailable } = useFilesForUI(explorerId);
-
-    const selectedFiles = React.useMemo(
-      () =>
-        files.filter(
-          (file) => !!explorerState.selection.idsOfSelectedFiles.find((id) => id === file.id),
-        ),
-      [files, explorerState.selection.idsOfSelectedFiles],
-    );
 
     const filesWithTags = useEnrichFilesWithTags(files);
 
@@ -87,12 +79,18 @@ export const ExplorerDerivedValuesContextProvider: React.FC<ExplorerDerivedValue
       return result;
     }, [explorerState.filterInput, filesWithTags]);
 
+    const selectedShownFiles = React.useMemo(
+      () =>
+        filesToShow.filter((file) => explorerState.selection.idsOfSelectedFiles.includes(file.id)),
+      [filesToShow, explorerState.selection.idsOfSelectedFiles],
+    );
+
     // if no file is selected, reset selection
     React.useEffect(() => {
-      if (selectedFiles.length === 0 && filesToShow.length > 0) {
+      if (selectedShownFiles.length === 0 && filesToShow.length > 0) {
         setIdsOfSelectedFiles([filesToShow[0].id]);
       }
-    }, [selectedFiles.length, filesToShow, setIdsOfSelectedFiles]);
+    }, [selectedShownFiles.length, filesToShow, setIdsOfSelectedFiles]);
 
     // every time the filter input changes, reset selection
     const prevFilterInput = usePrevious(explorerState.filterInput);
@@ -109,7 +107,7 @@ export const ExplorerDerivedValuesContextProvider: React.FC<ExplorerDerivedValue
           explorerId,
           dataAvailable,
           filesToShow,
-          selectedFiles,
+          selectedShownFiles,
         }}
       >
         {delegated.children}
@@ -129,6 +127,6 @@ export function useDataAvailable() {
   return useExplorerDerivedValuesSelector((explorerValues) => explorerValues.dataAvailable);
 }
 
-export function useSelectedFiles() {
-  return useExplorerDerivedValuesSelector((explorerValues) => explorerValues.selectedFiles);
+export function useSelectedShownFiles() {
+  return useExplorerDerivedValuesSelector((explorerValues) => explorerValues.selectedShownFiles);
 }

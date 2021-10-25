@@ -7,7 +7,7 @@ import { check } from '@app/base/utils/assert.util';
 import { formatter } from '@app/base/utils/formatter.util';
 import { FileForUI, FILE_TYPE } from '@app/domain/types';
 import { changeDirectory } from '@app/operations/explorer.operations';
-import { openFile, removeTags, renameFile } from '@app/operations/file.operations';
+import { openFiles, removeTags, renameFile } from '@app/operations/file.operations';
 import { nativeHostRef } from '@app/operations/global-modules';
 import { KEYS } from '@app/ui/constants';
 import { Cell } from '@app/ui/elements/DataTable/Cell';
@@ -18,7 +18,7 @@ import {
   useFileIdSelectionGotStartedWith,
   useFilesToShow,
   useFileToRenameId,
-  useSelectedFiles,
+  useSelectedShownFiles,
   useSetFileToRenameId,
   useSetIdsOfSelectedFiles,
 } from '@app/ui/explorer-context/Explorer.context';
@@ -56,7 +56,7 @@ export const FilesTableRow: React.FC<FilesTableRowProps> = ({
   idxOfFileForRow,
 }) => {
   const explorerId = useExplorerId();
-  const selectedFiles = useSelectedFiles();
+  const selectedShownFiles = useSelectedShownFiles();
   const fileToRenameId = useFileToRenameId();
   const fileIdSelectionGotStartedWith = useFileIdSelectionGotStartedWith();
   const setIdsOfSelectedFiles = useSetIdsOfSelectedFiles();
@@ -91,7 +91,7 @@ export const FilesTableRow: React.FC<FilesTableRowProps> = ({
     if (file.fileType === FILE_TYPE.DIRECTORY) {
       await changeDirectory(explorerId, file.uri.path);
     } else {
-      await openFile(file.uri);
+      await openFiles([file.uri]);
     }
   }
 
@@ -108,7 +108,7 @@ export const FilesTableRow: React.FC<FilesTableRowProps> = ({
     setIdsOfSelectedFiles(files.map((file) => file.id));
   }
 
-  const fileIsSelected = !!selectedFiles.find((file) => file.id === fileForRow.id);
+  const fileIsSelected = !!selectedShownFiles.find((file) => file.id === fileForRow.id);
 
   return (
     <Row
@@ -123,9 +123,11 @@ export const FilesTableRow: React.FC<FilesTableRowProps> = ({
         if (e.ctrlKey) {
           // toggle selection of file which was clicked on
           if (fileIsSelected) {
-            selectFiles(selectedFiles.filter((selectedFile) => selectedFile.id !== fileForRow.id));
+            selectFiles(
+              selectedShownFiles.filter((selectedFile) => selectedFile.id !== fileForRow.id),
+            );
           } else {
-            selectFiles([...selectedFiles, fileForRow]);
+            selectFiles([...selectedShownFiles, fileForRow]);
           }
         } else if (e.shiftKey) {
           // select range of files
