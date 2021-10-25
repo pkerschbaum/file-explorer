@@ -11,7 +11,7 @@ import { commonStyles } from '@app/ui/Common.styles';
 import { Stack } from '@app/ui/layouts/Stack';
 import { TextBox } from '@app/ui/elements/TextBox';
 import { Cell } from '@app/ui/elements/DataTable/Cell';
-import { DataTable } from '@app/ui/elements/DataTable/DataTable';
+import { DataTable, DataTableProps } from '@app/ui/elements/DataTable/DataTable';
 import { HeadCell } from '@app/ui/elements/DataTable/HeadCell';
 import { Row } from '@app/ui/elements/DataTable/Row';
 import { TableBody } from '@app/ui/elements/DataTable/TableBody';
@@ -64,7 +64,7 @@ export const ExplorerPanel: React.FC<{ explorerId: string }> = ({ explorerId }) 
       <ExplorerActions />
 
       <DataTableContainer>
-        <DataTable>
+        <FilesTable>
           <TableHead>
             <HeadCell>
               <TextBox fontSize="sm" fontBold>
@@ -74,6 +74,11 @@ export const ExplorerPanel: React.FC<{ explorerId: string }> = ({ explorerId }) 
             <HeadCell>
               <TextBox fontSize="sm" fontBold>
                 Size
+              </TextBox>
+            </HeadCell>
+            <HeadCell>
+              <TextBox fontSize="sm" fontBold>
+                Last Modified
               </TextBox>
             </HeadCell>
           </TableHead>
@@ -89,11 +94,29 @@ export const ExplorerPanel: React.FC<{ explorerId: string }> = ({ explorerId }) 
               </>
             )}
           </TableBody>
-        </DataTable>
+        </FilesTable>
       </DataTableContainer>
     </Stack>
   );
 };
+
+const ForwardClassNameTable: React.FC<DataTableProps & { className?: string }> = ({
+  className,
+  ...delegated
+}) => <DataTable {...delegated} classes={{ ...delegated.classes, table: className }} />;
+
+const FilesTable = styled(ForwardClassNameTable)`
+  & thead th:nth-of-type(1),
+  & tbody td:nth-of-type(1) {
+    width: 100%;
+  }
+  & thead th,
+  & thead th *,
+  & tbody td,
+  & tbody td * {
+    white-space: nowrap;
+  }
+`;
 
 type BreadcrumbProps = {
   pathPart: string;

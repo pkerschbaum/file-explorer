@@ -64,7 +64,7 @@ export const ChangeCwd: React.FC<ChangeCwdProps> = ({ initialCwdValue, onSubmit 
           <Stack
             direction="column"
             alignItems="stretch"
-            sx={{ padding: 1.5, width: (theme) => theme.cardSizes.md }}
+            sx={{ padding: 1.5, width: (theme) => theme.sizes.card.md }}
           >
             <TextField
               autoFocus

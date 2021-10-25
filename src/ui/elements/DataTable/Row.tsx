@@ -1,7 +1,5 @@
 import { TableRow, TableRowProps } from '@mui/material';
 
-export const ROW_HEIGHT = '2rem';
-
 type RowProps = TableRowProps;
 
 export function Row(props: RowProps) {
@@ -16,7 +14,6 @@ export function Row(props: RowProps) {
       onDoubleClick={onDoubleClick}
       tabIndex={-1}
       {...rest}
-      style={{ height: ROW_HEIGHT, ...rest.style }}
     >
       {children}
     </TableRow>

@@ -7,10 +7,10 @@ import { TableBody } from '@app/ui/elements/DataTable/TableBody';
 import { EmptyRow } from '@app/ui/elements/DataTable/EmptyRow';
 import { commonStyles } from '@app/ui/Common.styles';
 
-type DataTableProps = {
+export type DataTableProps = {
   renderNoDataPresentMessage?: boolean;
   labels?: { container?: string };
-  classes?: { tableContainer?: string };
+  classes?: { tableContainer?: string; table?: string };
   applyIntrinsicHeight?: boolean;
 
   children: null | React.ReactNode;
@@ -36,6 +36,7 @@ export const DataTable: React.FC<DataTableProps> = (props) => {
         variant="outlined"
       >
         <Table
+          className={classesFromProps?.table}
           stickyHeader
           size="small"
           style={{ height: renderNoDataPresentMessage ? '100%' : undefined }}

@@ -20,8 +20,13 @@ declare module '@mui/material/styles' {
         [status in DELETE_PROCESS_STATUS]: string;
       };
     };
-    cardSizes: {
-      md: { width: number };
+    sizes: {
+      card: {
+        md: { width: number };
+      };
+      fileRow: {
+        height: string;
+      };
     };
   }
   interface ThemeOptions {
@@ -34,8 +39,13 @@ declare module '@mui/material/styles' {
         [status in DELETE_PROCESS_STATUS]: string;
       };
     };
-    cardSizes: {
-      md: { width: number };
+    sizes: {
+      card: {
+        md: { width: number };
+      };
+      fileRow: {
+        height: string;
+      };
     };
   }
 }
@@ -52,7 +62,7 @@ const THEMES = {
     mode: 'dark',
     backgroundColor: 'hsl(30, 16%, 12%)',
     primaryColor: cyan[300],
-    foregroundColor: 'white',
+    foregroundColor: 'hsl(0, 0%, 100%)',
     MuiButton: {
       outlined: {
         background: 'hsl(27, 11%, 17%)',
@@ -228,8 +238,13 @@ export const createTheme = (locale: Localization) => {
       },
     },
 
-    cardSizes: {
-      md: { width: 280 },
+    sizes: {
+      card: {
+        md: { width: 280 },
+      },
+      fileRow: {
+        height: '1.5rem',
+      },
     },
   };
 

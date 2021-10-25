@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import { Globals, queryClient } from '@app/ui/Globals';
+import { createQueryClient, Globals } from '@app/ui/Globals';
 import { Shell } from '@app/ui/Shell';
 import {
   dispatchRef,
@@ -28,6 +28,7 @@ export type AppDependencies = {
 };
 
 export function render(appDependencies: AppDependencies) {
+  const queryClient = createQueryClient();
   queryClientRef.current = queryClient;
 
   const store = createStoreInstance({
@@ -45,7 +46,7 @@ export function render(appDependencies: AppDependencies) {
 
   ReactDOM.render(
     <React.StrictMode>
-      <Globals store={store}>
+      <Globals queryClient={queryClient} store={store}>
         <Shell />
       </Globals>
     </React.StrictMode>,

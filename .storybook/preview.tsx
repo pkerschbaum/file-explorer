@@ -15,7 +15,7 @@ import {
   fileIconThemeRef,
 } from '@app/operations/global-modules';
 import { addIconThemeCssRulesToHead } from '@app/ui/file-icon-theme';
-import { Globals, queryClient } from '@app/ui/Globals';
+import { Globals, createQueryClient } from '@app/ui/Globals';
 
 export const parameters: Parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },
@@ -31,8 +31,6 @@ const FILE_ICON_THEME_PATH_FRAGMENT = 'vscode-icons-team.vscode-icons-11.6.0';
 
 export const loaders = [
   () => {
-    queryClientRef.current = queryClient;
-
     fileIconThemeRef.current = httpFileIconTheme;
     fileSystemRef.current = fakeFileSystem;
     nativeHostRef.current = createFakeNativeHost();
@@ -49,10 +47,16 @@ export const loaders = [
 
 export const decorators: DecoratorFn[] = [
   (story) => {
+    const queryClient = createQueryClient();
+    queryClientRef.current = queryClient;
     const store = createStoreInstance();
     storeRef.current = store;
     dispatchRef.current = store.dispatch;
 
-    return <Globals store={store}>{story()}</Globals>;
+    return (
+      <Globals queryClient={queryClient} store={store}>
+        {story()}
+      </Globals>
+    );
   },
 ];

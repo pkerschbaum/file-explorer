@@ -2,7 +2,7 @@ import { byteSize, ByteUnit } from '@app/base/utils/byte-size.util';
 import { numbers } from '@app/base/utils/numbers.util';
 import { i18n } from '@app/domain/i18n';
 
-export const formatter = { bytes, file };
+export const formatter = { bytes, date, file };
 
 function bytes(numberOfBytes: number, options?: { unit: ByteUnit }): string {
   let unitToUse = options?.unit;
@@ -12,12 +12,24 @@ function bytes(numberOfBytes: number, options?: { unit: ByteUnit }): string {
 
   const formattedNumber = numbers
     .roundToDecimals(byteSize.transform(numberOfBytes, unitToUse), 2)
-    .toLocaleString(i18n.locale, {
+    .toLocaleString(i18n.langLocale, {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     });
 
   return `${formattedNumber} ${unitToUse}`;
+}
+
+function date(unixTs: number): string {
+  return new Intl.DateTimeFormat(i18n.dateLocale, {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+    hour12: false,
+  }).format(unixTs);
 }
 
 function file(file: { name: string; extension?: string }): string {

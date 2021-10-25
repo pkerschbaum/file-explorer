@@ -163,17 +163,17 @@ export const FilesTableRow: React.FC<FilesTableRowProps> = ({
       selected={fileIsSelected}
     >
       <Cell>
-        <Stack>
-          <FileIcon className={nativeIconDataURL ? undefined : themeFileIconClasses}>
-            {nativeIconDataURL && (
-              <IconWrapper>
+        <RowContent>
+          <Stack spacing={0} sx={{ width: '100%' }}>
+            <IconWrapper className={nativeIconDataURL ? undefined : themeFileIconClasses}>
+              {nativeIconDataURL && (
                 <img
                   src={nativeIconDataURL}
                   alt="application icon"
                   style={{ maxHeight: '100%', maxWidth: '100%' }}
                 />
-              </IconWrapper>
-            )}
+              )}
+            </IconWrapper>
             {fileToRenameId === fileForRow.id ? (
               <RenameInput
                 file={fileForRow}
@@ -181,9 +181,9 @@ export const FilesTableRow: React.FC<FilesTableRowProps> = ({
                 abortRename={abortRename}
               />
             ) : (
-              <TextBox fontSize="sm">{formatter.file(fileForRow)}</TextBox>
+              <FileNameFormatted fontSize="sm">{formatter.file(fileForRow)}</FileNameFormatted>
             )}
-          </FileIcon>
+          </Stack>
 
           {fileForRow.tags.map((tag) => (
             <Chip
@@ -195,13 +195,14 @@ export const FilesTableRow: React.FC<FilesTableRowProps> = ({
               onDelete={() => removeTags([fileForRow.uri], [tag.id])}
             />
           ))}
-        </Stack>
+        </RowContent>
       </Cell>
       <Cell>
         {fileForRow.fileType === FILE_TYPE.FILE &&
           fileForRow.size !== undefined &&
           formatter.bytes(fileForRow.size)}
       </Cell>
+      <Cell>{fileForRow.mtime !== undefined && formatter.date(fileForRow.mtime)}</Cell>
     </Row>
   );
 };
@@ -224,11 +225,9 @@ const RenameInput: React.FC<RenameInputProps> = ({ file, onSubmit, abortRename }
       }}
       onBlur={abortRename}
     >
-      <TextField
-        sx={{ fontSize: `${12 / 16}rem` }}
+      <FileNameTextField
         fullWidth
         autoFocus
-        label="Rename"
         value={value}
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={(e) => {
@@ -241,31 +240,47 @@ const RenameInput: React.FC<RenameInputProps> = ({ file, onSubmit, abortRename }
   );
 };
 
+const RowContent = styled(Stack)`
+  height: ${(props) => props.theme.sizes.fileRow.height};
+`;
+
+const FileNameFormattedSpacingFactor = 0.5;
+
+const FileNameTextField = styled(TextField)`
+  & .MuiInputBase-root {
+    font-size: ${12 / 16}rem;
+    margin-left: ${(props) => props.theme.spacing(FileNameFormattedSpacingFactor)};
+  }
+
+  & .MuiInputBase-input {
+    padding-left: ${(props) => props.theme.spacing(FileNameFormattedSpacingFactor)};
+    padding-top: 5px;
+    padding-bottom: 4px;
+  }
+`;
+
+const FileNameFormatted = styled(TextBox)`
+  padding-left: ${(props) => props.theme.spacing(FileNameFormattedSpacingFactor * 2)};
+`;
+
 const iconStyles = css`
   display: flex;
   align-items: center;
   justify-content: center;
   width: 24px;
   max-width: 24px;
-  height: 1em;
-  max-height: 1em;
-`;
-
-const FileIcon = styled(Stack)`
-  width: 100%;
-
-  ::before {
-    /* icon-theme.ts sets a unwanted font-size, use !important to overrule that*/
-    font-size: 2em !important;
-
-    ${iconStyles}
-
-    background-size: 24px 1em;
-    background-repeat: no-repeat;
-    -webkit-font-smoothing: antialiased;
-  }
+  height: 24px;
+  max-height: 24px;
 `;
 
 const IconWrapper = styled(Box)`
   ${iconStyles}
+
+  ::before {
+    ${iconStyles}
+
+    background-size: 24px 24px;
+    background-repeat: no-repeat;
+    -webkit-font-smoothing: antialiased;
+  }
 `;
