@@ -145,7 +145,17 @@ type ExplorerPanelTabProps = {
 const ExplorerPanelTab = React.memo<ExplorerPanelTabProps>(function ExplorerPanelTab(props) {
   return (
     <>
-      <Button sx={{ width: '100%' }}>{props.label}</Button>
+      <Button
+        sx={{
+          width: '100%',
+          justifyContent: 'start',
+          textAlign: 'start',
+          // make some space on the right side available for the (absolutely positioned) TabCloseButton
+          paddingRight: (theme) => theme.spacing(4.5),
+        }}
+      >
+        {props.label}
+      </Button>
       {!props.removeExplorerActionDisabled && (
         <Tooltip title="Close tab">
           <TabCloseButton>
@@ -158,6 +168,11 @@ const ExplorerPanelTab = React.memo<ExplorerPanelTabProps>(function ExplorerPane
     </>
   );
 }, objects.shallowIsEqualIgnoreFunctions);
+
+const TabCloseButton = styled.span`
+  position: absolute;
+  right: ${(props) => props.theme.spacing()};
+`;
 
 type HiddenIfInactiveTabPanelProps = {
   index: string;
@@ -191,11 +206,6 @@ const TabsArea = styled(Stack)`
   padding-top: ${(props) => props.theme.spacing(0.5)};
   padding-bottom: ${(props) => props.theme.spacing()};
   padding-left: ${(props) => props.theme.spacing()};
-`;
-
-const TabCloseButton = styled.span`
-  position: absolute;
-  right: ${(props) => props.theme.spacing()};
 `;
 
 const ActiveExplorerArea = styled(Box)`

@@ -133,9 +133,8 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
 }) => {
   const [menuAnchorEl, setMenuAnchorEl] = React.useState<HTMLElement | null>(null);
 
-  const pathPartFormatted = isFirstPart
-    ? `${pathPart[0].toLocaleUpperCase()}${pathPart.slice(1)}`
-    : pathPart;
+  const pathPartFormatted =
+    isFirstPart && isWindows ? `${pathPart[0].toLocaleUpperCase()}${pathPart.slice(1)}` : pathPart;
 
   async function handleClick(e: React.MouseEvent<HTMLElement>) {
     if (isLastPart) {
