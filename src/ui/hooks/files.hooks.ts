@@ -1,7 +1,6 @@
-import * as React from 'react';
-
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { FileKind } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
+import * as React from 'react';
 
 import { createLogger } from '@app/base/logger/logger';
 import { uriHelper } from '@app/base/utils/uri-helper';

@@ -1,18 +1,17 @@
-import * as React from 'react';
-import { Button, IconButton, LinearProgress, Tooltip } from '@mui/material';
 import ClearAllIcon from '@mui/icons-material/ClearAll';
-import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
-
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import { Button, IconButton, LinearProgress, Tooltip } from '@mui/material';
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import * as React from 'react';
 
-import { Stack } from '@app/ui/layouts/Stack';
-import { TextBox } from '@app/ui/elements/TextBox';
+import { isUnreachable } from '@app/base/utils/assert.util';
+import { formatter } from '@app/base/utils/formatter.util';
+import { uriHelper } from '@app/base/utils/uri-helper';
 import { DeleteProcess as DeleteProcessType, DELETE_PROCESS_STATUS } from '@app/domain/types';
 import { removeProcess, runDeleteProcess } from '@app/operations/file.operations';
-import { uriHelper } from '@app/base/utils/uri-helper';
-import { formatter } from '@app/base/utils/formatter.util';
-import { isUnreachable } from '@app/base/utils/assert.util';
+import { TextBox } from '@app/ui/elements/TextBox';
+import { Stack } from '@app/ui/layouts/Stack';
 
 export const DeleteProcess: React.FC<{ process: DeleteProcessType }> = ({ process }) => {
   let contentToRender;

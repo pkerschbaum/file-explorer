@@ -1,16 +1,16 @@
-import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import {
   getIconClasses,
   loadFileIconThemeCssRules,
   registerLanguagesOfExtensions,
 } from '@pkerschbaum/code-oss-file-icon-theme';
+import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 
+import type { PlatformFileIconTheme } from '@app/platform/file-icon-theme';
 import {
   EXTENSIONS_DIRECTORY_URI,
   FILE_ICON_THEME_RELATIVE_PATH,
   FILE_ICON_THEME_BASE_URI,
 } from '@app/static-resources-renderer';
-import type { PlatformFileIconTheme } from '@app/platform/file-icon-theme';
 
 export const FILE_ICON_THEME_PATH_REPLACE_REGEX = /vscode-file:.+\/static\/icon-theme\//g;
 

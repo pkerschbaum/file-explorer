@@ -1,17 +1,17 @@
-import * as React from 'react';
 import { matchSorter } from 'match-sorter';
+import * as React from 'react';
 
 import { arrays } from '@app/base/utils/arrays.util';
 import { check } from '@app/base/utils/assert.util';
 import { FileForUI, FILE_TYPE } from '@app/domain/types';
 import { useEnrichFilesWithTags } from '@app/global-state/slices/persisted.hooks';
-import { useFilesForUI } from '@app/ui/hooks/files.hooks';
-import { createSelectableContext, usePrevious } from '@app/ui/utils/react.util';
 import type {
   ExplorerContextProviderProps,
   ExplorerState,
   ExplorerStateUpdateFunctions,
 } from '@app/ui/explorer-context/ExplorerState.context';
+import { useFilesForUI } from '@app/ui/hooks/files.hooks';
+import { createSelectableContext, usePrevious } from '@app/ui/utils/react.util';
 
 type ExplorerDerivedValuesContext = {
   explorerId: string;

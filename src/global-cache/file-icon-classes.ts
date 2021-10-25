@@ -1,8 +1,7 @@
-import * as React from 'react';
-import { useQuery } from 'react-query';
-
 import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { FileKind } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
+import * as React from 'react';
+import { useQuery } from 'react-query';
 
 import { QUERY_KEYS } from '@app/global-cache/query-keys';
 import { fileIconThemeRef } from '@app/operations/global-modules';

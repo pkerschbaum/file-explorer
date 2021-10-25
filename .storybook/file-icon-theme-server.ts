@@ -1,17 +1,16 @@
-import express from 'express';
-import cors from 'cors';
-
-// set process type to "renderer" to allow reading from  src/static-resources-renderer.ts
-import 'electron';
-(process as any).type = 'renderer';
-
-import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import * as path from '@pkerschbaum/code-oss-file-service/out/vs/base/common/path';
 import {
   getIconClasses,
   loadFileIconThemeCssRules,
   registerLanguagesOfExtensions,
 } from '@pkerschbaum/code-oss-file-icon-theme';
+import * as path from '@pkerschbaum/code-oss-file-service/out/vs/base/common/path';
+import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import cors from 'cors';
+import express from 'express';
+
+// set process type to "renderer" to allow reading from  src/static-resources-renderer.ts
+import 'electron';
+(process as any).type = 'renderer';
 
 import { createLogger } from '@app/base/logger/logger';
 import { FILE_ICON_THEME_PATH_REPLACE_REGEX } from '@app/platform/electron-preload/file-icon-theme';

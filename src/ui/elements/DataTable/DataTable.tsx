@@ -1,11 +1,11 @@
-import * as React from 'react';
 import { Paper, Table, TableContainer } from '@mui/material';
+import * as React from 'react';
 import styled from 'styled-components';
 
-import { Stack } from '@app/ui/layouts/Stack';
-import { TableBody } from '@app/ui/elements/DataTable/TableBody';
-import { EmptyRow } from '@app/ui/elements/DataTable/EmptyRow';
 import { commonStyles } from '@app/ui/Common.styles';
+import { EmptyRow } from '@app/ui/elements/DataTable/EmptyRow';
+import { TableBody } from '@app/ui/elements/DataTable/TableBody';
+import { Stack } from '@app/ui/layouts/Stack';
 
 export type DataTableProps = {
   renderNoDataPresentMessage?: boolean;

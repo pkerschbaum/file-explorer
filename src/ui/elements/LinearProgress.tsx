@@ -1,13 +1,13 @@
 // taken from: https://material-ui.com/components/progress/#linear-with-label
-import * as React from 'react';
 import {
   Box,
   LinearProgress as MuiLinearProgress,
   LinearProgressProps as MuiLinearProgressProps,
 } from '@mui/material';
+import * as React from 'react';
 
-import { Stack } from '@app/ui/layouts/Stack';
 import { TextBox } from '@app/ui/elements/TextBox';
+import { Stack } from '@app/ui/layouts/Stack';
 
 type LinearProgressProps = MuiLinearProgressProps & {
   value: number;

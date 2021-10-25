@@ -1,7 +1,7 @@
-import * as React from 'react';
 import { Box, BoxProps, useTheme } from '@mui/material';
-import styled, { css, FlattenInterpolation } from 'styled-components';
 import { Property } from 'csstype';
+import * as React from 'react';
+import styled, { css, FlattenInterpolation } from 'styled-components';
 
 type StackProps = {
   direction?: 'row' | 'column' | 'row-reverse' | 'column-reverse';

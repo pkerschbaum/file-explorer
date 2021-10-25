@@ -1,5 +1,5 @@
-import * as React from 'react';
 import { Box, BoxProps } from '@mui/material';
+import * as React from 'react';
 import styled from 'styled-components';
 
 import { assertThat } from '@app/base/utils/assert.util';

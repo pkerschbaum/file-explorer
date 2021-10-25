@@ -1,9 +1,9 @@
+import { CancellationTokenSource } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/cancellation';
+import { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { createAction, createReducer } from '@reduxjs/toolkit';
 
-import { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import { CancellationTokenSource } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/cancellation';
-
 import { createLogger } from '@app/base/logger/logger';
+import { arrays } from '@app/base/utils/arrays.util';
 import {
   Process,
   PASTE_PROCESS_STATUS,
@@ -11,7 +11,6 @@ import {
   PROCESS_TYPE,
   DELETE_PROCESS_STATUS,
 } from '@app/domain/types';
-import { arrays } from '@app/base/utils/arrays.util';
 
 export type ProcessesSliceState = {
   draftPasteState?: {

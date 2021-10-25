@@ -1,21 +1,20 @@
-import * as React from 'react';
-import { Box, Button, IconButton, Tooltip } from '@mui/material';
-import styled from 'styled-components';
-import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
 import ClearAllIcon from '@mui/icons-material/ClearAll';
-
+import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
+import { Box, Button, IconButton, Tooltip } from '@mui/material';
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import * as React from 'react';
+import styled from 'styled-components';
 
-import { Stack } from '@app/ui/layouts/Stack';
-import { TextBox } from '@app/ui/elements/TextBox';
-import { LinearProgress } from '@app/ui/elements/LinearProgress';
+import { assertThat } from '@app/base/utils/assert.util';
+import { byteSize } from '@app/base/utils/byte-size.util';
+import { formatter } from '@app/base/utils/formatter.util';
+import { numbers } from '@app/base/utils/numbers.util';
+import { uriHelper } from '@app/base/utils/uri-helper';
 import { PasteProcess as PasteProcessType, PASTE_PROCESS_STATUS } from '@app/domain/types';
 import { removeProcess } from '@app/operations/file.operations';
-import { assertThat } from '@app/base/utils/assert.util';
-import { uriHelper } from '@app/base/utils/uri-helper';
-import { formatter } from '@app/base/utils/formatter.util';
-import { byteSize } from '@app/base/utils/byte-size.util';
-import { numbers } from '@app/base/utils/numbers.util';
+import { LinearProgress } from '@app/ui/elements/LinearProgress';
+import { TextBox } from '@app/ui/elements/TextBox';
+import { Stack } from '@app/ui/layouts/Stack';
 
 export const PasteProcess: React.FC<{ process: PasteProcessType }> = ({ process }) => {
   const smallestUnitOfTotalSize = byteSize.probe(process.totalSize).unit;

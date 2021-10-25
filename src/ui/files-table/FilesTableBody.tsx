@@ -1,17 +1,18 @@
-import * as React from 'react';
 import { Box, Chip, TextField } from '@mui/material';
+import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import * as React from 'react';
 import styled, { css } from 'styled-components';
 
-import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-
+import { check } from '@app/base/utils/assert.util';
+import { formatter } from '@app/base/utils/formatter.util';
 import { FileForUI, FILE_TYPE } from '@app/domain/types';
-import { Stack } from '@app/ui/layouts/Stack';
-import { TextBox } from '@app/ui/elements/TextBox';
+import { changeDirectory } from '@app/operations/explorer.operations';
+import { openFile, removeTags, renameFile } from '@app/operations/file.operations';
+import { nativeHostRef } from '@app/operations/global-modules';
+import { KEYS } from '@app/ui/constants';
 import { Cell } from '@app/ui/elements/DataTable/Cell';
 import { Row } from '@app/ui/elements/DataTable/Row';
-import { nativeHostRef } from '@app/operations/global-modules';
-import { openFile, removeTags, renameFile } from '@app/operations/file.operations';
-import { changeDirectory } from '@app/operations/explorer.operations';
+import { TextBox } from '@app/ui/elements/TextBox';
 import {
   useExplorerId,
   useFileIdSelectionGotStartedWith,
@@ -21,10 +22,8 @@ import {
   useSetFileToRenameId,
   useSetIdsOfSelectedFiles,
 } from '@app/ui/explorer-context/Explorer.context';
-import { KEYS } from '@app/ui/constants';
 import { useThemeFileIconClasses } from '@app/ui/hooks/files.hooks';
-import { check } from '@app/base/utils/assert.util';
-import { formatter } from '@app/base/utils/formatter.util';
+import { Stack } from '@app/ui/layouts/Stack';
 
 const USE_NATIVE_ICON_FOR_REGEX = /(?:exe|ico|dll)/i;
 

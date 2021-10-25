@@ -1,7 +1,7 @@
-import * as uuid from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uuid';
-import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import type { ProgressCbArgs } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
 import { CancellationTokenSource } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/cancellation';
+import type { ProgressCbArgs } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
+import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import * as uuid from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uuid';
 import { IFileStatWithMetadata } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 
 import { CustomError } from '@app/base/custom-error';
@@ -15,6 +15,13 @@ import {
   PROCESS_TYPE,
   Tag,
 } from '@app/domain/types';
+import { refreshFiles } from '@app/global-cache/files';
+import {
+  actions as persistedSliceActions,
+  STORAGE_KEY,
+} from '@app/global-state/slices/persisted.slice';
+import { mapProcess } from '@app/global-state/slices/processes.hooks';
+import { actions } from '@app/global-state/slices/processes.slice';
 import {
   dispatchRef,
   fileSystemRef,
@@ -22,13 +29,6 @@ import {
   storeRef,
 } from '@app/operations/global-modules';
 import * as tagOperations from '@app/operations/tag.operations';
-import { refreshFiles } from '@app/global-cache/files';
-import {
-  actions as persistedSliceActions,
-  STORAGE_KEY,
-} from '@app/global-state/slices/persisted.slice';
-import { actions } from '@app/global-state/slices/processes.slice';
-import { mapProcess } from '@app/global-state/slices/processes.hooks';
 import { getDistinctParents } from '@app/platform/file-system';
 
 const logger = createLogger('file.hooks');

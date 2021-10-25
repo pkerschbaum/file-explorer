@@ -1,8 +1,7 @@
+import { Event } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/event';
 import * as React from 'react';
 import { useDispatch } from 'react-redux';
 import * as useContextSelectorLib from 'use-context-selector';
-
-import { Event } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/event';
 
 type EventHandlers<E extends keyof WindowEventMap> = Array<{
   condition: (e: WindowEventMap[E]) => boolean;

@@ -1,12 +1,12 @@
-import * as React from 'react';
-import { Provider } from 'react-redux';
-import { QueryClient, QueryClientProvider } from 'react-query';
 import { CssBaseline, darken, ThemeProvider } from '@mui/material';
 import { enUS } from '@mui/material/locale';
+import * as React from 'react';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { Provider } from 'react-redux';
 import styled, { createGlobalStyle, css } from 'styled-components';
 
-import { createTheme } from '@app/ui/theme';
 import { RootStore } from '@app/global-state/store';
+import { createTheme } from '@app/ui/theme';
 
 export function createQueryClient() {
   return new QueryClient({

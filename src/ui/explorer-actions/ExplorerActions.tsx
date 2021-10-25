@@ -1,29 +1,31 @@
-import * as React from 'react';
-import { Box, Button, Divider, TextField, Tooltip } from '@mui/material';
-import styled from 'styled-components';
-import LaunchOutlinedIcon from '@mui/icons-material/LaunchOutlined';
 import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
 import ContentCutOutlinedIcon from '@mui/icons-material/ContentCutOutlined';
 import ContentPasteOutlinedIcon from '@mui/icons-material/ContentPasteOutlined';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import LaunchOutlinedIcon from '@mui/icons-material/LaunchOutlined';
+import { Box, Button, Divider, TextField, Tooltip } from '@mui/material';
+import * as React from 'react';
+import styled from 'styled-components';
 
+import { functions } from '@app/base/utils/functions.util';
 import { config } from '@app/config';
-import { Stack } from '@app/ui/layouts/Stack';
-import { TextBox } from '@app/ui/elements/TextBox';
-import { AddTag } from '@app/ui/explorer-actions/AddTag';
-import { CreateFolder } from '@app/ui/explorer-actions/CreateFolder';
+import { FILE_TYPE } from '@app/domain/types';
 import { useIdOfFocusedExplorerPanel } from '@app/global-state/slices/explorers.hooks';
 import { useTags } from '@app/global-state/slices/persisted.hooks';
 import { useDraftPasteState } from '@app/global-state/slices/processes.hooks';
+import { changeDirectory, createFolder, pasteFiles } from '@app/operations/explorer.operations';
 import {
   addTags,
   cutOrCopyFiles,
   openFile,
   scheduleMoveFilesToTrash,
 } from '@app/operations/file.operations';
-import { changeDirectory, createFolder, pasteFiles } from '@app/operations/explorer.operations';
 import { addTag, removeTags } from '@app/operations/tag.operations';
+import { KEYS } from '@app/ui/constants';
+import { TextBox } from '@app/ui/elements/TextBox';
+import { AddTag } from '@app/ui/explorer-actions/AddTag';
+import { CreateFolder } from '@app/ui/explorer-actions/CreateFolder';
 import {
   useExplorerId,
   useFileIdSelectionGotStartedWith,
@@ -36,10 +38,8 @@ import {
   useSetIdsOfSelectedFiles,
 } from '@app/ui/explorer-context/Explorer.context';
 import { useClipboardResources } from '@app/ui/hooks/clipboard-resources.hooks';
-import { FILE_TYPE } from '@app/domain/types';
-import { KEYS } from '@app/ui/constants';
+import { Stack } from '@app/ui/layouts/Stack';
 import { useWindowEvent } from '@app/ui/utils/react.util';
-import { functions } from '@app/base/utils/functions.util';
 
 export const DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED = {
   datasetAttr: {

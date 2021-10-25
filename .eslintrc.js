@@ -28,6 +28,22 @@ module.exports = {
     'node/no-deprecated-api': 'off',
     'object-shorthand': 'error',
     'import/no-unresolved': 'off',
+    'import/order': [
+      'error',
+      {
+        groups: [['builtin', 'external'], 'parent', 'sibling', 'index'],
+        pathGroups: [
+          {
+            pattern: '@app/**',
+            group: 'parent',
+            position: 'after',
+          },
+        ],
+        pathGroupsExcludedImportTypes: ['builtin'],
+        alphabetize: { order: 'asc', caseInsensitive: true },
+        'newlines-between': 'always-and-inside-groups',
+      },
+    ],
     '@typescript-eslint/ban-types': [
       'error',
       {

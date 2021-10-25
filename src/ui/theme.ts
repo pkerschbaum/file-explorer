@@ -1,10 +1,10 @@
+import { cyan } from '@mui/material/colors';
+import { Localization } from '@mui/material/locale';
 import {
   // https://github.com/mui-org/material-ui/issues/13394
   createTheme as createMuiTheme,
   Theme as MuiTheme,
 } from '@mui/material/styles';
-import { cyan } from '@mui/material/colors';
-import { Localization } from '@mui/material/locale';
 import { css } from 'styled-components';
 
 import { DELETE_PROCESS_STATUS, PASTE_PROCESS_STATUS } from '@app/domain/types';

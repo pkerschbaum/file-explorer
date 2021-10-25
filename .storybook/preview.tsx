@@ -1,10 +1,6 @@
 import { DecoratorFn, Parameters } from '@storybook/react';
 
 import { createStoreInstance } from '@app/global-state/store';
-import { httpFileIconTheme } from '@app/platform/file-icon-theme.fake';
-import { fakeFileSystem } from '@app/platform/file-system.fake';
-import { createFakeNativeHost } from '@app/platform/native-host.fake';
-import { createFakePersistentStorage } from '@app/platform/persistent-storage.fake';
 import {
   storeRef,
   dispatchRef,
@@ -14,6 +10,10 @@ import {
   persistentStorageRef,
   fileIconThemeRef,
 } from '@app/operations/global-modules';
+import { httpFileIconTheme } from '@app/platform/file-icon-theme.fake';
+import { fakeFileSystem } from '@app/platform/file-system.fake';
+import { createFakeNativeHost } from '@app/platform/native-host.fake';
+import { createFakePersistentStorage } from '@app/platform/persistent-storage.fake';
 import { addIconThemeCssRulesToHead } from '@app/ui/file-icon-theme';
 import { Globals, createQueryClient } from '@app/ui/Globals';
 

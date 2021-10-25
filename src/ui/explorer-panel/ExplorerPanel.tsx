@@ -1,29 +1,28 @@
-import * as React from 'react';
-import { Box, Breadcrumbs, Button, Skeleton } from '@mui/material';
 import KeyboardArrowDownOutlined from '@mui/icons-material/KeyboardArrowDownOutlined';
-import styled from 'styled-components';
-
-import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import { Box, Breadcrumbs, Button, Skeleton } from '@mui/material';
 import { posix, win32 } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/path';
 import { isWindows } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/platform';
+import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import * as React from 'react';
+import styled from 'styled-components';
 
+import { check } from '@app/base/utils/assert.util';
+import { uriHelper } from '@app/base/utils/uri-helper';
+import { useCwd } from '@app/global-state/slices/explorers.hooks';
+import { changeDirectory } from '@app/operations/explorer.operations';
 import { commonStyles } from '@app/ui/Common.styles';
-import { Stack } from '@app/ui/layouts/Stack';
-import { TextBox } from '@app/ui/elements/TextBox';
+import { CwdActionsMenu } from '@app/ui/cwd-actions/CwdActionsMenu';
 import { Cell } from '@app/ui/elements/DataTable/Cell';
 import { DataTable, DataTableProps } from '@app/ui/elements/DataTable/DataTable';
 import { HeadCell } from '@app/ui/elements/DataTable/HeadCell';
 import { Row } from '@app/ui/elements/DataTable/Row';
 import { TableBody } from '@app/ui/elements/DataTable/TableBody';
 import { TableHead } from '@app/ui/elements/DataTable/TableHead';
-import { useCwd } from '@app/global-state/slices/explorers.hooks';
-import { changeDirectory } from '@app/operations/explorer.operations';
-import { useDataAvailable } from '@app/ui/explorer-context/Explorer.context';
-import { check } from '@app/base/utils/assert.util';
-import { uriHelper } from '@app/base/utils/uri-helper';
-import { CwdActionsMenu } from '@app/ui/cwd-actions/CwdActionsMenu';
+import { TextBox } from '@app/ui/elements/TextBox';
 import { ExplorerActions } from '@app/ui/explorer-actions/ExplorerActions';
+import { useDataAvailable } from '@app/ui/explorer-context/Explorer.context';
 import { FilesTableBody } from '@app/ui/files-table/FilesTableBody';
+import { Stack } from '@app/ui/layouts/Stack';
 
 export const ExplorerPanel: React.FC<{ explorerId: string }> = ({ explorerId }) => {
   const cwd = useCwd(explorerId);

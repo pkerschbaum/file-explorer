@@ -1,12 +1,12 @@
-import * as resources from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
-import * as uuid from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uuid';
-import { extname, basename } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/path';
-import type { ProgressCbArgs } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
-import { Constants } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uint';
-import { isLinux } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/platform';
-import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { CancellationTokenSource } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/cancellation';
 import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
+import { extname, basename } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/path';
+import { isLinux } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/platform';
+import type { ProgressCbArgs } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
+import * as resources from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
+import { Constants } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uint';
+import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import * as uuid from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uuid';
 import { IFileStat } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 
 import { CustomError } from '@app/base/custom-error';
@@ -14,16 +14,16 @@ import { createLogger } from '@app/base/logger/logger';
 import { check } from '@app/base/utils/assert.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { PASTE_PROCESS_STATUS } from '@app/domain/types';
+import { refreshFiles } from '@app/global-cache/files';
+import { actions as explorerActions } from '@app/global-state/slices/explorers.slice';
+import { actions as processesActions } from '@app/global-state/slices/processes.slice';
+import { executeCopyOrMove, resolveDeep } from '@app/operations/file.operations';
 import {
   dispatchRef,
   fileSystemRef,
   nativeHostRef,
   storeRef,
 } from '@app/operations/global-modules';
-import { executeCopyOrMove, resolveDeep } from '@app/operations/file.operations';
-import { refreshFiles } from '@app/global-cache/files';
-import { actions as explorerActions } from '@app/global-state/slices/explorers.slice';
-import { actions as processesActions } from '@app/global-state/slices/processes.slice';
 
 const UPDATE_INTERVAL_MS = 500;
 const logger = createLogger('explorer.hooks');

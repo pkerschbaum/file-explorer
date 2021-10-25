@@ -1,13 +1,12 @@
-import * as React from 'react';
-import { Box, Tabs, Tab, Button, IconButton, Tooltip } from '@mui/material';
-import styled from 'styled-components';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
+import { Box, Tabs, Tab, Button, IconButton, Tooltip } from '@mui/material';
+import * as React from 'react';
+import styled from 'styled-components';
 
-import { commonStyles } from '@app/ui/Common.styles';
-import { Stack } from '@app/ui/layouts/Stack';
-import { ExplorerPanelContainer } from '@app/ui/ExplorerPanelContainer';
-import { ProcessCard } from '@app/ui/process/ProcessCard';
+import { arrays } from '@app/base/utils/arrays.util';
+import { objects } from '@app/base/utils/objects.util';
+import { uriHelper } from '@app/base/utils/uri-helper';
 import {
   useExplorerPanels,
   useIdOfFocusedExplorerPanel,
@@ -18,12 +17,13 @@ import {
   changeFocusedExplorer,
   removeExplorerPanel,
 } from '@app/operations/app.operations';
-import { tabIndicatorSpanClassName } from '@app/ui/theme';
+import { commonStyles } from '@app/ui/Common.styles';
 import { KEYS } from '@app/ui/constants';
+import { ExplorerPanelContainer } from '@app/ui/ExplorerPanelContainer';
+import { Stack } from '@app/ui/layouts/Stack';
+import { ProcessCard } from '@app/ui/process/ProcessCard';
+import { tabIndicatorSpanClassName } from '@app/ui/theme';
 import { useWindowEvent } from '@app/ui/utils/react.util';
-import { uriHelper } from '@app/base/utils/uri-helper';
-import { arrays } from '@app/base/utils/arrays.util';
-import { objects } from '@app/base/utils/objects.util';
 
 export const Shell: React.FC = () => {
   const explorerPanels = useExplorerPanels();

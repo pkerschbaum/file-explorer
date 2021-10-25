@@ -1,5 +1,5 @@
-import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { normalize } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/path';
+import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import {
   IFileService,
   IFileStat,

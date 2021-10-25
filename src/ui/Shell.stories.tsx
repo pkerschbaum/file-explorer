@@ -1,10 +1,9 @@
-import { ComponentMeta, ComponentStory } from '@storybook/react';
-
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { IFileStatWithMetadata } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
+import { ComponentMeta, ComponentStory } from '@storybook/react';
 
-import { fakeFileStat, fakeFileSystem } from '@app/platform/file-system.fake';
 import { fileSystemRef } from '@app/operations/global-modules';
+import { fakeFileStat, fakeFileSystem } from '@app/platform/file-system.fake';
 import { Shell } from '@app/ui/Shell';
 
 export default {

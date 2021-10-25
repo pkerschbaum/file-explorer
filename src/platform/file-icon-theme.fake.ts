@@ -1,6 +1,5 @@
-import axios from 'axios';
-
 import { FileKind } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
+import axios from 'axios';
 
 import { PlatformFileIconTheme } from '@app/platform/file-icon-theme';
 

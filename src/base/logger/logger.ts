@@ -1,8 +1,8 @@
 /* eslint-disable no-console */
 
 import { CustomError } from '@app/base/custom-error';
-import { JsonObject } from '@app/base/utils/types.util';
 import { objects } from '@app/base/utils/objects.util';
+import { JsonObject } from '@app/base/utils/types.util';
 
 type Logger = {
   debug: <A, B>(

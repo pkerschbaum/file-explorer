@@ -1,24 +1,24 @@
+import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 
-import { fakeFileStat } from '@app/platform/file-system.fake';
-import { FilesTableRow } from '@app/ui/files-table/FilesTableBody';
-import { FileForUI } from '@app/domain/types';
+import { functions } from '@app/base/utils/functions.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
-import { mapFileStatToFile } from '@app/platform/file-system';
-import { createQueryClient, Globals } from '@app/ui/Globals';
+import { FileForUI } from '@app/domain/types';
 import { createStoreInstance } from '@app/global-state/store';
 import { dispatchRef, fileIconThemeRef, storeRef } from '@app/operations/global-modules';
-import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import { httpFileIconTheme } from '@app/platform/file-icon-theme.fake';
+import { mapFileStatToFile } from '@app/platform/file-system';
+import { fakeFileStat } from '@app/platform/file-system.fake';
 import { DataTable } from '@app/ui/elements/DataTable/DataTable';
 import { TableBody } from '@app/ui/elements/DataTable/TableBody';
-import { functions } from '@app/base/utils/functions.util';
 import {
   ExplorerDerivedValuesContextProvider,
   ExplorerState,
   ExplorerStateContextProvider,
   ExplorerStateUpdateFunctions,
 } from '@app/ui/explorer-context/Explorer.context';
-import { httpFileIconTheme } from '@app/platform/file-icon-theme.fake';
+import { FilesTableRow } from '@app/ui/files-table/FilesTableBody';
+import { createQueryClient, Globals } from '@app/ui/Globals';
 
 const fakeFile = mapFileStatToFile(fakeFileStat);
 const { fileName, extension } = uriHelper.extractNameAndExtension(fakeFile.uri);

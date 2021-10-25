@@ -1,10 +1,9 @@
+import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import * as React from 'react';
 
-import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-
+import { useCwd } from '@app/global-state/slices/explorers.hooks';
 import { ExplorerContextProvider } from '@app/ui/explorer-context/Explorer.context';
 import { ExplorerPanel } from '@app/ui/explorer-panel/ExplorerPanel';
-import { useCwd } from '@app/global-state/slices/explorers.hooks';
 
 type ExplorerPanelContainerProps = { explorerId: string };
 

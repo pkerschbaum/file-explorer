@@ -1,8 +1,8 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import { createQueryClient, Globals } from '@app/ui/Globals';
-import { Shell } from '@app/ui/Shell';
+import { StorageState } from '@app/global-state/slices/persisted.slice';
+import { createStoreInstance } from '@app/global-state/store';
 import {
   dispatchRef,
   fileIconThemeRef,
@@ -12,12 +12,12 @@ import {
   queryClientRef,
   storeRef,
 } from '@app/operations/global-modules';
-import { createStoreInstance } from '@app/global-state/store';
-import { StorageState } from '@app/global-state/slices/persisted.slice';
 import { PlatformFileIconTheme } from '@app/platform/file-icon-theme';
 import { PlatformFileSystem } from '@app/platform/file-system';
 import { PlatformNativeHost } from '@app/platform/native-host';
 import { PlatformPersistentStorage } from '@app/platform/persistent-storage';
+import { createQueryClient, Globals } from '@app/ui/Globals';
+import { Shell } from '@app/ui/Shell';
 
 export type AppDependencies = {
   fileIconTheme: PlatformFileIconTheme;

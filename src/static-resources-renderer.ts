@@ -1,5 +1,5 @@
-import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import * as path from '@pkerschbaum/code-oss-file-service/out/vs/base/common/path';
+import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 
 import { ELECTRON_PROCESS_TYPE, typeOfActiveElectronProcess } from '@app/base/utils/electron.util';
 

@@ -1,15 +1,14 @@
-import * as React from 'react';
-import { ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
-
+import { ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import * as React from 'react';
 
-import { KEYS, MOUSE_BUTTONS } from '@app/ui/constants';
-import { useExplorerId } from '@app/ui/explorer-context/Explorer.context';
-import { useWindowEvent } from '@app/ui/utils/react.util';
 import { useCwd, useIdOfFocusedExplorerPanel } from '@app/global-state/slices/explorers.hooks';
 import { changeDirectory, revealCwdInOSExplorer } from '@app/operations/explorer.operations';
+import { KEYS, MOUSE_BUTTONS } from '@app/ui/constants';
 import { ChangeCwd } from '@app/ui/cwd-actions/ChangeCwd';
+import { useExplorerId } from '@app/ui/explorer-context/Explorer.context';
+import { useWindowEvent } from '@app/ui/utils/react.util';
 
 type CwdActionsMenuProps = {
   anchorEl: HTMLElement | null;

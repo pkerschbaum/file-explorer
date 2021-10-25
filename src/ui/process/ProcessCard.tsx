@@ -1,11 +1,11 @@
-import * as React from 'react';
 import { Paper, useTheme } from '@mui/material';
+import * as React from 'react';
 import styled from 'styled-components';
 
-import { Process, PROCESS_TYPE } from '@app/domain/types';
-import { PasteProcess } from '@app/ui/process/PasteProcess';
-import { DeleteProcess } from '@app/ui/process/DeleteProcess';
 import { assertThat } from '@app/base/utils/assert.util';
+import { Process, PROCESS_TYPE } from '@app/domain/types';
+import { DeleteProcess } from '@app/ui/process/DeleteProcess';
+import { PasteProcess } from '@app/ui/process/PasteProcess';
 
 export const ProcessCard: React.FC<{ process: Process }> = ({ process }) => {
   const { processStatusColors } = useTheme();
