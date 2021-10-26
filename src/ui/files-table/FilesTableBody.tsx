@@ -109,12 +109,13 @@ export const FilesTableRow: React.FC<FilesTableRowProps> = ({
   }
 
   const fileIsSelected = !!selectedShownFiles.find((file) => file.id === fileForRow.id);
+  const renameForFileIsActive = fileToRenameId === fileForRow.id;
 
   return (
     <Row
       key={fileForRow.id}
       data-window-keydownhandlers-enabled="true"
-      draggable
+      draggable={!renameForFileIsActive}
       onDragStart={(e) => {
         e.preventDefault();
         nativeHostRef.current.startNativeFileDnD({ fsPath: URI.from(fileForRow.uri).fsPath });
@@ -171,7 +172,7 @@ export const FilesTableRow: React.FC<FilesTableRowProps> = ({
                 />
               )}
             </IconWrapper>
-            {fileToRenameId === fileForRow.id ? (
+            {renameForFileIsActive ? (
               <RenameInput
                 file={fileForRow}
                 onSubmit={(newName) => renameFileHandler(fileForRow, newName)}

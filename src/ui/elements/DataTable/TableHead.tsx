@@ -1,14 +1,3 @@
-import { TableHead as MuiTableHead, TableRow } from '@mui/material';
-import * as React from 'react';
+import { TableHead as MuiTableHead } from '@mui/material';
 
-type TableHeadProps = {
-  children: React.ReactNode[];
-};
-
-export function TableHead({ children }: TableHeadProps) {
-  return (
-    <MuiTableHead>
-      <TableRow>{children}</TableRow>
-    </MuiTableHead>
-  );
-}
+export const TableHead = MuiTableHead;

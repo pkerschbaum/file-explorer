@@ -64,22 +64,24 @@ export const ExplorerPanel: React.FC<{ explorerId: string }> = ({ explorerId }) 
 
       <DataTableContainer>
         <FilesTable>
-          <TableHead>
-            <HeadCell>
-              <TextBox fontSize="sm" fontBold>
-                Name
-              </TextBox>
-            </HeadCell>
-            <HeadCell>
-              <TextBox fontSize="sm" fontBold>
-                Size
-              </TextBox>
-            </HeadCell>
-            <HeadCell>
-              <TextBox fontSize="sm" fontBold>
-                Last Modified
-              </TextBox>
-            </HeadCell>
+          <TableHead sx={{ userSelect: 'none' }}>
+            <Row>
+              <HeadCell>
+                <TextBox fontSize="sm" fontBold>
+                  Name
+                </TextBox>
+              </HeadCell>
+              <HeadCell>
+                <TextBox fontSize="sm" fontBold>
+                  Size
+                </TextBox>
+              </HeadCell>
+              <HeadCell>
+                <TextBox fontSize="sm" fontBold>
+                  Last Modified
+                </TextBox>
+              </HeadCell>
+            </Row>
           </TableHead>
 
           <TableBody>
