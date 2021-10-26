@@ -7,7 +7,6 @@
   "scripts": {
     "start": "electron-forge start",
     "tsc-watch": "tsc --watch --noEmit",
-    "prepackage": "rimraf .webpack",
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",

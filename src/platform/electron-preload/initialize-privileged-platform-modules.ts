@@ -13,6 +13,14 @@ import {
   SHELL_SHOWITEMINFOLDER_CHANNEL,
 } from '@app/ipc/common/shell';
 import { TRASHITEM_CHANNEL } from '@app/ipc/common/trash-item';
+import {
+  WindowClose,
+  WindowMinimize,
+  WindowToggleMaximize,
+  WINDOW_CLOSE_CHANNEL,
+  WINDOW_MINIMIZE_CHANNEL,
+  WINDOW_TOGGLEMAXIMIZE_CHANNEL,
+} from '@app/ipc/common/window';
 import { bootstrapModule as bootstrapFileIconThemeModule } from '@app/platform/electron-preload/file-icon-theme';
 import {
   bootstrapModule as bootstrapFileServiceModule,
@@ -39,6 +47,11 @@ type Privileged = {
     getNativeFileIconDataURL: (
       args: GetNativeFileIconDataURL.Args,
     ) => GetNativeFileIconDataURL.ReturnValue;
+  };
+  window: {
+    minimize: (args: WindowMinimize.Args) => WindowMinimize.ReturnValue;
+    toggleMaximized: (args: WindowToggleMaximize.Args) => WindowToggleMaximize.ReturnValue;
+    close: (args: WindowClose.Args) => WindowClose.ReturnValue;
   };
   clipboard: {
     readResources: () => URI[];
@@ -69,6 +82,11 @@ export async function initializePrivilegedPlatformModules() {
       trashItem: (...args) => ipcRenderer.invoke(TRASHITEM_CHANNEL, ...args),
       revealResourcesInOS: (...args) => ipcRenderer.invoke(SHELL_SHOWITEMINFOLDER_CHANNEL, ...args),
       getNativeFileIconDataURL: (...args) => ipcRenderer.invoke(NATIVEFILEICON_CHANNEL, ...args),
+    },
+    window: {
+      minimize: (...args) => ipcRenderer.invoke(WINDOW_MINIMIZE_CHANNEL, ...args),
+      toggleMaximized: (...args) => ipcRenderer.invoke(WINDOW_TOGGLEMAXIMIZE_CHANNEL, ...args),
+      close: (...args) => ipcRenderer.invoke(WINDOW_CLOSE_CHANNEL, ...args),
     },
     clipboard: {
       readResources: () => bufferToResources(clipboard.readBuffer(CLIPBOARD_FILELIST_FORMAT)),
