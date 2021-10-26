@@ -17,7 +17,13 @@ module.exports = {
     'plugin:react-hooks/recommended',
     'plugin:jsx-a11y/recommended',
   ],
-  plugins: ['node', 'jsx-a11y', 'import'],
+  /**
+   * add "only-warn" plugin to change all errors to warnings.
+   * ESLint is executed via Git hooks with --max-warnings 0 anyways. Transforming all errors to warnings
+   * allows to distinguish ESLint warnings from other errors (e.g. TypeScript compile errors) in the
+   * code editor (e.g. VS Code).
+   */
+  plugins: ['node', 'jsx-a11y', 'import', 'only-warn'],
   ignorePatterns: ['**/*.js', '!.storybook'],
   rules: {
     'no-console': 'error',
