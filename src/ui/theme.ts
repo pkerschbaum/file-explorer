@@ -57,10 +57,10 @@ declare module 'styled-components' {
 
 export const tabIndicatorSpanClassName = 'MuiTabs-indicatorSpan';
 
-const THEMES = {
+export const THEMES = {
   coffee: {
     mode: 'dark',
-    backgroundColor: 'hsl(30, 16%, 12%)',
+    backgroundColor: '#231f1a',
     primaryColor: cyan[300],
     foregroundColor: 'hsl(0, 0%, 100%)',
     MuiButton: {
@@ -85,10 +85,9 @@ const THEMES = {
   },
 } as const;
 type AvailableThemes = keyof typeof THEMES;
+export const ACTIVE_THEME: AvailableThemes = 'coffee';
 
 export const createTheme = (locale: Localization) => {
-  const activeTheme: AvailableThemes = 'coffee';
-
   /* the theme changes the appearance of some material-ui components to better align with the Windows 11 design language */
   const theme: Parameters<typeof createMuiTheme>[0] = {
     components: {
@@ -105,13 +104,13 @@ export const createTheme = (locale: Localization) => {
             transition-duration: 150ms;
           ` as any,
           outlined: css`
-            color: ${THEMES[activeTheme].foregroundColor};
-            background-color: ${THEMES[activeTheme].MuiButton.outlined.background};
-            border-color: ${THEMES[activeTheme].MuiButton.outlined.background};
+            color: ${THEMES[ACTIVE_THEME].foregroundColor};
+            background-color: ${THEMES[ACTIVE_THEME].MuiButton.outlined.background};
+            border-color: ${THEMES[ACTIVE_THEME].MuiButton.outlined.background};
 
             &:hover {
-              border-color: ${THEMES[activeTheme].backgroundColor};
-              background-color: ${THEMES[activeTheme].MuiButton.outlined.hoverBackground};
+              border-color: ${THEMES[ACTIVE_THEME].backgroundColor};
+              background-color: ${THEMES[ACTIVE_THEME].MuiButton.outlined.hoverBackground};
             }
           ` as any,
           startIcon: css`
@@ -171,7 +170,7 @@ export const createTheme = (locale: Localization) => {
             & .${tabIndicatorSpanClassName} {
               max-height: 16px;
               height: 100%;
-              background-color: ${THEMES[activeTheme].primaryColor};
+              background-color: ${THEMES[ACTIVE_THEME].primaryColor};
               border-radius: 4px;
             }
           ` as any,
@@ -195,16 +194,16 @@ export const createTheme = (locale: Localization) => {
     },
 
     palette: {
-      mode: THEMES[activeTheme].mode,
+      mode: THEMES[ACTIVE_THEME].mode,
       background: {
-        default: THEMES[activeTheme].backgroundColor,
-        paper: THEMES[activeTheme].MuiButton.outlined.background,
+        default: THEMES[ACTIVE_THEME].backgroundColor,
+        paper: THEMES[ACTIVE_THEME].MuiButton.outlined.background,
       },
       primary: {
-        main: THEMES[activeTheme].primaryColor,
+        main: THEMES[ACTIVE_THEME].primaryColor,
       },
       text: {
-        secondary: THEMES[activeTheme].foregroundColor,
+        secondary: THEMES[ACTIVE_THEME].foregroundColor,
       },
     },
 
@@ -223,16 +222,16 @@ export const createTheme = (locale: Localization) => {
 
     processStatusColors: {
       pasteProcess: {
-        [PASTE_PROCESS_STATUS.RUNNING_DETERMINING_TOTALSIZE]: THEMES[activeTheme].backgroundColor,
-        [PASTE_PROCESS_STATUS.RUNNING_PERFORMING_PASTE]: THEMES[activeTheme].backgroundColor,
+        [PASTE_PROCESS_STATUS.RUNNING_DETERMINING_TOTALSIZE]: THEMES[ACTIVE_THEME].backgroundColor,
+        [PASTE_PROCESS_STATUS.RUNNING_PERFORMING_PASTE]: THEMES[ACTIVE_THEME].backgroundColor,
         [PASTE_PROCESS_STATUS.SUCCESS]: '#5B7E2F',
         [PASTE_PROCESS_STATUS.FAILURE]: '#B35C54',
-        [PASTE_PROCESS_STATUS.ABORT_REQUESTED]: THEMES[activeTheme].backgroundColor,
+        [PASTE_PROCESS_STATUS.ABORT_REQUESTED]: THEMES[ACTIVE_THEME].backgroundColor,
         [PASTE_PROCESS_STATUS.ABORT_SUCCESS]: '#5B7E2F',
       },
       deleteProcess: {
         [DELETE_PROCESS_STATUS.PENDING_FOR_USER_INPUT]: '#A88518',
-        [DELETE_PROCESS_STATUS.RUNNING]: THEMES[activeTheme].backgroundColor,
+        [DELETE_PROCESS_STATUS.RUNNING]: THEMES[ACTIVE_THEME].backgroundColor,
         [DELETE_PROCESS_STATUS.SUCCESS]: '#5B7E2F',
         [DELETE_PROCESS_STATUS.FAILURE]: '#B35C54',
       },
