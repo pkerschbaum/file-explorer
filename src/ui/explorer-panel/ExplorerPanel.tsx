@@ -35,7 +35,7 @@ export const ExplorerPanel: React.FC<{ explorerId: string }> = ({ explorerId }) 
 
   return (
     <Stack direction="column" alignItems="stretch" stretchContainer sx={{ height: '100%' }}>
-      <BreadcrumbsRow>
+      <StyledBreadcrumbs maxItems={999}>
         {cwdStringifiedParts.map((pathPart, idx) => {
           const isFirstPart = idx === 0;
           const isLastPart = idx === cwdStringifiedParts.length - 1;
@@ -58,7 +58,7 @@ export const ExplorerPanel: React.FC<{ explorerId: string }> = ({ explorerId }) 
             />
           );
         })}
-      </BreadcrumbsRow>
+      </StyledBreadcrumbs>
 
       <ExplorerActions />
 
@@ -181,16 +181,24 @@ const SkeletonRow: React.FC<SkeletonRowProps> = ({ opacity }) => (
   </Row>
 );
 
-const BreadcrumbsRow = styled(Breadcrumbs)`
+const StyledBreadcrumbs = styled(Breadcrumbs)`
   margin-top: ${(props) => props.theme.spacing(0.5)};
   margin-bottom: ${(props) => props.theme.spacing()};
 
-  & .MuiBreadcrumbs-li > * {
+  & > .MuiBreadcrumbs-ol {
+    gap: ${(props) => props.theme.spacing()};
+  }
+
+  & > .MuiBreadcrumbs-ol .MuiBreadcrumbs-separator {
+    margin: 0;
+  }
+
+  & > .MuiBreadcrumbs-ol .MuiBreadcrumbs-li > * {
     min-width: 0;
     padding-inline: ${(props) => props.theme.spacing(1.5)};
   }
 
-  & .MuiBreadcrumbs-li > *:not(button) {
+  & > .MuiBreadcrumbs-ol .MuiBreadcrumbs-li > *:not(button) {
     /* MUI outlined button height */
     height: 30.8px;
     /* compensate for inline border of MUI outlined button */
