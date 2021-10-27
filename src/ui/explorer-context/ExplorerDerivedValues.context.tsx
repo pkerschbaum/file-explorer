@@ -31,7 +31,7 @@ type ExplorerDerivedValuesContextProviderProps = ExplorerContextProviderProps & 
 };
 
 export const ExplorerDerivedValuesContextProvider: React.FC<ExplorerDerivedValuesContextProviderProps> =
-  ({ explorerState, setIdsOfSelectedFiles, explorerId, ...delegated }) => {
+  ({ explorerState, setIdsOfSelectedFiles, explorerId, children }) => {
     const { files, dataAvailable } = useFilesForUI(explorerId);
 
     const filesWithTags = useEnrichFilesWithTags(files);
@@ -110,7 +110,7 @@ export const ExplorerDerivedValuesContextProvider: React.FC<ExplorerDerivedValue
           selectedShownFiles,
         }}
       >
-        {delegated.children}
+        {children}
       </DerivedValuesContextProvider>
     );
   };

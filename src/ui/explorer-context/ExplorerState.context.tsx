@@ -27,7 +27,7 @@ export const ExplorerStateContextProvider = selectableContext.Provider;
 
 export type ExplorerContextProviderProps = {
   explorerId: string;
-  children: React.ReactElement;
+  children: React.ReactNode;
 };
 
 export const ExplorerContextProvider: React.FC<ExplorerContextProviderProps> = (props) => {

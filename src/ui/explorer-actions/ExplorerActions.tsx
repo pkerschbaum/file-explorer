@@ -13,28 +13,25 @@ import { config } from '@app/config';
 import { FILE_TYPE } from '@app/domain/types';
 import { useTags } from '@app/global-state/slices/persisted.hooks';
 import { useDraftPasteState } from '@app/global-state/slices/processes.hooks';
-import { changeDirectory, createFolder, pasteFiles } from '@app/operations/explorer.operations';
-import {
-  addTags,
-  cutOrCopyFiles,
-  openFiles,
-  scheduleMoveFilesToTrash,
-} from '@app/operations/file.operations';
+import { addTags } from '@app/operations/file.operations';
 import { addTag, removeTags } from '@app/operations/tag.operations';
 import { KEYS } from '@app/ui/constants';
 import { TextBox } from '@app/ui/elements/TextBox';
 import { AddTag } from '@app/ui/explorer-actions/AddTag';
 import { CreateFolder } from '@app/ui/explorer-actions/CreateFolder';
 import {
-  useExplorerId,
-  useFileIdSelectionGotStartedWith,
-  useFilesToShow,
   useFilterInput,
   useSelectedShownFiles,
-  useSetFileToRenameId,
   useSetFilterInput,
-  useSetIdsOfSelectedFiles,
-} from '@app/ui/explorer-context/Explorer.context';
+  useChangeSelectionByKeyboard,
+  useCopySelectedFiles,
+  useCreateFolderInExplorer,
+  useCutSelectedFiles,
+  useOpenSelectedFiles,
+  usePasteFilesInExplorer,
+  useScheduleDeleteSelectedFiles,
+  useTriggerRenameForSelectedFiles,
+} from '@app/ui/explorer-context';
 import { useClipboardResources } from '@app/ui/hooks/clipboard-resources.hooks';
 import { Stack } from '@app/ui/layouts/Stack';
 import { useWindowEvent } from '@app/ui/utils/react.util';
@@ -48,152 +45,21 @@ export const DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED = {
 } as const;
 
 export const ExplorerActions: React.FC = () => {
-  const explorerId = useExplorerId();
-  const filesToShow = useFilesToShow();
   const draftPasteState = useDraftPasteState();
-  const setIdsOfSelectedFiles = useSetIdsOfSelectedFiles();
-  const selectedShownFiles = useSelectedShownFiles();
-  const fileIdSelectionGotStartedWith = useFileIdSelectionGotStartedWith();
-  const setFileToRenameId = useSetFileToRenameId();
-
   const tags = useTags();
 
+  const selectedShownFiles = useSelectedShownFiles();
+
+  const copySelectedFiles = useCopySelectedFiles();
+  const cutSelectedFiles = useCutSelectedFiles();
+  const pasteFilesInExplorer = usePasteFilesInExplorer();
+  const triggerRenameForSelectedFiles = useTriggerRenameForSelectedFiles();
+  const changeSelectionByKeyboard = useChangeSelectionByKeyboard();
+  const openSelectedFiles = useOpenSelectedFiles();
+  const scheduleDeleteSelectedFiles = useScheduleDeleteSelectedFiles();
+  const createFolderInExplorer = useCreateFolderInExplorer();
+
   const filterInputRef = React.useRef<HTMLDivElement>(null);
-
-  const scheduleDeleteSelectedFiles = () => {
-    scheduleMoveFilesToTrash(selectedShownFiles.map((file) => file.uri));
-  };
-
-  async function openSelectedFiles() {
-    if (selectedShownFiles.length === 1 && selectedShownFiles[0].fileType === FILE_TYPE.DIRECTORY) {
-      await changeDirectory(explorerId, selectedShownFiles[0].uri.path);
-    } else {
-      await openFiles(
-        selectedShownFiles
-          .filter((selectedFile) => selectedFile.fileType === FILE_TYPE.FILE)
-          .map((selectedFile) => selectedFile.uri),
-      );
-    }
-  }
-
-  const cutOrCopySelectedFiles = (cut: boolean) => () => {
-    return cutOrCopyFiles(
-      selectedShownFiles.map((file) => file.uri),
-      cut,
-    );
-  };
-  const copySelectedFiles = cutOrCopySelectedFiles(false);
-  const cutSelectedFiles = cutOrCopySelectedFiles(true);
-
-  const triggerRenameForSelectedFiles = () => {
-    if (selectedShownFiles.length !== 1) {
-      return;
-    }
-    setFileToRenameId(selectedShownFiles[0].id);
-  };
-
-  function changeSelectedFile(e: KeyboardEvent) {
-    e.preventDefault();
-
-    if (filesToShow.length < 1) {
-      return;
-    }
-
-    if (e.key === KEYS.ARROW_UP || e.key === KEYS.ARROW_DOWN) {
-      const idsOfSelectedShownFiles = selectedShownFiles.map((file) => file.id);
-      const selectedFilesInfos = filesToShow
-        .map((file, idx) => ({
-          file,
-          idx,
-          isSelected: idsOfSelectedShownFiles.includes(file.id),
-        }))
-        .filter((entry) => entry.isSelected);
-      const fileIdSelectionGotStartedWithIndex = selectedFilesInfos.find(
-        (sfi) => sfi.file.id === fileIdSelectionGotStartedWith,
-      )?.idx;
-
-      if (selectedFilesInfos.length === 0 || fileIdSelectionGotStartedWithIndex === undefined) {
-        // If no file is selected, just select the first file
-        setIdsOfSelectedFiles([filesToShow[0].id]);
-        return;
-      }
-
-      // If at least one file is selected, gather some infos essential for further processing
-      const firstSelectedFileIndex = selectedFilesInfos[0].idx;
-      const lastSelectedFileIndex = selectedFilesInfos[selectedFilesInfos.length - 1].idx;
-      const selectionWasStartedDownwards =
-        fileIdSelectionGotStartedWithIndex === firstSelectedFileIndex;
-
-      if (!e.shiftKey) {
-        if (e.key === KEYS.ARROW_UP && fileIdSelectionGotStartedWithIndex > 0) {
-          /*
-           * UP without shift key is pressed
-           * --> select the file above the file which got selected first (if file above exists)
-           */
-          setIdsOfSelectedFiles([filesToShow[fileIdSelectionGotStartedWithIndex - 1].id]);
-        } else if (
-          e.key === KEYS.ARROW_DOWN &&
-          filesToShow.length > fileIdSelectionGotStartedWithIndex + 1
-        ) {
-          /*
-           * DOWN without shift key is pressed
-           * --> select the file below the file which got selected first (if file below exists)
-           */
-          setIdsOfSelectedFiles([filesToShow[fileIdSelectionGotStartedWithIndex + 1].id]);
-        }
-      } else {
-        if (e.key === KEYS.ARROW_UP) {
-          if (selectedFilesInfos.length > 1 && selectionWasStartedDownwards) {
-            /*
-             * SHIFT+UP is pressed, multiple files are selected, and the selection was started downwards.
-             * --> The user wants to remove the last file from the selection.
-             */
-            setIdsOfSelectedFiles(
-              idsOfSelectedShownFiles.filter(
-                (id) => id !== selectedFilesInfos[selectedFilesInfos.length - 1].file.id,
-              ),
-            );
-          } else if (firstSelectedFileIndex > 0) {
-            /*
-             * SHIFT+UP is pressed and the selection was started upwards. Or, there is only one file selected at the moment.
-             * --> The user wants to add the file above all selected files to the selection.
-             */
-            setIdsOfSelectedFiles([
-              filesToShow[firstSelectedFileIndex - 1].id,
-              ...idsOfSelectedShownFiles,
-            ]);
-          }
-        } else if (e.key === KEYS.ARROW_DOWN) {
-          if (selectedFilesInfos.length > 1 && !selectionWasStartedDownwards) {
-            /*
-             * SHIFT+DOWN is pressed, multiple files are selected, and the selection was started upwards.
-             * --> The user wants to remove the first file from the selection.
-             */
-            setIdsOfSelectedFiles(
-              idsOfSelectedShownFiles.filter((id) => id !== selectedFilesInfos[0].file.id),
-            );
-          } else if (filesToShow.length > lastSelectedFileIndex + 1) {
-            /*
-             * SHIFT+DOWN is pressed and the selection was started downwards. Or, there is only one file selected at the moment.
-             * --> The user wants to add the file after all selected files to the selection.
-             */
-            setIdsOfSelectedFiles([
-              ...idsOfSelectedShownFiles,
-              filesToShow[lastSelectedFileIndex + 1].id,
-            ]);
-          }
-        }
-      }
-    } else if (e.key === KEYS.PAGE_UP) {
-      setIdsOfSelectedFiles([filesToShow[0].id]);
-    } else if (e.key === KEYS.PAGE_DOWN) {
-      setIdsOfSelectedFiles([filesToShow[filesToShow.length - 1].id]);
-    } else if (e.key === KEYS.A) {
-      setIdsOfSelectedFiles(filesToShow.map((file) => file.id));
-    } else {
-      throw new Error(`key not implemented. e.key=${e.key}`);
-    }
-  }
 
   /*
    * The following keydown handlers allow navigation of the directory content.
@@ -214,7 +80,7 @@ export const ExplorerActions: React.FC = () => {
     },
     { condition: (e) => e.ctrlKey && e.key === KEYS.C, handler: copySelectedFiles },
     { condition: (e) => e.ctrlKey && e.key === KEYS.X, handler: cutSelectedFiles },
-    { condition: (e) => e.ctrlKey && e.key === KEYS.V, handler: () => pasteFiles(explorerId) },
+    { condition: (e) => e.ctrlKey && e.key === KEYS.V, handler: pasteFilesInExplorer },
     {
       condition: (e) => e.key === KEYS.F2 || (e.altKey && e.key === KEYS.R),
       handler: triggerRenameForSelectedFiles,
@@ -226,7 +92,7 @@ export const ExplorerActions: React.FC = () => {
         (e.ctrlKey && e.key === KEYS.A) ||
         (!e.ctrlKey && e.key === KEYS.PAGE_UP) ||
         (!e.ctrlKey && e.key === KEYS.PAGE_DOWN),
-      handler: (e) => changeSelectedFile(e),
+      handler: (e) => changeSelectionByKeyboard(e),
     },
     { condition: (e) => e.key === KEYS.ENTER, handler: openSelectedFiles },
     { condition: (e) => e.key === KEYS.DELETE, handler: scheduleDeleteSelectedFiles },
@@ -285,7 +151,7 @@ export const ExplorerActions: React.FC = () => {
         </Button>
         <Button
           variant={draftPasteState === undefined ? undefined : 'contained'}
-          onClick={() => pasteFiles(explorerId)}
+          onClick={pasteFilesInExplorer}
           disabled={draftPasteState === undefined}
           startIcon={<ContentPasteOutlinedIcon />}
         >
@@ -306,7 +172,7 @@ export const ExplorerActions: React.FC = () => {
         >
           Delete
         </Button>
-        <CreateFolder onSubmit={(folderName) => createFolder(explorerId, folderName)} />
+        <CreateFolder onSubmit={createFolderInExplorer} />
         {config.featureFlags.tags && (
           <AddTag
             options={Object.entries(tags).map(([id, otherValues]) => ({

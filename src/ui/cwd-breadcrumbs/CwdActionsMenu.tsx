@@ -7,7 +7,7 @@ import { useCwd, useIdOfFocusedExplorerPanel } from '@app/global-state/slices/ex
 import { changeDirectory, revealCwdInOSExplorer } from '@app/operations/explorer.operations';
 import { KEYS, MOUSE_BUTTONS } from '@app/ui/constants';
 import { ChangeCwd } from '@app/ui/cwd-breadcrumbs/ChangeCwd';
-import { useExplorerId } from '@app/ui/explorer-context/Explorer.context';
+import { useExplorerId } from '@app/ui/explorer-context';
 import { useWindowEvent } from '@app/ui/utils/react.util';
 
 type CwdActionsMenuProps = {

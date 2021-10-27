@@ -15,14 +15,13 @@ import { Cell } from '@app/ui/elements/DataTable/Cell';
 import { Row } from '@app/ui/elements/DataTable/Row';
 import { TextBox } from '@app/ui/elements/TextBox';
 import {
+  useChangeSelectionByClick,
   useExplorerId,
-  useFileIdSelectionGotStartedWith,
   useFilesToShow,
   useFileToRenameId,
   useSelectedShownFiles,
   useSetFileToRenameId,
-  useSetIdsOfSelectedFiles,
-} from '@app/ui/explorer-context/Explorer.context';
+} from '@app/ui/explorer-context';
 import { useThemeFileIconClasses } from '@app/ui/hooks/files.hooks';
 import { Stack } from '@app/ui/layouts/Stack';
 
@@ -36,7 +35,6 @@ export const FilesTableBody: React.FC = () => {
       {filesToShow.map((fileForRow, idxOfFileForRow) => (
         <FilesTableRow
           key={fileForRow.id}
-          filesToShow={filesToShow}
           fileForRow={fileForRow}
           idxOfFileForRow={idxOfFileForRow}
         />
@@ -46,21 +44,15 @@ export const FilesTableBody: React.FC = () => {
 };
 
 type FilesTableRowProps = {
-  filesToShow: FileForUI[];
   fileForRow: FileForUI;
   idxOfFileForRow: number;
 };
 
-export const FilesTableRow: React.FC<FilesTableRowProps> = ({
-  filesToShow,
-  fileForRow,
-  idxOfFileForRow,
-}) => {
+export const FilesTableRow: React.FC<FilesTableRowProps> = ({ fileForRow, idxOfFileForRow }) => {
   const explorerId = useExplorerId();
   const selectedShownFiles = useSelectedShownFiles();
   const fileToRenameId = useFileToRenameId();
-  const fileIdSelectionGotStartedWith = useFileIdSelectionGotStartedWith();
-  const setIdsOfSelectedFiles = useSetIdsOfSelectedFiles();
+  const changeSelectionByClick = useChangeSelectionByClick();
   const setFileToRenameId = useSetFileToRenameId();
 
   const themeFileIconClasses = useThemeFileIconClasses(fileForRow);
@@ -94,10 +86,6 @@ export const FilesTableRow: React.FC<FilesTableRowProps> = ({
     setFileToRenameId(undefined);
   }
 
-  function selectFiles(files: FileForUI[]) {
-    setIdsOfSelectedFiles(files.map((file) => file.id));
-  }
-
   const fileIsSelected = !!selectedShownFiles.find((file) => file.id === fileForRow.id);
   const renameForFileIsActive = fileToRenameId === fileForRow.id;
 
@@ -110,43 +98,7 @@ export const FilesTableRow: React.FC<FilesTableRowProps> = ({
         e.preventDefault();
         nativeHostRef.current.startNativeFileDnD({ fsPath: URI.from(fileForRow.uri).fsPath });
       }}
-      onClick={(e) => {
-        if (e.ctrlKey) {
-          // toggle selection of file which was clicked on
-          if (fileIsSelected) {
-            selectFiles(
-              selectedShownFiles.filter((selectedFile) => selectedFile.id !== fileForRow.id),
-            );
-          } else {
-            selectFiles([...selectedShownFiles, fileForRow]);
-          }
-        } else if (e.shiftKey) {
-          // select range of files
-          if (fileIdSelectionGotStartedWith === undefined) {
-            return;
-          }
-
-          const idxSelectionGotStartedWith = filesToShow.findIndex(
-            (file) => file.id === fileIdSelectionGotStartedWith,
-          );
-          let idxSelectFrom = idxSelectionGotStartedWith;
-          let idxSelectTo = idxOfFileForRow;
-          if (idxSelectTo < idxSelectFrom) {
-            // swap values
-            const tmp = idxSelectFrom;
-            idxSelectFrom = idxSelectTo;
-            idxSelectTo = tmp;
-          }
-
-          const filesToSelect = filesToShow.filter(
-            (_, idx) => idx >= idxSelectFrom && idx <= idxSelectTo,
-          );
-          selectFiles(filesToSelect);
-        } else {
-          // no ctrl or shift key pressed --> just select the file which was clicked on
-          selectFiles([fileForRow]);
-        }
-      }}
+      onClick={(e) => changeSelectionByClick(e, fileForRow, idxOfFileForRow)}
       onDoubleClick={() => openFileOrDirectory(fileForRow)}
       selected={fileIsSelected}
     >

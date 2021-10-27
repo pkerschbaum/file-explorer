@@ -16,7 +16,7 @@ import {
   ExplorerState,
   ExplorerStateContextProvider,
   ExplorerStateUpdateFunctions,
-} from '@app/ui/explorer-context/Explorer.context';
+} from '@app/ui/explorer-context';
 import { FilesTableRow } from '@app/ui/files-table/FilesTableBody';
 import { createQueryClient, Globals } from '@app/ui/Globals';
 
@@ -66,7 +66,6 @@ const Template: ComponentStory<typeof FilesTableRow> = (args) => (
 
 export const DeferredLoadFileIcon = Template.bind({});
 DeferredLoadFileIcon.args = {
-  filesToShow: [fakeFileForUI],
   fileForRow: fakeFileForUI,
   idxOfFileForRow: 0,
 };
@@ -121,7 +120,6 @@ DeferredLoadFileIcon.decorators = [
 
 export const RenameOfRowActive = Template.bind({});
 RenameOfRowActive.args = {
-  filesToShow: [fakeFileForUI],
   fileForRow: fakeFileForUI,
   idxOfFileForRow: 0,
 };

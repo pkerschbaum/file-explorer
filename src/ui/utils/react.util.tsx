@@ -20,7 +20,7 @@ export function useWindowEvent<E extends keyof WindowEventMap>(
       return;
     }
 
-    const keyUpHandler = (e: WindowEventMap[E]) => {
+    const eventListener = (e: WindowEventMap[E]) => {
       const eventHandler = eventHandlers.find((handler) => handler.condition(e));
       if (eventHandler) {
         eventHandler.handler(e);
@@ -30,8 +30,8 @@ export function useWindowEvent<E extends keyof WindowEventMap>(
       }
     };
 
-    window.addEventListener(event, keyUpHandler, { capture: true });
-    return () => window.removeEventListener(event, keyUpHandler, { capture: true });
+    window.addEventListener(event, eventListener, { capture: true });
+    return () => window.removeEventListener(event, eventListener, { capture: true });
   }, [event, eventHandlers]);
 }
 
@@ -150,7 +150,7 @@ export function createSelectableContext<ContextValue>(name: string) {
   }
 
   const Provider: React.FC<{
-    children: React.ReactElement;
+    children: React.ReactNode;
     value: ContextValue;
   }> = ({ children, value }) => {
     return <Context.Provider value={value}>{children}</Context.Provider>;

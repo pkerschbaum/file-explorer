@@ -9,7 +9,7 @@ import { Row } from '@app/ui/elements/DataTable/Row';
 import { TableBody } from '@app/ui/elements/DataTable/TableBody';
 import { TableHead } from '@app/ui/elements/DataTable/TableHead';
 import { TextBox } from '@app/ui/elements/TextBox';
-import { useDataAvailable } from '@app/ui/explorer-context/Explorer.context';
+import { useDataAvailable } from '@app/ui/explorer-context';
 import { FilesTableBody } from '@app/ui/files-table/FilesTableBody';
 
 export const EXPLORERPANELFILES_GRID_AREA = 'explorer-panel-files';
