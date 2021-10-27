@@ -14,12 +14,12 @@ import { FilesTableBody } from '@app/ui/files-table/FilesTableBody';
 
 export const EXPLORERPANELFILES_GRID_AREA = 'explorer-panel-files';
 
-export const ExplorerPanel: React.FC = () => {
+export const FilesTable: React.FC = () => {
   const dataAvailable = useDataAvailable();
 
   return (
     <DataTableContainer>
-      <FilesTable>
+      <StyledDataTable>
         <TableHead sx={{ userSelect: 'none' }}>
           <Row>
             <HeadCell>
@@ -51,7 +51,7 @@ export const ExplorerPanel: React.FC = () => {
             </>
           )}
         </TableBody>
-      </FilesTable>
+      </StyledDataTable>
     </DataTableContainer>
   );
 };
@@ -61,7 +61,7 @@ const ForwardClassNameTable: React.FC<DataTableProps & { className?: string }> =
   ...delegated
 }) => <DataTable {...delegated} classes={{ ...delegated.classes, table: className }} />;
 
-const FilesTable = styled(ForwardClassNameTable)`
+const StyledDataTable = styled(ForwardClassNameTable)`
   & thead th:nth-of-type(1),
   & tbody td:nth-of-type(1) {
     width: 100%;

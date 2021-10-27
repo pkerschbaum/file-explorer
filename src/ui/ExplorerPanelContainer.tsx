@@ -5,7 +5,7 @@ import { useCwd, useIdOfFocusedExplorerPanel } from '@app/global-state/slices/ex
 import { CwdBreadcrumbs } from '@app/ui/cwd-breadcrumbs';
 import { ExplorerActions } from '@app/ui/explorer-actions';
 import { ExplorerContextProvider } from '@app/ui/explorer-context/Explorer.context';
-import { ExplorerPanel } from '@app/ui/explorer-panel';
+import { FilesTable } from '@app/ui/files-table';
 
 type ExplorerPanelContainerProps = { explorerId: string };
 
@@ -23,7 +23,7 @@ export const ExplorerPanelContainer = React.memo<ExplorerPanelContainerProps>(
             <>
               <CwdBreadcrumbs />
               <ExplorerActions />
-              <ExplorerPanel />
+              <FilesTable />
             </>
           )}
         </>
