@@ -11,7 +11,6 @@ import styled from 'styled-components';
 import { functions } from '@app/base/utils/functions.util';
 import { config } from '@app/config';
 import { FILE_TYPE } from '@app/domain/types';
-import { useIdOfFocusedExplorerPanel } from '@app/global-state/slices/explorers.hooks';
 import { useTags } from '@app/global-state/slices/persisted.hooks';
 import { useDraftPasteState } from '@app/global-state/slices/processes.hooks';
 import { changeDirectory, createFolder, pasteFiles } from '@app/operations/explorer.operations';
@@ -40,6 +39,7 @@ import { useClipboardResources } from '@app/ui/hooks/clipboard-resources.hooks';
 import { Stack } from '@app/ui/layouts/Stack';
 import { useWindowEvent } from '@app/ui/utils/react.util';
 
+export const EXPLORERACTIONS_GRID_AREA = 'explorer-panel-actions';
 export const DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED = {
   datasetAttr: {
     'data-window-keydownhandlers-enabled': 'true',
@@ -48,17 +48,6 @@ export const DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED = {
 } as const;
 
 export const ExplorerActions: React.FC = () => {
-  const explorerId = useExplorerId();
-  const focusedExplorerId = useIdOfFocusedExplorerPanel();
-
-  if (explorerId !== focusedExplorerId) {
-    return null;
-  }
-
-  return <ExplorerActionsImpl />;
-};
-
-const ExplorerActionsImpl: React.FC = () => {
   const explorerId = useExplorerId();
   const filesToShow = useFilesToShow();
   const draftPasteState = useDraftPasteState();
@@ -265,7 +254,7 @@ const ExplorerActionsImpl: React.FC = () => {
     selectedShownFiles.some((file) => file.fileType !== FILE_TYPE.DIRECTORY);
 
   return (
-    <Stack alignItems="stretch">
+    <ExplorerActionsContainer alignItems="stretch">
       <Stack alignItems="flex-end">
         <FilterInput filterInputRef={filterInputRef} />
       </Stack>
@@ -336,9 +325,15 @@ const ExplorerActionsImpl: React.FC = () => {
           />
         )}
       </Stack>
-    </Stack>
+    </ExplorerActionsContainer>
   );
 };
+
+const ExplorerActionsContainer = styled(Stack)`
+  grid-area: ${EXPLORERACTIONS_GRID_AREA};
+  padding-right: ${(props) => props.theme.spacing()};
+  padding-bottom: ${(props) => props.theme.spacing()};
+`;
 
 type FilterInputProps = {
   filterInputRef: React.RefObject<HTMLDivElement>;

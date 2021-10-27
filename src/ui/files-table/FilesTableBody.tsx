@@ -211,7 +211,6 @@ const RenameInput: React.FC<RenameInputProps> = ({ file, onSubmit, abortRename }
         e.preventDefault();
         onSubmit(value);
       }}
-      onBlur={abortRename}
     >
       <FileNameTextField
         fullWidth

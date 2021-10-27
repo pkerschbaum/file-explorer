@@ -3,6 +3,8 @@ import * as React from 'react';
 import { useDispatch } from 'react-redux';
 import * as useContextSelectorLib from 'use-context-selector';
 
+import { FunctionType } from '@app/base/utils/types.util';
+
 type EventHandlers<E extends keyof WindowEventMap> = Array<{
   condition: (e: WindowEventMap[E]) => boolean;
   handler: (e: WindowEventMap[E]) => void;
@@ -155,4 +157,25 @@ export function createSelectableContext<ContextValue>(name: string) {
   };
 
   return { useContextSelector, Provider };
+}
+
+/**
+ * https://epicreact.dev/the-latest-ref-pattern-in-react/
+ */
+export function useLatestCallbackRef<T>(callback: T) {
+  const callbackRef = React.useRef<T>(callback);
+
+  React.useLayoutEffect(() => {
+    callbackRef.current = callback;
+  });
+
+  return callbackRef;
+}
+
+export function useRunCallbackOnUnmount(callback: FunctionType<[], void>) {
+  const latestCallbackRef = useLatestCallbackRef(callback);
+  React.useEffect(() => {
+    const latestCallback = latestCallbackRef.current;
+    return () => latestCallback();
+  }, [latestCallbackRef]);
 }
