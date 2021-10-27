@@ -226,7 +226,14 @@ const ExplorerPanelTab = React.memo<ExplorerPanelTabProps>(function ExplorerPane
       {!props.removeExplorerActionDisabled && (
         <Tooltip title="Close tab">
           <TabCloseButton>
-            <TabIconButton size="small" onClick={props.onRemove}>
+            <TabIconButton
+              size="small"
+              onClick={(e) => {
+                // stop propagation so that the click on the close button does not get through to the button of the Tab
+                e.stopPropagation();
+                props.onRemove();
+              }}
+            >
               <CloseOutlinedIcon />
             </TabIconButton>
           </TabCloseButton>
