@@ -12,7 +12,7 @@ import { TextBox } from '@app/ui/elements/TextBox';
 import { useDataAvailable } from '@app/ui/explorer-context';
 import { FilesTableBody } from '@app/ui/files-table/FilesTableBody';
 
-export const EXPLORERPANELFILES_GRID_AREA = 'explorer-panel-files';
+export const EXPLORER_FILESTABLE_GRID_AREA = 'explorer-files-table';
 
 export const FilesTable: React.FC = () => {
   const dataAvailable = useDataAvailable();
@@ -94,7 +94,7 @@ const SkeletonRow: React.FC<SkeletonRowProps> = ({ opacity }) => (
 );
 
 const DataTableContainer = styled(Box)`
-  grid-area: ${EXPLORERPANELFILES_GRID_AREA};
+  grid-area: ${EXPLORER_FILESTABLE_GRID_AREA};
   padding-right: ${(props) => props.theme.spacing()};
   padding-bottom: ${(props) => props.theme.spacing(0.5)};
 `;

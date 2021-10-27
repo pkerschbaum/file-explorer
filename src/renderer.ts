@@ -3,7 +3,7 @@ import { createFileIconTheme } from '@app/platform/file-icon-theme';
 import { createFileSystem } from '@app/platform/file-system';
 import { createNativeHost } from '@app/platform/native-host';
 import { createPersistentStorage } from '@app/platform/persistent-storage';
-import { DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED } from '@app/ui/explorer-actions/ExplorerActions';
+import { DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED } from '@app/ui/actions-bar/ActionsBar';
 import { addIconThemeCssRulesToHead } from '@app/ui/file-icon-theme';
 import { render } from '@app/ui/Root';
 

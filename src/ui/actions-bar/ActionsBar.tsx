@@ -15,10 +15,10 @@ import { useTags } from '@app/global-state/slices/persisted.hooks';
 import { useDraftPasteState } from '@app/global-state/slices/processes.hooks';
 import { addTags } from '@app/operations/file.operations';
 import { addTag, removeTags } from '@app/operations/tag.operations';
+import { AddTag } from '@app/ui/actions-bar/AddTag';
+import { CreateFolder } from '@app/ui/actions-bar/CreateFolder';
 import { KEYS } from '@app/ui/constants';
 import { TextBox } from '@app/ui/elements/TextBox';
-import { AddTag } from '@app/ui/explorer-actions/AddTag';
-import { CreateFolder } from '@app/ui/explorer-actions/CreateFolder';
 import {
   useFilterInput,
   useSelectedShownFiles,
@@ -36,7 +36,7 @@ import { useClipboardResources } from '@app/ui/hooks/clipboard-resources.hooks';
 import { Stack } from '@app/ui/layouts/Stack';
 import { useWindowEvent } from '@app/ui/utils/react.util';
 
-export const EXPLORERACTIONS_GRID_AREA = 'explorer-panel-actions';
+export const EXPLORER_ACTIONSBAR_GRID_AREA = 'explorer-actions-bar';
 export const DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED = {
   datasetAttr: {
     'data-window-keydownhandlers-enabled': 'true',
@@ -44,7 +44,7 @@ export const DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED = {
   attrCamelCased: 'windowKeydownhandlersEnabled',
 } as const;
 
-export const ExplorerActions: React.FC = () => {
+export const ActionsBar: React.FC = () => {
   const draftPasteState = useDraftPasteState();
   const tags = useTags();
 
@@ -120,7 +120,7 @@ export const ExplorerActions: React.FC = () => {
     selectedShownFiles.some((file) => file.fileType !== FILE_TYPE.DIRECTORY);
 
   return (
-    <ExplorerActionsContainer alignItems="stretch">
+    <ActionsBarContainer alignItems="stretch">
       <Stack alignItems="flex-end">
         <FilterInput filterInputRef={filterInputRef} />
       </Stack>
@@ -191,12 +191,12 @@ export const ExplorerActions: React.FC = () => {
           />
         )}
       </Stack>
-    </ExplorerActionsContainer>
+    </ActionsBarContainer>
   );
 };
 
-const ExplorerActionsContainer = styled(Stack)`
-  grid-area: ${EXPLORERACTIONS_GRID_AREA};
+const ActionsBarContainer = styled(Stack)`
+  grid-area: ${EXPLORER_ACTIONSBAR_GRID_AREA};
   padding-right: ${(props) => props.theme.spacing()};
   padding-bottom: ${(props) => props.theme.spacing()};
 `;

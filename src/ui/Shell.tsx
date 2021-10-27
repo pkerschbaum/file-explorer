@@ -22,13 +22,13 @@ import {
   windowMinimize,
   windowToggleMaximized,
 } from '@app/operations/app.operations';
+import { EXPLORER_ACTIONSBAR_GRID_AREA } from '@app/ui/actions-bar/ActionsBar';
 import { KEYS } from '@app/ui/constants';
-import { BREADCRUMBS_GRID_AREA } from '@app/ui/cwd-breadcrumbs/CwdBreadcrumbs';
-import { EXPLORERACTIONS_GRID_AREA } from '@app/ui/explorer-actions/ExplorerActions';
+import { EXPLORER_CWDBREADCRUMBS_GRID_AREA } from '@app/ui/cwd-breadcrumbs/CwdBreadcrumbs';
 import { ExplorerPanelContainer } from '@app/ui/ExplorerPanelContainer';
-import { EXPLORERPANELFILES_GRID_AREA } from '@app/ui/files-table/FilesTable';
+import { EXPLORER_FILESTABLE_GRID_AREA } from '@app/ui/files-table/FilesTable';
 import { Stack } from '@app/ui/layouts/Stack';
-import { ProcessCard } from '@app/ui/process/ProcessCard';
+import { ProcessCard } from '@app/ui/process';
 import { tabIndicatorSpanClassName } from '@app/ui/theme';
 import { useWindowEvent } from '@app/ui/utils/react.util';
 
@@ -244,9 +244,9 @@ const RootContainer = styled(Box)`
   grid-template-rows: 28px max-content max-content 1fr max-content;
   grid-template-areas:
     'titlebar titlebar'
-    'explorer-tabs ${BREADCRUMBS_GRID_AREA}'
-    'explorer-tabs ${EXPLORERACTIONS_GRID_AREA}'
-    'explorer-tabs ${EXPLORERPANELFILES_GRID_AREA}'
+    'explorer-tabs ${EXPLORER_CWDBREADCRUMBS_GRID_AREA}'
+    'explorer-tabs ${EXPLORER_ACTIONSBAR_GRID_AREA}'
+    'explorer-tabs ${EXPLORER_FILESTABLE_GRID_AREA}'
     'processes processes';
   grid-row-gap: ${(props) => props.theme.spacing(0.5)};
   grid-column-gap: ${(props) => props.theme.spacing(2)};

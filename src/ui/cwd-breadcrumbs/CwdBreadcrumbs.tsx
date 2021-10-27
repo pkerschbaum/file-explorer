@@ -13,7 +13,7 @@ import { changeDirectory } from '@app/operations/explorer.operations';
 import { CwdActionsMenu } from '@app/ui/cwd-breadcrumbs/CwdActionsMenu';
 import { useExplorerId } from '@app/ui/explorer-context/ExplorerDerivedValues.context';
 
-export const BREADCRUMBS_GRID_AREA = 'breadcrumbs';
+export const EXPLORER_CWDBREADCRUMBS_GRID_AREA = 'explorer-cwd-breadcrumbs';
 
 export const CwdBreadcrumbs: React.FC = () => {
   const explorerId = useExplorerId();
@@ -96,7 +96,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
 };
 
 const StyledBreadcrumbs = styled(Breadcrumbs)`
-  grid-area: ${BREADCRUMBS_GRID_AREA};
+  grid-area: ${EXPLORER_CWDBREADCRUMBS_GRID_AREA};
   padding-right: ${(props) => props.theme.spacing()};
   padding-bottom: ${(props) => props.theme.spacing()};
 

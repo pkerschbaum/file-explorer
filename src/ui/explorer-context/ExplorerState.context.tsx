@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useImmer } from 'use-immer';
 
 import { ExplorerDerivedValuesContextProvider } from '@app/ui/explorer-context/ExplorerDerivedValues.context';
+import { ExplorerOperationsContextProvider } from '@app/ui/explorer-context/ExplorerOperations.context';
 import { createSelectableContext } from '@app/ui/utils/react.util';
 
 export type ExplorerState = {
@@ -30,7 +31,10 @@ export type ExplorerContextProviderProps = {
   children: React.ReactNode;
 };
 
-export const ExplorerContextProvider: React.FC<ExplorerContextProviderProps> = (props) => {
+export const ExplorerContextProvider: React.FC<ExplorerContextProviderProps> = ({
+  explorerId,
+  children,
+}) => {
   const [explorerState, updateExplorerState] = useImmer<ExplorerState>({
     filterInput: '',
     selection: {
@@ -75,10 +79,12 @@ export const ExplorerContextProvider: React.FC<ExplorerContextProviderProps> = (
       }}
     >
       <ExplorerDerivedValuesContextProvider
-        {...props}
+        explorerId={explorerId}
         explorerState={explorerState}
         setIdsOfSelectedFiles={explorerStateUpdateFunctions.setIdsOfSelectedFiles}
-      />
+      >
+        <ExplorerOperationsContextProvider>{children}</ExplorerOperationsContextProvider>
+      </ExplorerDerivedValuesContextProvider>
     </ExplorerStateContextProvider>
   );
 };
