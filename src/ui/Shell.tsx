@@ -139,7 +139,7 @@ export const Shell: React.FC = () => {
 
 const TitleBar: React.FC = () => {
   return (
-    <TitleBarContainer justifyContent="end">
+    <WindowDragRegion justifyContent="end">
       <TitleBarWindowControls spacing={0} alignItems="stretch">
         <TitleBarButton onClick={windowMinimize}>
           <MinimizeOutlinedIcon />
@@ -151,12 +151,17 @@ const TitleBar: React.FC = () => {
           <CloseOutlinedIcon />
         </TitleBarCloseButton>
       </TitleBarWindowControls>
-    </TitleBarContainer>
+    </WindowDragRegion>
   );
 };
 
-const TitleBarContainer = styled(Stack)`
+const ROOTCONTAINER_PADDING_RIGHT_FACTOR = 1;
+
+const WindowDragRegion = styled(Stack)`
   grid-area: titlebar;
+
+  /* revert padding on the right side introduced by the Shell RootContainer */
+  margin-right: ${(props) => props.theme.spacing(-ROOTCONTAINER_PADDING_RIGHT_FACTOR)};
 
   /* https://www.electronjs.org/docs/latest/tutorial/window-customization#set-custom-draggable-region */
   -webkit-app-region: drag;
@@ -250,16 +255,23 @@ const RootContainer = styled(Box)`
     'processes processes';
   grid-row-gap: ${(props) => props.theme.spacing(0.5)};
   grid-column-gap: ${(props) => props.theme.spacing(2)};
+  padding-right: ${(props) => props.theme.spacing(ROOTCONTAINER_PADDING_RIGHT_FACTOR)};
 `;
 
 const TabsArea = styled(Stack)`
+  /* Overlap the TabsArea with the WindowDragRegion above it */
+  margin-top: -20px;
+  -webkit-app-region: no-drag;
+
   grid-area: explorer-tabs;
-  padding-top: ${(props) => props.theme.spacing(0.5)};
   padding-bottom: ${(props) => props.theme.spacing()};
   padding-left: ${(props) => props.theme.spacing()};
 `;
 
 const ProcessesArea = styled(Stack)`
+  /* revert padding on the right side introduced by the Shell RootContainer */
+  margin-right: ${(props) => props.theme.spacing(-ROOTCONTAINER_PADDING_RIGHT_FACTOR)};
+
   padding-bottom: ${(props) => props.theme.spacing()};
   grid-area: processes;
   overflow-x: auto;

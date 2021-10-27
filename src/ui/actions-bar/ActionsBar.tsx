@@ -197,7 +197,6 @@ export const ActionsBar: React.FC = () => {
 
 const ActionsBarContainer = styled(Stack)`
   grid-area: ${EXPLORER_ACTIONSBAR_GRID_AREA};
-  padding-right: ${(props) => props.theme.spacing()};
   padding-bottom: ${(props) => props.theme.spacing()};
 `;
 
@@ -213,7 +212,7 @@ const FilterInput: React.FC<FilterInputProps> = ({ filterInputRef }) => {
     <TextField
       inputRef={filterInputRef}
       inputProps={DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED.datasetAttr}
-      InputLabelProps={{ shrink: true }}
+      InputLabelProps={{ shrink: true, sx: { userSelect: 'none' } }}
       label="Filter"
       value={filterInput}
       onChange={(e) => {

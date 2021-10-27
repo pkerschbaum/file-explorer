@@ -96,11 +96,13 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
 };
 
 const StyledBreadcrumbs = styled(Breadcrumbs)`
-  grid-area: ${EXPLORER_CWDBREADCRUMBS_GRID_AREA};
-  padding-right: ${(props) => props.theme.spacing()};
-  padding-bottom: ${(props) => props.theme.spacing()};
+  /* Overlap the CwdBreadcrumbs with the WindowDragRegion above it */
+  margin-top: -20px;
+  -webkit-app-region: no-drag;
 
-  margin-top: ${(props) => props.theme.spacing(0.5)};
+  width: fit-content;
+  grid-area: ${EXPLORER_CWDBREADCRUMBS_GRID_AREA};
+  padding-bottom: ${(props) => props.theme.spacing()};
   margin-bottom: ${(props) => props.theme.spacing()};
 
   & > .MuiBreadcrumbs-ol {

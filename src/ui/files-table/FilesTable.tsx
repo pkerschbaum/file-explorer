@@ -95,6 +95,5 @@ const SkeletonRow: React.FC<SkeletonRowProps> = ({ opacity }) => (
 
 const DataTableContainer = styled(Box)`
   grid-area: ${EXPLORER_FILESTABLE_GRID_AREA};
-  padding-right: ${(props) => props.theme.spacing()};
   padding-bottom: ${(props) => props.theme.spacing(0.5)};
 `;
