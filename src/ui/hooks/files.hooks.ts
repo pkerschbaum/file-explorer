@@ -5,7 +5,7 @@ import * as React from 'react';
 import { createLogger } from '@app/base/logger/logger';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { File, FileForUI, FILE_TYPE } from '@app/domain/types';
-import { useFileIconClasses } from '@app/global-cache/file-icon-classes';
+import { useFileIconClasses } from '@app/global-cache/file-icons';
 import { useFiles, getCachedQueryData, setCachedQueryData } from '@app/global-cache/files';
 import { useCwd } from '@app/global-state/slices/explorers.hooks';
 import { fileSystemRef } from '@app/operations/global-modules';

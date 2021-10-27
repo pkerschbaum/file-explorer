@@ -1,4 +1,4 @@
-import type { IconClassesQuery } from '@app/global-cache/file-icon-classes';
+import type { IconClassesQuery, NativeIconDataURLQuery } from '@app/global-cache/file-icons';
 
 export const QUERY_KEYS = {
   FILES: (directoryId: string) => ['files', directoryId],
@@ -7,4 +7,8 @@ export const QUERY_KEYS = {
     options,
   ],
   FILE_ICON_CLASSES: (options: IconClassesQuery.Args) => ['file-icon-classes', options],
+  NATIVE_ICON_DATA_URL: (options: NativeIconDataURLQuery.Args) => [
+    'native-file-icon-data-url',
+    options,
+  ],
 };

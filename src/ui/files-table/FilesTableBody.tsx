@@ -6,6 +6,7 @@ import styled, { css } from 'styled-components';
 import { check } from '@app/base/utils/assert.util';
 import { formatter } from '@app/base/utils/formatter.util';
 import { FileForUI, FILE_TYPE } from '@app/domain/types';
+import { useNativeFileIconDataURL } from '@app/global-cache/file-icons';
 import { changeDirectory } from '@app/operations/explorer.operations';
 import { openFiles, removeTags, renameFile } from '@app/operations/file.operations';
 import { nativeHostRef } from '@app/operations/global-modules';
@@ -62,29 +63,18 @@ export const FilesTableRow: React.FC<FilesTableRowProps> = ({
   const setIdsOfSelectedFiles = useSetIdsOfSelectedFiles();
   const setFileToRenameId = useSetFileToRenameId();
 
-  const [nativeIconDataURL, setNativeIconDataURL] = React.useState<string | undefined>();
-
   const themeFileIconClasses = useThemeFileIconClasses(fileForRow);
 
   const fsPath = URI.from(fileForRow.uri).fsPath;
   const extension = fileForRow.extension;
-  React.useEffect(
-    function fetchIcon() {
-      if (
-        check.isEmptyString(fsPath) ||
-        check.isNullishOrEmptyString(extension) ||
-        !USE_NATIVE_ICON_FOR_REGEX.test(extension)
-      ) {
-        return;
-      }
-
-      async function doFetchIcon() {
-        const icon = await nativeHostRef.current.getNativeFileIconDataURL({ fsPath });
-        setNativeIconDataURL(icon);
-      }
-      void doFetchIcon();
+  const nativeIconDataURL = useNativeFileIconDataURL(
+    { fsPath },
+    {
+      enabled:
+        check.isNonEmptyString(fsPath) &&
+        check.isNonEmptyString(extension) &&
+        USE_NATIVE_ICON_FOR_REGEX.test(extension),
     },
-    [fsPath, extension],
   );
 
   async function openFileOrDirectory(file: FileForUI) {
