@@ -7,6 +7,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 import { check } from '@app/base/utils/assert.util';
+import { formatter } from '@app/base/utils/formatter.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { useCwd } from '@app/global-state/slices/explorers.hooks';
 import { changeDirectory } from '@app/operations/explorer.operations';
@@ -19,8 +20,9 @@ export const CwdBreadcrumbs: React.FC = () => {
   const explorerId = useExplorerId();
   const cwd = useCwd(explorerId);
 
-  const cwdStringifiedParts = URI.from(cwd)
-    .fsPath.split(isWindows ? win32.sep : posix.sep)
+  const cwdStringifiedParts = formatter
+    .folderPath(cwd)
+    .split(isWindows ? win32.sep : posix.sep)
     .filter(check.isNonEmptyString);
   const cwdRootPart = uriHelper.parseUri(cwd.scheme, cwdStringifiedParts[0]);
 

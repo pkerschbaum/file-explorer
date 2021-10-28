@@ -62,7 +62,7 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
   const removeExplorerActionDisabled = explorersToShow.length < 2;
 
   return (
-    <TabsAreaContainer direction="column" alignItems="stretch">
+    <Stack direction="column" alignItems="stretch">
       <Tabs
         orientation="vertical"
         variant="scrollable"
@@ -89,19 +89,9 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
       <Button onClick={addExplorerPanel} startIcon={<AddCircleOutlineOutlinedIcon />}>
         Add tab
       </Button>
-    </TabsAreaContainer>
+    </Stack>
   );
 };
-
-const TabsAreaContainer = styled(Stack)`
-  /* Overlap the TabsArea with the WindowDragRegion above it */
-  margin-top: -20px;
-  -webkit-app-region: no-drag;
-
-  grid-area: shell-explorer-tabs;
-  padding-bottom: ${(props) => props.theme.spacing()};
-  padding-left: ${(props) => props.theme.spacing()};
-`;
 
 type ExplorerPanelTabProps = {
   label: string;
@@ -145,7 +135,7 @@ const ExplorerPanelTab = React.memo<ExplorerPanelTabProps>(function ExplorerPane
 
 const TabCloseButton = styled.span`
   position: absolute;
-  right: ${(props) => props.theme.spacing()};
+  right: ${(props) => props.theme.spacing(1.5)};
 `;
 
 const TabIconButton = styled(IconButton)`

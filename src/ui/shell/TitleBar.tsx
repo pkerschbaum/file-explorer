@@ -8,7 +8,10 @@ import styled from 'styled-components';
 import { assertThat } from '@app/base/utils/assert.util';
 import { windowClose, windowMinimize, windowToggleMaximized } from '@app/operations/app.operations';
 import { Stack } from '@app/ui/layouts/Stack';
-import { ROOTCONTAINER_PADDING_RIGHT_FACTOR } from '@app/ui/shell/constants';
+import {
+  ROOTCONTAINER_PADDING_LEFT_FACTOR,
+  ROOTCONTAINER_PADDING_RIGHT_FACTOR,
+} from '@app/ui/shell/constants';
 
 export const TitleBar: React.FC = () => {
   return (
@@ -31,7 +34,8 @@ export const TitleBar: React.FC = () => {
 const WindowDragRegion = styled(Stack)`
   grid-area: shell-title-bar;
 
-  /* revert padding on the right side introduced by the Shell RootContainer */
+  /* revert padding on left and right side introduced by the Shell RootContainer */
+  margin-left: ${(props) => props.theme.spacing(-ROOTCONTAINER_PADDING_LEFT_FACTOR)};
   margin-right: ${(props) => props.theme.spacing(-ROOTCONTAINER_PADDING_RIGHT_FACTOR)};
 
   /* https://www.electronjs.org/docs/latest/tutorial/window-customization#set-custom-draggable-region */

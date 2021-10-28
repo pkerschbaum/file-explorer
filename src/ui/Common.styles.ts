@@ -16,4 +16,11 @@ export const commonStyles = {
       flex-grow: 1;
     `,
   },
+  text: {
+    singleLineEllipsis: css`
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    `,
+  },
 };

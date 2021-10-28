@@ -3,6 +3,7 @@ import { ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import * as React from 'react';
 
+import { formatter } from '@app/base/utils/formatter.util';
 import { useCwd, useIdOfFocusedExplorerPanel } from '@app/global-state/slices/explorers.hooks';
 import { changeDirectory, revealCwdInOSExplorer } from '@app/operations/explorer.operations';
 import { KEYS, MOUSE_BUTTONS } from '@app/ui/constants';
@@ -60,7 +61,7 @@ const CwdActionsMenuImpl: React.FC<CwdActionsMenuProps> = ({ anchorEl, onClose }
       </MenuItem>
 
       <ChangeCwd
-        initialCwdValue={URI.from(cwd).fsPath}
+        initialCwdValue={formatter.folderPath(cwd)}
         onSubmit={async (newDir) => {
           await changeDirectory(explorerId, newDir);
           onClose();

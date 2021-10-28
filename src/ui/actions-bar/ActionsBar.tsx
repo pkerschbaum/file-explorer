@@ -5,9 +5,11 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import LaunchOutlinedIcon from '@mui/icons-material/LaunchOutlined';
 import { Box, Button, Divider, TextField, Tooltip } from '@mui/material';
+import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import * as React from 'react';
 import styled from 'styled-components';
 
+import { formatter } from '@app/base/utils/formatter.util';
 import { functions } from '@app/base/utils/functions.util';
 import { config } from '@app/config';
 import { FILE_TYPE } from '@app/domain/types';
@@ -241,8 +243,8 @@ const PasteInfoBadge: React.FC = () => {
       title={
         <Stack direction="column" alignItems="flex-start" sx={{ wordBreak: 'break-all' }}>
           {clipboardResources.map((resource) => (
-            <TextBox key={resource.fsPath} fontSize="sm">
-              {resource.fsPath}
+            <TextBox key={URI.from(resource).toString()} fontSize="sm">
+              {formatter.filePath(resource)}
             </TextBox>
           ))}
         </Stack>

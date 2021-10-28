@@ -1,6 +1,17 @@
+import AutorenewOutlinedIcon from '@mui/icons-material/AutorenewOutlined';
 import ClearAllIcon from '@mui/icons-material/ClearAll';
+import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
+import ContentCutOutlinedIcon from '@mui/icons-material/ContentCutOutlined';
 import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
-import { Box, Button, IconButton, Tooltip } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import {
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Button,
+  IconButton,
+  Tooltip,
+} from '@mui/material';
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import * as React from 'react';
 import styled from 'styled-components';
@@ -12,15 +23,16 @@ import { numbers } from '@app/base/utils/numbers.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { PasteProcess as PasteProcessType, PASTE_PROCESS_STATUS } from '@app/domain/types';
 import { removeProcess } from '@app/operations/file.operations';
+import { RoundedAccordion } from '@app/ui/elements/Accordion';
 import { LinearProgress } from '@app/ui/elements/LinearProgress';
 import { TextBox } from '@app/ui/elements/TextBox';
 import { Stack } from '@app/ui/layouts/Stack';
+import { rotate } from '@app/ui/utils/animations';
 
 export const PasteProcess: React.FC<{ process: PasteProcessType }> = ({ process }) => {
   const smallestUnitOfTotalSize = byteSize.probe(process.totalSize).unit;
-  const { fileName, extension } = uriHelper.extractNameAndExtension(process.destinationFolder);
 
-  const destinationFolderLabel = formatter.file({ name: fileName, extension });
+  const destinationFolderLabel = formatter.folderPath(process.destinationFolder);
   let content;
   switch (process.status) {
     case PASTE_PROCESS_STATUS.RUNNING_DETERMINING_TOTALSIZE: {
@@ -81,72 +93,107 @@ export const PasteProcess: React.FC<{ process: PasteProcessType }> = ({ process 
       : 'determinate';
 
   return (
-    <Stack key={process.id} direction="column" alignItems="stretch">
-      <Stack spacing={4} justifyContent="space-between">
-        <Stack spacing={2}>
-          <Stack direction="column" alignItems="flex-start">
+    <RoundedAccordion defaultExpanded>
+      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <Stack sx={{ width: '100%' }} justifyContent="space-between">
+          <Stack>
+            {process.pasteShouldMove ? (
+              <ContentCutOutlinedIcon fontSize="small" />
+            ) : !process.pasteShouldMove ? (
+              <ContentCopyOutlinedIcon fontSize="small" />
+            ) : (
+              assertThat.isUnreachable(process.pasteShouldMove)
+            )}
+            <DoubleArrowIcon fontSize="small" />
+            <TextBox fontSize="sm">{destinationFolderLabel}</TextBox>
+          </Stack>
+
+          {(process.status === PASTE_PROCESS_STATUS.RUNNING_DETERMINING_TOTALSIZE ||
+            process.status === PASTE_PROCESS_STATUS.RUNNING_PERFORMING_PASTE ||
+            process.status === PASTE_PROCESS_STATUS.ABORT_REQUESTED) && (
+            <RotatingAutorenewOutlinedIcon fontSize="small" />
+          )}
+
+          {(process.status === PASTE_PROCESS_STATUS.SUCCESS ||
+            process.status === PASTE_PROCESS_STATUS.FAILURE ||
+            process.status === PASTE_PROCESS_STATUS.ABORT_SUCCESS) && (
+            <Tooltip title="Discard card">
+              <IconButton autoFocus size="medium" onClick={() => removeProcess(process.id)}>
+                <ClearAllIcon fontSize="inherit" />
+              </IconButton>
+            </Tooltip>
+          )}
+        </Stack>
+      </AccordionSummary>
+
+      <AccordionDetails>
+        <Stack direction="column" alignItems="stretch" spacing={2}>
+          <Stack direction="column" alignItems="stretch" spacing={0.5}>
+            <TextBox fontSize="sm">Destination:</TextBox>
+            <TextBox fontSize="sm" fontBold>
+              {destinationFolderLabel}
+            </TextBox>
+          </Stack>
+
+          <Stack direction="column" alignItems="stretch" spacing={0.5}>
+            <TextBox fontSize="sm">Files:</TextBox>
             {process.sourceUris.slice(0, 2).map((uri) => {
               const { fileName, extension } = uriHelper.extractNameAndExtension(uri);
               const sourceFileLabel = formatter.file({ name: fileName, extension });
               return (
-                <TextBox key={URI.from(uri).toString()} fontBold>
+                <TextBox key={URI.from(uri).toString()} fontSize="sm" fontBold>
                   {sourceFileLabel}
                 </TextBox>
               );
             })}
-            {process.sourceUris.length > 2 && <TextBox fontBold>...</TextBox>}
+            {process.sourceUris.length > 2 && (
+              <TextBox fontSize="sm" fontBold>
+                + {process.sourceUris.length - 2} files
+              </TextBox>
+            )}
           </Stack>
 
-          <DoubleArrowIcon />
-          <TextBox fontBold>{destinationFolderLabel}</TextBox>
+          {content}
+
+          {process.status !== PASTE_PROCESS_STATUS.ABORT_SUCCESS && (
+            <LinearProgressBox>
+              <LinearProgress
+                // disable animation from indeterminate to determinate variant by resetting component on variant change (via key prop)
+                key={progressIndicatorVariant}
+                variant={progressIndicatorVariant}
+                value={percentageBytesProcessed}
+              />
+            </LinearProgressBox>
+          )}
+
+          {process.status !== PASTE_PROCESS_STATUS.SUCCESS &&
+            process.status !== PASTE_PROCESS_STATUS.ABORT_SUCCESS && (
+              <Stack spacing={0.5}>
+                <TextBox fontSize="sm">
+                  {formatter.bytes(process.bytesProcessed, { unit: smallestUnitOfTotalSize })}
+                </TextBox>
+                <TextBox fontSize="sm">/</TextBox>
+                <TextBox fontSize="sm">
+                  {formatter.bytes(process.totalSize, { unit: smallestUnitOfTotalSize })}
+                </TextBox>
+              </Stack>
+            )}
+
+          {(process.status === PASTE_PROCESS_STATUS.RUNNING_DETERMINING_TOTALSIZE ||
+            process.status === PASTE_PROCESS_STATUS.RUNNING_PERFORMING_PASTE) && (
+            <Button onClick={() => process.cancellationTokenSource.cancel()}>Cancel</Button>
+          )}
         </Stack>
-
-        {(process.status === PASTE_PROCESS_STATUS.SUCCESS ||
-          process.status === PASTE_PROCESS_STATUS.FAILURE ||
-          process.status === PASTE_PROCESS_STATUS.ABORT_SUCCESS) && (
-          <Tooltip title="Discard card">
-            <IconButton autoFocus size="large" onClick={() => removeProcess(process.id)}>
-              <ClearAllIcon fontSize="inherit" />
-            </IconButton>
-          </Tooltip>
-        )}
-      </Stack>
-
-      {content}
-
-      {process.status !== PASTE_PROCESS_STATUS.ABORT_SUCCESS && (
-        <LinearProgressBox>
-          <LinearProgress
-            // disable animation from indeterminate to determinate variant by resetting component on variant change (via key prop)
-            key={progressIndicatorVariant}
-            variant={progressIndicatorVariant}
-            value={percentageBytesProcessed}
-          />
-        </LinearProgressBox>
-      )}
-
-      {process.status !== PASTE_PROCESS_STATUS.SUCCESS &&
-        process.status !== PASTE_PROCESS_STATUS.ABORT_SUCCESS && (
-          <Stack spacing={0.5}>
-            <TextBox>
-              {formatter.bytes(process.bytesProcessed, { unit: smallestUnitOfTotalSize })}
-            </TextBox>
-            <TextBox>/</TextBox>
-            <TextBox>
-              {formatter.bytes(process.totalSize, { unit: smallestUnitOfTotalSize })}
-            </TextBox>
-          </Stack>
-        )}
-
-      {(process.status === PASTE_PROCESS_STATUS.RUNNING_DETERMINING_TOTALSIZE ||
-        process.status === PASTE_PROCESS_STATUS.RUNNING_PERFORMING_PASTE) && (
-        <Button onClick={() => process.cancellationTokenSource.cancel()}>Cancel</Button>
-      )}
-    </Stack>
+      </AccordionDetails>
+    </RoundedAccordion>
   );
 };
 
 const LinearProgressBox = styled(Box)`
   width: 100%;
-  padding-top: 2px;
+  margin-bottom: ${(props) => props.theme.spacing(-2)};
+`;
+
+const RotatingAutorenewOutlinedIcon = styled(AutorenewOutlinedIcon)`
+  animation: ${rotate} 2s linear infinite;
 `;

@@ -17,7 +17,7 @@ export const LinearProgress: React.FC<LinearProgressProps> = ({ value, ...otherP
   const variant = otherProps.variant ?? 'determinate';
 
   return (
-    <Stack>
+    <Stack spacing={1.5}>
       <MuiLinearProgress
         value={value}
         {...otherProps}
@@ -25,7 +25,7 @@ export const LinearProgress: React.FC<LinearProgressProps> = ({ value, ...otherP
         sx={{ width: '100%', ...otherProps.sx }}
       />
       {variant === 'determinate' && (
-        <Box sx={{ minWidth: 35 }}>
+        <Box>
           <TextBox fontSize="sm" sx={{ color: 'textSecondary' }}>{`${Math.round(value)}%`}</TextBox>
         </Box>
       )}
