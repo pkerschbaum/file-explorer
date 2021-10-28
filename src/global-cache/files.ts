@@ -6,43 +6,52 @@ import { QUERY_KEYS } from '@app/global-cache/query-keys';
 import { fileSystemRef, queryClientRef } from '@app/operations/global-modules';
 import { fetchFiles } from '@app/platform/file-system';
 
+type FilesQuery = {
+  directory: UriComponents;
+  resolveMetadata: boolean;
+};
+
 export function useFiles(
-  {
-    directory,
-    resolveMetadata,
-  }: {
-    directory: UriComponents;
-    resolveMetadata: boolean;
-  },
+  { directory, resolveMetadata }: FilesQuery,
   queryOptions?: { enabled?: boolean },
 ) {
   const filesQuery = useQuery(
-    QUERY_KEYS.FILES_WITH_OPTIONS(URI.from(directory).toString(), { resolveMetadata }),
-    () => fetchFiles(fileSystemRef.current, directory, resolveMetadata),
+    QUERY_KEYS.DIRECTORY_CONTENT({ directoryId: URI.from(directory).toString(), resolveMetadata }),
+    () => fetchFiles(fileSystemRef.current, { directory, resolveMetadata }),
     queryOptions,
   );
 
   return filesQuery;
 }
 
-export async function refreshFiles(directory: UriComponents) {
-  await queryClientRef.current.refetchQueries(QUERY_KEYS.FILES(URI.from(directory).toString()), {
-    active: true,
-  });
+export async function refreshDirectoryContent(
+  { directory }: Omit<FilesQuery, 'resolveMetadata'>,
+  filter?: { active?: boolean },
+) {
+  await queryClientRef.current.refetchQueries(
+    QUERY_KEYS.DIRECTORY_CONTENT({ directoryId: URI.from(directory).toString() }),
+    {
+      exact: false,
+      active: filter?.active,
+    },
+  );
 }
 
-export function getCachedQueryData(uri: UriComponents) {
+export function getCachedQueryData({ directory }: Omit<FilesQuery, 'resolveMetadata'>) {
   return queryClientRef.current.getQueryData(
-    QUERY_KEYS.FILES_WITH_OPTIONS(URI.from(uri).toString(), {}),
+    QUERY_KEYS.DIRECTORY_CONTENT({ directoryId: URI.from(directory).toString() }),
     {
       exact: false,
     },
   );
 }
 
-export function setCachedQueryData(uri: UriComponents, contents: File[]) {
+export function setCachedQueryData({ directory, resolveMetadata }: FilesQuery, contents: File[]) {
   return queryClientRef.current.setQueryData(
-    QUERY_KEYS.FILES_WITH_OPTIONS(URI.from(uri).toString(), { resolveMetadata: false }),
+    QUERY_KEYS.DIRECTORY_CONTENT({
+      directoryId: URI.from(directory).toString(),
+      resolveMetadata,
+    }),
     contents,
   );
 }

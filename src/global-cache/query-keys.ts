@@ -1,9 +1,10 @@
 import type { IconClassesQuery, NativeIconDataURLQuery } from '@app/global-cache/file-icons';
 
+export const DIRECTORY_CONTENT_KEY_PREFIX = 'directory-content';
+
 export const QUERY_KEYS = {
-  FILES: (directoryId: string) => ['files', directoryId],
-  FILES_WITH_OPTIONS: (directoryId: string, options: { resolveMetadata?: boolean }) => [
-    ...QUERY_KEYS.FILES(directoryId),
+  DIRECTORY_CONTENT: (options: { directoryId?: string; resolveMetadata?: boolean }) => [
+    DIRECTORY_CONTENT_KEY_PREFIX,
     options,
   ],
   FILE_ICON_CLASSES: (options: IconClassesQuery.Args) => ['file-icon-classes', options],

@@ -10,7 +10,7 @@ import { File, FILE_TYPE } from '@app/domain/types';
 
 export type PlatformFileSystem = Pick<
   IFileService,
-  'resolve' | 'del' | 'copy' | 'move' | 'createFolder'
+  'resolve' | 'del' | 'copy' | 'move' | 'createFolder' | 'watch' | 'onDidFilesChange'
 >;
 
 export const createFileSystem = () => {
@@ -27,6 +27,10 @@ export const createFileSystem = () => {
     copy: window.privileged.fileService.copy.bind(window.privileged.fileService),
     move: window.privileged.fileService.move.bind(window.privileged.fileService),
     createFolder: window.privileged.fileService.createFolder.bind(window.privileged.fileService),
+    watch: window.privileged.fileService.watch.bind(window.privileged.fileService),
+    onDidFilesChange: window.privileged.fileService.onDidFilesChange.bind(
+      window.privileged.fileService,
+    ),
   };
 
   return instance;
@@ -60,8 +64,13 @@ export function getDistinctParents(files: UriComponents[]): UriComponents[] {
 
 export async function fetchFiles(
   fileSystem: PlatformFileSystem,
-  directory: UriComponents,
-  resolveMetadata: boolean,
+  {
+    directory,
+    resolveMetadata,
+  }: {
+    directory: UriComponents;
+    resolveMetadata: boolean;
+  },
 ): Promise<File[]> {
   const statsWithMetadata = await fileSystem.resolve(URI.from(directory), { resolveMetadata });
 

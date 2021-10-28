@@ -15,7 +15,7 @@ import {
   PROCESS_TYPE,
   Tag,
 } from '@app/domain/types';
-import { refreshFiles } from '@app/global-cache/files';
+import { refreshDirectoryContent } from '@app/global-cache/files';
 import {
   actions as persistedSliceActions,
   STORAGE_KEY,
@@ -88,7 +88,7 @@ export async function runDeleteProcess(deleteProcessId: string, options: { useTr
 
   // invalidate files of all affected directories
   const distinctParents = getDistinctParents(deleteProcess.uris);
-  await Promise.all(distinctParents.map((directory) => refreshFiles(directory)));
+  await Promise.all(distinctParents.map((directory) => refreshDirectoryContent({ directory })));
 }
 
 export function removeProcess(processId: string) {
@@ -118,10 +118,7 @@ export async function renameFile(sourceFileURI: UriComponents, newName: string) 
     sourceFileStat,
     targetFileURI,
     pasteShouldMove: true,
-    refreshFiles,
   });
-  const distinctParents = getDistinctParents([sourceFileURI, targetFileURI]);
-  await Promise.all(distinctParents.map((directory) => refreshFiles(directory)));
 }
 
 export async function resolveDeep(
@@ -247,7 +244,6 @@ export async function executeCopyOrMove({
   pasteShouldMove,
   cancellationTokenSource,
   progressCb,
-  refreshFiles,
 }: {
   sourceFileURI: URI;
   targetFileURI: URI;
@@ -255,7 +251,6 @@ export async function executeCopyOrMove({
   pasteShouldMove: boolean;
   cancellationTokenSource?: CancellationTokenSource;
   progressCb?: (args: ProgressCbArgs) => void;
-  refreshFiles: (directory: UriComponents) => Promise<void>;
 }) {
   // Move/Copy File
   const operation = pasteShouldMove
@@ -306,6 +301,6 @@ export async function executeCopyOrMove({
   } finally {
     // invalidate files of the target directory
     const distinctParents = getDistinctParents([sourceFileURI, targetFileURI]);
-    void Promise.all(distinctParents.map((directory) => refreshFiles(directory)));
+    void Promise.all(distinctParents.map((directory) => refreshDirectoryContent({ directory })));
   }
 }

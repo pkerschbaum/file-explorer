@@ -48,7 +48,7 @@ export const useFilesForUI = (explorerId: string): FilesLoadingResult => {
         await Promise.all(
           allDirectoriesUris
             .filter((uri) => {
-              const cachedQueryData = getCachedQueryData(uri);
+              const cachedQueryData = getCachedQueryData({ directory: uri });
               if (cachedQueryData) {
                 logger.debug(
                   `some data is already cached --> skip preloading of directory content`,
@@ -65,15 +65,19 @@ export const useFilesForUI = (explorerId: string): FilesLoadingResult => {
                 fileUri: URI.from(uri).toString(),
               });
 
-              const contents = await fetchFiles(fileSystemRef.current, uri, false);
+              const fetchArgs = {
+                directory: uri,
+                resolveMetadata: false,
+              };
+              const contents = await fetchFiles(fileSystemRef.current, fetchArgs);
 
-              const cachedQueryData = getCachedQueryData(uri);
+              const cachedQueryData = getCachedQueryData(fetchArgs);
               if (cachedQueryData) {
                 // in the meantime, some data for this query got loaded --> don't alter that data
                 return;
               }
 
-              setCachedQueryData(uri, contents);
+              setCachedQueryData(fetchArgs, contents);
             }),
         );
       };

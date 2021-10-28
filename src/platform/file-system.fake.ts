@@ -1,6 +1,7 @@
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { IFileStatWithMetadata } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 
+import { functions } from '@app/base/utils/functions.util';
 import { PlatformFileSystem } from '@app/platform/file-system';
 
 export const fakeFileStat: IFileStatWithMetadata = {
@@ -22,4 +23,6 @@ export const fakeFileSystem: PlatformFileSystem = {
   move: () => Promise.resolve(fakeFileStat),
   createFolder: () => Promise.resolve(fakeFileStat),
   del: () => Promise.resolve(),
+  watch: () => ({ dispose: functions.noop }),
+  onDidFilesChange: () => ({ dispose: functions.noop }),
 };

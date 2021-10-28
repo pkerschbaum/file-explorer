@@ -14,7 +14,6 @@ import { createLogger } from '@app/base/logger/logger';
 import { check } from '@app/base/utils/assert.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { PASTE_PROCESS_STATUS } from '@app/domain/types';
-import { refreshFiles } from '@app/global-cache/files';
 import { actions as explorerActions } from '@app/global-state/slices/explorers.slice';
 import { actions as processesActions } from '@app/global-state/slices/processes.slice';
 import { executeCopyOrMove, resolveDeep } from '@app/operations/file.operations';
@@ -44,10 +43,9 @@ export async function changeDirectory(explorerId: string, newDir: string) {
     );
   }
 
-  // change to the new directory and reload files
+  // change to the new directory
   const newCwd = parsedUri.toJSON();
   dispatchRef.current(explorerActions.changeCwd({ explorerId, newCwd }));
-  await refreshFiles(newCwd);
 }
 
 export async function pasteFiles(explorerId: string) {
@@ -209,7 +207,6 @@ export async function pasteFiles(explorerId: string) {
           pasteShouldMove: draftPasteState.pasteShouldMove,
           cancellationTokenSource,
           progressCb,
-          refreshFiles,
         }),
       ),
     );
@@ -239,13 +236,8 @@ export async function pasteFiles(explorerId: string) {
 
 export async function createFolder(explorerId: string, folderName: string) {
   const cwd = storeRef.current.getState().explorersSlice.explorerPanels[explorerId].cwd;
-
-  // create folder
   const folderUri = URI.joinPath(URI.from(cwd), folderName);
   await fileSystemRef.current.createFolder(folderUri);
-
-  // invalidate files of the target directory
-  await refreshFiles(cwd);
 }
 
 export async function revealCwdInOSExplorer(explorerId: string) {

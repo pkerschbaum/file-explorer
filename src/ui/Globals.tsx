@@ -6,6 +6,7 @@ import { Provider } from 'react-redux';
 import styled, { createGlobalStyle, css } from 'styled-components';
 
 import { RootStore } from '@app/global-state/store';
+import { useDirectoryWatchers } from '@app/operations/directory-watchers';
 import { createTheme } from '@app/ui/theme';
 
 export function createQueryClient() {
@@ -56,18 +57,22 @@ type GlobalsProps = {
   store: RootStore;
 };
 
-export const Globals: React.FC<GlobalsProps> = ({ queryClient, store, children }) => (
-  <QueryClientProvider client={queryClient}>
-    <ThemeProvider theme={theme}>
-      <Provider store={store}>
-        <CssBaseline />
-        <GlobalStyle />
-        {/* class "show-file-icons" will enable file icon theme of code-oss project */}
-        <RootContainer className="show-file-icons">{children}</RootContainer>
-      </Provider>
-    </ThemeProvider>
-  </QueryClientProvider>
-);
+export const Globals: React.FC<GlobalsProps> = ({ queryClient, store, children }) => {
+  useDirectoryWatchers();
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider theme={theme}>
+        <Provider store={store}>
+          <CssBaseline />
+          <GlobalStyle />
+          {/* class "show-file-icons" will enable file icon theme of code-oss project */}
+          <RootContainer className="show-file-icons">{children}</RootContainer>
+        </Provider>
+      </ThemeProvider>
+    </QueryClientProvider>
+  );
+};
 
 const RootContainer = styled.div`
   height: 100%;
