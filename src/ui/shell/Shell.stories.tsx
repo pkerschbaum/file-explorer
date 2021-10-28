@@ -4,7 +4,7 @@ import { ComponentMeta, ComponentStory } from '@storybook/react';
 
 import { fileSystemRef } from '@app/operations/global-modules';
 import { fakeFileStat, fakeFileSystem } from '@app/platform/file-system.fake';
-import { Shell } from '@app/ui/Shell';
+import { Shell } from '@app/ui/shell';
 
 export default {
   title: 'Shell',

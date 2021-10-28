@@ -36,7 +36,7 @@ import { useClipboardResources } from '@app/ui/hooks/clipboard-resources.hooks';
 import { Stack } from '@app/ui/layouts/Stack';
 import { useWindowEvent } from '@app/ui/utils/react.util';
 
-export const EXPLORER_ACTIONSBAR_GRID_AREA = 'explorer-actions-bar';
+export const EXPLORER_ACTIONSBAR_GRID_AREA = 'shell-explorer-actions-bar';
 export const DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED = {
   datasetAttr: {
     'data-window-keydownhandlers-enabled': 'true',

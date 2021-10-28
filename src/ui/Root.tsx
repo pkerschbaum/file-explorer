@@ -17,7 +17,7 @@ import { PlatformFileSystem } from '@app/platform/file-system';
 import { PlatformNativeHost } from '@app/platform/native-host';
 import { PlatformPersistentStorage } from '@app/platform/persistent-storage';
 import { createQueryClient, Globals } from '@app/ui/Globals';
-import { Shell } from '@app/ui/Shell';
+import { Shell } from '@app/ui/shell';
 
 export type AppDependencies = {
   fileIconTheme: PlatformFileIconTheme;

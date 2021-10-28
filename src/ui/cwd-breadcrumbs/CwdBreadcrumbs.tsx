@@ -13,7 +13,7 @@ import { changeDirectory } from '@app/operations/explorer.operations';
 import { CwdActionsMenu } from '@app/ui/cwd-breadcrumbs/CwdActionsMenu';
 import { useExplorerId } from '@app/ui/explorer-context/ExplorerDerivedValues.context';
 
-export const EXPLORER_CWDBREADCRUMBS_GRID_AREA = 'explorer-cwd-breadcrumbs';
+export const EXPLORER_CWDBREADCRUMBS_GRID_AREA = 'shell-explorer-cwd-breadcrumbs';
 
 export const CwdBreadcrumbs: React.FC = () => {
   const explorerId = useExplorerId();

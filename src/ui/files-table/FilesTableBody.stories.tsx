@@ -13,6 +13,7 @@ import { DataTable } from '@app/ui/elements/DataTable/DataTable';
 import { TableBody } from '@app/ui/elements/DataTable/TableBody';
 import {
   ExplorerDerivedValuesContextProvider,
+  ExplorerOperationsContextProvider,
   ExplorerState,
   ExplorerStateContextProvider,
   ExplorerStateUpdateFunctions,
@@ -111,7 +112,7 @@ DeferredLoadFileIcon.decorators = [
           explorerState={explorerState}
           setIdsOfSelectedFiles={explorerStateUpdateFunctions.setIdsOfSelectedFiles}
         >
-          {story()}
+          <ExplorerOperationsContextProvider>{story()}</ExplorerOperationsContextProvider>
         </ExplorerDerivedValuesContextProvider>
       </ExplorerStateContextProvider>
     );
@@ -152,7 +153,7 @@ RenameOfRowActive.decorators = [
           explorerState={explorerState}
           setIdsOfSelectedFiles={explorerStateUpdateFunctions.setIdsOfSelectedFiles}
         >
-          {story()}
+          <ExplorerOperationsContextProvider>{story()}</ExplorerOperationsContextProvider>
         </ExplorerDerivedValuesContextProvider>
       </ExplorerStateContextProvider>
     );

@@ -12,7 +12,7 @@ import { TextBox } from '@app/ui/elements/TextBox';
 import { useDataAvailable } from '@app/ui/explorer-context';
 import { FilesTableBody } from '@app/ui/files-table/FilesTableBody';
 
-export const EXPLORER_FILESTABLE_GRID_AREA = 'explorer-files-table';
+export const EXPLORER_FILESTABLE_GRID_AREA = 'shell-explorer-files-table';
 
 export const FilesTable: React.FC = () => {
   const dataAvailable = useDataAvailable();

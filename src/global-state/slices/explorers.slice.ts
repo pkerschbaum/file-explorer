@@ -4,12 +4,14 @@ import { createAction, createReducer } from '@reduxjs/toolkit';
 
 export type ExplorerSliceState = {
   explorerPanels: {
-    [id: string]: {
-      cwd: UriComponents;
-      scheduledToRemove?: boolean;
-    };
+    [id: string]: ExplorerPanel;
   };
   focusedExplorerPanelId?: string;
+};
+
+export type ExplorerPanel = {
+  cwd: UriComponents;
+  scheduledToRemove?: boolean;
 };
 
 type AddExplorerPayload = {

@@ -1,6 +1,11 @@
+import { ExplorerPanel } from '@app/global-state/slices/explorers.slice';
 import { useSelector } from '@app/global-state/store';
 
-export const useExplorerPanels = () =>
+export type ExplorerPanelEntry = ExplorerPanel & {
+  explorerId: string;
+};
+
+export const useExplorerPanels: () => ExplorerPanelEntry[] = () =>
   Object.entries(useSelector((state) => state.explorersSlice.explorerPanels)).map(
     ([explorerId, value]) => ({
       explorerId,
