@@ -7,7 +7,7 @@ import { QUERY_KEYS } from '@app/global-cache/query-keys';
 import { fileIconThemeRef, nativeHostRef } from '@app/operations/global-modules';
 
 export declare namespace IconClassesQuery {
-  export type Args = { uri: UriComponents; fileKind: FileKind };
+  export type Args = { uri?: UriComponents; fileKind: FileKind };
   export type Result = string[] | undefined;
 }
 
@@ -15,7 +15,10 @@ export function useFileIconClasses({
   uri,
   fileKind,
 }: IconClassesQuery.Args): IconClassesQuery.Result {
-  const file = { uri: URI.from(uri).toJSON(), fileKind };
+  const file = {
+    uri: uri === undefined ? undefined : URI.from(uri).toJSON(),
+    fileKind,
+  };
 
   const [syncLoadedIconClasses] = React.useState(() => {
     const fetchIconClassesResult = fetchIconClasses(file);
@@ -33,7 +36,10 @@ export function useFileIconClasses({
 }
 
 function fetchIconClasses(file: IconClassesQuery.Args) {
-  return fileIconThemeRef.current.loadIconClasses(URI.from(file.uri), file.fileKind);
+  return fileIconThemeRef.current.loadIconClasses(
+    file.uri === undefined ? undefined : URI.from(file.uri),
+    file.fileKind,
+  );
 }
 
 export declare namespace NativeIconDataURLQuery {

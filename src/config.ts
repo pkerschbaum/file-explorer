@@ -6,6 +6,7 @@ export const config = {
   isDevEnviroment,
   productName: 'file-explorer',
   featureFlags: {
+    specificIconsForDirectories: false,
     tags: false,
   },
 } as const;

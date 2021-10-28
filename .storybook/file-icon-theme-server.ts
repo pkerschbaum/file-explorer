@@ -71,7 +71,11 @@ async function entrypoint() {
   });
 
   app.post(`/${ICON_CLASSES_SLUG}`, (req, res) => {
-    const iconClassesString = getIconClasses(URI.parse(req.body.uriStringified), req.body.fileKind);
+    const body: IconClassesHttp.Request = req.body;
+    const iconClassesString = getIconClasses(
+      body.uriStringified === undefined ? undefined : URI.parse(body.uriStringified),
+      body.fileKind,
+    );
     const response: IconClassesHttp.Response = { iconClassesString };
     res.json(response);
   });

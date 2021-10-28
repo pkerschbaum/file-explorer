@@ -5,7 +5,7 @@ import { PlatformFileIconTheme } from '@app/platform/file-icon-theme';
 
 export declare namespace IconClassesHttp {
   export type Request = {
-    uriStringified: string;
+    uriStringified?: string;
     fileKind: FileKind;
   };
   export type Response = {
@@ -26,9 +26,9 @@ const localhostClient = axios.create({
 });
 
 export const httpFileIconTheme: PlatformFileIconTheme = {
-  loadIconClasses: async (file, fileKind) => {
+  loadIconClasses: async (resource, fileKind) => {
     const data: IconClassesHttp.Request = {
-      uriStringified: file.toString(),
+      uriStringified: resource === undefined ? undefined : resource.toString(),
       fileKind,
     };
     const response = await localhostClient.request<IconClassesHttp.Response>({

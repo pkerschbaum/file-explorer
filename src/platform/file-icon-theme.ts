@@ -3,7 +3,7 @@ import { FileKind } from '@pkerschbaum/code-oss-file-service/out/vs/platform/fil
 
 export type PlatformFileIconTheme = {
   loadCssRules: (fileIconThemePathFragment: string) => string | Promise<string>;
-  loadIconClasses: (resource: URI, fileKind: FileKind) => string[] | Promise<string[]>;
+  loadIconClasses: (resource: URI | undefined, fileKind: FileKind) => string[] | Promise<string[]>;
 };
 
 export const createFileIconTheme = () => {

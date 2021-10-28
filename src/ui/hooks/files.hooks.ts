@@ -1,9 +1,10 @@
-import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { FileKind } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 import * as React from 'react';
 
 import { createLogger } from '@app/base/logger/logger';
 import { uriHelper } from '@app/base/utils/uri-helper';
+import { config } from '@app/config';
 import { File, FileForUI, FILE_TYPE } from '@app/domain/types';
 import { useFileIconClasses } from '@app/global-cache/file-icons';
 import { useFiles, getCachedQueryData, setCachedQueryData } from '@app/global-cache/files';
@@ -132,8 +133,17 @@ export const useFilesForUI = (explorerId: string): FilesLoadingResult => {
 };
 
 export function useThemeFileIconClasses(file: FileForUI) {
+  let uri: UriComponents | undefined = file.uri;
+  if (!config.featureFlags.specificIconsForDirectories && file.fileType === FILE_TYPE.DIRECTORY) {
+    /**
+     * if no specific icons for directories should be used, and the file is a directory, don't query for a file icon via URI,
+     * only by fileKind
+     */
+    uri = undefined;
+  }
+
   const iconClasses = useFileIconClasses({
-    uri: file.uri,
+    uri,
     fileKind: mapFileTypeToFileKind(file.fileType),
   });
 
