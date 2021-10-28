@@ -7,6 +7,7 @@ import {
 } from '@mui/material/styles';
 import { css } from 'styled-components';
 
+import { assertThat } from '@app/base/utils/assert.util';
 import { DELETE_PROCESS_STATUS, PASTE_PROCESS_STATUS } from '@app/domain/types';
 
 declare module '@mui/material/styles' {
@@ -60,34 +61,40 @@ export const tabIndicatorSpanClassName = 'MuiTabs-indicatorSpan';
 export const THEMES = {
   coffee: {
     mode: 'dark',
-    backgroundColor: '#231f1a',
-    primaryColor: cyan[300],
+    background: '#231f1a',
+    paperBackground: 'hsl(27, 11%, 17%)',
+    hoverBackground: 'rgba(255, 255, 255, 0.08)',
     foregroundColor: 'hsl(0, 0%, 100%)',
-    MuiButton: {
-      outlined: {
-        background: 'hsl(27, 11%, 17%)',
-        hoverBackground: 'rgba(255, 255, 255, 0.08)',
-      },
-    },
+    primaryColor: cyan[300],
   },
   flow: {
     // inspired by Windows 11 "Flow" theme
     mode: 'light',
-    backgroundColor: 'hsl(0, 0%, 100%)',
-    primaryColor: 'hsl(203, 17%, 36%)',
+    background: 'hsl(0, 0%, 100%)',
+    paperBackground: 'hsl(202, 48%, 95%)',
+    hoverBackground: 'hsl(202, 48%, 84%)',
     foregroundColor: 'hsl(0, 0%, 11%)',
-    MuiButton: {
-      outlined: {
-        background: 'hsl(202, 48%, 95%)',
-        hoverBackground: 'hsl(202, 48%, 84%)',
-      },
-    },
+    primaryColor: 'hsl(203, 17%, 36%)',
   },
 } as const;
 type AvailableThemes = keyof typeof THEMES;
-export const ACTIVE_THEME: AvailableThemes = 'coffee';
+export const ACTIVE_THEME = 'coffee' as AvailableThemes;
+
+// border colors are taken from material-ui OutlinedInput <fieldset> border color
+const BORDER_COLOR_LIGHT = 'rgba(0, 0, 0, 0.23)';
+const BORDER_COLOR_DARK = 'rgba(255, 255, 255, 0.23)';
 
 export const createTheme = (locale: Localization) => {
+  const activeTheme = THEMES[ACTIVE_THEME];
+  let borderColorToUse;
+  if (activeTheme.mode === 'dark') {
+    borderColorToUse = BORDER_COLOR_DARK;
+  } else if (activeTheme.mode === 'light') {
+    borderColorToUse = BORDER_COLOR_LIGHT;
+  } else {
+    assertThat.isUnreachable(activeTheme);
+  }
+
   /* the theme changes the appearance of some material-ui components to better align with the Windows 11 design language */
   const theme: Parameters<typeof createMuiTheme>[0] = {
     components: {
@@ -104,13 +111,13 @@ export const createTheme = (locale: Localization) => {
             transition-duration: 150ms;
           ` as any,
           outlined: css`
-            color: ${THEMES[ACTIVE_THEME].foregroundColor};
-            background-color: ${THEMES[ACTIVE_THEME].MuiButton.outlined.background};
-            border-color: ${THEMES[ACTIVE_THEME].MuiButton.outlined.background};
+            color: ${activeTheme.foregroundColor};
+            background-color: ${activeTheme.paperBackground};
+            border-color: ${activeTheme.paperBackground};
 
             &:hover {
-              border-color: ${THEMES[ACTIVE_THEME].backgroundColor};
-              background-color: ${THEMES[ACTIVE_THEME].MuiButton.outlined.hoverBackground};
+              border-color: ${activeTheme.background};
+              background-color: ${(props) => props.theme.palette.action.hover};
             }
           ` as any,
           startIcon: css`
@@ -145,12 +152,14 @@ export const createTheme = (locale: Localization) => {
         },
       },
 
-      MuiTextField: {
-        defaultProps: { size: 'small' },
-      },
-
-      MuiTooltip: {
-        defaultProps: { disableInteractive: true },
+      MuiTab: {
+        styleOverrides: {
+          root: css`
+            text-transform: none;
+            padding: 0;
+            min-height: 0;
+          ` as any,
+        },
       },
 
       MuiTabs: {
@@ -170,21 +179,19 @@ export const createTheme = (locale: Localization) => {
             & .${tabIndicatorSpanClassName} {
               max-height: 16px;
               height: 100%;
-              background-color: ${THEMES[ACTIVE_THEME].primaryColor};
+              background-color: ${activeTheme.primaryColor};
               border-radius: 4px;
             }
           ` as any,
         },
       },
 
-      MuiTab: {
-        styleOverrides: {
-          root: css`
-            text-transform: none;
-            padding: 0;
-            min-height: 0;
-          ` as any,
-        },
+      MuiTextField: {
+        defaultProps: { size: 'small' },
+      },
+
+      MuiTooltip: {
+        defaultProps: { disableInteractive: true },
       },
     },
 
@@ -194,17 +201,22 @@ export const createTheme = (locale: Localization) => {
     },
 
     palette: {
-      mode: THEMES[ACTIVE_THEME].mode,
+      mode: activeTheme.mode,
+      action: {
+        hover: activeTheme.hoverBackground,
+      },
       background: {
-        default: THEMES[ACTIVE_THEME].backgroundColor,
-        paper: THEMES[ACTIVE_THEME].MuiButton.outlined.background,
+        default: activeTheme.background,
+        paper: activeTheme.paperBackground,
       },
       primary: {
-        main: THEMES[ACTIVE_THEME].primaryColor,
+        main: activeTheme.primaryColor,
       },
       text: {
-        secondary: THEMES[ACTIVE_THEME].foregroundColor,
+        secondary: activeTheme.foregroundColor,
       },
+      // divider does not only set the color of material-ui <Divider> components, but also of the border of e.g. Paper
+      divider: borderColorToUse,
     },
 
     availableTagColors: [
@@ -222,16 +234,16 @@ export const createTheme = (locale: Localization) => {
 
     processStatusColors: {
       pasteProcess: {
-        [PASTE_PROCESS_STATUS.RUNNING_DETERMINING_TOTALSIZE]: THEMES[ACTIVE_THEME].backgroundColor,
-        [PASTE_PROCESS_STATUS.RUNNING_PERFORMING_PASTE]: THEMES[ACTIVE_THEME].backgroundColor,
+        [PASTE_PROCESS_STATUS.RUNNING_DETERMINING_TOTALSIZE]: activeTheme.background,
+        [PASTE_PROCESS_STATUS.RUNNING_PERFORMING_PASTE]: activeTheme.background,
         [PASTE_PROCESS_STATUS.SUCCESS]: '#5B7E2F',
         [PASTE_PROCESS_STATUS.FAILURE]: '#B35C54',
-        [PASTE_PROCESS_STATUS.ABORT_REQUESTED]: THEMES[ACTIVE_THEME].backgroundColor,
+        [PASTE_PROCESS_STATUS.ABORT_REQUESTED]: activeTheme.background,
         [PASTE_PROCESS_STATUS.ABORT_SUCCESS]: '#5B7E2F',
       },
       deleteProcess: {
         [DELETE_PROCESS_STATUS.PENDING_FOR_USER_INPUT]: '#A88518',
-        [DELETE_PROCESS_STATUS.RUNNING]: THEMES[ACTIVE_THEME].backgroundColor,
+        [DELETE_PROCESS_STATUS.RUNNING]: activeTheme.background,
         [DELETE_PROCESS_STATUS.SUCCESS]: '#5B7E2F',
         [DELETE_PROCESS_STATUS.FAILURE]: '#B35C54',
       },

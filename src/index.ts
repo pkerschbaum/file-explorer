@@ -31,7 +31,7 @@ const createMainWindow = (): BrowserWindow => {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
       contextIsolation: false,
     },
-    backgroundColor: THEMES[ACTIVE_THEME].backgroundColor,
+    backgroundColor: THEMES[ACTIVE_THEME].background,
     show: false,
     titleBarStyle: isWindows ? 'hidden' : undefined,
   });

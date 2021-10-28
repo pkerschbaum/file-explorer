@@ -5,6 +5,7 @@ import { Button } from '@mui/material';
 import * as React from 'react';
 import styled from 'styled-components';
 
+import { assertThat } from '@app/base/utils/assert.util';
 import { windowClose, windowMinimize, windowToggleMaximized } from '@app/operations/app.operations';
 import { Stack } from '@app/ui/layouts/Stack';
 import { ROOTCONTAINER_PADDING_RIGHT_FACTOR } from '@app/ui/shell/constants';
@@ -69,6 +70,14 @@ const TitleBarButton = styled(Button)`
 
 const TitleBarCloseButton = styled(TitleBarButton)`
   &:hover {
-    background-color: ${(props) => props.theme.palette.error.main};
+    background-color: ${(props) => {
+      if (props.theme.palette.mode === 'dark') {
+        return props.theme.palette.error.dark;
+      } else if (props.theme.palette.mode === 'light') {
+        return props.theme.palette.error.light;
+      } else {
+        assertThat.isUnreachable(props.theme.palette.mode);
+      }
+    }};
   }
 `;
