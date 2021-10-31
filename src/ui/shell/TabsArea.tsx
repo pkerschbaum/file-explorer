@@ -25,6 +25,10 @@ type TabsAreaProps = { explorersToShow: ExplorerPanelEntry[] };
 export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
   const idOfFocusedExplorerPanel = useIdOfFocusedExplorerPanel();
 
+  const focusedExplorer = explorersToShow.find(
+    (explorer) => explorer.explorerId === idOfFocusedExplorerPanel,
+  );
+
   function switchFocusedExplorerPanel(direction: 'UP' | 'DOWN') {
     const focusedExplorerIdx = explorersToShow.findIndex(
       (explorer) => explorer.explorerId === idOfFocusedExplorerPanel,
@@ -44,6 +48,10 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
     changeFocusedExplorer(explorersToShow[explorerIdxToSwitchTo].explorerId);
   }
 
+  async function duplicateFocusedExplorerPanel() {
+    await addExplorerPanel(focusedExplorer?.cwd);
+  }
+
   useWindowEvent('keydown', [
     {
       condition: (e) => e.ctrlKey && e.key === KEYS.PAGE_UP,
@@ -55,7 +63,7 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
     },
     {
       condition: (e) => e.ctrlKey && e.key === KEYS.T,
-      handler: addExplorerPanel,
+      handler: duplicateFocusedExplorerPanel,
     },
   ]);
 
@@ -86,7 +94,7 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
           />
         ))}
       </Tabs>
-      <Button onClick={addExplorerPanel} startIcon={<AddCircleOutlineOutlinedIcon />}>
+      <Button onClick={duplicateFocusedExplorerPanel} startIcon={<AddCircleOutlineOutlinedIcon />}>
         Add tab
       </Button>
     </Stack>

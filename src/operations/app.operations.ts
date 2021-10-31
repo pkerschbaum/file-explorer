@@ -1,20 +1,25 @@
-import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
+import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 
-import { uriHelper } from '@app/base/utils/uri-helper';
 import { actions, generateExplorerId } from '@app/global-state/slices/explorers.slice';
-import { dispatchRef, fileSystemRef } from '@app/operations/global-modules';
+import { dispatchRef, fileSystemRef, nativeHostRef } from '@app/operations/global-modules';
 
-export async function addExplorerPanel() {
+export async function addExplorerPanel(cwdToUse?: UriComponents) {
+  let cwdOfNewExplorer;
+  if (cwdToUse) {
+    cwdOfNewExplorer = URI.from(cwdToUse);
+  } else {
+    cwdOfNewExplorer = URI.from(await nativeHostRef.current.app.getPath({ name: 'desktop' }));
+  }
+
   const explorerId = generateExplorerId();
-  const parsedUri = uriHelper.parseUri(Schemas.file, 'C:/data/TEMP');
-  const stats = await fileSystemRef.current.resolve(parsedUri);
+  const stats = await fileSystemRef.current.resolve(cwdOfNewExplorer);
   if (!stats.isDirectory) {
     throw Error(
-      `could not set intial directory, reason: uri is not a valid directory. uri: ${parsedUri.toString()}`,
+      `could not set directory for explorer panel, reason: uri is not a valid directory. uri: ${cwdOfNewExplorer.toString()}`,
     );
   }
 
-  dispatchRef.current(actions.addExplorer({ explorerId, cwd: parsedUri.toJSON() }));
+  dispatchRef.current(actions.addExplorer({ explorerId, cwd: cwdOfNewExplorer.toJSON() }));
   dispatchRef.current(actions.changeFocusedExplorer({ explorerId }));
 }
 

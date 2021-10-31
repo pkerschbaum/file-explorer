@@ -1,9 +1,11 @@
 import { Emitter, Event } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/event';
 import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import type { app } from 'electron';
 
 export type PlatformNativeHost = {
   app: {
     getNativeFileIconDataURL: (args: { fsPath: string }) => Promise<string | undefined>;
+    getPath: (args: { name: Parameters<typeof app.getPath>[0] }) => Promise<UriComponents>;
   };
   shell: {
     revealResourcesInOS(resources: UriComponents[]): Promise<void>;
@@ -30,6 +32,10 @@ export const createNativeHost = () => {
   const instance: PlatformNativeHost = {
     app: {
       getNativeFileIconDataURL: window.privileged.app.getNativeFileIconDataURL,
+      getPath: async (args) => {
+        const fsPath = await window.privileged.app.getPath(args);
+        return URI.file(fsPath);
+      },
     },
     shell: {
       revealResourcesInOS: async (resources) => {

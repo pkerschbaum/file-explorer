@@ -28,6 +28,7 @@ type Privileged = {
     getNativeFileIconDataURL: (
       args: IpcApp.GetNativeFileIconDataURL.Args,
     ) => IpcApp.GetNativeFileIconDataURL.ReturnValue;
+    getPath: (args: IpcApp.GetPath.Args) => IpcApp.GetPath.ReturnValue;
   };
   shell: {
     openPath: (args: IpcShell.OpenPath.Args) => IpcShell.OpenPath.ReturnValue;
@@ -66,6 +67,7 @@ export async function initializePrivilegedPlatformModules() {
     app: {
       getNativeFileIconDataURL: (...args) =>
         ipcRenderer.invoke(APP_CHANNEL.NATIVE_FILE_ICON, ...args),
+      getPath: (...args) => ipcRenderer.invoke(APP_CHANNEL.GET_PATH, ...args),
     },
     shell: {
       openPath: (...args) => ipcRenderer.invoke(SHELL_CHANNEL.OPEN_PATH, ...args),

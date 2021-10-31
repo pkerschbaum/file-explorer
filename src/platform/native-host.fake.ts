@@ -3,10 +3,13 @@ import { Emitter } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/e
 import { functions } from '@app/base/utils/functions.util';
 import { PlatformNativeHost } from '@app/platform/native-host';
 
+import { fakeFileStat } from '@app-test/fake-data/fake-data';
+
 export function createFakeNativeHost(): PlatformNativeHost {
   return {
     app: {
       getNativeFileIconDataURL: () => Promise.resolve(undefined),
+      getPath: () => Promise.resolve(fakeFileStat.resource),
     },
     shell: {
       revealResourcesInOS: () => Promise.resolve(),
