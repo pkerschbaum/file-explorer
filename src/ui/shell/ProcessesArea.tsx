@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { arrays } from '@app/base/utils/arrays.util';
 import { useProcesses } from '@app/global-state/slices/processes.hooks';
-import { ProcessCard } from '@app/ui/process';
+import { Process } from '@app/ui/process';
 
 export const ProcessesArea: React.FC = () => {
   const processes = useProcesses();
@@ -16,7 +16,7 @@ export const ProcessesArea: React.FC = () => {
   return (
     <ProcessesAreaContainer>
       {arrays.reverse(processes).map((process) => (
-        <ProcessCard key={process.id} process={process} />
+        <Process key={process.id} process={process} />
       ))}
     </ProcessesAreaContainer>
   );

@@ -12,7 +12,7 @@ import { DeleteProcess as DeleteProcessType, DELETE_PROCESS_STATUS } from '@app/
 import { removeProcess, runDeleteProcess } from '@app/operations/file.operations';
 import { TextBox } from '@app/ui/elements/TextBox';
 import { Stack } from '@app/ui/layouts/Stack';
-import { Process } from '@app/ui/process/Process';
+import { ProcessCard } from '@app/ui/process/ProcessCard';
 
 type StatusMetaInfos = {
   [status in DELETE_PROCESS_STATUS]: {
@@ -92,7 +92,7 @@ export const DeleteProcess: React.FC<{ process: DeleteProcessType }> = ({ proces
   const processMeta = STATUS_META_INFOS[process.status];
 
   return (
-    <Process
+    <ProcessCard
       processId={process.id}
       summaryIcon={<DeleteOutlinedIcon fontSize="small" />}
       summaryText={process.uris

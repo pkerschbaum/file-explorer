@@ -1,1 +1,1 @@
-export * from '@app/ui/process/ProcessCard';
+export * from '@app/ui/process/Process';

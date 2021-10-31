@@ -3,21 +3,21 @@ import { ComponentMeta, ComponentStory } from '@storybook/react';
 
 import { NarrowUnion } from '@app/base/utils/types.util';
 import { DeleteProcess, DELETE_PROCESS_STATUS } from '@app/domain/types';
-import { ProcessCard } from '@app/ui/process/ProcessCard';
+import { Process } from '@app/ui/process/Process';
 
 import { fakeDeleteProcessBase } from '@app-test/fake-data/fake-data';
 
 export default {
   title: 'Processes / Delete',
-  component: ProcessCard,
+  component: Process,
   decorators: [
     (story) => {
       return <Box sx={{ maxWidth: 250 }}>{story()}</Box>;
     },
   ],
-} as ComponentMeta<typeof ProcessCard>;
+} as ComponentMeta<typeof Process>;
 
-const Template: ComponentStory<typeof ProcessCard> = (args) => <ProcessCard {...args} />;
+const Template: ComponentStory<typeof Process> = (args) => <Process {...args} />;
 
 const process_pendingForUserInput: NarrowUnion<
   DeleteProcess,

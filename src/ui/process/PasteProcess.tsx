@@ -14,7 +14,7 @@ import { PasteProcess as PasteProcessType, PASTE_PROCESS_STATUS } from '@app/dom
 import { LinearProgress } from '@app/ui/elements/LinearProgress';
 import { TextBox } from '@app/ui/elements/TextBox';
 import { Stack } from '@app/ui/layouts/Stack';
-import { Process } from '@app/ui/process/Process';
+import { ProcessCard } from '@app/ui/process/ProcessCard';
 
 type StatusMetaInfos = {
   [status in PASTE_PROCESS_STATUS]: {
@@ -139,7 +139,7 @@ export const PasteProcess: React.FC<{ process: PasteProcessType }> = ({ process 
       : 'determinate';
 
   return (
-    <Process
+    <ProcessCard
       processId={process.id}
       summaryIcon={
         <>
