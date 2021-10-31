@@ -1,3 +1,4 @@
+import { Box } from '@mui/material';
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 
 import { DELETE_PROCESS_STATUS, PROCESS_TYPE } from '@app/domain/types';
@@ -7,6 +8,11 @@ import { ProcessCard } from '@app/ui/process/ProcessCard';
 export default {
   title: 'ProcessCard',
   component: ProcessCard,
+  decorators: [
+    (story) => {
+      return <Box sx={{ maxWidth: 250 }}>{story()}</Box>;
+    },
+  ],
 } as ComponentMeta<typeof ProcessCard>;
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args

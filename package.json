@@ -11,7 +11,7 @@
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "lint": "eslint --max-warnings 0 .",
-    "storybook": "concurrently \"start-storybook -p 6006 -s ./src/static\" \"ts-node --project ./tsconfig.json -r tsconfig-paths/register ./.storybook/file-icon-theme-server.ts\""
+    "storybook": "concurrently \"start-storybook -p 6006 -s ./src/static\" \"ts-node --project ./tsconfig.json -r tsconfig-paths/register ./test/file-icon-theme-server.ts\""
   },
   "keywords": [],
   "author": {

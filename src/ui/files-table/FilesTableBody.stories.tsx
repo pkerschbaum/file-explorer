@@ -8,7 +8,6 @@ import { createStoreInstance } from '@app/global-state/store';
 import { dispatchRef, fileIconThemeRef, storeRef } from '@app/operations/global-modules';
 import { httpFileIconTheme } from '@app/platform/file-icon-theme.fake';
 import { mapFileStatToFile } from '@app/platform/file-system';
-import { fakeFileStat } from '@app/platform/file-system.fake';
 import { DataTable } from '@app/ui/elements/DataTable/DataTable';
 import { TableBody } from '@app/ui/elements/DataTable/TableBody';
 import {
@@ -20,6 +19,8 @@ import {
 } from '@app/ui/explorer-context';
 import { FilesTableRow } from '@app/ui/files-table/FilesTableBody';
 import { createQueryClient, Globals } from '@app/ui/Globals';
+
+import { fakeFileStat } from '@app-test/fake-data/fake-data';
 
 const fakeFile = mapFileStatToFile(fakeFileStat);
 const { fileName, extension } = uriHelper.extractNameAndExtension(fakeFile.uri);

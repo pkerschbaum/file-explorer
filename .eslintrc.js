@@ -44,6 +44,11 @@ module.exports = {
             group: 'parent',
             position: 'after',
           },
+          {
+            pattern: '@app-test/**',
+            group: 'parent',
+            position: 'after',
+          },
         ],
         pathGroupsExcludedImportTypes: ['builtin'],
         alphabetize: { order: 'asc', caseInsensitive: true },

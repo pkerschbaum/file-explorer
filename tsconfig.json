@@ -12,7 +12,8 @@
     "baseUrl": ".",
     "outDir": "dist",
     "paths": {
-      "@app/*": ["./src/*"]
+      "@app/*": ["./src/*"],
+      "@app-test/*": ["./test/*"]
     },
     "plugins": [
       {
@@ -20,5 +21,5 @@
       }
     ]
   },
-  "include": ["src/**/*", ".storybook/**/*"]
+  "include": ["src/**/*", "test/**/*", ".storybook/**/*"]
 }

@@ -1,21 +1,7 @@
-import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import { IFileStatWithMetadata } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
-
 import { functions } from '@app/base/utils/functions.util';
 import { PlatformFileSystem } from '@app/platform/file-system';
 
-export const fakeFileStat: IFileStatWithMetadata = {
-  isDirectory: false,
-  isFile: true,
-  isSymbolicLink: false,
-  name: 'test-file.txt',
-  resource: URI.file('/home/dir/test-file.txt'),
-  ctime: Date.now(),
-  mtime: Date.now(),
-  readonly: false,
-  size: 1024,
-  etag: '',
-};
+import { fakeFileStat } from '@app-test/fake-data/fake-data';
 
 export const fakeFileSystem: PlatformFileSystem = {
   resolve: () => Promise.resolve(fakeFileStat),

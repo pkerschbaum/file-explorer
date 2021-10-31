@@ -14,6 +14,7 @@ module.exports = {
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
     alias: {
       '@app': path.resolve(__dirname, './src'),
+      '@app-test': path.resolve(__dirname, './test'),
     },
   },
 };

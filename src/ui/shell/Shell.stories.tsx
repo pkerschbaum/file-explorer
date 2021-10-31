@@ -1,47 +1,14 @@
-import { CancellationTokenSource } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/cancellation';
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { IFileStatWithMetadata } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 
-import {
-  DELETE_PROCESS_STATUS,
-  PASTE_PROCESS_STATUS,
-  Process,
-  PROCESS_TYPE,
-} from '@app/domain/types';
 import { createStoreInstance } from '@app/global-state/store';
 import { dispatchRef, fileSystemRef, storeRef } from '@app/operations/global-modules';
-import { fakeFileStat, fakeFileSystem } from '@app/platform/file-system.fake';
+import { fakeFileSystem } from '@app/platform/file-system.fake';
 import { createQueryClient, Globals } from '@app/ui/Globals';
 import { Shell } from '@app/ui/shell';
 
-const fakePasteProcess: Process = {
-  id: 'fake-process-id-1',
-  type: PROCESS_TYPE.PASTE,
-  pasteShouldMove: false,
-  sourceUris: [
-    fakeFileStat.resource,
-    URI.joinPath(fakeFileStat.resource, './testfile2.docx'),
-    URI.joinPath(fakeFileStat.resource, './testfile3.pdf'),
-  ],
-  destinationFolder: URI.file('/home/dir/'),
-  cancellationTokenSource: new CancellationTokenSource(),
-  totalSize: 1024 * 1024 * 10, // 10MB
-  bytesProcessed: 1024 * 1024 * 2, // 2MB
-  progressOfAtLeastOneSourceIsIndeterminate: false,
-  status: PASTE_PROCESS_STATUS.RUNNING_PERFORMING_PASTE,
-};
-
-const fakeDeleteProcess: Process = {
-  id: 'fake-process-id-2',
-  type: PROCESS_TYPE.DELETE,
-  uris: [
-    fakeFileStat.resource,
-    URI.joinPath(fakeFileStat.resource, './testfile2.docx'),
-    URI.joinPath(fakeFileStat.resource, './testfile3.pdf'),
-  ],
-  status: DELETE_PROCESS_STATUS.RUNNING,
-};
+import { fakeDeleteProcess, fakeFileStat, fakePasteProcess } from '@app-test/fake-data/fake-data';
 
 export default {
   title: 'Shell',
