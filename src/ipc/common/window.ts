@@ -1,17 +1,22 @@
-export declare namespace WindowMinimize {
-  export type Args = void;
-  export type ReturnValue = Promise<void>;
-}
-export const WINDOW_MINIMIZE_CHANNEL = 'app:windowMinimize';
+import { config } from '@app/config';
 
-export declare namespace WindowToggleMaximize {
-  export type Args = void;
-  export type ReturnValue = Promise<void>;
+export declare namespace IpcWindow {
+  namespace Minimize {
+    export type Args = void;
+    export type ReturnValue = Promise<void>;
+  }
+  namespace ToggleMaximize {
+    export type Args = void;
+    export type ReturnValue = Promise<void>;
+  }
+  namespace Close {
+    export type Args = void;
+    export type ReturnValue = Promise<void>;
+  }
 }
-export const WINDOW_TOGGLEMAXIMIZE_CHANNEL = 'app:windowToggleMaximize';
 
-export declare namespace WindowClose {
-  export type Args = void;
-  export type ReturnValue = Promise<void>;
-}
-export const WINDOW_CLOSE_CHANNEL = 'app:windowClose';
+export const WINDOW_CHANNEL = {
+  MINIMIZE: `${config.productName}:window:minimize`,
+  TOGGLE_MAXIMIZE: `${config.productName}:window:toggleMaximize`,
+  CLOSE: `${config.productName}:window:close`,
+};

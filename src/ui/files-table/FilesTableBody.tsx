@@ -96,7 +96,7 @@ export const FilesTableRow: React.FC<FilesTableRowProps> = ({ fileForRow, idxOfF
       draggable={!renameForFileIsActive}
       onDragStart={(e) => {
         e.preventDefault();
-        nativeHostRef.current.startNativeFileDnD({ fsPath: URI.from(fileForRow.uri).fsPath });
+        nativeHostRef.current.webContents.startNativeFileDnD(fileForRow.uri);
       }}
       onClick={(e) => changeSelectionByClick(e, fileForRow, idxOfFileForRow)}
       onDoubleClick={() => openFileOrDirectory(fileForRow)}

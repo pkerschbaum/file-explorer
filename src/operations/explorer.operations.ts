@@ -49,7 +49,9 @@ export async function changeDirectory(explorerId: string, newDir: string) {
 }
 
 export async function pasteFiles(explorerId: string) {
-  const clipboardResources = nativeHostRef.current.clipboard.readResources();
+  const clipboardResources = nativeHostRef.current.clipboard
+    .readResources()
+    .map((r) => URI.from(r));
   const draftPasteState = storeRef.current.getState().processesSlice.draftPasteState;
   if (clipboardResources.length === 0 || draftPasteState === undefined) {
     return;
@@ -242,7 +244,7 @@ export async function createFolder(explorerId: string, folderName: string) {
 
 export async function revealCwdInOSExplorer(explorerId: string) {
   const cwd = storeRef.current.getState().explorersSlice.explorerPanels[explorerId].cwd;
-  await nativeHostRef.current.revealResourcesInOS([cwd]);
+  await nativeHostRef.current.shell.revealResourcesInOS([cwd]);
 }
 
 function findValidPasteFileTarget(

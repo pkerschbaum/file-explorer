@@ -26,13 +26,6 @@ module.exports = {
   plugins: ['node', 'jsx-a11y', 'import', 'only-warn'],
   ignorePatterns: ['**/*.js', '!.storybook'],
   rules: {
-    'no-console': 'error',
-    'no-extra-boolean-cast': 'off',
-    'no-inner-declarations': 'off',
-    'node/no-process-env': 'error',
-    'node/process-exit-as-throw': 'off',
-    'node/no-deprecated-api': 'off',
-    'object-shorthand': 'error',
     'import/no-unresolved': 'off',
     'import/order': [
       'error',
@@ -55,6 +48,17 @@ module.exports = {
         'newlines-between': 'always-and-inside-groups',
       },
     ],
+    'jsx-a11y/no-autofocus': 'off',
+    'no-console': 'error',
+    'no-extra-boolean-cast': 'off',
+    'no-inner-declarations': 'off',
+    'node/no-process-env': 'error',
+    'node/process-exit-as-throw': 'off',
+    'node/no-deprecated-api': 'off',
+    'object-shorthand': 'error',
+    'prefer-template': 'error',
+    'react/prop-types': 'off',
+    'react/react-in-jsx-scope': 'off',
     '@typescript-eslint/ban-types': [
       'error',
       {
@@ -103,9 +107,6 @@ module.exports = {
     ],
     '@typescript-eslint/switch-exhaustiveness-check': 'error',
     '@typescript-eslint/unified-signatures': 'error',
-    'react/prop-types': 'off',
-    'react/react-in-jsx-scope': 'off',
-    'jsx-a11y/no-autofocus': 'off',
   },
   settings: {
     react: {

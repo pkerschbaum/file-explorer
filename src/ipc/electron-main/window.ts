@@ -1,29 +1,22 @@
 import { BrowserWindow, ipcMain, IpcMainInvokeEvent } from 'electron';
 
 import { Awaited } from '@app/base/utils/types.util';
-import {
-  WindowClose,
-  WindowMinimize,
-  WindowToggleMaximize,
-  WINDOW_CLOSE_CHANNEL,
-  WINDOW_MINIMIZE_CHANNEL,
-  WINDOW_TOGGLEMAXIMIZE_CHANNEL,
-} from '@app/ipc/common/window';
+import { IpcWindow, WINDOW_CHANNEL } from '@app/ipc/common/window';
 
 export function registerListeners(window: BrowserWindow): void {
   const minimizeHandler = createWindowMinimizeHandler(window);
   const toggleMaximizeHandler = createWindowToggleMaximizeHandler(window);
   const closeHandler = createWindowCloseHandler(window);
-  ipcMain.handle(WINDOW_MINIMIZE_CHANNEL, minimizeHandler);
-  ipcMain.handle(WINDOW_TOGGLEMAXIMIZE_CHANNEL, toggleMaximizeHandler);
-  ipcMain.handle(WINDOW_CLOSE_CHANNEL, closeHandler);
+  ipcMain.handle(WINDOW_CHANNEL.MINIMIZE, minimizeHandler);
+  ipcMain.handle(WINDOW_CHANNEL.TOGGLE_MAXIMIZE, toggleMaximizeHandler);
+  ipcMain.handle(WINDOW_CHANNEL.CLOSE, closeHandler);
 }
 
 function createWindowMinimizeHandler(window: BrowserWindow) {
   return function (
     _1: IpcMainInvokeEvent,
-    _2: WindowMinimize.Args,
-  ): Awaited<WindowMinimize.ReturnValue> {
+    _2: IpcWindow.Minimize.Args,
+  ): Awaited<IpcWindow.Minimize.ReturnValue> {
     window.minimize();
   };
 }
@@ -31,14 +24,17 @@ function createWindowMinimizeHandler(window: BrowserWindow) {
 function createWindowToggleMaximizeHandler(window: BrowserWindow) {
   return function (
     _1: IpcMainInvokeEvent,
-    _2: WindowToggleMaximize.Args,
-  ): Awaited<WindowToggleMaximize.ReturnValue> {
+    _2: IpcWindow.ToggleMaximize.Args,
+  ): Awaited<IpcWindow.ToggleMaximize.ReturnValue> {
     window.isMaximized() ? window.unmaximize() : window.maximize();
   };
 }
 
 function createWindowCloseHandler(window: BrowserWindow) {
-  return function (_1: IpcMainInvokeEvent, _2: WindowClose.Args): Awaited<WindowClose.ReturnValue> {
+  return function (
+    _1: IpcMainInvokeEvent,
+    _2: IpcWindow.Close.Args,
+  ): Awaited<IpcWindow.Close.ReturnValue> {
     window.close();
   };
 }

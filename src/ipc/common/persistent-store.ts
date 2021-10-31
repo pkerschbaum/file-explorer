@@ -1,11 +1,17 @@
-export declare namespace PersistData {
-  export type Args = Record<string, unknown>;
-  export type ReturnValue = void;
-}
-export const PERSISTDATA_CHANNEL = 'app:persistData';
+import { config } from '@app/config';
 
-export declare namespace ReadPersistedData {
-  export type Args = unknown;
-  export type ReturnValue = Record<string, unknown>;
+export declare namespace IpcPersistentStore {
+  namespace PersistData {
+    export type Args = Record<string, unknown>;
+    export type ReturnValue = void;
+  }
+  namespace ReadPersistedData {
+    export type Args = unknown;
+    export type ReturnValue = Record<string, unknown>;
+  }
 }
-export const READPERSISTEDDATA_CHANNEL = 'app:readPersistedData';
+
+export const PERSISTENT_STORE_CHANNEL = {
+  PERSIST_DATA: `${config.productName}:persistentStore:persistData`,
+  READ_PERSISTED_DATA: `${config.productName}:persistentStore:readPersistedData`,
+};

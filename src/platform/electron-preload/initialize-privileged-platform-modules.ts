@@ -1,26 +1,13 @@
 import { VSBuffer } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/buffer';
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import { clipboard, ipcRenderer, shell } from 'electron';
+import { clipboard, ipcRenderer } from 'electron';
 
 import { config } from '@app/config';
-import { FileDragStart, FILEDRAGSTART_CHANNEL } from '@app/ipc/common/file-drag-start';
-import { GetNativeFileIconDataURL, NATIVEFILEICON_CHANNEL } from '@app/ipc/common/native-file-icon';
-import { PERSISTDATA_CHANNEL, READPERSISTEDDATA_CHANNEL } from '@app/ipc/common/persistent-store';
-import {
-  ShellOpenPath,
-  ShellShowItemInFolder,
-  SHELL_OPENPATH_CHANNEL,
-  SHELL_SHOWITEMINFOLDER_CHANNEL,
-} from '@app/ipc/common/shell';
-import { TRASHITEM_CHANNEL } from '@app/ipc/common/trash-item';
-import {
-  WindowClose,
-  WindowMinimize,
-  WindowToggleMaximize,
-  WINDOW_CLOSE_CHANNEL,
-  WINDOW_MINIMIZE_CHANNEL,
-  WINDOW_TOGGLEMAXIMIZE_CHANNEL,
-} from '@app/ipc/common/window';
+import { IpcApp, APP_CHANNEL } from '@app/ipc/common/app';
+import { IpcFileDragStart, FILEDRAGSTART_CHANNEL } from '@app/ipc/common/file-drag-start';
+import { PERSISTENT_STORE_CHANNEL } from '@app/ipc/common/persistent-store';
+import { IpcShell, SHELL_CHANNEL } from '@app/ipc/common/shell';
+import { IpcWindow, WINDOW_CHANNEL } from '@app/ipc/common/window';
 import { bootstrapModule as bootstrapFileIconThemeModule } from '@app/platform/electron-preload/file-icon-theme';
 import {
   bootstrapModule as bootstrapFileServiceModule,
@@ -37,25 +24,29 @@ declare global {
 type Privileged = {
   fileService: PlatformFileService;
   fileIconTheme: PlatformFileIconTheme;
-  webContents: {
-    fileDragStart: (args: FileDragStart.Args) => FileDragStart.ReturnValue;
+  app: {
+    getNativeFileIconDataURL: (
+      args: IpcApp.GetNativeFileIconDataURL.Args,
+    ) => IpcApp.GetNativeFileIconDataURL.ReturnValue;
   };
   shell: {
-    openPath: (args: ShellOpenPath.Args) => ShellOpenPath.ReturnValue;
-    trashItem: typeof shell.trashItem;
-    revealResourcesInOS: (args: ShellShowItemInFolder.Args) => ShellShowItemInFolder.ReturnValue;
-    getNativeFileIconDataURL: (
-      args: GetNativeFileIconDataURL.Args,
-    ) => GetNativeFileIconDataURL.ReturnValue;
+    openPath: (args: IpcShell.OpenPath.Args) => IpcShell.OpenPath.ReturnValue;
+    trashItem: (args: IpcShell.TrashItem.Args) => IpcShell.TrashItem.ReturnValue;
+    revealResourcesInOS: (
+      args: IpcShell.ShowItemInFolder.Args,
+    ) => IpcShell.ShowItemInFolder.ReturnValue;
   };
   window: {
-    minimize: (args: WindowMinimize.Args) => WindowMinimize.ReturnValue;
-    toggleMaximized: (args: WindowToggleMaximize.Args) => WindowToggleMaximize.ReturnValue;
-    close: (args: WindowClose.Args) => WindowClose.ReturnValue;
+    minimize: (args: IpcWindow.Minimize.Args) => IpcWindow.Minimize.ReturnValue;
+    toggleMaximized: (args: IpcWindow.ToggleMaximize.Args) => IpcWindow.ToggleMaximize.ReturnValue;
+    close: (args: IpcWindow.Close.Args) => IpcWindow.Close.ReturnValue;
   };
   clipboard: {
     readResources: () => URI[];
     writeResources: (resources: URI[]) => void;
+  };
+  webContents: {
+    fileDragStart: (args: IpcFileDragStart.Args) => IpcFileDragStart.ReturnValue;
   };
   persistentDataStorage: {
     write: (entireValue: Record<string, unknown>) => Promise<void>;
@@ -72,21 +63,20 @@ export async function initializePrivilegedPlatformModules() {
   window.privileged = {
     fileService,
     fileIconTheme,
-    webContents: {
-      fileDragStart: (args) => {
-        ipcRenderer.send(FILEDRAGSTART_CHANNEL, args);
-      },
+    app: {
+      getNativeFileIconDataURL: (...args) =>
+        ipcRenderer.invoke(APP_CHANNEL.NATIVE_FILE_ICON, ...args),
     },
     shell: {
-      openPath: (...args) => ipcRenderer.invoke(SHELL_OPENPATH_CHANNEL, ...args),
-      trashItem: (...args) => ipcRenderer.invoke(TRASHITEM_CHANNEL, ...args),
-      revealResourcesInOS: (...args) => ipcRenderer.invoke(SHELL_SHOWITEMINFOLDER_CHANNEL, ...args),
-      getNativeFileIconDataURL: (...args) => ipcRenderer.invoke(NATIVEFILEICON_CHANNEL, ...args),
+      openPath: (...args) => ipcRenderer.invoke(SHELL_CHANNEL.OPEN_PATH, ...args),
+      trashItem: (...args) => ipcRenderer.invoke(SHELL_CHANNEL.TRASH_ITEM, ...args),
+      revealResourcesInOS: (...args) =>
+        ipcRenderer.invoke(SHELL_CHANNEL.SHOW_ITEM_IN_FOLDER, ...args),
     },
     window: {
-      minimize: (...args) => ipcRenderer.invoke(WINDOW_MINIMIZE_CHANNEL, ...args),
-      toggleMaximized: (...args) => ipcRenderer.invoke(WINDOW_TOGGLEMAXIMIZE_CHANNEL, ...args),
-      close: (...args) => ipcRenderer.invoke(WINDOW_CLOSE_CHANNEL, ...args),
+      minimize: (...args) => ipcRenderer.invoke(WINDOW_CHANNEL.MINIMIZE, ...args),
+      toggleMaximized: (...args) => ipcRenderer.invoke(WINDOW_CHANNEL.TOGGLE_MAXIMIZE, ...args),
+      close: (...args) => ipcRenderer.invoke(WINDOW_CHANNEL.CLOSE, ...args),
     },
     clipboard: {
       readResources: () => bufferToResources(clipboard.readBuffer(CLIPBOARD_FILELIST_FORMAT)),
@@ -97,9 +87,14 @@ export async function initializePrivilegedPlatformModules() {
           undefined,
         ),
     },
+    webContents: {
+      fileDragStart: (args) => {
+        ipcRenderer.send(FILEDRAGSTART_CHANNEL, args);
+      },
+    },
     persistentDataStorage: {
-      write: (...args) => ipcRenderer.invoke(PERSISTDATA_CHANNEL, ...args),
-      read: (...args) => ipcRenderer.invoke(READPERSISTEDDATA_CHANNEL, ...args),
+      write: (...args) => ipcRenderer.invoke(PERSISTENT_STORE_CHANNEL.PERSIST_DATA, ...args),
+      read: (...args) => ipcRenderer.invoke(PERSISTENT_STORE_CHANNEL.READ_PERSISTED_DATA, ...args),
     },
   };
 }

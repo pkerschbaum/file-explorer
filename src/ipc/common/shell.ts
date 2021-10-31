@@ -1,11 +1,22 @@
-export declare namespace ShellOpenPath {
-  export type Args = { fsPath: string };
-  export type ReturnValue = Promise<void>;
-}
-export const SHELL_OPENPATH_CHANNEL = 'app:shellOpenPath';
+import { config } from '@app/config';
 
-export declare namespace ShellShowItemInFolder {
-  export type Args = { fsPath: string };
-  export type ReturnValue = Promise<void>;
+export declare namespace IpcShell {
+  namespace OpenPath {
+    export type Args = { fsPath: string };
+    export type ReturnValue = Promise<void>;
+  }
+  namespace ShowItemInFolder {
+    export type Args = { fsPath: string };
+    export type ReturnValue = Promise<void>;
+  }
+  namespace TrashItem {
+    export type Args = { fsPath: string };
+    export type ReturnValue = Promise<void>;
+  }
 }
-export const SHELL_SHOWITEMINFOLDER_CHANNEL = 'app:showItemInFolder';
+
+export const SHELL_CHANNEL = {
+  OPEN_PATH: `${config.productName}:shell:openPath`,
+  SHOW_ITEM_IN_FOLDER: `${config.productName}:shell:showItemInFolder`,
+  TRASH_ITEM: `${config.productName}:shell:trashItem`,
+};

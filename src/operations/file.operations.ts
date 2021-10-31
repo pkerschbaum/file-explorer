@@ -96,7 +96,7 @@ export function removeProcess(processId: string) {
 }
 
 export async function openFiles(uris: UriComponents[]) {
-  await nativeHostRef.current.openPath(uris);
+  await nativeHostRef.current.shell.openPath(uris);
 }
 
 export function cutOrCopyFiles(files: UriComponents[], cut: boolean) {

@@ -1,57 +1,67 @@
 import { Emitter, Event } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/event';
 import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 
-import { FileDragStart } from '@app/ipc/common/file-drag-start';
-import { WindowClose, WindowMinimize, WindowToggleMaximize } from '@app/ipc/common/window';
-
 export type PlatformNativeHost = {
-  clipboard: {
-    readResources(): URI[];
-    writeResources(resources: URI[]): void;
-    onClipboardChanged: Event<void>;
+  app: {
+    getNativeFileIconDataURL: (args: { fsPath: string }) => Promise<string | undefined>;
+  };
+  shell: {
+    revealResourcesInOS(resources: UriComponents[]): Promise<void>;
+    openPath: (resources: UriComponents[]) => Promise<void>;
   };
   window: {
-    minimize: (args: WindowMinimize.Args) => WindowMinimize.ReturnValue;
-    toggleMaximized: (args: WindowToggleMaximize.Args) => WindowToggleMaximize.ReturnValue;
-    close: (args: WindowClose.Args) => WindowClose.ReturnValue;
+    minimize: () => Promise<void>;
+    toggleMaximized: () => Promise<void>;
+    close: () => Promise<void>;
   };
-  revealResourcesInOS(resources: UriComponents[]): Promise<void>;
-  openPath: (resources: UriComponents[]) => Promise<void>;
-  getNativeFileIconDataURL: (args: { fsPath: string }) => Promise<string | undefined>;
-  startNativeFileDnD: (args: FileDragStart.Args) => FileDragStart.ReturnValue;
+  clipboard: {
+    readResources(): UriComponents[];
+    writeResources(resources: UriComponents[]): void;
+    onClipboardChanged: Event<void>;
+  };
+  webContents: {
+    startNativeFileDnD: (resource: UriComponents) => void;
+  };
 };
 
 export const createNativeHost = () => {
   const onClipboardChanged = new Emitter<void>();
 
   const instance: PlatformNativeHost = {
-    clipboard: {
-      readResources: window.privileged.clipboard.readResources,
-      writeResources: (resources) => {
-        if (resources.length) {
-          window.privileged.clipboard.writeResources(resources);
-          onClipboardChanged.fire();
+    app: {
+      getNativeFileIconDataURL: window.privileged.app.getNativeFileIconDataURL,
+    },
+    shell: {
+      revealResourcesInOS: async (resources) => {
+        for (const resource of resources) {
+          await window.privileged.shell.revealResourcesInOS({ fsPath: URI.from(resource).fsPath });
         }
       },
-      onClipboardChanged: onClipboardChanged.event,
+      openPath: async (resources) => {
+        for (const resource of resources) {
+          await window.privileged.shell.openPath({ fsPath: URI.from(resource).fsPath });
+        }
+      },
     },
     window: {
       minimize: window.privileged.window.minimize,
       toggleMaximized: window.privileged.window.toggleMaximized,
       close: window.privileged.window.close,
     },
-    revealResourcesInOS: async (resources) => {
-      for (const resource of resources) {
-        await window.privileged.shell.revealResourcesInOS({ fsPath: URI.from(resource).fsPath });
-      }
+    clipboard: {
+      readResources: window.privileged.clipboard.readResources,
+      writeResources: (resources) => {
+        if (resources.length) {
+          window.privileged.clipboard.writeResources(resources.map((r) => URI.from(r)));
+          onClipboardChanged.fire();
+        }
+      },
+      onClipboardChanged: onClipboardChanged.event,
     },
-    openPath: async (resources) => {
-      for (const resource of resources) {
-        await window.privileged.shell.openPath({ fsPath: URI.from(resource).fsPath });
-      }
+    webContents: {
+      startNativeFileDnD: (resource) =>
+        window.privileged.webContents.fileDragStart({ fsPath: URI.from(resource).fsPath }),
     },
-    getNativeFileIconDataURL: window.privileged.shell.getNativeFileIconDataURL,
-    startNativeFileDnD: window.privileged.webContents.fileDragStart,
   };
 
   return instance;

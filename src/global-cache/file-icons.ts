@@ -60,5 +60,5 @@ export function useNativeFileIconDataURL(
 }
 
 async function fetchNativeIconDataURL(args: NativeIconDataURLQuery.Args) {
-  return await nativeHostRef.current.getNativeFileIconDataURL(args);
+  return await nativeHostRef.current.app.getNativeFileIconDataURL(args);
 }

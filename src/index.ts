@@ -2,11 +2,10 @@ import { isWindows } from '@pkerschbaum/code-oss-file-service/out/vs/base/common
 import { app, BrowserWindow } from 'electron';
 
 import { config } from '@app/config';
+import { registerListeners as registerNativeFileIconListeners } from '@app/ipc/electron-main/app';
 import { registerListeners as registerFileDragStartListeners } from '@app/ipc/electron-main/file-drag-start';
-import { registerListeners as registerNativeFileIconListeners } from '@app/ipc/electron-main/native-file-icon';
 import { registerListeners as registerPersistentStoreListeners } from '@app/ipc/electron-main/persistent-store';
 import { registerListeners as registerShellListeners } from '@app/ipc/electron-main/shell';
-import { registerListeners as registerTrashItemListeners } from '@app/ipc/electron-main/trash-item';
 import { registerListeners as registerWindowListeners } from '@app/ipc/electron-main/window';
 import { ACTIVE_THEME, THEMES } from '@app/ui/theme';
 
@@ -64,7 +63,6 @@ app.on('ready', () => {
     registerNativeFileIconListeners();
     registerPersistentStoreListeners();
     registerShellListeners();
-    registerTrashItemListeners();
     registerWindowListeners(mainWindow);
 
     mainWindow.once('ready-to-show', () => {
