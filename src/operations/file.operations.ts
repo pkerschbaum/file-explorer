@@ -11,17 +11,14 @@ import {
   DeleteProcess,
   DELETE_PROCESS_STATUS,
   FileStatMap,
-  FileToTags,
+  ResourcesToTags,
   PROCESS_TYPE,
   Tag,
 } from '@app/domain/types';
 import { refreshDirectoryContent } from '@app/global-cache/files';
-import {
-  actions as persistedSliceActions,
-  STORAGE_KEY,
-} from '@app/global-state/slices/persisted.slice';
 import { mapProcess } from '@app/global-state/slices/processes.hooks';
 import { actions } from '@app/global-state/slices/processes.slice';
+import { actions as tagsSliceActions } from '@app/global-state/slices/tags.slice';
 import {
   dispatchRef,
   fileSystemRef,
@@ -151,7 +148,7 @@ async function resolveDeepRecursive(
 }
 
 export function getTagsOfFile(
-  resourcesToTags: FileToTags,
+  resourcesToTags: ResourcesToTags,
   file: { uri: UriComponents; ctime: number },
 ): Tag[] {
   const tagIdsOfFile = resourcesToTags[URI.from(file.uri).toString()];
@@ -187,8 +184,8 @@ export async function addTags(files: UriComponents[], tagIds: string[]) {
     });
   }
 
-  const fileToTagsMap = objects.deepCopyJson(
-    storeRef.current.getState().persistedSlice.resourcesToTags,
+  const resourcesToTagsMap = objects.deepCopyJson(
+    storeRef.current.getState().tagsSlice.resourcesToTags,
   );
 
   await Promise.all(
@@ -197,17 +194,17 @@ export async function addTags(files: UriComponents[], tagIds: string[]) {
         resolveMetadata: true,
       });
 
-      let existingTagsOfFile = fileToTagsMap[URI.from(file).toString()];
+      let existingTagsOfFile = resourcesToTagsMap[URI.from(file).toString()];
       if (existingTagsOfFile === undefined || existingTagsOfFile.ctimeOfFile !== fileStat.ctime) {
         existingTagsOfFile = { ctimeOfFile: fileStat.ctime, tags: [] };
-        fileToTagsMap[URI.from(file).toString()] = existingTagsOfFile;
+        resourcesToTagsMap[URI.from(file).toString()] = existingTagsOfFile;
       }
       existingTagsOfFile.tags.push(...tagIds);
     }),
   );
 
   dispatchRef.current(
-    persistedSliceActions.storeValue({ key: STORAGE_KEY.RESOURCES_TO_TAGS, value: fileToTagsMap }),
+    tagsSliceActions.storeResourcesToTags({ resourcesToTags: resourcesToTagsMap }),
   );
 
   logger.debug(`tags to files added and stored in storage!`);
@@ -216,22 +213,22 @@ export async function addTags(files: UriComponents[], tagIds: string[]) {
 export function removeTags(files: UriComponents[], tagIds: string[]) {
   logger.debug(`removing tags from files...`, { files, tagIds });
 
-  const fileToTagsMap = objects.deepCopyJson(
-    storeRef.current.getState().persistedSlice.resourcesToTags,
+  const resourcesToTagsMap = objects.deepCopyJson(
+    storeRef.current.getState().tagsSlice.resourcesToTags,
   );
 
   for (const file of files) {
-    const existingTagsOfFile = fileToTagsMap[URI.from(file).toString()];
+    const existingTagsOfFile = resourcesToTagsMap[URI.from(file).toString()];
     if (existingTagsOfFile !== undefined) {
       existingTagsOfFile.tags = existingTagsOfFile.tags.filter(
         (existingTagId) => !tagIds.some((tagIdToRemove) => tagIdToRemove === existingTagId),
       );
-      fileToTagsMap[URI.from(file).toString()] = existingTagsOfFile;
+      resourcesToTagsMap[URI.from(file).toString()] = existingTagsOfFile;
     }
   }
 
   dispatchRef.current(
-    persistedSliceActions.storeValue({ key: STORAGE_KEY.RESOURCES_TO_TAGS, value: fileToTagsMap }),
+    tagsSliceActions.storeResourcesToTags({ resourcesToTags: resourcesToTagsMap }),
   );
 
   logger.debug(`tags from files removed!`);
@@ -267,13 +264,10 @@ export async function executeCopyOrMove({
     await operation;
 
     // Also copy tags to destination
-    const tagsOfSourceFile = getTagsOfFile(
-      storeRef.current.getState().persistedSlice.resourcesToTags,
-      {
-        uri: sourceFileURI,
-        ctime: sourceFileStat.ctime,
-      },
-    ).map((t) => t.id);
+    const tagsOfSourceFile = getTagsOfFile(storeRef.current.getState().tagsSlice.resourcesToTags, {
+      uri: sourceFileURI,
+      ctime: sourceFileStat.ctime,
+    }).map((t) => t.id);
     await addTags([targetFileURI], tagsOfSourceFile);
 
     // If move operation was performed, remove tags from source URI

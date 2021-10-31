@@ -4,7 +4,7 @@ import * as React from 'react';
 import { arrays } from '@app/base/utils/arrays.util';
 import { check } from '@app/base/utils/assert.util';
 import { FileForUI, FILE_TYPE } from '@app/domain/types';
-import { useEnrichFilesWithTags } from '@app/global-state/slices/persisted.hooks';
+import { useEnrichFilesWithTags } from '@app/global-state/slices/tags.hooks';
 import type {
   ExplorerContextProviderProps,
   ExplorerState,

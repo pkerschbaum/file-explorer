@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import { StorageState } from '@app/global-state/slices/persisted.slice';
+import { TagsState } from '@app/global-state/slices/tags.slice';
 import { createStoreInstance } from '@app/global-state/store';
 import {
   dispatchRef,
@@ -24,7 +24,7 @@ export type AppDependencies = {
   fileSystem: PlatformFileSystem;
   nativeHost: PlatformNativeHost;
   persistentStorage: PlatformPersistentStorage;
-  preloadedPersistedData: StorageState;
+  preloadedPersistedData: TagsState;
 };
 
 export function render(appDependencies: AppDependencies) {
@@ -33,7 +33,7 @@ export function render(appDependencies: AppDependencies) {
 
   const store = createStoreInstance({
     preloadedState: {
-      persistedSlice: appDependencies.preloadedPersistedData,
+      tagsSlice: appDependencies.preloadedPersistedData,
     },
   });
   storeRef.current = store;

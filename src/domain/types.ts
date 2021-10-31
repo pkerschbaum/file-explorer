@@ -124,7 +124,7 @@ export type FileStatMap = {
 };
 
 type TagId = string;
-export type FileToTags = { [uri: string]: { ctimeOfFile: number; tags: TagId[] } | undefined };
+export type ResourcesToTags = { [uri: string]: { ctimeOfFile: number; tags: TagId[] } | undefined };
 export type Tag = { id: TagId; name: string; colorHex: string };
 
 export type FileForUI = File & {

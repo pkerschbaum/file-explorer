@@ -1,4 +1,4 @@
-import { StorageState } from '@app/global-state/slices/persisted.slice';
+import { TagsState } from '@app/global-state/slices/tags.slice';
 import { createFileIconTheme } from '@app/platform/file-icon-theme';
 import { createFileSystem } from '@app/platform/file-system';
 import { createNativeHost } from '@app/platform/native-host';
@@ -34,7 +34,7 @@ async function rendererScriptEntryPoint() {
    * Read (possibly) persisted data, fill it up with default values, and execute a write afterwards.
    * This will make sure that from this point on, some data is present in the persistent storage.
    */
-  const storageState: StorageState | Partial<StorageState> = await persistentStorage.read();
+  const storageState: TagsState | Partial<TagsState> = await persistentStorage.read();
   const preloadedPersistedData = {
     tags: {},
     resourcesToTags: {},

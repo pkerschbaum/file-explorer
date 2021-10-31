@@ -5,7 +5,7 @@ import { useSelector } from '@app/global-state/store';
 import { getTagsOfFile } from '@app/operations/file.operations';
 
 export function useEnrichFilesWithTags(files: FileForUI[]) {
-  const resourcesToTags = useSelector((state) => state.persistedSlice.resourcesToTags);
+  const resourcesToTags = useSelector((state) => state.tagsSlice.resourcesToTags);
   const enrichedFiles = React.useMemo(
     () =>
       files.map((file) => ({
@@ -22,5 +22,5 @@ export function useEnrichFilesWithTags(files: FileForUI[]) {
 }
 
 export function useTags() {
-  return useSelector((state) => state.persistedSlice.tags);
+  return useSelector((state) => state.tagsSlice.tags);
 }
