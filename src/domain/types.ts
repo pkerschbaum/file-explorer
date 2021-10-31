@@ -30,9 +30,9 @@ export enum PROCESS_TYPE {
   DELETE = 'DELETE',
 }
 
-export type Process = PasteProcess | DeleteProcess;
+export type AppProcess = PasteProcess | DeleteProcess;
 
-export type PasteProcess = {
+export type PasteProcessBase = {
   id: string;
   type: PROCESS_TYPE.PASTE;
   pasteShouldMove: boolean;
@@ -42,37 +42,69 @@ export type PasteProcess = {
   totalSize: number;
   bytesProcessed: number;
   progressOfAtLeastOneSourceIsIndeterminate: boolean;
-} & (
-  | {
-      status:
-        | PASTE_PROCESS_STATUS.RUNNING_DETERMINING_TOTALSIZE
-        | PASTE_PROCESS_STATUS.RUNNING_PERFORMING_PASTE
-        | PASTE_PROCESS_STATUS.SUCCESS
-        | PASTE_PROCESS_STATUS.ABORT_REQUESTED
-        | PASTE_PROCESS_STATUS.ABORT_SUCCESS;
-    }
-  | {
-      status: PASTE_PROCESS_STATUS.FAILURE;
-      error: string;
-    }
-);
+};
 
-export type DeleteProcess = {
+type PasteProcess_RunningDeterminingTotalsize = PasteProcessBase & {
+  status: PASTE_PROCESS_STATUS.RUNNING_DETERMINING_TOTALSIZE;
+};
+
+type PasteProcess_RunningPerformingPaste = PasteProcessBase & {
+  status: PASTE_PROCESS_STATUS.RUNNING_PERFORMING_PASTE;
+};
+
+type PasteProcess_Success = PasteProcessBase & {
+  status: PASTE_PROCESS_STATUS.SUCCESS;
+};
+
+type PasteProcess_AbortRequested = PasteProcessBase & {
+  status: PASTE_PROCESS_STATUS.ABORT_REQUESTED;
+};
+
+type PasteProcess_AbortSuccess = PasteProcessBase & {
+  status: PASTE_PROCESS_STATUS.ABORT_SUCCESS;
+};
+
+type PasteProcess_Failure = PasteProcessBase & {
+  status: PASTE_PROCESS_STATUS.FAILURE;
+  error: string;
+};
+
+export type PasteProcess =
+  | PasteProcess_RunningDeterminingTotalsize
+  | PasteProcess_RunningPerformingPaste
+  | PasteProcess_Success
+  | PasteProcess_AbortRequested
+  | PasteProcess_AbortSuccess
+  | PasteProcess_Failure;
+
+export type DeleteProcessBase = {
   id: string;
   type: PROCESS_TYPE.DELETE;
   uris: UriComponents[];
-} & (
-  | {
-      status:
-        | DELETE_PROCESS_STATUS.PENDING_FOR_USER_INPUT
-        | DELETE_PROCESS_STATUS.RUNNING
-        | DELETE_PROCESS_STATUS.SUCCESS;
-    }
-  | {
-      status: DELETE_PROCESS_STATUS.FAILURE;
-      error: string;
-    }
-);
+};
+
+type DeleteProcess_PendingForUserInput = DeleteProcessBase & {
+  status: DELETE_PROCESS_STATUS.PENDING_FOR_USER_INPUT;
+};
+
+type DeleteProcess_Running = DeleteProcessBase & {
+  status: DELETE_PROCESS_STATUS.RUNNING;
+};
+
+type DeleteProcess_Success = DeleteProcessBase & {
+  status: DELETE_PROCESS_STATUS.SUCCESS;
+};
+
+type DeleteProcess_Failure = DeleteProcessBase & {
+  status: DELETE_PROCESS_STATUS.FAILURE;
+  error: string;
+};
+
+export type DeleteProcess =
+  | DeleteProcess_PendingForUserInput
+  | DeleteProcess_Running
+  | DeleteProcess_Success
+  | DeleteProcess_Failure;
 
 export type FileMap = {
   [stringifiedUri: string]: File | undefined;

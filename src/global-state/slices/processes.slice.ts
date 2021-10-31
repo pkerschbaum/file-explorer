@@ -5,7 +5,7 @@ import { createAction, createReducer } from '@reduxjs/toolkit';
 import { createLogger } from '@app/base/logger/logger';
 import { arrays } from '@app/base/utils/arrays.util';
 import {
-  Process,
+  AppProcess,
   PASTE_PROCESS_STATUS,
   DeleteProcess,
   PROCESS_TYPE,
@@ -16,7 +16,7 @@ export type ProcessesSliceState = {
   draftPasteState?: {
     pasteShouldMove: boolean;
   };
-  processes: Process[];
+  processes: AppProcess[];
 };
 
 type CutOrCopyFilesPayload = {

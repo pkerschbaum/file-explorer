@@ -131,8 +131,7 @@ export const createTheme = (locale: Localization) => {
             gap: ${(props) => props.theme.spacing(0.5)};
 
             &.Mui-expanded {
-              min-height: 32.8px;
-              padding-block: ${(props) => props.theme.spacing(2)};
+              min-height: 52px;
             }
 
             &:hover {

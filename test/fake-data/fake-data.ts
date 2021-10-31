@@ -4,9 +4,11 @@ import { IFileStatWithMetadata } from '@pkerschbaum/code-oss-file-service/out/vs
 
 import {
   DELETE_PROCESS_STATUS,
-  PASTE_PROCESS_STATUS,
-  Process,
+  PasteProcessBase,
+  AppProcess,
   PROCESS_TYPE,
+  PASTE_PROCESS_STATUS,
+  DeleteProcessBase,
 } from '@app/domain/types';
 
 export const fakeFileStat: IFileStatWithMetadata = {
@@ -22,7 +24,7 @@ export const fakeFileStat: IFileStatWithMetadata = {
   etag: '',
 };
 
-export const fakePasteProcess: Process = {
+export const fakePasteProcessBase: PasteProcessBase = {
   id: 'fake-paste-process-id',
   type: PROCESS_TYPE.PASTE,
   pasteShouldMove: false,
@@ -36,10 +38,14 @@ export const fakePasteProcess: Process = {
   totalSize: 1024 * 1024 * 10, // 10MB
   bytesProcessed: 1024 * 1024 * 2, // 2MB
   progressOfAtLeastOneSourceIsIndeterminate: false,
-  status: PASTE_PROCESS_STATUS.RUNNING_PERFORMING_PASTE,
 };
 
-export const fakeDeleteProcess: Process = {
+export const fakePasteProcess: AppProcess = {
+  ...fakePasteProcessBase,
+  status: PASTE_PROCESS_STATUS.RUNNING_DETERMINING_TOTALSIZE,
+};
+
+export const fakeDeleteProcessBase: DeleteProcessBase = {
   id: 'fake-delete-process-id',
   type: PROCESS_TYPE.DELETE,
   uris: [
@@ -47,5 +53,9 @@ export const fakeDeleteProcess: Process = {
     URI.joinPath(fakeFileStat.resource, './testfile2.docx'),
     URI.joinPath(fakeFileStat.resource, './testfile3.pdf'),
   ],
+};
+
+export const fakeDeleteProcess: AppProcess = {
+  ...fakeDeleteProcessBase,
   status: DELETE_PROCESS_STATUS.RUNNING,
 };
