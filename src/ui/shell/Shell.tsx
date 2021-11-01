@@ -4,7 +4,6 @@ import * as React from 'react';
 import styled, { css } from 'styled-components';
 
 import { useExplorerPanels } from '@app/global-state/slices/explorers.hooks';
-import { addExplorerPanel } from '@app/operations/app.operations';
 import { EXPLORER_ACTIONSBAR_GRID_AREA } from '@app/ui/actions-bar/ActionsBar';
 import { EXPLORER_CWDBREADCRUMBS_GRID_AREA } from '@app/ui/cwd-breadcrumbs/CwdBreadcrumbs';
 import { ExplorerPanel } from '@app/ui/explorer-panel/ExplorerPanel';
@@ -20,11 +19,6 @@ import { TitleBar } from '@app/ui/shell/TitleBar';
 
 export const Shell: React.FC = () => {
   const explorerPanels = useExplorerPanels();
-
-  // on mount, add first (initial) explorer panel
-  React.useEffect(() => {
-    void addExplorerPanel();
-  }, []);
 
   const explorersToShow = explorerPanels.filter((explorer) => !explorer.scheduledToRemove);
 

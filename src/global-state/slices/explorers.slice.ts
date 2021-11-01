@@ -3,10 +3,12 @@ import * as uuid from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uui
 import { createAction, createReducer } from '@reduxjs/toolkit';
 
 export type ExplorerSliceState = {
-  explorerPanels: {
-    [id: string]: ExplorerPanel;
-  };
+  explorerPanels: ExplorersMap;
   focusedExplorerPanelId?: string;
+};
+
+export type ExplorersMap = {
+  [id: string]: ExplorerPanel;
 };
 
 export type ExplorerPanel = {

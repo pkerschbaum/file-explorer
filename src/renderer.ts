@@ -1,10 +1,21 @@
-import { TagsState } from '@app/global-state/slices/tags.slice';
+import { createStoreInstance } from '@app/global-state/store';
+import {
+  queryClientRef,
+  fileIconThemeRef,
+  fileSystemRef,
+  nativeHostRef,
+  persistentStorageRef,
+  storeRef,
+  dispatchRef,
+} from '@app/operations/global-modules';
+import { reviveGlobalStateFromStorageState } from '@app/operations/storage-state.operations';
 import { createFileIconTheme } from '@app/platform/file-icon-theme';
 import { createFileSystem } from '@app/platform/file-system';
 import { createNativeHost } from '@app/platform/native-host';
-import { createPersistentStorage } from '@app/platform/persistent-storage';
+import { createPersistentStorage, StorageState } from '@app/platform/persistent-storage';
 import { DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED } from '@app/ui/actions-bar/ActionsBar';
 import { addIconThemeCssRulesToHead } from '@app/ui/file-icon-theme';
+import { createQueryClient } from '@app/ui/Globals';
 import { render } from '@app/ui/Root';
 
 const FILE_ICON_THEME_PATH_FRAGMENT = 'vscode-icons-team.vscode-icons-11.6.0';
@@ -30,26 +41,25 @@ async function rendererScriptEntryPoint() {
   }
   bodyElement.dataset[DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED.attrCamelCased] = 'true';
 
-  /**
-   * Read (possibly) persisted data, fill it up with default values, and execute a write afterwards.
-   * This will make sure that from this point on, some data is present in the persistent storage.
-   */
-  const storageState: TagsState | Partial<TagsState> = await persistentStorage.read();
-  const preloadedPersistedData = {
-    tags: {},
-    resourcesToTags: {},
-    ...storageState,
-  };
-  await persistentStorage.write(preloadedPersistedData);
+  // set up global modules
+  const queryClient = createQueryClient();
+  queryClientRef.current = queryClient;
+
+  fileIconThemeRef.current = fileIconTheme;
+  fileSystemRef.current = fileSystem;
+  nativeHostRef.current = nativeHost;
+  persistentStorageRef.current = persistentStorage;
+
+  // boot global state (redux) with (possibly) persisted data
+  const persistedStorageState: StorageState = await persistentStorage.read();
+  const preloadedGlobalState = await reviveGlobalStateFromStorageState(persistedStorageState);
+  const store = createStoreInstance({ preloadedState: preloadedGlobalState });
+
+  storeRef.current = store;
+  dispatchRef.current = store.dispatch;
 
   // render React application
-  render({
-    fileIconTheme,
-    fileSystem,
-    nativeHost,
-    persistentStorage,
-    preloadedPersistedData,
-  });
+  render({ queryClient, store });
 }
 
 void rendererScriptEntryPoint();

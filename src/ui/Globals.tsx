@@ -52,7 +52,7 @@ const GlobalStyle = createGlobalStyle`
   ${globalStyle}
 `;
 
-type GlobalsProps = {
+export type GlobalsProps = {
   queryClient: QueryClient;
   store: RootStore;
 };

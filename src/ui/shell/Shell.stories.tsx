@@ -63,6 +63,14 @@ export default {
       const queryClient = createQueryClient();
       const store = createStoreInstance({
         preloadedState: {
+          explorersSlice: {
+            explorerPanels: {
+              'panel-id-1': {
+                cwd: URI.file('/home/dir/'),
+              },
+            },
+            focusedExplorerPanelId: 'panel-id-1',
+          },
           processesSlice: {
             processes: [fakePasteProcess, fakeDeleteProcess],
           },
