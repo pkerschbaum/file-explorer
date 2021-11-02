@@ -26,6 +26,7 @@ module.exports = {
   plugins: ['node', 'jsx-a11y', 'import', 'only-warn'],
   ignorePatterns: ['**/*.js', '!.storybook'],
   rules: {
+    curly: 'error',
     'import/no-unresolved': 'off',
     'import/order': [
       'error',
