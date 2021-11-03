@@ -5,8 +5,7 @@ import { functions } from '@app/base/utils/functions.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { FileForUI } from '@app/domain/types';
 import { createStoreInstance } from '@app/global-state/store';
-import { dispatchRef, fileIconThemeRef, storeRef } from '@app/operations/global-modules';
-import { httpFileIconTheme } from '@app/platform/file-icon-theme.fake';
+import { dispatchRef, storeRef } from '@app/operations/global-modules';
 import { mapFileStatToFile } from '@app/platform/file-system';
 import { DataTable } from '@app/ui/elements/DataTable/DataTable';
 import { TableBody } from '@app/ui/elements/DataTable/TableBody';
@@ -65,60 +64,6 @@ const Template: ComponentStory<typeof FilesTableRow> = (args) => (
     </TableBody>
   </DataTable>
 );
-
-export const DeferredLoadFileIcon = Template.bind({});
-DeferredLoadFileIcon.args = {
-  fileForRow: fakeFileForUI,
-  idxOfFileForRow: 0,
-};
-DeferredLoadFileIcon.decorators = [
-  (story) => {
-    fileIconThemeRef.current = {
-      loadCssRules: httpFileIconTheme.loadCssRules,
-      loadIconClasses: (...args) => {
-        return new Promise((resolve) => {
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          setTimeout(async () => {
-            const result = await httpFileIconTheme.loadIconClasses(...args);
-            resolve(result);
-          }, 3000);
-        });
-      },
-    };
-
-    const explorerState: ExplorerState = {
-      filterInput: '',
-      selection: {
-        idsOfSelectedFiles: [],
-        fileIdSelectionGotStartedWith: undefined,
-      },
-      fileToRenameId: undefined,
-    };
-
-    const explorerStateUpdateFunctions: ExplorerStateUpdateFunctions = {
-      setFilterInput: functions.noop,
-      setIdsOfSelectedFiles: functions.noop,
-      setFileToRenameId: functions.noop,
-    };
-
-    return (
-      <ExplorerStateContextProvider
-        value={{
-          ...explorerState,
-          ...explorerStateUpdateFunctions,
-        }}
-      >
-        <ExplorerDerivedValuesContextProvider
-          explorerId="test-explorerid"
-          explorerState={explorerState}
-          setIdsOfSelectedFiles={explorerStateUpdateFunctions.setIdsOfSelectedFiles}
-        >
-          <ExplorerOperationsContextProvider>{story()}</ExplorerOperationsContextProvider>
-        </ExplorerDerivedValuesContextProvider>
-      </ExplorerStateContextProvider>
-    );
-  },
-];
 
 export const RenameOfRowActive = Template.bind({});
 RenameOfRowActive.args = {
