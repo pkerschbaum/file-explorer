@@ -24,7 +24,7 @@ module.exports = {
    * code editor (e.g. VS Code).
    */
   plugins: ['node', 'jsx-a11y', 'import', 'only-warn'],
-  ignorePatterns: ['**/*.js', '!.storybook'],
+  ignorePatterns: ['**/*.js'],
   rules: {
     curly: 'error',
     'import/no-unresolved': 'off',

@@ -11,8 +11,8 @@
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "lint": "eslint --max-warnings 0 .",
-    "storybook": "concurrently \"start-storybook -p 6006 -s ./src/static\" \"ts-node --project ./tsconfig.json -r tsconfig-paths/register ./test/file-icon-theme-server.ts\"",
-    "build-storybook": "build-storybook -s ./src/static"
+    "storybook": "concurrently \"start-storybook -c storybook -p 6006 -s ./src/static\" \"ts-node --project ./tsconfig.json -r tsconfig-paths/register ./test/file-icon-theme-server.ts\"",
+    "build-storybook": "build-storybook -c storybook -s ./src/static"
   },
   "keywords": [],
   "author": {
