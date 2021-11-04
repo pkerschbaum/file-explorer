@@ -1,3 +1,4 @@
+import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 
@@ -40,7 +41,7 @@ export default {
         preloadedState: {
           explorersSlice: {
             explorerPanels: {
-              'test-explorerid': { cwd: URI.file('/home/dir') },
+              'test-explorerid': { cwd: URI.parse(`${Schemas.inMemory}:///home/testdir`) },
             },
           },
         },

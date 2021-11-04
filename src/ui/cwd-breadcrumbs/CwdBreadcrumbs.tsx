@@ -1,14 +1,13 @@
 import KeyboardArrowDownOutlined from '@mui/icons-material/KeyboardArrowDownOutlined';
 import { Breadcrumbs, Button } from '@mui/material';
-import { posix, win32 } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/path';
 import { isWindows } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/platform';
+import * as resources from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import * as React from 'react';
 import styled from 'styled-components';
 
+import { CustomError } from '@app/base/custom-error';
 import { check } from '@app/base/utils/assert.util';
-import { formatter } from '@app/base/utils/formatter.util';
-import { uriHelper } from '@app/base/utils/uri-helper';
 import { useCwd } from '@app/global-state/slices/explorers.hooks';
 import { changeDirectory } from '@app/operations/explorer.operations';
 import { CwdActionsMenu } from '@app/ui/cwd-breadcrumbs/CwdActionsMenu';
@@ -20,33 +19,58 @@ export const CwdBreadcrumbs: React.FC = () => {
   const explorerId = useExplorerId();
   const cwd = useCwd(explorerId);
 
-  const cwdStringifiedParts = formatter
-    .folderPath(cwd)
-    .split(isWindows ? win32.sep : posix.sep)
-    .filter(check.isNonEmptyString);
-  const cwdRootPart = uriHelper.parseUri(cwd.scheme, cwdStringifiedParts[0]);
+  // compute slugs of CWD
+  let cwdUriSlugs: URI[] = [URI.from(cwd)];
+  let currentUriSlug = cwdUriSlugs[0];
+  let currentIteration = 1;
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    currentIteration++;
+    if (currentIteration >= 100) {
+      throw new CustomError(`could not split CWD into its URI slugs!`, {
+        currentIteration,
+        cwd,
+      });
+    }
+
+    const parentUriSlug = URI.joinPath(currentUriSlug, '..');
+    if (resources.isEqual(parentUriSlug, currentUriSlug)) {
+      // reached the root of the URI --> stop
+      break;
+    }
+
+    currentUriSlug = parentUriSlug;
+    cwdUriSlugs.push(currentUriSlug);
+  }
+  cwdUriSlugs = cwdUriSlugs.reverse();
+
+  const slugsWithFormatting = cwdUriSlugs.map((uriSlug) => ({
+    uri: uriSlug,
+    formatted: resources.basename(uriSlug),
+  }));
+
+  // if the first slug is empty, it is the root directory of a unix system.
+  if (check.isEmptyString(slugsWithFormatting[0].formatted)) {
+    slugsWithFormatting[0].formatted = '<root>';
+  }
+  // for windows, make drive letter upper case
+  if (isWindows) {
+    const driveLetterUpperCased = slugsWithFormatting[0].formatted[0].toLocaleUpperCase();
+    const remainingPart = slugsWithFormatting[0].formatted.slice(1);
+    slugsWithFormatting[0].formatted = `${driveLetterUpperCased}${remainingPart}`;
+  }
 
   return (
     <StyledBreadcrumbs maxItems={999}>
-      {cwdStringifiedParts.map((pathPart, idx) => {
-        const isFirstPart = idx === 0;
-        const isLastPart = idx === cwdStringifiedParts.length - 1;
+      {slugsWithFormatting.map((slug, idx) => {
+        const isLastSlug = idx === slugsWithFormatting.length - 1;
 
         return (
           <Breadcrumb
-            key={pathPart}
-            pathPart={pathPart}
-            isFirstPart={isFirstPart}
-            isLastPart={isLastPart}
-            changeDirectory={() =>
-              changeDirectory(
-                explorerId,
-                URI.joinPath(
-                  cwdRootPart,
-                  ...(isFirstPart ? ['/'] : cwdStringifiedParts.slice(1, idx + 1)),
-                ).path,
-              )
-            }
+            key={slug.uri.toString()}
+            slugFormatted={slug.formatted}
+            isLastSlug={isLastSlug}
+            changeDirectory={() => changeDirectory(explorerId, slug.uri)}
           />
         );
       })}
@@ -55,25 +79,16 @@ export const CwdBreadcrumbs: React.FC = () => {
 };
 
 type BreadcrumbProps = {
-  pathPart: string;
-  isFirstPart: boolean;
-  isLastPart: boolean;
+  slugFormatted: string;
+  isLastSlug: boolean;
   changeDirectory: () => Promise<void>;
 };
 
-const Breadcrumb: React.FC<BreadcrumbProps> = ({
-  pathPart,
-  isFirstPart,
-  isLastPart,
-  changeDirectory,
-}) => {
+const Breadcrumb: React.FC<BreadcrumbProps> = ({ slugFormatted, isLastSlug, changeDirectory }) => {
   const [menuAnchorEl, setMenuAnchorEl] = React.useState<HTMLElement | null>(null);
 
-  const pathPartFormatted =
-    isFirstPart && isWindows ? `${pathPart[0].toLocaleUpperCase()}${pathPart.slice(1)}` : pathPart;
-
   async function handleClick(e: React.MouseEvent<HTMLElement>) {
-    if (isLastPart) {
+    if (isLastSlug) {
       setMenuAnchorEl(e.currentTarget);
     } else {
       await changeDirectory();
@@ -86,11 +101,11 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
         variant="outlined"
         color="inherit"
         onClick={handleClick}
-        endIcon={!isLastPart ? undefined : <KeyboardArrowDownOutlined />}
+        endIcon={!isLastSlug ? undefined : <KeyboardArrowDownOutlined />}
       >
-        {pathPartFormatted}
+        {slugFormatted}
       </Button>
-      {isLastPart && (
+      {isLastSlug && (
         <CwdActionsMenu anchorEl={menuAnchorEl} onClose={() => setMenuAnchorEl(null)} />
       )}
     </>

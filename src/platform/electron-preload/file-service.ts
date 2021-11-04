@@ -1,6 +1,6 @@
 import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
 import { FileService } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/fileService';
-import { DiskFileSystemProvider } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/electron-browser/diskFileSystemProvider';
+import { DiskFileSystemProvider } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/node/diskFileSystemProvider';
 import {
   ConsoleMainLogger,
   LogService,

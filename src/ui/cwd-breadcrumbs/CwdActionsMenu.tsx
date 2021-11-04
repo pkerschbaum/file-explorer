@@ -4,6 +4,7 @@ import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import * as React from 'react';
 
 import { formatter } from '@app/base/utils/formatter.util';
+import { uriHelper } from '@app/base/utils/uri-helper';
 import { useCwd, useIdOfFocusedExplorerPanel } from '@app/global-state/slices/explorers.hooks';
 import { changeDirectory, revealCwdInOSExplorer } from '@app/operations/explorer.operations';
 import { KEYS, MOUSE_BUTTONS } from '@app/ui/constants';
@@ -32,7 +33,7 @@ const CwdActionsMenuImpl: React.FC<CwdActionsMenuProps> = ({ anchorEl, onClose }
   const cwd = useCwd(explorerId);
 
   async function navigateUp() {
-    await changeDirectory(explorerId, URI.joinPath(URI.from(cwd), '..').path);
+    await changeDirectory(explorerId, URI.joinPath(URI.from(cwd), '..'));
   }
 
   useWindowEvent('keydown', [
@@ -63,7 +64,7 @@ const CwdActionsMenuImpl: React.FC<CwdActionsMenuProps> = ({ anchorEl, onClose }
       <ChangeCwd
         initialCwdValue={formatter.folderPath(cwd)}
         onSubmit={async (newDir) => {
-          await changeDirectory(explorerId, newDir);
+          await changeDirectory(explorerId, uriHelper.parseUri(cwd.scheme, newDir));
           onClose();
         }}
       />

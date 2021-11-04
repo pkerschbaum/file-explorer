@@ -1,5 +1,4 @@
 import { CancellationTokenSource } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/cancellation';
-import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
 import { extname, basename } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/path';
 import { isLinux } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/platform';
 import type { ProgressCbArgs } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
@@ -12,7 +11,6 @@ import { IFileStat } from '@pkerschbaum/code-oss-file-service/out/vs/platform/fi
 import { CustomError } from '@app/base/custom-error';
 import { createLogger } from '@app/base/logger/logger';
 import { check } from '@app/base/utils/assert.util';
-import { uriHelper } from '@app/base/utils/uri-helper';
 import { PASTE_PROCESS_STATUS } from '@app/domain/types';
 import { actions as explorerActions } from '@app/global-state/slices/explorers.slice';
 import { actions as processesActions } from '@app/global-state/slices/processes.slice';
@@ -27,24 +25,16 @@ import {
 const UPDATE_INTERVAL_MS = 500;
 const logger = createLogger('explorer.hooks');
 
-export async function changeDirectory(explorerId: string, newDir: string) {
-  const parsedUri = uriHelper.parseUri(Schemas.file, newDir);
-
-  // check if the directory is a valid directory (i.e., is a URI-parsable string, and the directory is accessible)
-  if (!parsedUri) {
-    throw Error(
-      `could not change directory, reason: path is not a valid directory. path: ${newDir}`,
-    );
-  }
-  const stats = await fileSystemRef.current.resolve(parsedUri);
+export async function changeDirectory(explorerId: string, newDir: URI) {
+  const stats = await fileSystemRef.current.resolve(newDir);
   if (!stats.isDirectory) {
     throw Error(
-      `could not change directory, reason: uri is not a valid directory. uri: ${parsedUri.toString()}`,
+      `could not change directory, reason: uri is not a valid directory. uri: ${newDir.toString()}`,
     );
   }
 
   // change to the new directory
-  const newCwd = parsedUri.toJSON();
+  const newCwd = newDir.toJSON();
   dispatchRef.current(explorerActions.changeCwd({ explorerId, newCwd }));
 }
 

@@ -12,7 +12,7 @@ export const uriHelper = {
 
     // use Uri.file to handle specifics of fs paths, see
     // https://github.com/Microsoft/vscode-uri/blob/42f608bc8c934d066127b849081a5eeb7614bb30/src/index.ts#L682-L700
-    return scheme === Schemas.file ? URI.file(path) : URI.parse(`${scheme}${path}`);
+    return scheme === Schemas.file ? URI.file(path) : URI.parse(`${scheme}://${path}`);
   },
 
   extractNameAndExtension(uri: UriComponents): { fileName: string; extension?: string } {

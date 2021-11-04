@@ -11,7 +11,7 @@ import {
   persistentStorageRef,
 } from '@app/operations/global-modules';
 import { loadCssRules } from '@app/platform/file-icon-theme';
-import { fakeFileSystem } from '@app/platform/file-system.fake';
+import { createFakeFileSystem } from '@app/platform/file-system.fake';
 import { createFakeNativeHost } from '@app/platform/native-host.fake';
 import { createFakePersistentStorage } from '@app/platform/persistent-storage.fake';
 import { FILE_ICON_THEME_PATH_FRAGMENT } from '@app/static-resources-renderer';
@@ -32,8 +32,8 @@ const FILE_ICON_THEME_RELATIVE_PATH = './icon-theme/';
 const FILE_ICON_THEME_PATH_REPLACE_REGEX = /file:\/\/\//g;
 
 export const loaders = [
-  () => {
-    fileSystemRef.current = fakeFileSystem;
+  async () => {
+    fileSystemRef.current = await createFakeFileSystem();
     nativeHostRef.current = createFakeNativeHost();
     const fakePersistentStorage = createFakePersistentStorage();
     persistentStorageRef.current = fakePersistentStorage;

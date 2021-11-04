@@ -1,3 +1,4 @@
+import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import * as React from 'react';
 
 import { FileForUI, FILE_TYPE } from '@app/domain/types';
@@ -180,7 +181,7 @@ export const ExplorerOperationsContextProvider: React.FC<ExplorerOperationsConte
         selectedShownFiles.length === 1 &&
         selectedShownFiles[0].fileType === FILE_TYPE.DIRECTORY
       ) {
-        await changeDirectory(explorerId, selectedShownFiles[0].uri.path);
+        await changeDirectory(explorerId, URI.from(selectedShownFiles[0].uri));
       } else {
         await openFiles(
           selectedShownFiles

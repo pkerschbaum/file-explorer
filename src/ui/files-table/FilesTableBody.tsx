@@ -71,7 +71,7 @@ export const FilesTableRow: React.FC<FilesTableRowProps> = ({ fileForRow, idxOfF
 
   async function openFileOrDirectory(file: FileForUI) {
     if (file.fileType === FILE_TYPE.DIRECTORY) {
-      await changeDirectory(explorerId, file.uri.path);
+      await changeDirectory(explorerId, URI.from(file.uri));
     } else {
       await openFiles([file.uri]);
     }

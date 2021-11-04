@@ -1,4 +1,5 @@
 import { CancellationTokenSource } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/cancellation';
+import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { IFileStatWithMetadata } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 
@@ -16,7 +17,7 @@ export const fakeFileStat: IFileStatWithMetadata = {
   isFile: true,
   isSymbolicLink: false,
   name: 'test-file.txt',
-  resource: URI.file('/home/dir/test-file.txt'),
+  resource: URI.parse(`${Schemas.inMemory}:///home/testdir/testfile.txt`),
   ctime: Date.now(),
   mtime: Date.now(),
   readonly: false,
@@ -33,7 +34,7 @@ export const fakePasteProcessBase: PasteProcessBase = {
     URI.joinPath(fakeFileStat.resource, './testfile2.docx'),
     URI.joinPath(fakeFileStat.resource, './testfile3.pdf'),
   ],
-  destinationFolder: URI.file('/home/dir/'),
+  destinationFolder: URI.parse(`${Schemas.inMemory}:///home/testdir/`),
   cancellationTokenSource: new CancellationTokenSource(),
   totalSize: 1024 * 1024 * 10, // 10MB
   bytesProcessed: 1024 * 1024 * 2, // 2MB
