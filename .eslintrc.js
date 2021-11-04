@@ -36,10 +36,14 @@ module.exports = {
           {
             pattern: '@app/**',
             group: 'parent',
-            position: 'after',
           },
           {
             pattern: '@app-test/**',
+            group: 'parent',
+            position: 'after',
+          },
+          {
+            pattern: '@app-storybook/**',
             group: 'parent',
             position: 'after',
           },

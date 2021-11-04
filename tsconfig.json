@@ -13,7 +13,8 @@
     "outDir": "dist",
     "paths": {
       "@app/*": ["./src/*"],
-      "@app-test/*": ["./test/*"]
+      "@app-test/*": ["./test/*"],
+      "@app-storybook/*": ["./storybook/*"]
     },
     "plugins": [
       {
