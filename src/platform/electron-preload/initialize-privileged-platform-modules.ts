@@ -8,12 +8,10 @@ import { IpcFileDragStart, FILEDRAGSTART_CHANNEL } from '@app/ipc/common/file-dr
 import { PERSISTENT_STORE_CHANNEL } from '@app/ipc/common/persistent-store';
 import { IpcShell, SHELL_CHANNEL } from '@app/ipc/common/shell';
 import { IpcWindow, WINDOW_CHANNEL } from '@app/ipc/common/window';
-import { bootstrapModule as bootstrapFileIconThemeModule } from '@app/platform/electron-preload/file-icon-theme';
 import {
   bootstrapModule as bootstrapFileServiceModule,
   PlatformFileService,
 } from '@app/platform/electron-preload/file-service';
-import { PlatformFileIconTheme } from '@app/platform/file-icon-theme';
 
 declare global {
   interface Window {
@@ -23,7 +21,6 @@ declare global {
 
 type Privileged = {
   fileService: PlatformFileService;
-  fileIconTheme: PlatformFileIconTheme;
   app: {
     getNativeFileIconDataURL: (
       args: IpcApp.GetNativeFileIconDataURL.Args,
@@ -57,13 +54,12 @@ type Privileged = {
 
 const CLIPBOARD_FILELIST_FORMAT = `${config.productName}/file-list`;
 
+// eslint-disable-next-line @typescript-eslint/require-await
 export async function initializePrivilegedPlatformModules() {
   const { fileService } = bootstrapFileServiceModule();
-  const fileIconTheme = await bootstrapFileIconThemeModule();
 
   window.privileged = {
     fileService,
-    fileIconTheme,
     app: {
       getNativeFileIconDataURL: (...args) =>
         ipcRenderer.invoke(APP_CHANNEL.NATIVE_FILE_ICON, ...args),

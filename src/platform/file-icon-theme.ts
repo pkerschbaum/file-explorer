@@ -1,20 +1,93 @@
+import { getIconClasses, loadFileIconThemeCssRules } from '@pkerschbaum/code-oss-file-icon-theme';
+import { ModesRegistry } from '@pkerschbaum/code-oss-file-icon-theme/out/vs/editor/common/modes/modesRegistry';
+import { ILanguageExtensionPoint } from '@pkerschbaum/code-oss-file-icon-theme/out/vs/editor/common/services/modeService';
+import * as path from '@pkerschbaum/code-oss-file-service/out/vs/base/common/path';
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import { FileKind } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
+import {
+  FileKind,
+  IFileContent,
+  IFileService,
+} from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
+import axios from 'axios';
 
-export type PlatformFileIconTheme = {
-  loadCssRules: (fileIconThemePathFragment: string) => string | Promise<string>;
-  loadIconClasses: (resource: URI | undefined, fileKind: FileKind) => string[] | Promise<string[]>;
+import { check } from '@app/base/utils/assert.util';
+import {
+  FILE_ICON_THEME_RELATIVE_PATH,
+  LANGUAGE_EXTENSIONS_JSON_FILE_RELATIVE_PATH,
+} from '@app/static-resources-renderer';
+
+export type LanguageExtensionPointJsonEntry = {
+  packageName: string;
+  languages: ILanguageExtensionPoint[];
 };
 
-export const createFileIconTheme = () => {
-  const instance: PlatformFileIconTheme = {
-    loadCssRules: window.privileged.fileIconTheme.loadCssRules.bind(
-      window.privileged.fileIconTheme,
-    ),
-    loadIconClasses: window.privileged.fileIconTheme.loadIconClasses.bind(
-      window.privileged.fileIconTheme,
-    ),
-  };
+const httpIconThemeFileService: { readFile: IFileService['readFile'] } = {
+  readFile: async (resource) => {
+    const relativeUrlToFetch = /(\/static\/icon-theme\/.+)/g.exec(resource.path)?.[1];
+    if (check.isNullishOrEmptyString(relativeUrlToFetch)) {
+      throw new Error(`could not extract relative url to fetch! resource=${resource.toString()}`);
+    }
 
-  return instance;
+    const resourceJson = (
+      await axios.request({
+        method: 'GET',
+        url: `.${relativeUrlToFetch}`,
+      })
+    ).data;
+
+    return {
+      value: {
+        toString: () => JSON.stringify(resourceJson),
+      },
+    } as IFileContent;
+  },
 };
+
+let didInitializeLanguageExtensionPoints = false;
+export async function loadCssRules({
+  fileIconThemePathFragment,
+  cssRulesPostProcessing,
+}: {
+  fileIconThemePathFragment: string;
+  cssRulesPostProcessing: (
+    rawIconThemeCssRules: string,
+    fileIconThemePathFragment: string,
+  ) => string;
+}): Promise<string> {
+  if (!didInitializeLanguageExtensionPoints) {
+    didInitializeLanguageExtensionPoints = true;
+    const languageExtensionPoints = (
+      await axios.request<LanguageExtensionPointJsonEntry[]>({
+        method: 'GET',
+        url: LANGUAGE_EXTENSIONS_JSON_FILE_RELATIVE_PATH,
+      })
+    ).data;
+    const allLanguages = languageExtensionPoints.map((elem) => elem.languages).flat();
+    for (const language of allLanguages) {
+      ModesRegistry.registerLanguage(language);
+    }
+  }
+
+  const iconThemeCssRules = await loadFileIconThemeCssRules({
+    fileIconThemeUri: URI.file(
+      path.join('/', FILE_ICON_THEME_RELATIVE_PATH, fileIconThemePathFragment),
+    ),
+    fileService: httpIconThemeFileService as IFileService,
+  });
+
+  /**
+   * The icon-theme logic of the code-oss project constructs URLs in the CSS which use a resource scheme (e.g. "file://").
+   * But we want to just use a relative path so that it works with this electron-forge setup.
+   * That's why we replace all occurences of such URLs by relative paths.
+   */
+  const cssRules = cssRulesPostProcessing(iconThemeCssRules, fileIconThemePathFragment);
+
+  return cssRules;
+}
+
+export function loadIconClasses(
+  resource: URI | undefined,
+  fileKind: FileKind,
+): string[] | Promise<string[]> {
+  return getIconClasses(resource, fileKind);
+}

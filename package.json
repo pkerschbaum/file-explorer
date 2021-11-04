@@ -11,8 +11,9 @@
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "lint": "eslint --max-warnings 0 .",
-    "storybook": "concurrently \"start-storybook -c storybook -p 6006 -s ./src/static\" \"ts-node --project ./tsconfig.json -r tsconfig-paths/register ./test/file-icon-theme-server.ts\"",
-    "build-storybook": "build-storybook -c storybook -s ./src/static"
+    "storybook": "start-storybook -c storybook -p 6006 -s ./src",
+    "build-storybook": "build-storybook -c storybook -s ./src",
+    "compile-language-extensions-into-json-file": "ts-node --project ./tsconfig.json -r tsconfig-paths/register ./scripts/compile-language-extensions-into-json-file.ts && prettier --write ./src/static/icon-theme/language-extension-points.json"
   },
   "keywords": [],
   "author": {
@@ -24,14 +25,6 @@
     "node": "^14.18.0",
     "npm": "^6.14.15",
     "yarn": "^1.22.15"
-  },
-  "lint-staged": {
-    "**/*.{ts,tsx}": [
-      "eslint --max-warnings 0"
-    ],
-    "**/*": [
-      "prettier --write --ignore-unknown"
-    ]
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",
@@ -56,7 +49,6 @@
     "axios": "^0.23.0",
     "babel-loader": "^8.2.2",
     "babel-plugin-styled-components": "^1.13.3",
-    "concurrently": "^6.3.0",
     "copy-webpack-plugin": "^9.0.1",
     "cors": "^2.8.5",
     "css-loader": "^6.0.0",
@@ -89,7 +81,7 @@
     "@mui/icons-material": "^5.0.5",
     "@mui/material": "^5.0.6",
     "@mui/styled-engine": "npm:@mui/styled-engine-sc@^5.0.4",
-    "@pkerschbaum/code-oss-file-icon-theme": "^2.0.0",
+    "@pkerschbaum/code-oss-file-icon-theme": "^3.1.0",
     "@pkerschbaum/code-oss-file-service": "^1.61.1",
     "@reduxjs/toolkit": "^1.6.2",
     "electron-squirrel-startup": "^1.0.0",

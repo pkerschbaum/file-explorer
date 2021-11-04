@@ -3,14 +3,6 @@ const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const LOCAL_STATIC_ASSETS_PATH = path.resolve(__dirname, 'src', 'static');
-const CODE_OSS_FILE_ICON_THEME_LANGUAGES_PATH = path.resolve(
-  __dirname,
-  'node_modules',
-  '@pkerschbaum',
-  'code-oss-file-icon-theme',
-  'static',
-  'language-extensions',
-);
 
 module.exports = [
   new ForkTsCheckerWebpackPlugin(),
@@ -20,10 +12,6 @@ module.exports = [
       {
         from: LOCAL_STATIC_ASSETS_PATH,
         to: 'static',
-      },
-      {
-        from: CODE_OSS_FILE_ICON_THEME_LANGUAGES_PATH,
-        to: path.join('static', 'icon-theme', 'language-extensions'),
       },
     ],
   }),

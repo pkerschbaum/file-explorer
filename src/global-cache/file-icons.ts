@@ -4,7 +4,8 @@ import * as React from 'react';
 import { useQuery, UseQueryOptions } from 'react-query';
 
 import { QUERY_KEYS } from '@app/global-cache/query-keys';
-import { fileIconThemeRef, nativeHostRef } from '@app/operations/global-modules';
+import { nativeHostRef } from '@app/operations/global-modules';
+import { loadIconClasses } from '@app/platform/file-icon-theme';
 
 export declare namespace IconClassesQuery {
   export type Args = { uri?: UriComponents; fileKind: FileKind };
@@ -36,10 +37,7 @@ export function useFileIconClasses({
 }
 
 function fetchIconClasses(file: IconClassesQuery.Args) {
-  return fileIconThemeRef.current.loadIconClasses(
-    file.uri === undefined ? undefined : URI.from(file.uri),
-    file.fileKind,
-  );
+  return loadIconClasses(file.uri === undefined ? undefined : URI.from(file.uri), file.fileKind);
 }
 
 export declare namespace NativeIconDataURLQuery {
