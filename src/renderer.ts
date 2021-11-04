@@ -12,13 +12,15 @@ import { loadCssRules } from '@app/platform/file-icon-theme';
 import { createFileSystem } from '@app/platform/file-system';
 import { createNativeHost } from '@app/platform/native-host';
 import { createPersistentStorage, StorageState } from '@app/platform/persistent-storage';
-import { FILE_ICON_THEME_RELATIVE_PATH } from '@app/static-resources-renderer';
+import {
+  FILE_ICON_THEME_PATH_FRAGMENT,
+  FILE_ICON_THEME_RELATIVE_PATH,
+} from '@app/static-resources-renderer';
 import { DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED } from '@app/ui/actions-bar/ActionsBar';
 import { addIconThemeCssRulesToHead } from '@app/ui/file-icon-theme';
 import { createQueryClient } from '@app/ui/Globals';
 import { render } from '@app/ui/Root';
 
-const FILE_ICON_THEME_PATH_FRAGMENT = 'vscode-icons-team.vscode-icons-11.6.0';
 const FILE_ICON_THEME_PATH_REPLACE_REGEX = /file:.+\/static\/icon-theme\//g;
 
 async function rendererScriptEntryPoint() {
@@ -32,6 +34,7 @@ async function rendererScriptEntryPoint() {
 
   // load CSS rules of the file icon theme and put them into the <head> section
   const iconThemeCssRules = await loadCssRules({
+    fileIconThemeRelativePath: FILE_ICON_THEME_RELATIVE_PATH,
     fileIconThemePathFragment: FILE_ICON_THEME_PATH_FRAGMENT,
     cssRulesPostProcessing: (rawIconThemeCssRules) =>
       rawIconThemeCssRules.replace(

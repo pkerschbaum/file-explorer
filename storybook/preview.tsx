@@ -14,7 +14,7 @@ import { loadCssRules } from '@app/platform/file-icon-theme';
 import { fakeFileSystem } from '@app/platform/file-system.fake';
 import { createFakeNativeHost } from '@app/platform/native-host.fake';
 import { createFakePersistentStorage } from '@app/platform/persistent-storage.fake';
-import { FILE_ICON_THEME_RELATIVE_PATH } from '@app/static-resources-renderer';
+import { FILE_ICON_THEME_PATH_FRAGMENT } from '@app/static-resources-renderer';
 import { addIconThemeCssRulesToHead } from '@app/ui/file-icon-theme';
 import { Globals, createQueryClient } from '@app/ui/Globals';
 
@@ -28,7 +28,7 @@ export const parameters: Parameters = {
   },
 };
 
-const FILE_ICON_THEME_PATH_FRAGMENT = 'vscode-icons-team.vscode-icons-11.6.0';
+const FILE_ICON_THEME_RELATIVE_PATH = './icon-theme/';
 const FILE_ICON_THEME_PATH_REPLACE_REGEX = /file:\/\/\//g;
 
 export const loaders = [
@@ -40,6 +40,7 @@ export const loaders = [
   },
   async () => {
     const iconThemeCssRules = await loadCssRules({
+      fileIconThemeRelativePath: FILE_ICON_THEME_RELATIVE_PATH,
       fileIconThemePathFragment: FILE_ICON_THEME_PATH_FRAGMENT,
       cssRulesPostProcessing: (rawIconThemeCssRules, fileIconThemePathFragment) =>
         rawIconThemeCssRules.replace(

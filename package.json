@@ -11,8 +11,8 @@
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "lint": "eslint --max-warnings 0 .",
-    "storybook": "start-storybook -c storybook -p 6006 -s ./src",
-    "build-storybook": "build-storybook -c storybook -s ./src",
+    "storybook": "start-storybook -c storybook -p 6006 -s ./src/static",
+    "build-storybook": "build-storybook -c storybook -s ./src/static",
     "compile-language-extensions-into-json-file": "ts-node --project ./tsconfig.json -r tsconfig-paths/register ./scripts/compile-language-extensions-into-json-file.ts && prettier --write ./src/static/icon-theme/language-extension-points.json"
   },
   "keywords": [],

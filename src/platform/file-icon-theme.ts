@@ -11,10 +11,6 @@ import {
 import axios from 'axios';
 
 import { check } from '@app/base/utils/assert.util';
-import {
-  FILE_ICON_THEME_RELATIVE_PATH,
-  LANGUAGE_EXTENSIONS_JSON_FILE_RELATIVE_PATH,
-} from '@app/static-resources-renderer';
 
 export type LanguageExtensionPointJsonEntry = {
   packageName: string;
@@ -23,7 +19,7 @@ export type LanguageExtensionPointJsonEntry = {
 
 const httpIconThemeFileService: { readFile: IFileService['readFile'] } = {
   readFile: async (resource) => {
-    const relativeUrlToFetch = /(\/static\/icon-theme\/.+)/g.exec(resource.path)?.[1];
+    const relativeUrlToFetch = /((?:\/static)?\/icon-theme\/.+)/g.exec(resource.path)?.[1];
     if (check.isNullishOrEmptyString(relativeUrlToFetch)) {
       throw new Error(`could not extract relative url to fetch! resource=${resource.toString()}`);
     }
@@ -45,9 +41,11 @@ const httpIconThemeFileService: { readFile: IFileService['readFile'] } = {
 
 let didInitializeLanguageExtensionPoints = false;
 export async function loadCssRules({
+  fileIconThemeRelativePath,
   fileIconThemePathFragment,
   cssRulesPostProcessing,
 }: {
+  fileIconThemeRelativePath: string;
   fileIconThemePathFragment: string;
   cssRulesPostProcessing: (
     rawIconThemeCssRules: string,
@@ -59,7 +57,7 @@ export async function loadCssRules({
     const languageExtensionPoints = (
       await axios.request<LanguageExtensionPointJsonEntry[]>({
         method: 'GET',
-        url: LANGUAGE_EXTENSIONS_JSON_FILE_RELATIVE_PATH,
+        url: path.join(fileIconThemeRelativePath, 'language-extension-points.json'),
       })
     ).data;
     const allLanguages = languageExtensionPoints.map((elem) => elem.languages).flat();
@@ -70,7 +68,7 @@ export async function loadCssRules({
 
   const iconThemeCssRules = await loadFileIconThemeCssRules({
     fileIconThemeUri: URI.file(
-      path.join('/', FILE_ICON_THEME_RELATIVE_PATH, fileIconThemePathFragment),
+      path.join('/', fileIconThemeRelativePath, fileIconThemePathFragment),
     ),
     fileService: httpIconThemeFileService as IFileService,
   });
