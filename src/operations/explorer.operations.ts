@@ -287,7 +287,7 @@ function incrementFileName(name: string, isFolder: boolean): string {
   const suffixRegex = /^(.+ copy)( \d+)?$/;
   if (suffixRegex.test(namePrefix)) {
     return (
-      namePrefix.replace(suffixRegex, (_, g1?, g2?) => {
+      namePrefix.replace(suffixRegex, (_, g1?, g2?: string) => {
         const number = g2 ? parseInt(g2) : 1;
         return number === 0
           ? // eslint-disable-next-line @typescript-eslint/restrict-template-expressions

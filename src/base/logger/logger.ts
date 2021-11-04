@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+/* eslint-disable @typescript-eslint/no-unsafe-argument, no-console */
 
 import { CustomError } from '@app/base/custom-error';
 import { objects } from '@app/base/utils/objects.util';

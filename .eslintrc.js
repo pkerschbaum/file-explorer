@@ -78,7 +78,6 @@ module.exports = {
       'error',
       { overrides: { constructors: 'off' } },
     ],
-    '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-floating-promises': 'error',
     '@typescript-eslint/no-meaningless-void-operator': 'error',

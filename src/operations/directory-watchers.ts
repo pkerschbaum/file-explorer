@@ -7,7 +7,7 @@ import * as React from 'react';
 
 import { createLogger } from '@app/base/logger/logger';
 import { refreshDirectoryContent } from '@app/global-cache/files';
-import { DIRECTORY_CONTENT_KEY_PREFIX } from '@app/global-cache/query-keys';
+import { DirectoryContentKey, DIRECTORY_CONTENT_KEY_PREFIX } from '@app/global-cache/query-keys';
 import { fileSystemRef, queryClientRef } from '@app/operations/global-modules';
 
 const logger = createLogger('directory-watchers');
@@ -24,7 +24,7 @@ export function useDirectoryWatchers() {
           cacheNotifyEvent.query.queryKey.length > 0 &&
           cacheNotifyEvent.query.queryKey[0] === DIRECTORY_CONTENT_KEY_PREFIX
         ) {
-          const queryKey = cacheNotifyEvent.query.queryKey as string[];
+          const queryKey = cacheNotifyEvent.query.queryKey as DirectoryContentKey;
           logger.group('DIRECTORY_CONTENT_QUERY_WITH_OBSERVER_ADDED');
 
           logger.debug(
@@ -32,7 +32,7 @@ export function useDirectoryWatchers() {
             { queryKey },
           );
 
-          const directoryUri = URI.parse(cacheNotifyEvent.query.queryKey[1].directoryId);
+          const directoryUri = URI.parse(queryKey[1].directoryId);
 
           if (directoryWatchers.get(directoryUri.toString()) !== undefined) {
             logger.debug('directory watcher already present', { queryKey });
@@ -61,7 +61,7 @@ export function useDirectoryWatchers() {
           cacheNotifyEvent.query.queryKey.length > 0 &&
           cacheNotifyEvent.query.queryKey[0] === DIRECTORY_CONTENT_KEY_PREFIX
         ) {
-          const queryKey = cacheNotifyEvent.query.queryKey as string[];
+          const queryKey = cacheNotifyEvent.query.queryKey as DirectoryContentKey;
           logger.group('LAST_OBSERVER_OF_DIRECTORY_CONTENT_REMOVED');
 
           logger.debug(
@@ -69,7 +69,7 @@ export function useDirectoryWatchers() {
             { queryKey },
           );
 
-          const directoryUri = URI.parse(cacheNotifyEvent.query.queryKey[1].directoryId);
+          const directoryUri = URI.parse(queryKey[1].directoryId);
           const activeWatcher = directoryWatchers.get(directoryUri.toString());
           if (!activeWatcher) {
             logger.debug('no directory watcher was present', { queryKey });

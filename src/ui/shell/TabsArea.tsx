@@ -75,7 +75,7 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
         orientation="vertical"
         variant="scrollable"
         value={idOfFocusedExplorerPanel}
-        onChange={(_, newValue) => changeFocusedExplorer(newValue)}
+        onChange={(_, newValue: string) => changeFocusedExplorer(newValue)}
         TabIndicatorProps={{ children: <span className={tabIndicatorSpanClassName} /> }}
       >
         {explorersToShow.map((explorer) => (

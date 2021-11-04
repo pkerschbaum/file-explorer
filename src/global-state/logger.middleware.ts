@@ -13,6 +13,7 @@ const loggerMiddleware = (store: any) => (next: any) => (action: PayloadAction) 
     { actionPayload: action.payload as any as JsonObject<any> },
   );
   const result = next(action);
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   logger.debug('next state got computed!', undefined, store.getState());
   logger.groupEnd();
   return result;
