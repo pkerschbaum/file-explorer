@@ -26,6 +26,25 @@
     "npm": "^6.14.15",
     "yarn": "^1.22.15"
   },
+  "dependencies": {
+    "@mui/icons-material": "^5.0.5",
+    "@mui/material": "^5.0.6",
+    "@mui/styled-engine": "npm:@mui/styled-engine-sc@^5.0.4",
+    "@pkerschbaum/code-oss-file-icon-theme": "^3.1.0",
+    "@pkerschbaum/code-oss-file-service": "^1.61.1",
+    "@reduxjs/toolkit": "^1.6.2",
+    "electron-squirrel-startup": "^1.0.0",
+    "electron-store": "^8.0.1",
+    "match-sorter": "^6.3.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-query": "^3.29.0",
+    "react-redux": "^7.2.5",
+    "scheduler": "^0.20.2",
+    "styled-components": "^5.3.3",
+    "use-context-selector": "^1.3.9",
+    "use-immer": "^0.6.0"
+  },
   "devDependencies": {
     "@babel/core": "^7.15.8",
     "@electron-forge/cli": "^6.0.0-beta.61",
@@ -77,74 +96,10 @@
     "typescript-plugin-styled-components": "^2.0.0",
     "typescript-styled-plugin": "^0.18.1"
   },
-  "dependencies": {
-    "@mui/icons-material": "^5.0.5",
-    "@mui/material": "^5.0.6",
-    "@mui/styled-engine": "npm:@mui/styled-engine-sc@^5.0.4",
-    "@pkerschbaum/code-oss-file-icon-theme": "^3.1.0",
-    "@pkerschbaum/code-oss-file-service": "^1.61.1",
-    "@reduxjs/toolkit": "^1.6.2",
-    "electron-squirrel-startup": "^1.0.0",
-    "electron-store": "^8.0.1",
-    "match-sorter": "^6.3.1",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-query": "^3.29.0",
-    "react-redux": "^7.2.5",
-    "scheduler": "^0.20.2",
-    "styled-components": "^5.3.3",
-    "use-context-selector": "^1.3.9",
-    "use-immer": "^0.6.0"
-  },
   "resolutions": {
     "@mui/styled-engine": "npm:@mui/styled-engine-sc@^5.0.4"
   },
   "config": {
-    "forge": {
-      "packagerConfig": {},
-      "makers": [
-        {
-          "name": "@electron-forge/maker-squirrel",
-          "config": {
-            "name": "electron_react_typescript"
-          }
-        },
-        {
-          "name": "@electron-forge/maker-zip",
-          "platforms": [
-            "darwin"
-          ]
-        },
-        {
-          "name": "@electron-forge/maker-deb",
-          "config": {}
-        },
-        {
-          "name": "@electron-forge/maker-rpm",
-          "config": {}
-        }
-      ],
-      "plugins": [
-        [
-          "@electron-forge/plugin-webpack",
-          {
-            "mainConfig": "./webpack.main.config.js",
-            "renderer": {
-              "config": "./webpack.renderer.config.js",
-              "entryPoints": [
-                {
-                  "html": "./src/index.html",
-                  "js": "./src/renderer.ts",
-                  "name": "main_window",
-                  "preload": {
-                    "js": "./src/preload.ts"
-                  }
-                }
-              ]
-            }
-          }
-        ]
-      ]
-    }
+    "forge": "./forge.config.js"
   }
 }
