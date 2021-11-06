@@ -11,6 +11,8 @@ import { IFileStat } from '@pkerschbaum/code-oss-file-service/out/vs/platform/fi
 import { CustomError } from '@app/base/custom-error';
 import { createLogger } from '@app/base/logger/logger';
 import { check } from '@app/base/utils/assert.util';
+import { formatter } from '@app/base/utils/formatter.util';
+import { uriHelper } from '@app/base/utils/uri-helper';
 import { PASTE_PROCESS_STATUS } from '@app/domain/types';
 import { actions as explorerActions } from '@app/global-state/slices/explorers.slice';
 import { actions as processesActions } from '@app/global-state/slices/processes.slice';
@@ -29,7 +31,9 @@ export async function changeDirectory(explorerId: string, newDir: URI) {
   const stats = await fileSystemRef.current.resolve(newDir);
   if (!stats.isDirectory) {
     throw Error(
-      `could not change directory, reason: uri is not a valid directory. uri: ${newDir.toString()}`,
+      `could not change directory, reason: uri is not a valid directory. uri: ${formatter.resource(
+        newDir,
+      )}`,
     );
   }
 
@@ -81,7 +85,8 @@ export async function pasteFiles(explorerId: string) {
         // Destination folder must not be a subfolder of any source file/folder. Imagine copying
         // a folder "test" and paste it (and its content) *into* itself, that would not work.
         if (
-          destinationFolder.toString() !== sourceFileURI.toString() &&
+          uriHelper.getComparisonKey(destinationFolder) !==
+            uriHelper.getComparisonKey(sourceFileURI) &&
           resources.isEqualOrParent(destinationFolder, sourceFileURI, !isLinux /* ignorecase */)
         ) {
           throw new CustomError('The destination folder is a subfolder of the source file', {
@@ -171,7 +176,8 @@ export async function pasteFiles(explorerId: string) {
   function progressCb(progressArgs: ProgressCbArgs) {
     if ('newBytesRead' in progressArgs && progressArgs.newBytesRead !== undefined) {
       bytesProcessed += progressArgs.newBytesRead;
-      statusPerFile[progressArgs.forSource.toString()].bytesProcessed += progressArgs.newBytesRead;
+      statusPerFile[uriHelper.getComparisonKey(progressArgs.forSource)].bytesProcessed +=
+        progressArgs.newBytesRead;
     }
     if ('progressIsIndeterminate' in progressArgs && progressArgs.progressIsIndeterminate) {
       progressOfAtLeastOneSourceIsIndeterminate = true;
@@ -248,7 +254,8 @@ function findValidPasteFileTarget(
     return candidate;
   }
 
-  const cmpFunction = (child: IFileStat) => child.resource.toString() === candidate.toString();
+  const cmpFunction = (child: IFileStat) =>
+    uriHelper.getComparisonKey(child.resource) === uriHelper.getComparisonKey(candidate);
 
   // eslint-disable-next-line no-constant-condition
   while (true) {

@@ -2,7 +2,6 @@ import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import { Button, LinearProgress } from '@mui/material';
-import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import * as React from 'react';
 
 import { isUnreachable } from '@app/base/utils/assert.util';
@@ -112,7 +111,7 @@ export const DeleteProcess: React.FC<{ process: DeleteProcessType }> = ({ proces
               const fileLabel = formatter.file({ name: fileName, extension });
 
               return (
-                <TextBox key={URI.from(uri).toString()} fontSize="sm" fontBold>
+                <TextBox key={uriHelper.getComparisonKey(uri)} fontSize="sm" fontBold>
                   {fileLabel}
                 </TextBox>
               );

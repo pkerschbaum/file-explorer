@@ -8,6 +8,7 @@ import styled from 'styled-components';
 
 import { CustomError } from '@app/base/custom-error';
 import { check } from '@app/base/utils/assert.util';
+import { uriHelper } from '@app/base/utils/uri-helper';
 import { useCwd } from '@app/global-state/slices/explorers.hooks';
 import { changeDirectory } from '@app/operations/explorer.operations';
 import { CwdActionsMenu } from '@app/ui/cwd-breadcrumbs/CwdActionsMenu';
@@ -67,7 +68,7 @@ export const CwdBreadcrumbs: React.FC = () => {
 
         return (
           <Breadcrumb
-            key={slug.uri.toString()}
+            key={uriHelper.getComparisonKey(slug.uri)}
             slugFormatted={slug.formatted}
             isLastSlug={isLastSlug}
             changeDirectory={() => changeDirectory(explorerId, slug.uri)}

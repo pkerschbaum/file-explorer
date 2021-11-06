@@ -1,5 +1,6 @@
 import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 
+import { formatter } from '@app/base/utils/formatter.util';
 import { actions, generateExplorerId } from '@app/global-state/slices/explorers.slice';
 import { dispatchRef, fileSystemRef, nativeHostRef } from '@app/operations/global-modules';
 
@@ -15,7 +16,9 @@ export async function addExplorerPanel(cwdToUse?: UriComponents) {
   const stats = await fileSystemRef.current.resolve(cwdOfNewExplorer);
   if (!stats.isDirectory) {
     throw Error(
-      `could not set directory for explorer panel, reason: uri is not a valid directory. uri: ${cwdOfNewExplorer.toString()}`,
+      `could not set directory for explorer panel, reason: uri is not a valid directory. uri: ${formatter.resource(
+        cwdOfNewExplorer,
+      )}`,
     );
   }
 

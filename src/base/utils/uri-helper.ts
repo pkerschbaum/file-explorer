@@ -1,5 +1,5 @@
 import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
-import { basename, extname } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
+import * as resources from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
 import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 
 import { check } from '@app/base/utils/assert.util';
@@ -16,8 +16,8 @@ export const uriHelper = {
   },
 
   extractNameAndExtension(uri: UriComponents): { fileName: string; extension?: string } {
-    let fileName = basename(URI.from(uri));
-    let extension: string | undefined = extname(URI.from(uri));
+    let fileName = resources.basename(URI.from(uri));
+    let extension: string | undefined = resources.extname(URI.from(uri));
 
     if (check.isEmptyString(extension)) {
       extension = undefined;
@@ -28,5 +28,9 @@ export const uriHelper = {
     }
 
     return { fileName, extension };
+  },
+
+  getComparisonKey(uri: UriComponents): string {
+    return resources.extUri.getComparisonKey(URI.from(uri));
   },
 };

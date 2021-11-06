@@ -7,6 +7,7 @@ import { IFileStatWithMetadata } from '@pkerschbaum/code-oss-file-service/out/vs
 import { CustomError } from '@app/base/custom-error';
 import { createLogger } from '@app/base/logger/logger';
 import { objects } from '@app/base/utils/objects.util';
+import { uriHelper } from '@app/base/utils/uri-helper';
 import {
   DeleteProcess,
   DELETE_PROCESS_STATUS,
@@ -133,7 +134,7 @@ async function resolveDeepRecursive(
   resultMap: FileStatMap,
 ) {
   if (!targetStat.isDirectory) {
-    resultMap[URI.from(targetToResolve).toString()] = targetStat;
+    resultMap[uriHelper.getComparisonKey(targetToResolve)] = targetStat;
   } else if (targetStat.children && targetStat.children.length > 0) {
     // recursive resolve
     await Promise.all(
@@ -151,7 +152,7 @@ export function getTagsOfFile(
   resourcesToTags: ResourcesToTags,
   file: { uri: UriComponents; ctime: number },
 ): Tag[] {
-  const tagIdsOfFile = resourcesToTags[URI.from(file.uri).toString()];
+  const tagIdsOfFile = resourcesToTags[uriHelper.getComparisonKey(file.uri)];
 
   if (
     tagIdsOfFile === undefined ||
@@ -194,10 +195,10 @@ export async function addTags(files: UriComponents[], tagIds: string[]) {
         resolveMetadata: true,
       });
 
-      let existingTagsOfFile = resourcesToTagsMap[URI.from(file).toString()];
+      let existingTagsOfFile = resourcesToTagsMap[uriHelper.getComparisonKey(file)];
       if (existingTagsOfFile === undefined || existingTagsOfFile.ctimeOfFile !== fileStat.ctime) {
         existingTagsOfFile = { ctimeOfFile: fileStat.ctime, tags: [] };
-        resourcesToTagsMap[URI.from(file).toString()] = existingTagsOfFile;
+        resourcesToTagsMap[uriHelper.getComparisonKey(file)] = existingTagsOfFile;
       }
       existingTagsOfFile.tags.push(...tagIds);
     }),
@@ -218,12 +219,12 @@ export function removeTags(files: UriComponents[], tagIds: string[]) {
   );
 
   for (const file of files) {
-    const existingTagsOfFile = resourcesToTagsMap[URI.from(file).toString()];
+    const existingTagsOfFile = resourcesToTagsMap[uriHelper.getComparisonKey(file)];
     if (existingTagsOfFile !== undefined) {
       existingTagsOfFile.tags = existingTagsOfFile.tags.filter(
         (existingTagId) => !tagIds.some((tagIdToRemove) => tagIdToRemove === existingTagId),
       );
-      resourcesToTagsMap[URI.from(file).toString()] = existingTagsOfFile;
+      resourcesToTagsMap[uriHelper.getComparisonKey(file)] = existingTagsOfFile;
     }
   }
 

@@ -6,6 +6,7 @@ import {
 } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 
 import { arrays } from '@app/base/utils/arrays.util';
+import { uriHelper } from '@app/base/utils/uri-helper';
 import { File, FILE_TYPE } from '@app/domain/types';
 
 export type PlatformFileSystem = {
@@ -51,7 +52,7 @@ export function mapFileStatToFile(file: IFileStat): File {
     : FILE_TYPE.UNKNOWN;
 
   return {
-    id: file.resource.toString(),
+    id: uriHelper.getComparisonKey(file.resource),
     fileType,
     uri: file.resource.toJSON(),
     size: file.size,
@@ -63,7 +64,7 @@ export function mapFileStatToFile(file: IFileStat): File {
 export function getDistinctParents(files: UriComponents[]): UriComponents[] {
   return arrays.uniqueValues(
     files.map((file) => URI.joinPath(URI.from(file), '..')),
-    (item) => item.toString(),
+    (file) => uriHelper.getComparisonKey(file),
   );
 }
 

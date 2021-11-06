@@ -1,6 +1,6 @@
-import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import * as React from 'react';
 
+import { uriHelper } from '@app/base/utils/uri-helper';
 import { useCwd, useIdOfFocusedExplorerPanel } from '@app/global-state/slices/explorers.hooks';
 import { ActionsBar } from '@app/ui/actions-bar';
 import { CwdBreadcrumbs } from '@app/ui/cwd-breadcrumbs';
@@ -16,7 +16,7 @@ export const ExplorerPanel = React.memo<ExplorerPanelProps>(function ExplorerPan
   const isActiveExplorer = explorerId === focusedExplorerId;
 
   return (
-    <ExplorerContextProvider key={URI.from(cwd).toString()} explorerId={explorerId}>
+    <ExplorerContextProvider key={uriHelper.getComparisonKey(cwd)} explorerId={explorerId}>
       {isActiveExplorer && (
         <>
           <CwdBreadcrumbs />

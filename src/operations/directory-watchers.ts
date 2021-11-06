@@ -6,6 +6,7 @@ import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import * as React from 'react';
 
 import { createLogger } from '@app/base/logger/logger';
+import { uriHelper } from '@app/base/utils/uri-helper';
 import { refreshDirectoryContent } from '@app/global-cache/files';
 import { DirectoryContentKey, DIRECTORY_CONTENT_KEY_PREFIX } from '@app/global-cache/query-keys';
 import { fileSystemRef, queryClientRef } from '@app/operations/global-modules';
@@ -34,7 +35,7 @@ export function useDirectoryWatchers() {
 
           const directoryUri = URI.parse(queryKey[1].directoryId);
 
-          if (directoryWatchers.get(directoryUri.toString()) !== undefined) {
+          if (directoryWatchers.get(uriHelper.getComparisonKey(directoryUri)) !== undefined) {
             logger.debug('directory watcher already present', { queryKey });
           } else {
             logger.debug('no directory watcher present --> creating watcher...', { queryKey });
@@ -47,7 +48,7 @@ export function useDirectoryWatchers() {
             const disposables = new DisposableStore();
             disposables.add(watcherDisposable);
             disposables.add(didFilesChangeDisposable);
-            directoryWatchers.set(directoryUri.toString(), disposables);
+            directoryWatchers.set(uriHelper.getComparisonKey(directoryUri), disposables);
 
             logger.debug('directory watcher created!', { queryKey });
           }
@@ -70,12 +71,12 @@ export function useDirectoryWatchers() {
           );
 
           const directoryUri = URI.parse(queryKey[1].directoryId);
-          const activeWatcher = directoryWatchers.get(directoryUri.toString());
+          const activeWatcher = directoryWatchers.get(uriHelper.getComparisonKey(directoryUri));
           if (!activeWatcher) {
             logger.debug('no directory watcher was present', { queryKey });
           } else {
             activeWatcher.dispose();
-            directoryWatchers.delete(directoryUri.toString());
+            directoryWatchers.delete(uriHelper.getComparisonKey(directoryUri));
             logger.debug('directory watcher removed!', { queryKey });
           }
 

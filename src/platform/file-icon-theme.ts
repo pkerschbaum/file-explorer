@@ -11,6 +11,7 @@ import {
 import axios from 'axios';
 
 import { check } from '@app/base/utils/assert.util';
+import { formatter } from '@app/base/utils/formatter.util';
 
 export type LanguageExtensionPointJsonEntry = {
   packageName: string;
@@ -21,7 +22,9 @@ const httpIconThemeFileService: { readFile: IFileService['readFile'] } = {
   readFile: async (resource) => {
     const relativeUrlToFetch = /((?:\/static)?\/icon-theme\/.+)/g.exec(resource.path)?.[1];
     if (check.isNullishOrEmptyString(relativeUrlToFetch)) {
-      throw new Error(`could not extract relative url to fetch! resource=${resource.toString()}`);
+      throw new Error(
+        `could not extract relative url to fetch! resource=${formatter.resource(resource)}`,
+      );
     }
 
     const resourceJson = (

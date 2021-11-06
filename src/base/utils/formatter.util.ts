@@ -4,7 +4,7 @@ import { byteSize, ByteUnit } from '@app/base/utils/byte-size.util';
 import { numbers } from '@app/base/utils/numbers.util';
 import { i18n } from '@app/domain/i18n';
 
-export const formatter = { bytes, date, file, filePath, folderPath };
+export const formatter = { bytes, date, file, resource };
 
 function bytes(numberOfBytes: number, options?: { unit: ByteUnit }): string {
   let unitToUse = options?.unit;
@@ -42,10 +42,6 @@ function file(file: { name: string; extension?: string }): string {
   return `${file.name}${file.extension}`;
 }
 
-function filePath(file: UriComponents): string {
-  return URI.from(file).fsPath;
-}
-
-function folderPath(folder: UriComponents): string {
-  return URI.from(folder).fsPath;
+function resource(resource: UriComponents): string {
+  return URI.from(resource).fsPath;
 }

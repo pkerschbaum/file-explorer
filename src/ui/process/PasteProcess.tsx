@@ -2,7 +2,6 @@ import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
 import ContentCutOutlinedIcon from '@mui/icons-material/ContentCutOutlined';
 import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
 import { Button } from '@mui/material';
-import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import * as React from 'react';
 
 import { assertThat } from '@app/base/utils/assert.util';
@@ -125,7 +124,7 @@ export const PasteProcess: React.FC<{ process: PasteProcessType }> = ({ process 
   }
 
   const processMeta = STATUS_META_INFOS[process.status];
-  const destinationFolderLabel = formatter.folderPath(process.destinationFolder);
+  const destinationFolderLabel = formatter.resource(process.destinationFolder);
   const percentageBytesProcessed =
     process.status === PASTE_PROCESS_STATUS.SUCCESS
       ? 100
@@ -169,7 +168,7 @@ export const PasteProcess: React.FC<{ process: PasteProcessType }> = ({ process 
               const { fileName, extension } = uriHelper.extractNameAndExtension(uri);
               const sourceFileLabel = formatter.file({ name: fileName, extension });
               return (
-                <TextBox key={URI.from(uri).toString()} fontSize="sm" fontBold>
+                <TextBox key={uriHelper.getComparisonKey(uri)} fontSize="sm" fontBold>
                   {sourceFileLabel}
                 </TextBox>
               );

@@ -3,6 +3,7 @@ import { FileKind } from '@pkerschbaum/code-oss-file-service/out/vs/platform/fil
 import * as React from 'react';
 
 import { createLogger } from '@app/base/logger/logger';
+import { formatter } from '@app/base/utils/formatter.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { config } from '@app/config';
 import { File, FileForUI, FILE_TYPE } from '@app/domain/types';
@@ -52,9 +53,7 @@ export const useFilesForUI = (explorerId: string): FilesLoadingResult => {
               if (cachedQueryData) {
                 logger.debug(
                   `some data is already cached --> skip preloading of directory content`,
-                  {
-                    fileUri: URI.from(uri).toString(),
-                  },
+                  { file: formatter.resource(uri) },
                 );
                 return false;
               }
@@ -62,7 +61,7 @@ export const useFilesForUI = (explorerId: string): FilesLoadingResult => {
             })
             .map(async (uri) => {
               logger.debug(`start preloading of directory content`, {
-                fileUri: URI.from(uri).toString(),
+                file: formatter.resource(uri),
               });
 
               const fetchArgs = {
@@ -86,12 +85,12 @@ export const useFilesForUI = (explorerId: string): FilesLoadingResult => {
       requestIdleCallback(() => {
         if (preloadingIsNotNeccessaryAnymore) {
           logger.debug(`skipped preloading contents of parent and sub directories`, {
-            uriContentsGetPreloadedFor: URI.from(cwd).toString(),
+            uriContentsGetPreloadedFor: formatter.resource(cwd),
           });
         }
 
         logger.debug(`preloading contents of parent and sub directories`, {
-          uriContentsGetPreloadedFor: URI.from(cwd).toString(),
+          uriContentsGetPreloadedFor: formatter.resource(cwd),
         });
         void doPreloadContents();
       });

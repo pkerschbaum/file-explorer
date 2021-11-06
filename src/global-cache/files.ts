@@ -1,6 +1,7 @@
-import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { useQuery } from 'react-query';
 
+import { uriHelper } from '@app/base/utils/uri-helper';
 import { File } from '@app/domain/types';
 import { QUERY_KEYS } from '@app/global-cache/query-keys';
 import { fileSystemRef, queryClientRef } from '@app/operations/global-modules';
@@ -16,7 +17,10 @@ export function useFiles(
   queryOptions?: { enabled?: boolean },
 ) {
   const filesQuery = useQuery(
-    QUERY_KEYS.DIRECTORY_CONTENT({ directoryId: URI.from(directory).toString(), resolveMetadata }),
+    QUERY_KEYS.DIRECTORY_CONTENT({
+      directoryId: uriHelper.getComparisonKey(directory),
+      resolveMetadata,
+    }),
     () => fetchFiles(fileSystemRef.current, { directory, resolveMetadata }),
     queryOptions,
   );
@@ -29,7 +33,7 @@ export async function refreshDirectoryContent(
   filter?: { active?: boolean },
 ) {
   await queryClientRef.current.refetchQueries(
-    QUERY_KEYS.DIRECTORY_CONTENT({ directoryId: URI.from(directory).toString() }),
+    QUERY_KEYS.DIRECTORY_CONTENT({ directoryId: uriHelper.getComparisonKey(directory) }),
     {
       exact: false,
       active: filter?.active,
@@ -39,7 +43,7 @@ export async function refreshDirectoryContent(
 
 export function getCachedQueryData({ directory }: Omit<FilesQuery, 'resolveMetadata'>) {
   return queryClientRef.current.getQueryData(
-    QUERY_KEYS.DIRECTORY_CONTENT({ directoryId: URI.from(directory).toString() }),
+    QUERY_KEYS.DIRECTORY_CONTENT({ directoryId: uriHelper.getComparisonKey(directory) }),
     {
       exact: false,
     },
@@ -49,7 +53,7 @@ export function getCachedQueryData({ directory }: Omit<FilesQuery, 'resolveMetad
 export function setCachedQueryData({ directory, resolveMetadata }: FilesQuery, contents: File[]) {
   return queryClientRef.current.setQueryData(
     QUERY_KEYS.DIRECTORY_CONTENT({
-      directoryId: URI.from(directory).toString(),
+      directoryId: uriHelper.getComparisonKey(directory),
       resolveMetadata,
     }),
     contents,
