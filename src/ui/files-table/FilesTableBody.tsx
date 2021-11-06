@@ -18,9 +18,9 @@ import {
   useChangeSelectionByClick,
   useExplorerId,
   useFilesToShow,
-  useFileToRenameId,
+  useKeyOfFileToRename,
   useSelectedShownFiles,
-  useSetFileToRenameId,
+  useSetKeyOfFileToRename,
 } from '@app/ui/explorer-context';
 import { useThemeFileIconClasses } from '@app/ui/hooks/files.hooks';
 import { Stack } from '@app/ui/layouts/Stack';
@@ -34,7 +34,7 @@ export const FilesTableBody: React.FC = () => {
     <>
       {filesToShow.map((fileForRow, idxOfFileForRow) => (
         <FilesTableRow
-          key={fileForRow.id}
+          key={fileForRow.key}
           fileForRow={fileForRow}
           idxOfFileForRow={idxOfFileForRow}
         />
@@ -51,9 +51,9 @@ type FilesTableRowProps = {
 export const FilesTableRow: React.FC<FilesTableRowProps> = ({ fileForRow, idxOfFileForRow }) => {
   const explorerId = useExplorerId();
   const selectedShownFiles = useSelectedShownFiles();
-  const fileToRenameId = useFileToRenameId();
   const changeSelectionByClick = useChangeSelectionByClick();
-  const setFileToRenameId = useSetFileToRenameId();
+  const keyOfFileToRename = useKeyOfFileToRename();
+  const setKeyOfFileToRename = useSetKeyOfFileToRename();
 
   const themeFileIconClasses = useThemeFileIconClasses(fileForRow);
 
@@ -79,19 +79,19 @@ export const FilesTableRow: React.FC<FilesTableRowProps> = ({ fileForRow, idxOfF
 
   async function renameFileHandler(fileToRename: FileForUI, newName: string) {
     await renameFile(fileToRename.uri, newName);
-    setFileToRenameId(undefined);
+    setKeyOfFileToRename(undefined);
   }
 
   function abortRename() {
-    setFileToRenameId(undefined);
+    setKeyOfFileToRename(undefined);
   }
 
-  const fileIsSelected = !!selectedShownFiles.find((file) => file.id === fileForRow.id);
-  const renameForFileIsActive = fileToRenameId === fileForRow.id;
+  const fileIsSelected = !!selectedShownFiles.find((file) => file.key === fileForRow.key);
+  const renameForFileIsActive = keyOfFileToRename === fileForRow.key;
 
   return (
     <Row
-      key={fileForRow.id}
+      key={fileForRow.key}
       data-window-keydownhandlers-enabled="true"
       draggable={!renameForFileIsActive}
       onDragStart={(e) => {

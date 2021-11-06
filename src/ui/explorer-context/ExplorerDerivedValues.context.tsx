@@ -27,11 +27,11 @@ const DerivedValuesContextProvider = selectableContext.Provider;
 
 type ExplorerDerivedValuesContextProviderProps = ExplorerContextProviderProps & {
   explorerState: ExplorerState;
-  setIdsOfSelectedFiles: ExplorerStateUpdateFunctions['setIdsOfSelectedFiles'];
+  setKeysOfSelectedFiles: ExplorerStateUpdateFunctions['setKeysOfSelectedFiles'];
 };
 
 export const ExplorerDerivedValuesContextProvider: React.FC<ExplorerDerivedValuesContextProviderProps> =
-  ({ explorerState, setIdsOfSelectedFiles, explorerId, children }) => {
+  ({ explorerState, setKeysOfSelectedFiles, explorerId, children }) => {
     const { files, dataAvailable } = useFilesForUI(explorerId);
 
     const filesWithTags = useEnrichFilesWithTags(files);
@@ -81,25 +81,27 @@ export const ExplorerDerivedValuesContextProvider: React.FC<ExplorerDerivedValue
 
     const selectedShownFiles = React.useMemo(
       () =>
-        filesToShow.filter((file) => explorerState.selection.idsOfSelectedFiles.includes(file.id)),
-      [filesToShow, explorerState.selection.idsOfSelectedFiles],
+        filesToShow.filter((file) =>
+          explorerState.selection.keysOfSelectedFiles.includes(file.key),
+        ),
+      [filesToShow, explorerState.selection.keysOfSelectedFiles],
     );
 
     // if no file is selected, reset selection
     React.useEffect(() => {
       if (selectedShownFiles.length === 0 && filesToShow.length > 0) {
-        setIdsOfSelectedFiles([filesToShow[0].id]);
+        setKeysOfSelectedFiles([filesToShow[0].key]);
       }
-    }, [selectedShownFiles.length, filesToShow, setIdsOfSelectedFiles]);
+    }, [selectedShownFiles.length, filesToShow, setKeysOfSelectedFiles]);
 
     // every time the filter input changes, reset selection
     const prevFilterInput = usePrevious(explorerState.filterInput);
     const filterInputChanged = explorerState.filterInput !== prevFilterInput;
     React.useEffect(() => {
       if (filterInputChanged && filesToShow.length > 0) {
-        setIdsOfSelectedFiles([filesToShow[0].id]);
+        setKeysOfSelectedFiles([filesToShow[0].key]);
       }
-    }, [filesToShow, filterInputChanged, setIdsOfSelectedFiles]);
+    }, [filesToShow, filterInputChanged, setKeysOfSelectedFiles]);
 
     return (
       <DerivedValuesContextProvider

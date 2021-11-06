@@ -111,7 +111,7 @@ export type FileMap = {
 };
 
 export type File = {
-  id: string;
+  key: string;
   fileType: FILE_TYPE;
   uri: UriComponents;
   size?: number;

@@ -52,7 +52,7 @@ export function mapFileStatToFile(file: IFileStat): File {
     : FILE_TYPE.UNKNOWN;
 
   return {
-    id: uriHelper.getComparisonKey(file.resource),
+    key: uriHelper.getComparisonKey(file.resource),
     fileType,
     uri: file.resource.toJSON(),
     size: file.size,

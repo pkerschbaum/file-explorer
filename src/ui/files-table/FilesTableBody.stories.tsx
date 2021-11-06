@@ -76,16 +76,16 @@ RenameOfRowActive.decorators = [
     const explorerState: ExplorerState = {
       filterInput: '',
       selection: {
-        idsOfSelectedFiles: [],
-        fileIdSelectionGotStartedWith: undefined,
+        keysOfSelectedFiles: [],
+        keyOfFileSelectionGotStartedWith: undefined,
       },
-      fileToRenameId: fakeFile.id,
+      keyOfFileToRename: fakeFile.key,
     };
 
     const explorerStateUpdateFunctions: ExplorerStateUpdateFunctions = {
       setFilterInput: functions.noop,
-      setIdsOfSelectedFiles: functions.noop,
-      setFileToRenameId: functions.noop,
+      setKeysOfSelectedFiles: functions.noop,
+      setKeyOfFileToRename: functions.noop,
     };
 
     return (
@@ -98,7 +98,7 @@ RenameOfRowActive.decorators = [
         <ExplorerDerivedValuesContextProvider
           explorerId="test-explorerid"
           explorerState={explorerState}
-          setIdsOfSelectedFiles={explorerStateUpdateFunctions.setIdsOfSelectedFiles}
+          setKeysOfSelectedFiles={explorerStateUpdateFunctions.setKeysOfSelectedFiles}
         >
           <ExplorerOperationsContextProvider>{story()}</ExplorerOperationsContextProvider>
         </ExplorerDerivedValuesContextProvider>

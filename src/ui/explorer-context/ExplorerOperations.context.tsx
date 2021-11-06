@@ -11,11 +11,11 @@ import {
 import { KEYS } from '@app/ui/constants';
 import {
   useExplorerId,
-  useFileIdSelectionGotStartedWith,
+  useKeyOfFileSelectionGotStartedWith,
   useFilesToShow,
   useSelectedShownFiles,
-  useSetFileToRenameId,
-  useSetIdsOfSelectedFiles,
+  useSetKeyOfFileToRename,
+  useSetKeysOfSelectedFiles,
 } from '@app/ui/explorer-context';
 import { createSelectableContext } from '@app/ui/utils/react.util';
 
@@ -47,10 +47,10 @@ export const ExplorerOperationsContextProvider: React.FC<ExplorerOperationsConte
   ({ children }) => {
     const explorerId = useExplorerId();
     const filesToShow = useFilesToShow();
-    const setIdsOfSelectedFiles = useSetIdsOfSelectedFiles();
+    const setKeysOfSelectedFiles = useSetKeysOfSelectedFiles();
     const selectedShownFiles = useSelectedShownFiles();
-    const fileIdSelectionGotStartedWith = useFileIdSelectionGotStartedWith();
-    const setFileToRenameId = useSetFileToRenameId();
+    const keyOfFileSelectionGotStartedWith = useKeyOfFileSelectionGotStartedWith();
+    const setKeyOfFileToRename = useSetKeyOfFileToRename();
 
     const { copySelectedFiles, cutSelectedFiles } = React.useMemo(() => {
       const fileUrisToCutOrCopy = selectedShownFiles.map((file) => file.uri);
@@ -67,8 +67,8 @@ export const ExplorerOperationsContextProvider: React.FC<ExplorerOperationsConte
       if (selectedShownFiles.length !== 1) {
         return;
       }
-      setFileToRenameId(selectedShownFiles[0].id);
-    }, [selectedShownFiles, setFileToRenameId]);
+      setKeyOfFileToRename(selectedShownFiles[0].key);
+    }, [selectedShownFiles, setKeyOfFileToRename]);
 
     const changeSelectionByKeyboard = React.useCallback(
       (e: KeyboardEvent) => {
@@ -79,46 +79,46 @@ export const ExplorerOperationsContextProvider: React.FC<ExplorerOperationsConte
         }
 
         if (e.key === KEYS.ARROW_UP || e.key === KEYS.ARROW_DOWN) {
-          const idsOfSelectedShownFiles = selectedShownFiles.map((file) => file.id);
+          const keysOfSelectedShownFiles = selectedShownFiles.map((file) => file.key);
           const selectedFilesInfos = filesToShow
             .map((file, idx) => ({
               file,
               idx,
-              isSelected: idsOfSelectedShownFiles.includes(file.id),
+              isSelected: keysOfSelectedShownFiles.includes(file.key),
             }))
             .filter((entry) => entry.isSelected);
-          const fileIdSelectionGotStartedWithIndex = selectedFilesInfos.find(
-            (sfi) => sfi.file.id === fileIdSelectionGotStartedWith,
+          const fileSelectionGotStartedWith_idx = selectedFilesInfos.find(
+            (sfi) => sfi.file.key === keyOfFileSelectionGotStartedWith,
           )?.idx;
 
-          if (selectedFilesInfos.length === 0 || fileIdSelectionGotStartedWithIndex === undefined) {
+          if (selectedFilesInfos.length === 0 || fileSelectionGotStartedWith_idx === undefined) {
             // If no file is selected, just select the first file
-            setIdsOfSelectedFiles([filesToShow[0].id]);
+            setKeysOfSelectedFiles([filesToShow[0].key]);
             return;
           }
 
           // If at least one file is selected, gather some infos essential for further processing
-          const firstSelectedFileIndex = selectedFilesInfos[0].idx;
-          const lastSelectedFileIndex = selectedFilesInfos[selectedFilesInfos.length - 1].idx;
+          const firstSelectedFile_idx = selectedFilesInfos[0].idx;
+          const lastSelectedFile_idx = selectedFilesInfos[selectedFilesInfos.length - 1].idx;
           const selectionWasStartedDownwards =
-            fileIdSelectionGotStartedWithIndex === firstSelectedFileIndex;
+            fileSelectionGotStartedWith_idx === firstSelectedFile_idx;
 
           if (!e.shiftKey) {
-            if (e.key === KEYS.ARROW_UP && fileIdSelectionGotStartedWithIndex > 0) {
+            if (e.key === KEYS.ARROW_UP && fileSelectionGotStartedWith_idx > 0) {
               /*
                * UP without shift key is pressed
                * --> select the file above the file which got selected first (if file above exists)
                */
-              setIdsOfSelectedFiles([filesToShow[fileIdSelectionGotStartedWithIndex - 1].id]);
+              setKeysOfSelectedFiles([filesToShow[fileSelectionGotStartedWith_idx - 1].key]);
             } else if (
               e.key === KEYS.ARROW_DOWN &&
-              filesToShow.length > fileIdSelectionGotStartedWithIndex + 1
+              filesToShow.length > fileSelectionGotStartedWith_idx + 1
             ) {
               /*
                * DOWN without shift key is pressed
                * --> select the file below the file which got selected first (if file below exists)
                */
-              setIdsOfSelectedFiles([filesToShow[fileIdSelectionGotStartedWithIndex + 1].id]);
+              setKeysOfSelectedFiles([filesToShow[fileSelectionGotStartedWith_idx + 1].key]);
             }
           } else {
             if (e.key === KEYS.ARROW_UP) {
@@ -127,19 +127,19 @@ export const ExplorerOperationsContextProvider: React.FC<ExplorerOperationsConte
                  * SHIFT+UP is pressed, multiple files are selected, and the selection was started downwards.
                  * --> The user wants to remove the last file from the selection.
                  */
-                setIdsOfSelectedFiles(
-                  idsOfSelectedShownFiles.filter(
-                    (id) => id !== selectedFilesInfos[selectedFilesInfos.length - 1].file.id,
+                setKeysOfSelectedFiles(
+                  keysOfSelectedShownFiles.filter(
+                    (id) => id !== selectedFilesInfos[selectedFilesInfos.length - 1].file.key,
                   ),
                 );
-              } else if (firstSelectedFileIndex > 0) {
+              } else if (firstSelectedFile_idx > 0) {
                 /*
                  * SHIFT+UP is pressed and the selection was started upwards. Or, there is only one file selected at the moment.
                  * --> The user wants to add the file above all selected files to the selection.
                  */
-                setIdsOfSelectedFiles([
-                  filesToShow[firstSelectedFileIndex - 1].id,
-                  ...idsOfSelectedShownFiles,
+                setKeysOfSelectedFiles([
+                  filesToShow[firstSelectedFile_idx - 1].key,
+                  ...keysOfSelectedShownFiles,
                 ]);
               }
             } else if (e.key === KEYS.ARROW_DOWN) {
@@ -148,32 +148,32 @@ export const ExplorerOperationsContextProvider: React.FC<ExplorerOperationsConte
                  * SHIFT+DOWN is pressed, multiple files are selected, and the selection was started upwards.
                  * --> The user wants to remove the first file from the selection.
                  */
-                setIdsOfSelectedFiles(
-                  idsOfSelectedShownFiles.filter((id) => id !== selectedFilesInfos[0].file.id),
+                setKeysOfSelectedFiles(
+                  keysOfSelectedShownFiles.filter((id) => id !== selectedFilesInfos[0].file.key),
                 );
-              } else if (filesToShow.length > lastSelectedFileIndex + 1) {
+              } else if (filesToShow.length > lastSelectedFile_idx + 1) {
                 /*
                  * SHIFT+DOWN is pressed and the selection was started downwards. Or, there is only one file selected at the moment.
                  * --> The user wants to add the file after all selected files to the selection.
                  */
-                setIdsOfSelectedFiles([
-                  ...idsOfSelectedShownFiles,
-                  filesToShow[lastSelectedFileIndex + 1].id,
+                setKeysOfSelectedFiles([
+                  ...keysOfSelectedShownFiles,
+                  filesToShow[lastSelectedFile_idx + 1].key,
                 ]);
               }
             }
           }
         } else if (e.key === KEYS.PAGE_UP) {
-          setIdsOfSelectedFiles([filesToShow[0].id]);
+          setKeysOfSelectedFiles([filesToShow[0].key]);
         } else if (e.key === KEYS.PAGE_DOWN) {
-          setIdsOfSelectedFiles([filesToShow[filesToShow.length - 1].id]);
+          setKeysOfSelectedFiles([filesToShow[filesToShow.length - 1].key]);
         } else if (e.key === KEYS.A) {
-          setIdsOfSelectedFiles(filesToShow.map((file) => file.id));
+          setKeysOfSelectedFiles(filesToShow.map((file) => file.key));
         } else {
           throw new Error(`key not implemented. e.key=${e.key}`);
         }
       },
-      [fileIdSelectionGotStartedWith, filesToShow, selectedShownFiles, setIdsOfSelectedFiles],
+      [keyOfFileSelectionGotStartedWith, filesToShow, selectedShownFiles, setKeysOfSelectedFiles],
     );
 
     const openSelectedFiles = React.useCallback(async () => {
@@ -203,27 +203,27 @@ export const ExplorerOperationsContextProvider: React.FC<ExplorerOperationsConte
     const changeSelectionByClick = React.useCallback(
       (e: React.MouseEvent<HTMLElement, MouseEvent>, file: FileForUI, idxOfFile: number) => {
         const fileIsSelected = !!selectedShownFiles.find(
-          (selectedFile) => selectedFile.id === file.id,
+          (selectedFile) => selectedFile.key === file.key,
         );
         function selectFiles(files: FileForUI[]) {
-          setIdsOfSelectedFiles(files.map((file) => file.id));
+          setKeysOfSelectedFiles(files.map((file) => file.key));
         }
 
         if (e.ctrlKey) {
           // toggle selection of file which was clicked on
           if (fileIsSelected) {
-            selectFiles(selectedShownFiles.filter((selectedFile) => selectedFile.id !== file.id));
+            selectFiles(selectedShownFiles.filter((selectedFile) => selectedFile.key !== file.key));
           } else {
             selectFiles([...selectedShownFiles, file]);
           }
         } else if (e.shiftKey) {
           // select range of files
-          if (fileIdSelectionGotStartedWith === undefined) {
+          if (keyOfFileSelectionGotStartedWith === undefined) {
             return;
           }
 
           const idxSelectionGotStartedWith = filesToShow.findIndex(
-            (file) => file.id === fileIdSelectionGotStartedWith,
+            (file) => file.key === keyOfFileSelectionGotStartedWith,
           );
           let idxSelectFrom = idxSelectionGotStartedWith;
           let idxSelectTo = idxOfFile;
@@ -243,7 +243,7 @@ export const ExplorerOperationsContextProvider: React.FC<ExplorerOperationsConte
           selectFiles([file]);
         }
       },
-      [fileIdSelectionGotStartedWith, filesToShow, selectedShownFiles, setIdsOfSelectedFiles],
+      [keyOfFileSelectionGotStartedWith, filesToShow, selectedShownFiles, setKeysOfSelectedFiles],
     );
 
     return (
