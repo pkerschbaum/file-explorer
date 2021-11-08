@@ -13,6 +13,7 @@ module.exports = {
         ...config.resolve?.alias,
         '@app': path.resolve(__dirname, '../src/'),
         '@app-test': path.resolve(__dirname, '../test/'),
+        '@app-storybook': path.resolve(__dirname, '../storybook/'),
       },
     },
   }),

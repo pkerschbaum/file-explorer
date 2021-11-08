@@ -116,6 +116,9 @@ export async function renameResource(resourceURI: UriComponents, newName: string
     targetResource: { uri: uriOfTargetResource },
     pasteShouldMove: true,
   });
+
+  const distinctParents = getDistinctParents([resourceURI, uriOfTargetResource]);
+  await Promise.all(distinctParents.map((directory) => refreshResourcesOfDirectory({ directory })));
 }
 
 export async function resolveDeep(

@@ -3,7 +3,7 @@ import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 
 import { createStoreInstance } from '@app/global-state/store';
-import { dispatchRef, storeRef } from '@app/operations/global-modules';
+import { dispatchRef, queryClientRef, storeRef } from '@app/operations/global-modules';
 import { createQueryClient, Globals } from '@app/ui/Globals';
 import { Shell } from '@app/ui/shell';
 
@@ -33,6 +33,7 @@ export default {
           },
         },
       });
+      queryClientRef.current = queryClient;
       storeRef.current = store;
       dispatchRef.current = store.dispatch;
 

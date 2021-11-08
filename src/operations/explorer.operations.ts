@@ -14,6 +14,7 @@ import { check } from '@app/base/utils/assert.util';
 import { formatter } from '@app/base/utils/formatter.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { PASTE_PROCESS_STATUS } from '@app/domain/types';
+import { refreshResourcesOfDirectory } from '@app/global-cache/resources';
 import { actions as explorerActions } from '@app/global-state/slices/explorers.slice';
 import { actions as processesActions } from '@app/global-state/slices/processes.slice';
 import {
@@ -37,9 +38,10 @@ export async function changeDirectory(explorerId: string, newDir: URI) {
     );
   }
 
-  // change to the new directory
+  // change to the new directory and refresh resources of that directory
   const newCwd = newDir.toJSON();
   dispatchRef.current(explorerActions.changeCwd({ explorerId, newCwd }));
+  await refreshResourcesOfDirectory({ directory: newCwd });
 }
 
 export async function pasteResources(explorerId: string) {
@@ -243,6 +245,9 @@ export async function createFolder(explorerId: string, folderName: string) {
   const cwd = storeRef.current.getState().explorersSlice.explorerPanels[explorerId].cwd;
   const folderUri = URI.joinPath(URI.from(cwd), folderName);
   await fileSystemRef.current.createFolder(folderUri);
+
+  // refresh resources of the target directory
+  await refreshResourcesOfDirectory({ directory: cwd });
 }
 
 export async function revealCwdInOSExplorer(explorerId: string) {
