@@ -123,7 +123,18 @@ type TagId = string;
 export type ResourcesToTags = {
   [uri: string]: { ctimeOfResource: number; tags: TagId[] } | undefined;
 };
-export type Tag = { id: TagId; name: string; colorHex: string };
+export type AvailableTagIds = `tagColor${
+  | '1'
+  | '2'
+  | '3'
+  | '4'
+  | '5'
+  | '6'
+  | '7'
+  | '8'
+  | '9'
+  | '10'}`;
+export type Tag = { id: TagId; name: string; colorId: AvailableTagIds };
 
 export type ResourceForUI = Resource & {
   name: string;

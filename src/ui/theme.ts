@@ -8,11 +8,13 @@ import {
 import { css } from 'styled-components';
 
 import { assertThat } from '@app/base/utils/assert.util';
-import { DELETE_PROCESS_STATUS, PASTE_PROCESS_STATUS } from '@app/domain/types';
+import { AvailableTagIds, DELETE_PROCESS_STATUS, PASTE_PROCESS_STATUS } from '@app/domain/types';
 
 declare module '@mui/material/styles' {
   interface Theme {
-    availableTagColors: string[];
+    availableTagColors: {
+      [id in AvailableTagIds]: string;
+    };
     processStatusColors: {
       pasteProcess: {
         [status in PASTE_PROCESS_STATUS]: string;
@@ -31,7 +33,9 @@ declare module '@mui/material/styles' {
     };
   }
   interface ThemeOptions {
-    availableTagColors: string[];
+    availableTagColors: {
+      [id in AvailableTagIds]: string;
+    };
     processStatusColors: {
       pasteProcess: {
         [status in PASTE_PROCESS_STATUS]: string;
@@ -270,18 +274,18 @@ export const createTheme = (locale: Localization) => {
       divider: borderColorToUse,
     },
 
-    availableTagColors: [
-      '#F28B82',
-      '#5B7E2F',
-      '#FBBC04',
-      '#FFF475',
-      '#3bd4c5',
-      '#5ea9eb',
-      '#AECBFA',
-      '#D7AEFB',
-      '#FDCFE8',
-      '#E6C9A8',
-    ],
+    availableTagColors: {
+      tagColor1: '#F28B82',
+      tagColor2: '#5B7E2F',
+      tagColor3: '#FBBC04',
+      tagColor4: '#FFF475',
+      tagColor5: '#3bd4c5',
+      tagColor6: '#5ea9eb',
+      tagColor7: '#AECBFA',
+      tagColor8: '#D7AEFB',
+      tagColor9: '#FDCFE8',
+      tagColor10: '#E6C9A8',
+    },
 
     processStatusColors: {
       pasteProcess: {

@@ -30,11 +30,11 @@ export const fakePasteProcessBase: PasteProcessBase = {
   type: PROCESS_TYPE.PASTE,
   pasteShouldMove: false,
   sourceUris: [
-    fakeFileStat.resource,
-    URI.joinPath(fakeFileStat.resource, './testfile2.docx'),
-    URI.joinPath(fakeFileStat.resource, './testfile3.pdf'),
+    fakeFileStat.resource.toJSON(),
+    URI.joinPath(fakeFileStat.resource, './testfile2.docx').toJSON(),
+    URI.joinPath(fakeFileStat.resource, './testfile3.pdf').toJSON(),
   ],
-  destinationDirectory: URI.parse(`${Schemas.inMemory}:///home/testdir/`),
+  destinationDirectory: URI.parse(`${Schemas.inMemory}:///home/testdir/`).toJSON(),
   cancellationTokenSource: new CancellationTokenSource(),
   totalSize: 1024 * 1024 * 10, // 10MB
   bytesProcessed: 1024 * 1024 * 2, // 2MB
@@ -50,9 +50,9 @@ export const fakeDeleteProcessBase: DeleteProcessBase = {
   id: 'fake-delete-process-id',
   type: PROCESS_TYPE.DELETE,
   uris: [
-    fakeFileStat.resource,
-    URI.joinPath(fakeFileStat.resource, './testfile2.docx'),
-    URI.joinPath(fakeFileStat.resource, './testfile3.pdf'),
+    fakeFileStat.resource.toJSON(),
+    URI.joinPath(fakeFileStat.resource, './testfile2.docx').toJSON(),
+    URI.joinPath(fakeFileStat.resource, './testfile3.pdf').toJSON(),
   ],
 };
 

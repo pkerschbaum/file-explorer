@@ -139,7 +139,7 @@ export const ResourcesTableRow: React.FC<ResourcesTableRowProps> = ({
           {resourceForRow.tags.map((tag) => (
             <Chip
               key={tag.id}
-              style={{ backgroundColor: tag.colorHex }}
+              sx={{ backgroundColor: (theme) => theme.availableTagColors[tag.colorId] }}
               variant="outlined"
               size="small"
               label={tag.name}

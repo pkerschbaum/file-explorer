@@ -17,7 +17,7 @@ import styled from 'styled-components';
 
 import { arrays } from '@app/base/utils/arrays.util';
 import { check } from '@app/base/utils/assert.util';
-import { Tag } from '@app/domain/types';
+import { AvailableTagIds, Tag } from '@app/domain/types';
 import { commonStyles } from '@app/ui/Common.styles';
 import { Stack } from '@app/ui/layouts/Stack';
 
@@ -44,15 +44,14 @@ export const AddTag: React.FC<AddTagProps> = ({
   disabled,
 }) => {
   const { availableTagColors } = useTheme();
-  const defaultTag = {
+  const defaultTag: WithInput<Omit<Tag, 'id'>> = {
     inputValue: '',
     name: '',
-    colorHex: availableTagColors[0],
-    id: 'add-tag-action',
+    colorId: 'tagColor1',
   };
 
   const [open, toggleOpen] = React.useState(false);
-  const [dialogValue, setDialogValue] = React.useState<WithInput<Omit<Tag, 'id'>>>(defaultTag);
+  const [dialogValue, setDialogValue] = React.useState(defaultTag);
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -78,13 +77,13 @@ export const AddTag: React.FC<AddTagProps> = ({
             toggleOpen(true);
             setDialogValue({
               name: newValue,
-              colorHex: availableTagColors[0],
+              colorId: 'tagColor1',
             });
           } else if (newValue?.inputValue) {
             toggleOpen(true);
             setDialogValue({
               name: newValue.inputValue,
-              colorHex: availableTagColors[0],
+              colorId: 'tagColor1',
             });
           } else if (newValue !== null) {
             onValueChosen(newValue);
@@ -97,7 +96,7 @@ export const AddTag: React.FC<AddTagProps> = ({
             filtered.push({
               inputValue: params.inputValue,
               name: `Add "${params.inputValue}"`,
-              colorHex: availableTagColors[0],
+              colorId: 'tagColor1',
               id: 'add-tag-action',
             });
           }
@@ -125,7 +124,7 @@ export const AddTag: React.FC<AddTagProps> = ({
                 <ColorButton
                   disableElevation
                   variant="contained"
-                  style={{ backgroundColor: option.colorHex }}
+                  sx={{ backgroundColor: (theme) => theme.availableTagColors[option.colorId] }}
                 />
               )}
               <OptionLabel>{option.name}</OptionLabel>
@@ -151,7 +150,7 @@ export const AddTag: React.FC<AddTagProps> = ({
                 <ColorButton
                   disableElevation
                   variant="contained"
-                  style={{ backgroundColor: dialogValue.colorHex }}
+                  sx={{ backgroundColor: (theme) => theme.availableTagColors[dialogValue.colorId] }}
                 />
                 <TagNameInput
                   autoFocus
@@ -168,14 +167,16 @@ export const AddTag: React.FC<AddTagProps> = ({
               <Paper variant="outlined" sx={{ padding: 1 }}>
                 <Stack direction="column" alignItems="start">
                   {arrays
-                    .partitionArray(availableTagColors, { itemsPerPartition: 5 })
+                    .partitionArray(Object.entries(availableTagColors), { itemsPerPartition: 5 })
                     .map((partition, idx) => (
                       <Stack key={idx}>
-                        {partition.map((colorHex) => {
-                          const isSelected = dialogValue.colorHex === colorHex;
+                        {partition.map((color) => {
+                          const [colorId, colorHex] = color as [AvailableTagIds, string];
+                          const isSelected = dialogValue.colorId === colorId;
+
                           return (
                             <ColorButton
-                              key={colorHex}
+                              key={colorId}
                               style={{
                                 backgroundColor: colorHex,
                                 opacity: isSelected ? '0.35' : undefined,
@@ -183,7 +184,7 @@ export const AddTag: React.FC<AddTagProps> = ({
                               disableRipple
                               disableElevation
                               variant={isSelected ? 'outlined' : 'contained'}
-                              onClick={() => setDialogValue({ ...dialogValue, colorHex })}
+                              onClick={() => setDialogValue({ ...dialogValue, colorId })}
                             />
                           );
                         })}
