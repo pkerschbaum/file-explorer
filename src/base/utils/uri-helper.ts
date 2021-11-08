@@ -15,19 +15,19 @@ export const uriHelper = {
     return scheme === Schemas.file ? URI.file(path) : URI.parse(`${scheme}://${path}`);
   },
 
-  extractNameAndExtension(uri: UriComponents): { fileName: string; extension?: string } {
-    let fileName = resources.basename(URI.from(uri));
+  extractNameAndExtension(uri: UriComponents): { resourceName: string; extension?: string } {
+    let resourceName = resources.basename(URI.from(uri));
     let extension: string | undefined = resources.extname(URI.from(uri));
 
     if (check.isEmptyString(extension)) {
       extension = undefined;
     } else {
-      if (fileName.endsWith(extension)) {
-        fileName = fileName.substring(0, fileName.length - extension.length);
+      if (resourceName.endsWith(extension)) {
+        resourceName = resourceName.substring(0, resourceName.length - extension.length);
       }
     }
 
-    return { fileName, extension };
+    return { resourceName, extension };
   },
 
   getComparisonKey(uri: UriComponents): string {

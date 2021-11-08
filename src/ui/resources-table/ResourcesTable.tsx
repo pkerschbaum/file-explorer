@@ -10,11 +10,11 @@ import { TableBody } from '@app/ui/elements/DataTable/TableBody';
 import { TableHead } from '@app/ui/elements/DataTable/TableHead';
 import { TextBox } from '@app/ui/elements/TextBox';
 import { useDataAvailable } from '@app/ui/explorer-context';
-import { FilesTableBody } from '@app/ui/files-table/FilesTableBody';
+import { ResourcesTableBody } from '@app/ui/resources-table/ResourcesTableBody';
 
-export const EXPLORER_FILESTABLE_GRID_AREA = 'shell-explorer-files-table';
+export const EXPLORER_RESOURCESTABLE_GRID_AREA = 'shell-explorer-resources-table';
 
-export const FilesTable: React.FC = () => {
+export const ResourcesTable: React.FC = () => {
   const dataAvailable = useDataAvailable();
 
   return (
@@ -42,7 +42,7 @@ export const FilesTable: React.FC = () => {
 
         <TableBody>
           {dataAvailable ? (
-            <FilesTableBody />
+            <ResourcesTableBody />
           ) : (
             <>
               <SkeletonRow />
@@ -94,6 +94,6 @@ const SkeletonRow: React.FC<SkeletonRowProps> = ({ opacity }) => (
 );
 
 const DataTableContainer = styled(Box)`
-  grid-area: ${EXPLORER_FILESTABLE_GRID_AREA};
+  grid-area: ${EXPLORER_RESOURCESTABLE_GRID_AREA};
   padding-bottom: ${(props) => props.theme.spacing(0.5)};
 `;

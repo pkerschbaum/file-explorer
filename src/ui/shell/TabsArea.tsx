@@ -85,7 +85,7 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
             disableRipple
             label={
               <ExplorerPanelTab
-                label={uriHelper.extractNameAndExtension(explorer.cwd).fileName}
+                label={uriHelper.extractNameAndExtension(explorer.cwd).resourceName}
                 removeExplorerActionDisabled={removeExplorerActionDisabled}
                 onRemove={() => removeExplorerPanel(explorer.explorerId)}
               />

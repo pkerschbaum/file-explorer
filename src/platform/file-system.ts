@@ -7,7 +7,7 @@ import {
 
 import { arrays } from '@app/base/utils/arrays.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
-import { File, FILE_TYPE } from '@app/domain/types';
+import { Resource, RESOURCE_TYPE } from '@app/domain/types';
 
 export type PlatformFileSystem = {
   resolve: IFileService['resolve'];
@@ -42,33 +42,33 @@ export const createFileSystem = () => {
   return instance;
 };
 
-export function mapFileStatToFile(file: IFileStat): File {
-  const fileType = file.isDirectory
-    ? FILE_TYPE.DIRECTORY
-    : file.isSymbolicLink
-    ? FILE_TYPE.SYMBOLIC_LINK
-    : file.isFile
-    ? FILE_TYPE.FILE
-    : FILE_TYPE.UNKNOWN;
+export function mapFileStatToResource(resource: IFileStat): Resource {
+  const resourceType = resource.isDirectory
+    ? RESOURCE_TYPE.DIRECTORY
+    : resource.isSymbolicLink
+    ? RESOURCE_TYPE.SYMBOLIC_LINK
+    : resource.isFile
+    ? RESOURCE_TYPE.FILE
+    : RESOURCE_TYPE.UNKNOWN;
 
   return {
-    key: uriHelper.getComparisonKey(file.resource),
-    fileType,
-    uri: file.resource.toJSON(),
-    size: file.size,
-    mtime: file.mtime,
-    ctime: file.ctime,
+    key: uriHelper.getComparisonKey(resource.resource),
+    resourceType,
+    uri: resource.resource.toJSON(),
+    size: resource.size,
+    mtime: resource.mtime,
+    ctime: resource.ctime,
   };
 }
 
-export function getDistinctParents(files: UriComponents[]): UriComponents[] {
+export function getDistinctParents(resources: UriComponents[]): UriComponents[] {
   return arrays.uniqueValues(
-    files.map((file) => URI.joinPath(URI.from(file), '..')),
-    (file) => uriHelper.getComparisonKey(file),
+    resources.map((resource) => URI.joinPath(URI.from(resource), '..')),
+    (resource) => uriHelper.getComparisonKey(resource),
   );
 }
 
-export async function fetchFiles(
+export async function fetchResources(
   fileSystem: PlatformFileSystem,
   {
     directory,
@@ -77,11 +77,11 @@ export async function fetchFiles(
     directory: UriComponents;
     resolveMetadata: boolean;
   },
-): Promise<File[]> {
+): Promise<Resource[]> {
   const statsWithMetadata = await fileSystem.resolve(URI.from(directory), { resolveMetadata });
 
   if (!statsWithMetadata.children) {
     return [];
   }
-  return statsWithMetadata.children.map(mapFileStatToFile);
+  return statsWithMetadata.children.map(mapFileStatToResource);
 }

@@ -1,24 +1,24 @@
 import * as React from 'react';
 
-import { FileForUI } from '@app/domain/types';
+import { ResourceForUI } from '@app/domain/types';
 import { useSelector } from '@app/global-state/store';
-import { getTagsOfFile } from '@app/operations/file.operations';
+import { getTagsOfResource } from '@app/operations/resource.operations';
 
-export function useEnrichFilesWithTags(files: FileForUI[]) {
+export function useEnrichResourcesWithTags(resources: ResourceForUI[]) {
   const resourcesToTags = useSelector((state) => state.tagsSlice.resourcesToTags);
-  const enrichedFiles = React.useMemo(
+  const enrichedResources = React.useMemo(
     () =>
-      files.map((file) => ({
-        ...file,
+      resources.map((resource) => ({
+        ...resource,
         tags:
-          file.ctime === undefined
+          resource.ctime === undefined
             ? []
-            : getTagsOfFile(resourcesToTags, { uri: file.uri, ctime: file.ctime }),
+            : getTagsOfResource(resourcesToTags, { uri: resource.uri, ctime: resource.ctime }),
       })),
-    [files, resourcesToTags],
+    [resources, resourcesToTags],
   );
 
-  return enrichedFiles;
+  return enrichedResources;
 }
 
 export function useTags() {

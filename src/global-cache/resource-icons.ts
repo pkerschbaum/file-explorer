@@ -8,36 +8,39 @@ import { nativeHostRef } from '@app/operations/global-modules';
 import { loadIconClasses } from '@app/platform/file-icon-theme';
 
 export declare namespace IconClassesQuery {
-  export type Args = { uri?: UriComponents; fileKind: FileKind };
+  export type Args = { uri?: UriComponents; resourceKind: FileKind };
   export type Result = string[] | undefined;
 }
 
-export function useFileIconClasses({
+export function useResourceIconClasses({
   uri,
-  fileKind,
+  resourceKind,
 }: IconClassesQuery.Args): IconClassesQuery.Result {
-  const file = {
+  const resource = {
     uri: uri === undefined ? undefined : URI.from(uri).toJSON(),
-    fileKind,
+    resourceKind,
   };
 
   const [syncLoadedIconClasses] = React.useState(() => {
-    const fetchIconClassesResult = fetchIconClasses(file);
+    const fetchIconClassesResult = fetchIconClasses(resource);
     if (Array.isArray(fetchIconClassesResult)) {
       return fetchIconClassesResult;
     } else {
       return undefined;
     }
   });
-  const iconClassesQuery = useQuery<string[]>(QUERY_KEYS.FILE_ICON_CLASSES(file), () =>
-    fetchIconClasses(file),
+  const iconClassesQuery = useQuery<string[]>(QUERY_KEYS.RESOURCE_ICON_CLASSES(resource), () =>
+    fetchIconClasses(resource),
   );
 
   return iconClassesQuery.data ?? syncLoadedIconClasses;
 }
 
-function fetchIconClasses(file: IconClassesQuery.Args) {
-  return loadIconClasses(file.uri === undefined ? undefined : URI.from(file.uri), file.fileKind);
+function fetchIconClasses(resource: IconClassesQuery.Args) {
+  return loadIconClasses(
+    resource.uri === undefined ? undefined : URI.from(resource.uri),
+    resource.resourceKind,
+  );
 }
 
 export declare namespace NativeIconDataURLQuery {
@@ -45,7 +48,7 @@ export declare namespace NativeIconDataURLQuery {
   export type Result = string | undefined;
 }
 
-export function useNativeFileIconDataURL(
+export function useNativeIconDataURL(
   args: NativeIconDataURLQuery.Args,
   queryOptions?: UseQueryOptions<NativeIconDataURLQuery.Result>,
 ): NativeIconDataURLQuery.Result {

@@ -2,7 +2,7 @@ import { CancellationTokenSource } from '@pkerschbaum/code-oss-file-service/out/
 import { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { IFileStatWithMetadata } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 
-export enum FILE_TYPE {
+export enum RESOURCE_TYPE {
   FILE = 'FILE',
   DIRECTORY = 'DIRECTORY',
   SYMBOLIC_LINK = 'SYMBOLIC_LINK',
@@ -37,7 +37,7 @@ export type PasteProcessBase = {
   type: PROCESS_TYPE.PASTE;
   pasteShouldMove: boolean;
   sourceUris: UriComponents[];
-  destinationFolder: UriComponents;
+  destinationDirectory: UriComponents;
   cancellationTokenSource: CancellationTokenSource;
   totalSize: number;
   bytesProcessed: number;
@@ -106,28 +106,26 @@ export type DeleteProcess =
   | DeleteProcess_Success
   | DeleteProcess_Failure;
 
-export type FileMap = {
-  [stringifiedUri: string]: File | undefined;
-};
-
-export type File = {
+export type Resource = {
   key: string;
-  fileType: FILE_TYPE;
+  resourceType: RESOURCE_TYPE;
   uri: UriComponents;
   size?: number;
   ctime?: number;
   mtime?: number;
 };
 
-export type FileStatMap = {
+export type ResourceStatMap = {
   [uri: string]: IFileStatWithMetadata;
 };
 
 type TagId = string;
-export type ResourcesToTags = { [uri: string]: { ctimeOfFile: number; tags: TagId[] } | undefined };
+export type ResourcesToTags = {
+  [uri: string]: { ctimeOfResource: number; tags: TagId[] } | undefined;
+};
 export type Tag = { id: TagId; name: string; colorHex: string };
 
-export type FileForUI = File & {
+export type ResourceForUI = Resource & {
   name: string;
   extension?: string;
   tags: Tag[];

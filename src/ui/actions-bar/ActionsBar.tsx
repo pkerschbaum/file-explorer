@@ -12,10 +12,10 @@ import { formatter } from '@app/base/utils/formatter.util';
 import { functions } from '@app/base/utils/functions.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { config } from '@app/config';
-import { FILE_TYPE } from '@app/domain/types';
+import { RESOURCE_TYPE } from '@app/domain/types';
 import { useDraftPasteState } from '@app/global-state/slices/processes.hooks';
 import { useTags } from '@app/global-state/slices/tags.hooks';
-import { addTags } from '@app/operations/file.operations';
+import { addTagsToResources } from '@app/operations/resource.operations';
 import { addTag, removeTags } from '@app/operations/tag.operations';
 import { AddTag } from '@app/ui/actions-bar/AddTag';
 import { CreateFolder } from '@app/ui/actions-bar/CreateFolder';
@@ -23,16 +23,16 @@ import { KEYS } from '@app/ui/constants';
 import { TextBox } from '@app/ui/elements/TextBox';
 import {
   useFilterInput,
-  useSelectedShownFiles,
+  useSelectedShownResources,
   useSetFilterInput,
   useChangeSelectionByKeyboard,
-  useCopySelectedFiles,
+  useCopySelectedResources,
   useCreateFolderInExplorer,
-  useCutSelectedFiles,
-  useOpenSelectedFiles,
-  usePasteFilesInExplorer,
-  useScheduleDeleteSelectedFiles,
-  useTriggerRenameForSelectedFiles,
+  useCutSelectedResources,
+  useOpenSelectedResources,
+  usePasteResourcesIntoExplorer,
+  useScheduleDeleteSelectedResources,
+  useTriggerRenameForSelectedResources,
 } from '@app/ui/explorer-context';
 import { useClipboardResources } from '@app/ui/hooks/clipboard-resources.hooks';
 import { Stack } from '@app/ui/layouts/Stack';
@@ -50,15 +50,15 @@ export const ActionsBar: React.FC = () => {
   const draftPasteState = useDraftPasteState();
   const tags = useTags();
 
-  const selectedShownFiles = useSelectedShownFiles();
+  const selectedShownResources = useSelectedShownResources();
 
-  const copySelectedFiles = useCopySelectedFiles();
-  const cutSelectedFiles = useCutSelectedFiles();
-  const pasteFilesInExplorer = usePasteFilesInExplorer();
-  const triggerRenameForSelectedFiles = useTriggerRenameForSelectedFiles();
+  const copySelectedResources = useCopySelectedResources();
+  const cutSelectedResources = useCutSelectedResources();
+  const pasteResourcesIntoExplorer = usePasteResourcesIntoExplorer();
+  const triggerRenameForSelectedResources = useTriggerRenameForSelectedResources();
   const changeSelectionByKeyboard = useChangeSelectionByKeyboard();
-  const openSelectedFiles = useOpenSelectedFiles();
-  const scheduleDeleteSelectedFiles = useScheduleDeleteSelectedFiles();
+  const openSelectedResources = useOpenSelectedResources();
+  const scheduleDeleteSelectedResources = useScheduleDeleteSelectedResources();
   const createFolderInExplorer = useCreateFolderInExplorer();
 
   const filterInputRef = React.useRef<HTMLDivElement>(null);
@@ -80,12 +80,12 @@ export const ActionsBar: React.FC = () => {
       handler: functions.noop,
       continuePropagation: true,
     },
-    { condition: (e) => e.ctrlKey && e.key === KEYS.C, handler: copySelectedFiles },
-    { condition: (e) => e.ctrlKey && e.key === KEYS.X, handler: cutSelectedFiles },
-    { condition: (e) => e.ctrlKey && e.key === KEYS.V, handler: pasteFilesInExplorer },
+    { condition: (e) => e.ctrlKey && e.key === KEYS.C, handler: copySelectedResources },
+    { condition: (e) => e.ctrlKey && e.key === KEYS.X, handler: cutSelectedResources },
+    { condition: (e) => e.ctrlKey && e.key === KEYS.V, handler: pasteResourcesIntoExplorer },
     {
       condition: (e) => e.key === KEYS.F2 || (e.altKey && e.key === KEYS.R),
-      handler: triggerRenameForSelectedFiles,
+      handler: triggerRenameForSelectedResources,
     },
     {
       condition: (e) =>
@@ -96,8 +96,8 @@ export const ActionsBar: React.FC = () => {
         (!e.ctrlKey && e.key === KEYS.PAGE_DOWN),
       handler: (e) => changeSelectionByKeyboard(e),
     },
-    { condition: (e) => e.key === KEYS.ENTER, handler: openSelectedFiles },
-    { condition: (e) => e.key === KEYS.DELETE, handler: scheduleDeleteSelectedFiles },
+    { condition: (e) => e.key === KEYS.ENTER, handler: openSelectedResources },
+    { condition: (e) => e.key === KEYS.DELETE, handler: scheduleDeleteSelectedResources },
     {
       condition: (e) =>
         !e.altKey &&
@@ -115,11 +115,11 @@ export const ActionsBar: React.FC = () => {
     },
   ]);
 
-  const singleFileActionsDisabled = selectedShownFiles.length !== 1;
-  const multipleFilesActionsDisabled = selectedShownFiles.length < 1;
+  const singleResourceActionsDisabled = selectedShownResources.length !== 1;
+  const multipleResourcesActionsDisabled = selectedShownResources.length < 1;
   const multipleDirectoriesActionsDisabled =
-    selectedShownFiles.length < 1 ||
-    selectedShownFiles.some((file) => file.fileType !== FILE_TYPE.DIRECTORY);
+    selectedShownResources.length < 1 ||
+    selectedShownResources.some((resource) => resource.resourceType !== RESOURCE_TYPE.DIRECTORY);
 
   return (
     <ActionsBarContainer alignItems="stretch">
@@ -131,29 +131,29 @@ export const ActionsBar: React.FC = () => {
 
       <Stack wrap>
         <Button
-          onClick={openSelectedFiles}
-          disabled={singleFileActionsDisabled}
+          onClick={openSelectedResources}
+          disabled={singleResourceActionsDisabled}
           startIcon={<LaunchOutlinedIcon />}
         >
           Open
         </Button>
         <Button
-          onClick={copySelectedFiles}
-          disabled={multipleFilesActionsDisabled}
+          onClick={copySelectedResources}
+          disabled={multipleResourcesActionsDisabled}
           startIcon={<ContentCopyOutlinedIcon />}
         >
           Copy
         </Button>
         <Button
-          onClick={cutSelectedFiles}
-          disabled={multipleFilesActionsDisabled}
+          onClick={cutSelectedResources}
+          disabled={multipleResourcesActionsDisabled}
           startIcon={<ContentCutOutlinedIcon />}
         >
           Cut
         </Button>
         <Button
           variant={draftPasteState === undefined ? undefined : 'contained'}
-          onClick={pasteFilesInExplorer}
+          onClick={pasteResourcesIntoExplorer}
           disabled={draftPasteState === undefined}
           startIcon={<ContentPasteOutlinedIcon />}
         >
@@ -161,15 +161,15 @@ export const ActionsBar: React.FC = () => {
           <PasteInfoBadge />
         </Button>
         <Button
-          onClick={triggerRenameForSelectedFiles}
-          disabled={singleFileActionsDisabled}
+          onClick={triggerRenameForSelectedResources}
+          disabled={singleResourceActionsDisabled}
           startIcon={<EditOutlinedIcon />}
         >
           Rename
         </Button>
         <Button
-          onClick={scheduleDeleteSelectedFiles}
-          disabled={multipleFilesActionsDisabled}
+          onClick={scheduleDeleteSelectedResources}
+          disabled={multipleResourcesActionsDisabled}
           startIcon={<DeleteOutlinedIcon />}
         >
           Delete
@@ -183,8 +183,8 @@ export const ActionsBar: React.FC = () => {
             }))}
             onValueCreated={(tag) => addTag(tag)}
             onValueChosen={async (chosenTag) => {
-              await addTags(
-                selectedShownFiles.map((file) => file.uri),
+              await addTagsToResources(
+                selectedShownResources.map((resource) => resource.uri),
                 [chosenTag.id],
               );
             }}
@@ -244,7 +244,7 @@ const PasteInfoBadge: React.FC = () => {
         <Stack direction="column" alignItems="flex-start" sx={{ wordBreak: 'break-all' }}>
           {clipboardResources.map((resource) => (
             <TextBox key={uriHelper.getComparisonKey(resource)} fontSize="sm">
-              {formatter.resource(resource)}
+              {formatter.resourcePath(resource)}
             </TextBox>
           ))}
         </Stack>

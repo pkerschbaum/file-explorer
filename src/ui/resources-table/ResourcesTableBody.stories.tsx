@@ -4,10 +4,10 @@ import { ComponentMeta, ComponentStory } from '@storybook/react';
 
 import { functions } from '@app/base/utils/functions.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
-import { FileForUI } from '@app/domain/types';
+import { ResourceForUI } from '@app/domain/types';
 import { createStoreInstance } from '@app/global-state/store';
 import { dispatchRef, storeRef } from '@app/operations/global-modules';
-import { mapFileStatToFile } from '@app/platform/file-system';
+import { mapFileStatToResource } from '@app/platform/file-system';
 import { DataTable } from '@app/ui/elements/DataTable/DataTable';
 import { TableBody } from '@app/ui/elements/DataTable/TableBody';
 import {
@@ -17,23 +17,23 @@ import {
   ExplorerStateContextProvider,
   ExplorerStateUpdateFunctions,
 } from '@app/ui/explorer-context';
-import { FilesTableRow } from '@app/ui/files-table/FilesTableBody';
 import { createQueryClient, Globals } from '@app/ui/Globals';
+import { ResourcesTableRow } from '@app/ui/resources-table/ResourcesTableBody';
 
 import { fakeFileStat } from '@app-test/fake-data/fake-data';
 
-const fakeFile = mapFileStatToFile(fakeFileStat);
-const { fileName, extension } = uriHelper.extractNameAndExtension(fakeFile.uri);
-const fakeFileForUI: FileForUI = {
-  ...fakeFile,
+const fakeResource = mapFileStatToResource(fakeFileStat);
+const { resourceName, extension } = uriHelper.extractNameAndExtension(fakeResource.uri);
+const fakeResourceForUI: ResourceForUI = {
+  ...fakeResource,
   extension,
-  name: fileName,
+  name: resourceName,
   tags: [],
 };
 
 export default {
-  title: 'FilesTable / FilesTableRow',
-  component: FilesTableRow,
+  title: 'ResourcesTable / ResourcesTableRow',
+  component: ResourcesTableRow,
   decorators: [
     (story) => {
       const queryClient = createQueryClient();
@@ -56,36 +56,36 @@ export default {
       );
     },
   ],
-} as ComponentMeta<typeof FilesTableRow>;
+} as ComponentMeta<typeof ResourcesTableRow>;
 
-const Template: ComponentStory<typeof FilesTableRow> = (args) => (
+const Template: ComponentStory<typeof ResourcesTableRow> = (args) => (
   <DataTable>
     <TableBody>
-      <FilesTableRow {...args} />
+      <ResourcesTableRow {...args} />
     </TableBody>
   </DataTable>
 );
 
 export const RenameOfRowActive = Template.bind({});
 RenameOfRowActive.args = {
-  fileForRow: fakeFileForUI,
-  idxOfFileForRow: 0,
+  resourceForRow: fakeResourceForUI,
+  idxOfResourceForRow: 0,
 };
 RenameOfRowActive.decorators = [
   (story) => {
     const explorerState: ExplorerState = {
       filterInput: '',
       selection: {
-        keysOfSelectedFiles: [],
-        keyOfFileSelectionGotStartedWith: undefined,
+        keysOfSelectedResources: [],
+        keyOfResourceSelectionGotStartedWith: undefined,
       },
-      keyOfFileToRename: fakeFile.key,
+      keyOfResourceToRename: fakeResource.key,
     };
 
     const explorerStateUpdateFunctions: ExplorerStateUpdateFunctions = {
       setFilterInput: functions.noop,
-      setKeysOfSelectedFiles: functions.noop,
-      setKeyOfFileToRename: functions.noop,
+      setKeysOfSelectedResources: functions.noop,
+      setKeyOfResourceToRename: functions.noop,
     };
 
     return (
@@ -98,7 +98,7 @@ RenameOfRowActive.decorators = [
         <ExplorerDerivedValuesContextProvider
           explorerId="test-explorerid"
           explorerState={explorerState}
-          setKeysOfSelectedFiles={explorerStateUpdateFunctions.setKeysOfSelectedFiles}
+          setKeysOfSelectedResources={explorerStateUpdateFunctions.setKeysOfSelectedResources}
         >
           <ExplorerOperationsContextProvider>{story()}</ExplorerOperationsContextProvider>
         </ExplorerDerivedValuesContextProvider>

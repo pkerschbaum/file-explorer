@@ -11,12 +11,12 @@ import { uriHelper } from '@app/base/utils/uri-helper';
 import {
   DeleteProcess,
   DELETE_PROCESS_STATUS,
-  FileStatMap,
+  ResourceStatMap,
   ResourcesToTags,
   PROCESS_TYPE,
   Tag,
 } from '@app/domain/types';
-import { refreshDirectoryContent } from '@app/global-cache/files';
+import { refreshResourcesOfDirectory } from '@app/global-cache/resources';
 import { mapProcess } from '@app/global-state/slices/processes.hooks';
 import { actions } from '@app/global-state/slices/processes.slice';
 import { actions as tagsSliceActions } from '@app/global-state/slices/tags.slice';
@@ -29,9 +29,9 @@ import {
 import * as tagOperations from '@app/operations/tag.operations';
 import { getDistinctParents } from '@app/platform/file-system';
 
-const logger = createLogger('file.hooks');
+const logger = createLogger('resource.operations');
 
-export function scheduleMoveFilesToTrash(uris: UriComponents[]) {
+export function scheduleMoveResourcesToTrash(uris: UriComponents[]) {
   if (uris.length < 1) {
     return;
   }
@@ -84,9 +84,9 @@ export async function runDeleteProcess(deleteProcessId: string, options: { useTr
     actions.updateDeleteProcess({ id: deleteProcessId, status: DELETE_PROCESS_STATUS.SUCCESS }),
   );
 
-  // invalidate files of all affected directories
+  // invalidate resources of all affected directories
   const distinctParents = getDistinctParents(deleteProcess.uris);
-  await Promise.all(distinctParents.map((directory) => refreshDirectoryContent({ directory })));
+  await Promise.all(distinctParents.map((directory) => refreshResourcesOfDirectory({ directory })));
 }
 
 export function removeProcess(processId: string) {
@@ -97,24 +97,23 @@ export async function openFiles(uris: UriComponents[]) {
   await nativeHostRef.current.shell.openPath(uris);
 }
 
-export function cutOrCopyFiles(files: UriComponents[], cut: boolean) {
-  if (files.length < 1) {
+export function cutOrCopyResources(resources: UriComponents[], cut: boolean) {
+  if (resources.length < 1) {
     return;
   }
 
-  nativeHostRef.current.clipboard.writeResources(files.map((file) => URI.from(file)));
-  dispatchRef.current(actions.cutOrCopyFiles({ cut }));
+  nativeHostRef.current.clipboard.writeResources(resources.map((resource) => URI.from(resource)));
+  dispatchRef.current(actions.cutOrCopyResources({ cut }));
 }
 
-export async function renameFile(sourceFileURI: UriComponents, newName: string) {
-  const sourceFileStat = await fileSystemRef.current.resolve(URI.from(sourceFileURI), {
+export async function renameResource(resourceURI: UriComponents, newName: string) {
+  const fileStatOfSourceResource = await fileSystemRef.current.resolve(URI.from(resourceURI), {
     resolveMetadata: true,
   });
-  const targetFileURI = URI.joinPath(URI.from(sourceFileURI), '..', newName);
+  const uriOfTargetResource = URI.joinPath(URI.from(resourceURI), '..', newName);
   await executeCopyOrMove({
-    sourceFileURI: URI.from(sourceFileURI),
-    sourceFileStat,
-    targetFileURI,
+    sourceResource: { uri: URI.from(resourceURI), fileStat: fileStatOfSourceResource },
+    targetResource: { uri: uriOfTargetResource },
     pasteShouldMove: true,
   });
 }
@@ -123,15 +122,15 @@ export async function resolveDeep(
   targetToResolve: UriComponents,
   targetStat: IFileStatWithMetadata,
 ) {
-  const fileStatMap: FileStatMap = {};
-  await resolveDeepRecursive(targetToResolve, targetStat, fileStatMap);
-  return fileStatMap;
+  const resourceStatMap: ResourceStatMap = {};
+  await resolveDeepRecursive(targetToResolve, targetStat, resourceStatMap);
+  return resourceStatMap;
 }
 
 async function resolveDeepRecursive(
   targetToResolve: UriComponents,
   targetStat: IFileStatWithMetadata,
-  resultMap: FileStatMap,
+  resultMap: ResourceStatMap,
 ) {
   if (!targetStat.isDirectory) {
     resultMap[uriHelper.getComparisonKey(targetToResolve)] = targetStat;
@@ -148,32 +147,32 @@ async function resolveDeepRecursive(
   }
 }
 
-export function getTagsOfFile(
+export function getTagsOfResource(
   resourcesToTags: ResourcesToTags,
-  file: { uri: UriComponents; ctime: number },
+  resource: { uri: UriComponents; ctime: number },
 ): Tag[] {
-  const tagIdsOfFile = resourcesToTags[uriHelper.getComparisonKey(file.uri)];
+  const tagIdsOfResource = resourcesToTags[uriHelper.getComparisonKey(resource.uri)];
 
   if (
-    tagIdsOfFile === undefined ||
-    tagIdsOfFile.tags.length === 0 ||
-    tagIdsOfFile.ctimeOfFile !== file.ctime
+    tagIdsOfResource === undefined ||
+    tagIdsOfResource.tags.length === 0 ||
+    tagIdsOfResource.ctimeOfResource !== resource.ctime
   ) {
     return [];
   }
 
   const tags = tagOperations.getTags();
-  const tagsOfFile = Object.entries(tags)
+  const tagsOfResource = Object.entries(tags)
     .map(([id, otherValues]) => ({ ...otherValues, id }))
-    .filter((tag) => tagIdsOfFile.tags.some((tagId) => tagId === tag.id));
+    .filter((tag) => tagIdsOfResource.tags.some((tagId) => tagId === tag.id));
 
-  logger.debug(`got tags of file from storage`, { file, tagsOfFile });
+  logger.debug(`got tags of resource from storage`, { resource, tagsOfResource });
 
-  return tagsOfFile;
+  return tagsOfResource;
 }
 
-export async function addTags(files: UriComponents[], tagIds: string[]) {
-  logger.debug(`adding tags to files...`, { files, tagIds });
+export async function addTagsToResources(resources: UriComponents[], tagIds: string[]) {
+  logger.debug(`adding tags to resources...`, { resources, tagIds });
 
   const existingTagIds = Object.keys(tagOperations.getTags());
   const invalidTagIds = tagIds.filter(
@@ -190,17 +189,20 @@ export async function addTags(files: UriComponents[], tagIds: string[]) {
   );
 
   await Promise.all(
-    files.map(async (file) => {
-      const fileStat = await fileSystemRef.current.resolve(URI.from(file), {
+    resources.map(async (resource) => {
+      const statOfResource = await fileSystemRef.current.resolve(URI.from(resource), {
         resolveMetadata: true,
       });
 
-      let existingTagsOfFile = resourcesToTagsMap[uriHelper.getComparisonKey(file)];
-      if (existingTagsOfFile === undefined || existingTagsOfFile.ctimeOfFile !== fileStat.ctime) {
-        existingTagsOfFile = { ctimeOfFile: fileStat.ctime, tags: [] };
-        resourcesToTagsMap[uriHelper.getComparisonKey(file)] = existingTagsOfFile;
+      let existingTagsOfResource = resourcesToTagsMap[uriHelper.getComparisonKey(resource)];
+      if (
+        existingTagsOfResource === undefined ||
+        existingTagsOfResource.ctimeOfResource !== statOfResource.ctime
+      ) {
+        existingTagsOfResource = { ctimeOfResource: statOfResource.ctime, tags: [] };
+        resourcesToTagsMap[uriHelper.getComparisonKey(resource)] = existingTagsOfResource;
       }
-      existingTagsOfFile.tags.push(...tagIds);
+      existingTagsOfResource.tags.push(...tagIds);
     }),
   );
 
@@ -208,23 +210,23 @@ export async function addTags(files: UriComponents[], tagIds: string[]) {
     tagsSliceActions.storeResourcesToTags({ resourcesToTags: resourcesToTagsMap }),
   );
 
-  logger.debug(`tags to files added and stored in storage!`);
+  logger.debug(`tags to resources added and stored in storage!`);
 }
 
-export function removeTags(files: UriComponents[], tagIds: string[]) {
-  logger.debug(`removing tags from files...`, { files, tagIds });
+export function removeTagsFromResources(resources: UriComponents[], tagIds: string[]) {
+  logger.debug(`removing tags from resources...`, { resources, tagIds });
 
   const resourcesToTagsMap = objects.deepCopyJson(
     storeRef.current.getState().tagsSlice.resourcesToTags,
   );
 
-  for (const file of files) {
-    const existingTagsOfFile = resourcesToTagsMap[uriHelper.getComparisonKey(file)];
-    if (existingTagsOfFile !== undefined) {
-      existingTagsOfFile.tags = existingTagsOfFile.tags.filter(
+  for (const resource of resources) {
+    const existingTagsOfResource = resourcesToTagsMap[uriHelper.getComparisonKey(resource)];
+    if (existingTagsOfResource !== undefined) {
+      existingTagsOfResource.tags = existingTagsOfResource.tags.filter(
         (existingTagId) => !tagIds.some((tagIdToRemove) => tagIdToRemove === existingTagId),
       );
-      resourcesToTagsMap[uriHelper.getComparisonKey(file)] = existingTagsOfFile;
+      resourcesToTagsMap[uriHelper.getComparisonKey(resource)] = existingTagsOfResource;
     }
   }
 
@@ -232,31 +234,29 @@ export function removeTags(files: UriComponents[], tagIds: string[]) {
     tagsSliceActions.storeResourcesToTags({ resourcesToTags: resourcesToTagsMap }),
   );
 
-  logger.debug(`tags from files removed!`);
+  logger.debug(`tags from resources removed!`);
 }
 
 export async function executeCopyOrMove({
-  sourceFileURI,
-  sourceFileStat,
-  targetFileURI,
+  sourceResource,
+  targetResource,
   pasteShouldMove,
   cancellationTokenSource,
   progressCb,
 }: {
-  sourceFileURI: URI;
-  targetFileURI: URI;
-  sourceFileStat: IFileStatWithMetadata;
+  sourceResource: { uri: URI; fileStat: IFileStatWithMetadata };
+  targetResource: { uri: URI };
   pasteShouldMove: boolean;
   cancellationTokenSource?: CancellationTokenSource;
   progressCb?: (args: ProgressCbArgs) => void;
 }) {
   // Move/Copy File
   const operation = pasteShouldMove
-    ? fileSystemRef.current.move(sourceFileURI, targetFileURI, false, {
+    ? fileSystemRef.current.move(sourceResource.uri, targetResource.uri, false, {
         token: cancellationTokenSource?.token,
         progressCb,
       })
-    : fileSystemRef.current.copy(sourceFileURI, targetFileURI, false, {
+    : fileSystemRef.current.copy(sourceResource.uri, targetResource.uri, false, {
         token: cancellationTokenSource?.token,
         progressCb,
       });
@@ -265,15 +265,18 @@ export async function executeCopyOrMove({
     await operation;
 
     // Also copy tags to destination
-    const tagsOfSourceFile = getTagsOfFile(storeRef.current.getState().tagsSlice.resourcesToTags, {
-      uri: sourceFileURI,
-      ctime: sourceFileStat.ctime,
-    }).map((t) => t.id);
-    await addTags([targetFileURI], tagsOfSourceFile);
+    const tagsOfSourceResource = getTagsOfResource(
+      storeRef.current.getState().tagsSlice.resourcesToTags,
+      {
+        uri: sourceResource.uri,
+        ctime: sourceResource.fileStat.ctime,
+      },
+    ).map((t) => t.id);
+    await addTagsToResources([targetResource.uri], tagsOfSourceResource);
 
     // If move operation was performed, remove tags from source URI
     if (pasteShouldMove) {
-      removeTags([sourceFileURI], tagsOfSourceFile);
+      removeTagsFromResources([sourceResource.uri], tagsOfSourceResource);
     }
   } catch (err: unknown) {
     /*
@@ -282,7 +285,7 @@ export async function executeCopyOrMove({
      * since "findValidPasteFileTarget" makes sure that the paste target URI is new, without conflict.
      */
     try {
-      await fileSystemRef.current.del(targetFileURI, { useTrash: false, recursive: true });
+      await fileSystemRef.current.del(targetResource.uri, { useTrash: false, recursive: true });
     } catch {
       // ignore
     }
@@ -295,7 +298,9 @@ export async function executeCopyOrMove({
     }
   } finally {
     // invalidate files of the target directory
-    const distinctParents = getDistinctParents([sourceFileURI, targetFileURI]);
-    void Promise.all(distinctParents.map((directory) => refreshDirectoryContent({ directory })));
+    const distinctParents = getDistinctParents([sourceResource.uri, targetResource.uri]);
+    void Promise.all(
+      distinctParents.map((directory) => refreshResourcesOfDirectory({ directory })),
+    );
   }
 }

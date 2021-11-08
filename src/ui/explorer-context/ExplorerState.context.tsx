@@ -8,16 +8,16 @@ import { createSelectableContext } from '@app/ui/utils/react.util';
 export type ExplorerState = {
   filterInput: string;
   selection: {
-    keysOfSelectedFiles: string[];
-    keyOfFileSelectionGotStartedWith: string | undefined;
+    keysOfSelectedResources: string[];
+    keyOfResourceSelectionGotStartedWith: string | undefined;
   };
-  keyOfFileToRename: string | undefined;
+  keyOfResourceToRename: string | undefined;
 };
 
 export type ExplorerStateUpdateFunctions = {
   setFilterInput: (newValue: string) => void;
-  setKeysOfSelectedFiles: (newKeys: string[]) => void;
-  setKeyOfFileToRename: (newValue: string | undefined) => void;
+  setKeysOfSelectedResources: (newKeys: string[]) => void;
+  setKeyOfResourceToRename: (newValue: string | undefined) => void;
 };
 
 type ExplorerStateContext = ExplorerState & ExplorerStateUpdateFunctions;
@@ -38,10 +38,10 @@ export const ExplorerContextProvider: React.FC<ExplorerContextProviderProps> = (
   const [explorerState, updateExplorerState] = useImmer<ExplorerState>({
     filterInput: '',
     selection: {
-      keysOfSelectedFiles: [],
-      keyOfFileSelectionGotStartedWith: undefined,
+      keysOfSelectedResources: [],
+      keyOfResourceSelectionGotStartedWith: undefined,
     },
-    keyOfFileToRename: undefined,
+    keyOfResourceToRename: undefined,
   });
 
   const explorerStateUpdateFunctions: ExplorerStateUpdateFunctions = React.useMemo(
@@ -52,19 +52,21 @@ export const ExplorerContextProvider: React.FC<ExplorerContextProviderProps> = (
         });
       },
 
-      setKeysOfSelectedFiles: (newKeys) => {
+      setKeysOfSelectedResources: (newKeys) => {
         updateExplorerState((draft) => {
           draft.selection = {
-            keysOfSelectedFiles: newKeys,
-            keyOfFileSelectionGotStartedWith:
-              newKeys.length === 1 ? newKeys[0] : draft.selection.keyOfFileSelectionGotStartedWith,
+            keysOfSelectedResources: newKeys,
+            keyOfResourceSelectionGotStartedWith:
+              newKeys.length === 1
+                ? newKeys[0]
+                : draft.selection.keyOfResourceSelectionGotStartedWith,
           };
         });
       },
 
-      setKeyOfFileToRename: (newValue) => {
+      setKeyOfResourceToRename: (newValue) => {
         updateExplorerState((draft) => {
-          draft.keyOfFileToRename = newValue;
+          draft.keyOfResourceToRename = newValue;
         });
       },
     }),
@@ -81,7 +83,7 @@ export const ExplorerContextProvider: React.FC<ExplorerContextProviderProps> = (
       <ExplorerDerivedValuesContextProvider
         explorerId={explorerId}
         explorerState={explorerState}
-        setKeysOfSelectedFiles={explorerStateUpdateFunctions.setKeysOfSelectedFiles}
+        setKeysOfSelectedResources={explorerStateUpdateFunctions.setKeysOfSelectedResources}
       >
         <ExplorerOperationsContextProvider>{children}</ExplorerOperationsContextProvider>
       </ExplorerDerivedValuesContextProvider>
@@ -93,24 +95,24 @@ export function useFilterInput() {
   return useExplorerStateSelector((explorerValues) => explorerValues.filterInput);
 }
 
-export function useKeyOfFileSelectionGotStartedWith() {
+export function useKeyOfResourceSelectionGotStartedWith() {
   return useExplorerStateSelector(
-    (explorerValues) => explorerValues.selection.keyOfFileSelectionGotStartedWith,
+    (explorerValues) => explorerValues.selection.keyOfResourceSelectionGotStartedWith,
   );
 }
 
-export function useKeyOfFileToRename() {
-  return useExplorerStateSelector((explorerValues) => explorerValues.keyOfFileToRename);
+export function useKeyOfResourceToRename() {
+  return useExplorerStateSelector((explorerValues) => explorerValues.keyOfResourceToRename);
 }
 
 export function useSetFilterInput() {
   return useExplorerStateSelector((explorerValues) => explorerValues.setFilterInput);
 }
 
-export function useSetKeysOfSelectedFiles() {
-  return useExplorerStateSelector((explorerValues) => explorerValues.setKeysOfSelectedFiles);
+export function useSetKeysOfSelectedResources() {
+  return useExplorerStateSelector((explorerValues) => explorerValues.setKeysOfSelectedResources);
 }
 
-export function useSetKeyOfFileToRename() {
-  return useExplorerStateSelector((explorerValues) => explorerValues.setKeyOfFileToRename);
+export function useSetKeyOfResourceToRename() {
+  return useExplorerStateSelector((explorerValues) => explorerValues.setKeyOfResourceToRename);
 }

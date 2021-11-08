@@ -62,7 +62,7 @@ const CwdActionsMenuImpl: React.FC<CwdActionsMenuProps> = ({ anchorEl, onClose }
       </MenuItem>
 
       <ChangeCwd
-        initialCwdValue={formatter.resource(cwd)}
+        initialCwdValue={formatter.resourcePath(cwd)}
         onSubmit={async (newDir) => {
           await changeDirectory(explorerId, uriHelper.parseUri(cwd.scheme, newDir));
           onClose();

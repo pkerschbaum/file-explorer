@@ -16,13 +16,13 @@ import { uriHelper } from '@app/base/utils/uri-helper';
 import { PASTE_PROCESS_STATUS } from '@app/domain/types';
 import { actions as explorerActions } from '@app/global-state/slices/explorers.slice';
 import { actions as processesActions } from '@app/global-state/slices/processes.slice';
-import { executeCopyOrMove, resolveDeep } from '@app/operations/file.operations';
 import {
   dispatchRef,
   fileSystemRef,
   nativeHostRef,
   storeRef,
 } from '@app/operations/global-modules';
+import { executeCopyOrMove, resolveDeep } from '@app/operations/resource.operations';
 
 const UPDATE_INTERVAL_MS = 500;
 const logger = createLogger('explorer.hooks');
@@ -31,7 +31,7 @@ export async function changeDirectory(explorerId: string, newDir: URI) {
   const stats = await fileSystemRef.current.resolve(newDir);
   if (!stats.isDirectory) {
     throw Error(
-      `could not change directory, reason: uri is not a valid directory. uri: ${formatter.resource(
+      `could not change directory, reason: uri is not a valid directory. uri: ${formatter.resourcePath(
         newDir,
       )}`,
     );
@@ -42,7 +42,7 @@ export async function changeDirectory(explorerId: string, newDir: URI) {
   dispatchRef.current(explorerActions.changeCwd({ explorerId, newCwd }));
 }
 
-export async function pasteFiles(explorerId: string) {
+export async function pasteResources(explorerId: string) {
   const clipboardResources = nativeHostRef.current.clipboard
     .readResources()
     .map((r) => URI.from(r));
@@ -66,7 +66,7 @@ export async function pasteFiles(explorerId: string) {
       id,
       pasteShouldMove: draftPasteState.pasteShouldMove,
       sourceUris: clipboardResources.map((resource) => resource.toJSON()),
-      destinationFolder: destinationFolder.toJSON(),
+      destinationDirectory: destinationFolder.toJSON(),
       cancellationTokenSource,
     }),
   );
@@ -78,43 +78,50 @@ export async function pasteFiles(explorerId: string) {
     );
   });
 
-  // for each file/folder to paste, check for some required conditions and prepare target URI
+  // for each resource to paste, check for some required conditions and prepare target URI
   const pasteInfos = (
     await Promise.all(
-      clipboardResources.map(async (sourceFileURI) => {
-        // Destination folder must not be a subfolder of any source file/folder. Imagine copying
+      clipboardResources.map(async (uriOfSourceResource) => {
+        // Destination folder must not be a subfolder of any source resource. Imagine copying
         // a folder "test" and paste it (and its content) *into* itself, that would not work.
         if (
           uriHelper.getComparisonKey(destinationFolder) !==
-            uriHelper.getComparisonKey(sourceFileURI) &&
-          resources.isEqualOrParent(destinationFolder, sourceFileURI, !isLinux /* ignorecase */)
-        ) {
-          throw new CustomError('The destination folder is a subfolder of the source file', {
+            uriHelper.getComparisonKey(uriOfSourceResource) &&
+          resources.isEqualOrParent(
             destinationFolder,
-            sourceFileURI,
+            uriOfSourceResource,
+            !isLinux /* ignorecase */,
+          )
+        ) {
+          throw new CustomError('The destination folder is a subfolder of the source resource', {
+            destinationFolder,
+            uriOfSourceResource,
           });
         }
 
-        let sourceFileStat;
+        let fileStatOfSourceResource;
         try {
-          sourceFileStat = await fileSystemRef.current.resolve(sourceFileURI, {
+          fileStatOfSourceResource = await fileSystemRef.current.resolve(uriOfSourceResource, {
             resolveMetadata: true,
           });
         } catch (err: unknown) {
           logger.error(
-            'error during file paste process, source file was probably deleted or moved meanwhile',
+            'error during paste process, source resource was probably deleted or moved meanwhile',
             err,
           );
           return;
         }
 
-        const targetFileURI = findValidPasteFileTarget(destinationFolderStat, {
-          resource: sourceFileURI,
-          isDirectory: sourceFileStat.isDirectory,
+        const uriOfTargetResource = findValidPasteTarget(destinationFolderStat, {
+          resource: uriOfSourceResource,
+          isDirectory: fileStatOfSourceResource.isDirectory,
           allowOverwrite: false,
         });
 
-        return { sourceFileURI, sourceFileStat, targetFileURI };
+        return {
+          sourceResource: { uri: uriOfSourceResource, fileStat: fileStatOfSourceResource },
+          targetResource: { uri: uriOfTargetResource },
+        };
       }),
     )
   ).filter(check.isNotNullish);
@@ -137,9 +144,9 @@ export async function pasteFiles(explorerId: string) {
 
   await Promise.all(
     pasteInfos.map(async (pasteInfo) => {
-      const { sourceFileURI, sourceFileStat } = pasteInfo;
+      const { sourceResource } = pasteInfo;
 
-      const fileStatMap = await resolveDeep(sourceFileURI, sourceFileStat);
+      const fileStatMap = await resolveDeep(sourceResource.uri, sourceResource.fileStat);
 
       Object.entries(fileStatMap).forEach(([uri, fileStat]) => {
         totalSize += fileStat.size;
@@ -243,14 +250,18 @@ export async function revealCwdInOSExplorer(explorerId: string) {
   await nativeHostRef.current.shell.revealResourcesInOS([cwd]);
 }
 
-function findValidPasteFileTarget(
+function findValidPasteTarget(
   targetFolder: IFileStat,
-  fileToPaste: { resource: UriComponents; isDirectory?: boolean; allowOverwrite: boolean },
+  resourceToPaste: { resource: UriComponents; isDirectory?: boolean; allowOverwrite: boolean },
 ): URI {
-  let name = resources.basenameOrAuthority(URI.from(fileToPaste.resource));
+  let name = resources.basenameOrAuthority(URI.from(resourceToPaste.resource));
   let candidate = resources.joinPath(targetFolder.resource, name);
 
-  if (fileToPaste.allowOverwrite || !targetFolder.children || targetFolder.children.length === 0) {
+  if (
+    resourceToPaste.allowOverwrite ||
+    !targetFolder.children ||
+    targetFolder.children.length === 0
+  ) {
     return candidate;
   }
 
@@ -264,14 +275,14 @@ function findValidPasteFileTarget(
       break;
     }
 
-    name = incrementFileName(name, !!fileToPaste.isDirectory);
+    name = incrementResourceName(name, !!resourceToPaste.isDirectory);
     candidate = resources.joinPath(targetFolder.resource, name);
   }
 
   return candidate;
 }
 
-function incrementFileName(name: string, isFolder: boolean): string {
+function incrementResourceName(name: string, isFolder: boolean): string {
   let namePrefix = name;
   let extSuffix = '';
   if (!isFolder) {

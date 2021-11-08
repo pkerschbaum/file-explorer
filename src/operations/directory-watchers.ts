@@ -7,8 +7,8 @@ import * as React from 'react';
 
 import { createLogger } from '@app/base/logger/logger';
 import { uriHelper } from '@app/base/utils/uri-helper';
-import { refreshDirectoryContent } from '@app/global-cache/files';
 import { DirectoryContentKey, DIRECTORY_CONTENT_KEY_PREFIX } from '@app/global-cache/query-keys';
+import { refreshResourcesOfDirectory } from '@app/global-cache/resources';
 import { fileSystemRef, queryClientRef } from '@app/operations/global-modules';
 
 const logger = createLogger('directory-watchers');
@@ -42,7 +42,7 @@ export function useDirectoryWatchers() {
             const watcherDisposable = fileSystemRef.current.watch(directoryUri);
             const didFilesChangeDisposable = fileSystemRef.current.onDidFilesChange((e) => {
               if (e.affects(directoryUri)) {
-                void refreshDirectoryContent({ directory: directoryUri }, { active: true });
+                void refreshResourcesOfDirectory({ directory: directoryUri }, { active: true });
               }
             });
             const disposables = new DisposableStore();

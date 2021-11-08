@@ -8,7 +8,7 @@ import { isUnreachable } from '@app/base/utils/assert.util';
 import { formatter } from '@app/base/utils/formatter.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { DeleteProcess as DeleteProcessType, DELETE_PROCESS_STATUS } from '@app/domain/types';
-import { removeProcess, runDeleteProcess } from '@app/operations/file.operations';
+import { removeProcess, runDeleteProcess } from '@app/operations/resource.operations';
 import { TextBox } from '@app/ui/elements/TextBox';
 import { Stack } from '@app/ui/layouts/Stack';
 import { ProcessCard } from '@app/ui/process/ProcessCard';
@@ -96,10 +96,9 @@ export const DeleteProcess: React.FC<{ process: DeleteProcessType }> = ({ proces
       summaryIcon={<DeleteOutlinedIcon fontSize="small" />}
       summaryText={process.uris
         .map((uri) => {
-          const { fileName, extension } = uriHelper.extractNameAndExtension(uri);
-          const fileLabel = formatter.file({ name: fileName, extension });
-
-          return fileLabel;
+          const { resourceName, extension } = uriHelper.extractNameAndExtension(uri);
+          const resourceLabel = formatter.resourceBasename({ name: resourceName, extension });
+          return resourceLabel;
         })
         .join(', ')}
       details={
@@ -107,12 +106,11 @@ export const DeleteProcess: React.FC<{ process: DeleteProcessType }> = ({ proces
           <Stack direction="column" alignItems="stretch" spacing={0.5}>
             <TextBox fontSize="sm">Files:</TextBox>
             {process.uris.map((uri) => {
-              const { fileName, extension } = uriHelper.extractNameAndExtension(uri);
-              const fileLabel = formatter.file({ name: fileName, extension });
-
+              const { resourceName, extension } = uriHelper.extractNameAndExtension(uri);
+              const resourceLabel = formatter.resourceBasename({ name: resourceName, extension });
               return (
                 <TextBox key={uriHelper.getComparisonKey(uri)} fontSize="sm" fontBold>
-                  {fileLabel}
+                  {resourceLabel}
                 </TextBox>
               );
             })}

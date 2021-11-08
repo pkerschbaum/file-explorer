@@ -34,7 +34,7 @@ export const fakePasteProcessBase: PasteProcessBase = {
     URI.joinPath(fakeFileStat.resource, './testfile2.docx'),
     URI.joinPath(fakeFileStat.resource, './testfile3.pdf'),
   ],
-  destinationFolder: URI.parse(`${Schemas.inMemory}:///home/testdir/`),
+  destinationDirectory: URI.parse(`${Schemas.inMemory}:///home/testdir/`),
   cancellationTokenSource: new CancellationTokenSource(),
   totalSize: 1024 * 1024 * 10, // 10MB
   bytesProcessed: 1024 * 1024 * 2, // 2MB

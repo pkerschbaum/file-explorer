@@ -25,7 +25,7 @@ declare module '@mui/material/styles' {
       card: {
         md: { width: number };
       };
-      fileRow: {
+      resourceRow: {
         height: string;
       };
     };
@@ -44,7 +44,7 @@ declare module '@mui/material/styles' {
       card: {
         md: { width: number };
       };
-      fileRow: {
+      resourceRow: {
         height: string;
       };
     };
@@ -304,7 +304,7 @@ export const createTheme = (locale: Localization) => {
       card: {
         md: { width: 280 },
       },
-      fileRow: {
+      resourceRow: {
         height: '1.5rem',
       },
     },

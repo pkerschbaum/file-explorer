@@ -16,7 +16,7 @@ export async function addExplorerPanel(cwdToUse?: UriComponents) {
   const stats = await fileSystemRef.current.resolve(cwdOfNewExplorer);
   if (!stats.isDirectory) {
     throw Error(
-      `could not set directory for explorer panel, reason: uri is not a valid directory. uri: ${formatter.resource(
+      `could not set directory for explorer panel, reason: uri is not a valid directory. uri: ${formatter.resourcePath(
         cwdOfNewExplorer,
       )}`,
     );

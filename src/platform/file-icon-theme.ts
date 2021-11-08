@@ -23,7 +23,7 @@ const httpIconThemeFileService: { readFile: IFileService['readFile'] } = {
     const relativeUrlToFetch = /((?:\/static)?\/icon-theme\/.+)/g.exec(resource.path)?.[1];
     if (check.isNullishOrEmptyString(relativeUrlToFetch)) {
       throw new Error(
-        `could not extract relative url to fetch! resource=${formatter.resource(resource)}`,
+        `could not extract relative url to fetch! resource=${formatter.resourcePath(resource)}`,
       );
     }
 

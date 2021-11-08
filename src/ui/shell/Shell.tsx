@@ -7,8 +7,8 @@ import { useExplorerPanels } from '@app/global-state/slices/explorers.hooks';
 import { EXPLORER_ACTIONSBAR_GRID_AREA } from '@app/ui/actions-bar/ActionsBar';
 import { EXPLORER_CWDBREADCRUMBS_GRID_AREA } from '@app/ui/cwd-breadcrumbs/CwdBreadcrumbs';
 import { ExplorerPanel } from '@app/ui/explorer-panel/ExplorerPanel';
-import { EXPLORER_FILESTABLE_GRID_AREA } from '@app/ui/files-table/FilesTable';
 import { Stack } from '@app/ui/layouts/Stack';
+import { EXPLORER_RESOURCESTABLE_GRID_AREA } from '@app/ui/resources-table/ResourcesTable';
 import {
   ROOTCONTAINER_PADDING_LEFT_FACTOR,
   ROOTCONTAINER_PADDING_RIGHT_FACTOR,
@@ -49,7 +49,7 @@ const WINDOWS_GRID_CONFIGURATION = css`
     'shell-title-bar shell-title-bar'
     'shell-tabs-and-processes ${EXPLORER_CWDBREADCRUMBS_GRID_AREA}'
     'shell-tabs-and-processes ${EXPLORER_ACTIONSBAR_GRID_AREA}'
-    'shell-tabs-and-processes ${EXPLORER_FILESTABLE_GRID_AREA}';
+    'shell-tabs-and-processes ${EXPLORER_RESOURCESTABLE_GRID_AREA}';
 `;
 
 const NON_WINDOWS_GRID_CONFIGURATION = css`
@@ -57,7 +57,7 @@ const NON_WINDOWS_GRID_CONFIGURATION = css`
   grid-template-areas:
     'shell-tabs-and-processes ${EXPLORER_CWDBREADCRUMBS_GRID_AREA}'
     'shell-tabs-and-processes ${EXPLORER_ACTIONSBAR_GRID_AREA}'
-    'shell-tabs-and-processes ${EXPLORER_FILESTABLE_GRID_AREA}';
+    'shell-tabs-and-processes ${EXPLORER_RESOURCESTABLE_GRID_AREA}';
 `;
 
 const RootContainer = styled(Box)`

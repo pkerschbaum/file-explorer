@@ -4,7 +4,7 @@ import { byteSize, ByteUnit } from '@app/base/utils/byte-size.util';
 import { numbers } from '@app/base/utils/numbers.util';
 import { i18n } from '@app/domain/i18n';
 
-export const formatter = { bytes, date, file, resource };
+export const formatter = { bytes, date, resourceBasename, resourcePath };
 
 function bytes(numberOfBytes: number, options?: { unit: ByteUnit }): string {
   let unitToUse = options?.unit;
@@ -34,14 +34,14 @@ function date(unixTs: number): string {
   }).format(unixTs);
 }
 
-function file(file: { name: string; extension?: string }): string {
-  if (file.extension === undefined) {
-    return file.name;
+function resourceBasename(resource: { name: string; extension?: string }): string {
+  if (resource.extension === undefined) {
+    return resource.name;
   }
 
-  return `${file.name}${file.extension}`;
+  return `${resource.name}${resource.extension}`;
 }
 
-function resource(resource: UriComponents): string {
+function resourcePath(resource: UriComponents): string {
   return URI.from(resource).fsPath;
 }

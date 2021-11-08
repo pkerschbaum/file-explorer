@@ -124,7 +124,7 @@ export const PasteProcess: React.FC<{ process: PasteProcessType }> = ({ process 
   }
 
   const processMeta = STATUS_META_INFOS[process.status];
-  const destinationFolderLabel = formatter.resource(process.destinationFolder);
+  const destinationFolderLabel = formatter.resourcePath(process.destinationDirectory);
   const percentageBytesProcessed =
     process.status === PASTE_PROCESS_STATUS.SUCCESS
       ? 100
@@ -165,11 +165,14 @@ export const PasteProcess: React.FC<{ process: PasteProcessType }> = ({ process 
           <Stack direction="column" alignItems="stretch" spacing={0.5}>
             <TextBox fontSize="sm">Files:</TextBox>
             {process.sourceUris.slice(0, 2).map((uri) => {
-              const { fileName, extension } = uriHelper.extractNameAndExtension(uri);
-              const sourceFileLabel = formatter.file({ name: fileName, extension });
+              const { resourceName, extension } = uriHelper.extractNameAndExtension(uri);
+              const sourceResourceLabel = formatter.resourceBasename({
+                name: resourceName,
+                extension,
+              });
               return (
                 <TextBox key={uriHelper.getComparisonKey(uri)} fontSize="sm" fontBold>
-                  {sourceFileLabel}
+                  {sourceResourceLabel}
                 </TextBox>
               );
             })}

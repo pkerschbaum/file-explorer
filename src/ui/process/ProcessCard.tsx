@@ -5,7 +5,7 @@ import { AccordionDetails, AccordionSummary, IconButton, Tooltip } from '@mui/ma
 import * as React from 'react';
 import styled from 'styled-components';
 
-import { removeProcess } from '@app/operations/file.operations';
+import { removeProcess } from '@app/operations/resource.operations';
 import { commonStyles } from '@app/ui/Common.styles';
 import { RoundedAccordion } from '@app/ui/elements/Accordion';
 import { TextBox } from '@app/ui/elements/TextBox';

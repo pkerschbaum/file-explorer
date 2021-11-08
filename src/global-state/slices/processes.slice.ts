@@ -19,7 +19,7 @@ export type ProcessesSliceState = {
   processes: AppProcess[];
 };
 
-type CutOrCopyFilesPayload = {
+type CutOrCopyResourcesPayload = {
   cut: boolean;
 };
 
@@ -27,7 +27,7 @@ type AddPasteProcessPayload = {
   id: string;
   pasteShouldMove: boolean;
   sourceUris: UriComponents[];
-  destinationFolder: UriComponents;
+  destinationDirectory: UriComponents;
   cancellationTokenSource: CancellationTokenSource;
 };
 
@@ -77,7 +77,7 @@ const INITIAL_STATE: ProcessesSliceState = {
 const logger = createLogger('processes.slice');
 
 export const actions = {
-  cutOrCopyFiles: createAction<CutOrCopyFilesPayload>('FILES_CUT_OR_COPIED'),
+  cutOrCopyResources: createAction<CutOrCopyResourcesPayload>('RESOURCES_CUT_OR_COPIED'),
   addPasteProcess: createAction<AddPasteProcessPayload>('PASTE_PROCESS_ADDED'),
   updatePasteProcess: createAction<UpdatePasteProcessPayload>('PASTE_PROCESS_UPDATED'),
   addDeleteProcess: createAction<AddDeleteProcessPayload>('DELETE_PROCESS_ADDED'),
@@ -87,7 +87,7 @@ export const actions = {
 };
 export const reducer = createReducer(INITIAL_STATE, (builder) =>
   builder
-    .addCase(actions.cutOrCopyFiles, (state, action) => {
+    .addCase(actions.cutOrCopyResources, (state, action) => {
       state.draftPasteState = { pasteShouldMove: action.payload.cut };
     })
     .addCase(actions.addPasteProcess, (state, action) => {
