@@ -2,9 +2,11 @@ import { CssBaseline, darken, ThemeProvider } from '@mui/material';
 import { enUS } from '@mui/material/locale';
 import * as React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
 import { Provider } from 'react-redux';
 import styled, { createGlobalStyle, css } from 'styled-components';
 
+import { config } from '@app/config';
 import { RootStore } from '@app/global-state/store';
 import { useDirectoryWatchers } from '@app/operations/directory-watchers';
 import { createTheme } from '@app/ui/theme';
@@ -70,6 +72,8 @@ export const Globals: React.FC<GlobalsProps> = ({ queryClient, store, children }
           <RootContainer className="show-file-icons">{children}</RootContainer>
         </Provider>
       </ThemeProvider>
+
+      {config.showReactQueryDevtools && <ReactQueryDevtools />}
     </QueryClientProvider>
   );
 };

@@ -20,6 +20,7 @@ declare global {
 }
 
 type Privileged = {
+  processEnv: NodeJS.ProcessEnv;
   fileService: PlatformFileService;
   app: {
     getNativeFileIconDataURL: (
@@ -54,11 +55,12 @@ type Privileged = {
 
 const CLIPBOARD_FILELIST_FORMAT = `${config.productName}/file-list`;
 
-// eslint-disable-next-line @typescript-eslint/require-await
-export async function initializePrivilegedPlatformModules() {
+export function initializePrivilegedPlatformModules() {
   const { fileService } = bootstrapFileServiceModule();
 
   window.privileged = {
+    // eslint-disable-next-line node/no-process-env
+    processEnv: process.env,
     fileService,
     app: {
       getNativeFileIconDataURL: (...args) =>

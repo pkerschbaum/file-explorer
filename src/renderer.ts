@@ -24,9 +24,6 @@ import { render } from '@app/ui/Root';
 const FILE_ICON_THEME_PATH_REPLACE_REGEX = /file:.+\/static\/icon-theme\//g;
 
 async function rendererScriptEntryPoint() {
-  // wait for preload script to finish
-  await window.preload.initializationPromise;
-
   // create platform modules
   const fileSystem = createFileSystem();
   const nativeHost = createNativeHost();
