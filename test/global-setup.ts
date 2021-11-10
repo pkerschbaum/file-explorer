@@ -18,7 +18,7 @@ module.exports = async () => {
   }
 
   console.log('initializing puppeteer...');
-  const browser = await puppeteer.launch({});
+  const browser = await puppeteer.launch();
   global.__BROWSER__ = browser;
   await fs.promises.mkdir(TMP_PATH, { recursive: true });
   await fs.promises.writeFile(TMP_PUPPETEER_ENDPOINT_PATH, browser.wsEndpoint());

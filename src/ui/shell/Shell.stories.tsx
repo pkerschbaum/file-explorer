@@ -7,7 +7,7 @@ import { dispatchRef, queryClientRef, storeRef } from '@app/operations/global-mo
 import { createQueryClient, Globals } from '@app/ui/Globals';
 import { Shell } from '@app/ui/shell';
 
-import { fakeDeleteProcess, fakePasteProcess } from '@app-test/fake-data/fake-data';
+import { fakeDeleteProcess, fakePasteProcess } from '@app-test/utils/fake-data';
 
 export default {
   title: 'Shell',

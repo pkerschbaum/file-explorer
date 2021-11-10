@@ -5,7 +5,7 @@ import { NarrowUnion } from '@app/base/utils/types.util';
 import { PasteProcess, PASTE_PROCESS_STATUS } from '@app/domain/types';
 import { Process } from '@app/ui/process/Process';
 
-import { fakePasteProcessBase } from '@app-test/fake-data/fake-data';
+import { fakePasteProcessBase } from '@app-test/utils/fake-data';
 
 import { globalDecorator } from '@app-storybook/storybook-utils';
 

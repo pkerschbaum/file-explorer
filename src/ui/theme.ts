@@ -67,7 +67,7 @@ export const THEMES = {
     mode: 'dark',
     background: '#231f1a',
     paperBackground: 'hsl(27, 11%, 17%)',
-    hoverBackground: 'rgba(255, 255, 255, 0.08)',
+    hoverBackground: 'hsl(27, 11%, 21%)',
     foregroundColor: 'hsl(0, 0%, 100%)',
     primaryColor: cyan[300],
   },
@@ -87,14 +87,19 @@ export const ACTIVE_THEME = 'coffee' as AvailableThemes;
 // border colors are taken from material-ui OutlinedInput <fieldset> border color
 const BORDER_COLOR_LIGHT = 'rgba(0, 0, 0, 0.23)';
 const BORDER_COLOR_DARK = 'rgba(255, 255, 255, 0.23)';
+const OUTLINE_COLOR_LIGHT = 'rgba(0, 0, 0, 0.8)';
+const OUTLINE_COLOR_DARK = 'rgba(255, 255, 255, 0.8)';
 
 export const createTheme = (locale: Localization) => {
   const activeTheme = THEMES[ACTIVE_THEME];
   let borderColorToUse;
+  let outlineColorToUse;
   if (activeTheme.mode === 'dark') {
     borderColorToUse = BORDER_COLOR_DARK;
+    outlineColorToUse = OUTLINE_COLOR_DARK;
   } else if (activeTheme.mode === 'light') {
     borderColorToUse = BORDER_COLOR_LIGHT;
+    outlineColorToUse = OUTLINE_COLOR_LIGHT;
   } else {
     assertThat.isUnreachable(activeTheme);
   }
@@ -157,6 +162,7 @@ export const createTheme = (locale: Localization) => {
         defaultProps: {
           variant: 'outlined',
           type: 'button',
+          disableRipple: true,
         },
         styleOverrides: {
           root: css`
@@ -164,6 +170,14 @@ export const createTheme = (locale: Localization) => {
             padding-left: 12px;
             padding-right: 12px;
             transition-duration: 150ms;
+
+            &.Mui-focusVisible {
+              outline: 2px solid ${outlineColorToUse};
+            }
+
+            &:active {
+              filter: brightness(70%);
+            }
           ` as any,
           outlined: css`
             color: ${activeTheme.foregroundColor};

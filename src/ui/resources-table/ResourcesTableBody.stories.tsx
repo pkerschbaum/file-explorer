@@ -20,7 +20,7 @@ import {
 import { createQueryClient, Globals } from '@app/ui/Globals';
 import { ResourcesTableRow } from '@app/ui/resources-table/ResourcesTableBody';
 
-import { fakeFileStat } from '@app-test/fake-data/fake-data';
+import { fakeFileStat } from '@app-test/utils/fake-data';
 
 const fakeResource = mapFileStatToResource(fakeFileStat);
 const { resourceName, extension } = uriHelper.extractNameAndExtension(fakeResource.uri);

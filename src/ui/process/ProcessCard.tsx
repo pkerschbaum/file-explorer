@@ -80,4 +80,7 @@ const SummaryText = styled(TextBox)`
 
 const RotatingAutorenewOutlinedIcon = styled(AutorenewOutlinedIcon)`
   animation: ${rotate} 2s linear infinite;
+  @media (prefers-reduced-motion: reduce) {
+    display: none;
+  }
 `;

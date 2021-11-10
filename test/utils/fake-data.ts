@@ -2,6 +2,7 @@ import { CancellationTokenSource } from '@pkerschbaum/code-oss-file-service/out/
 import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { IFileStatWithMetadata } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
+import dayjs from 'dayjs';
 
 import {
   DELETE_PROCESS_STATUS,
@@ -18,8 +19,8 @@ export const fakeFileStat: IFileStatWithMetadata = {
   isSymbolicLink: false,
   name: 'test-file.txt',
   resource: URI.parse(`${Schemas.inMemory}:///home/testdir/testfile.txt`),
-  ctime: Date.now(),
-  mtime: Date.now(),
+  ctime: dayjs('2021-03-05T17:49:51.123Z').unix(),
+  mtime: dayjs('2021-05-08T18:59:01.456Z').unix(),
   readonly: false,
   size: 1024,
   etag: '',

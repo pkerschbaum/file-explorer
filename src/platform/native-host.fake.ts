@@ -4,7 +4,7 @@ import { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/co
 import { functions } from '@app/base/utils/functions.util';
 import { PlatformNativeHost } from '@app/platform/native-host';
 
-import { fakeFileStat } from '@app-test/fake-data/fake-data';
+import { fakeFileStat } from '@app-test/utils/fake-data';
 
 export function createFakeNativeHost(): PlatformNativeHost {
   let currentClipboardValue: UriComponents[] = [];

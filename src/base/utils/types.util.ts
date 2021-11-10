@@ -158,3 +158,8 @@ export type Immutable<T> = T extends ImmutablePrimitive
 export type Awaited<T> = T extends PromiseLike<infer U> ? U : T;
 
 export type FunctionType<Args extends unknown[], ReturnType> = (...args: Args) => ReturnType;
+
+/**
+ * https://stackoverflow.com/a/43001581/1700319
+ */
+export type Writeable<T> = { -readonly [P in keyof T]: T[P] };
