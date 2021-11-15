@@ -1,4 +1,3 @@
-import { matchSorter } from 'match-sorter';
 import * as React from 'react';
 
 import { arrays } from '@app/base/utils/arrays.util';
@@ -75,9 +74,7 @@ export const ExplorerDerivedValuesContextProvider: React.FC<ExplorerDerivedValue
         result = arrays
           .wrap(resourcesWithTags)
           .matchSort(explorerState.filterInput, {
-            // avoid "WORD STARTS WITH" ranking of match-sorter by replacing each blank with another character
-            keys: [(resource) => resource.name.replace(' ', '_')],
-            threshold: matchSorter.rankings.CONTAINS,
+            keys: [(resource) => resource.name],
           })
           .getValue();
       }

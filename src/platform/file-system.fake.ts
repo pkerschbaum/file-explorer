@@ -22,25 +22,45 @@ export const createFakeFileSystem: () => Promise<PlatformFileSystem> = async () 
   const inMemoryFileSystemProvider = new InMemoryFileSystemProvider();
   fileService.registerProvider(Schemas.inMemory, inMemoryFileSystemProvider);
 
-  const uriOfFolder1 = URI.parse(`${Schemas.inMemory}:///home/testdir/test-folder`);
-  await fileService.createFolder(uriOfFolder1);
-  const folderStat1 = await inMemoryFileSystemProvider.stat(uriOfFolder1);
-  (folderStat1 as WritableIStat).mtime = dayjs('2021-05-08T18:59:01.456Z').unix() * 1000;
+  async function createFolder({ uri, mtimeIso8601 }: { uri: URI; mtimeIso8601: string }) {
+    await fileService.createFolder(uri);
+    const folderStat2 = await inMemoryFileSystemProvider.stat(uri);
+    (folderStat2 as WritableIStat).mtime = dayjs(mtimeIso8601).unix() * 1000;
+  }
+  async function createFile({ uri, mtimeIso8601 }: { uri: URI; mtimeIso8601: string }) {
+    await fileService.createFile(uri, VSBuffer.fromString(`test content of ${uri.toString()}`));
+    const fileStat1 = await inMemoryFileSystemProvider.stat(uri);
+    (fileStat1 as WritableIStat).mtime = dayjs(mtimeIso8601).unix() * 1000;
+  }
 
-  const uriOfFile1 = URI.parse(`${Schemas.inMemory}:///home/testdir/testfile1.txt`);
-  await fileService.createFile(uriOfFile1, VSBuffer.fromString('test content of testfile1.txt'));
-  const fileStat1 = await inMemoryFileSystemProvider.stat(uriOfFile1);
-  (fileStat1 as WritableIStat).mtime = dayjs('2021-05-08T18:59:01.456Z').unix() * 1000;
-
-  const uriOfFile2 = URI.parse(`${Schemas.inMemory}:///home/testdir/testfile2.docx`);
-  await fileService.createFile(uriOfFile2, VSBuffer.fromString('test content of testfile2.docx'));
-  const fileStat2 = await inMemoryFileSystemProvider.stat(uriOfFile2);
-  (fileStat2 as WritableIStat).mtime = dayjs('2021-05-08T18:59:01.456Z').unix() * 1000;
-
-  const uriOfFile3 = URI.parse(`${Schemas.inMemory}:///home/testdir/testfile3.pdf`);
-  await fileService.createFile(uriOfFile3, VSBuffer.fromString('test content of testfile3.pdf'));
-  const fileStat3 = await inMemoryFileSystemProvider.stat(uriOfFile3);
-  (fileStat3 as WritableIStat).mtime = dayjs('2021-05-08T18:59:01.456Z').unix() * 1000;
+  await createFolder({
+    uri: URI.parse(`${Schemas.inMemory}:///home/testdir/aa test folder`),
+    mtimeIso8601: '2021-05-08T19:01:59.789Z',
+  });
+  await createFolder({
+    uri: URI.parse(`${Schemas.inMemory}:///home/testdir/zz test folder`),
+    mtimeIso8601: '2021-05-08T01:05:15.012Z',
+  });
+  await createFolder({
+    uri: URI.parse(`${Schemas.inMemory}:///home/testdir/test folder`),
+    mtimeIso8601: '2021-05-08T18:59:01.456Z',
+  });
+  await createFolder({
+    uri: URI.parse(`${Schemas.inMemory}:///home/testdir/test-folder`),
+    mtimeIso8601: '2021-05-08T18:59:01.456Z',
+  });
+  await createFile({
+    uri: URI.parse(`${Schemas.inMemory}:///home/testdir/testfile1.txt`),
+    mtimeIso8601: '2021-05-08T18:59:01.456Z',
+  });
+  await createFile({
+    uri: URI.parse(`${Schemas.inMemory}:///home/testdir/testfile2.docx`),
+    mtimeIso8601: '2021-05-08T18:59:01.456Z',
+  });
+  await createFile({
+    uri: URI.parse(`${Schemas.inMemory}:///home/testdir/testfile3.pdf`),
+    mtimeIso8601: '2021-05-08T18:59:01.456Z',
+  });
 
   return {
     resolve: fileService.resolve.bind(fileService),

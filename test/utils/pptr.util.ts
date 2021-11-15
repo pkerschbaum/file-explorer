@@ -1,4 +1,5 @@
 import { getDocument, queries } from 'pptr-testing-library';
+import { ElementHandle } from 'puppeteer';
 
 type GetByRoleParamters = Parameters<typeof queries.getByRole>;
 
@@ -18,3 +19,10 @@ export async function openPageForStory({ storybookId }: { storybookId: string })
 
   return { page, queries: { getByRole } };
 }
+
+export const events = {
+  clearTextInput: async (textInput: ElementHandle): Promise<void> => {
+    await textInput.click({ clickCount: 3 });
+    await textInput.type('');
+  },
+};

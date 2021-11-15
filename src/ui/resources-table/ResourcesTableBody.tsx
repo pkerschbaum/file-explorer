@@ -1,4 +1,4 @@
-import { Box, Chip, TextField } from '@mui/material';
+import { Box, Chip } from '@mui/material';
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
@@ -18,6 +18,7 @@ import { KEYS } from '@app/ui/constants';
 import { Cell } from '@app/ui/elements/DataTable/Cell';
 import { Row } from '@app/ui/elements/DataTable/Row';
 import { TextBox } from '@app/ui/elements/TextBox';
+import { TextField } from '@app/ui/elements/TextField';
 import {
   useChangeSelectionByClick,
   useExplorerId,
