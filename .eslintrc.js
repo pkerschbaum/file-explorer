@@ -1,7 +1,7 @@
 module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: './tsconfig.json',
+    project: ['./tsconfig.json', './cypress/tsconfig.json'],
     sourceType: 'module',
     tsconfigRootDir: __dirname,
   },
@@ -16,6 +16,7 @@ module.exports = {
     'plugin:react/recommended',
     'plugin:react-hooks/recommended',
     'plugin:jsx-a11y/recommended',
+    'plugin:cypress/recommended',
   ],
   /**
    * add "only-warn" plugin to change all errors to warnings.
@@ -23,7 +24,7 @@ module.exports = {
    * allows to distinguish ESLint warnings from other errors (e.g. TypeScript compile errors) in the
    * code editor (e.g. VS Code).
    */
-  plugins: ['node', 'jsx-a11y', 'import', 'only-warn'],
+  plugins: ['node', 'jsx-a11y', 'import', 'only-warn', 'cypress'],
   ignorePatterns: ['**/*.js'],
   rules: {
     curly: 'error',
@@ -44,6 +45,11 @@ module.exports = {
           },
           {
             pattern: '@app-storybook/**',
+            group: 'parent',
+            position: 'after',
+          },
+          {
+            pattern: '@app-cypress/**',
             group: 'parent',
             position: 'after',
           },

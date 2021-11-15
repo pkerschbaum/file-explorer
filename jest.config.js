@@ -9,7 +9,7 @@ module.exports = {
   globalTeardown: './test/global-teardown.ts',
   setupFilesAfterEnv: ['./test/setup-after-env.ts'],
   rootDir: '.',
-  testRegex: '.*\\.spec\\.(ts|tsx)$',
+  testRegex: 'src/.*\\.spec\\.(ts|tsx)$',
   transform: {
     '^.+\\.(t|j)sx?$': 'ts-jest',
   },

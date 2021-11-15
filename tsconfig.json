@@ -14,7 +14,8 @@
     "paths": {
       "@app/*": ["./src/*"],
       "@app-test/*": ["./test/*"],
-      "@app-storybook/*": ["./storybook/*"]
+      "@app-storybook/*": ["./storybook/*"],
+      "@app-cypress/*": ["./cypress/*"]
     },
     "plugins": [
       {
