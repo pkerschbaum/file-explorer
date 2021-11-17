@@ -6,7 +6,7 @@ export function addLaunchOptionsPlugin(
     /**
      * Maximize chromium-based browsers
      */
-    if (browser.family === 'chromium' && browser.name !== 'electron') {
+    if (browser.isHeaded && browser.family === 'chromium' && browser.name !== 'electron') {
       launchOptions.args.push('--start-maximized');
     }
 
@@ -18,22 +18,6 @@ export function addLaunchOptionsPlugin(
       launchOptions.preferences['ui.prefersReducedMotion'] = 1;
     } else if (browser.family === 'chromium') {
       launchOptions.args.push('--force-prefers-reduced-motion');
-    }
-
-    /**
-     * Auto open devtools
-     * https://docs.cypress.io/api/plugins/browser-launch-api#Modify-browser-launch-arguments-preferences-and-extensions
-     */
-    if (browser.family === 'chromium' && browser.name !== 'electron') {
-      launchOptions.args.push('--auto-open-devtools-for-tabs');
-    }
-
-    if (browser.family === 'firefox') {
-      launchOptions.args.push('-devtools');
-    }
-
-    if (browser.name === 'electron') {
-      launchOptions.preferences.devTools = true;
     }
 
     return launchOptions;
