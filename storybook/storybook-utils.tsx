@@ -2,7 +2,7 @@ import { storyNameFromExport, toId } from '@storybook/csf';
 import { DecoratorFn } from '@storybook/react';
 
 import { ObjectLiteral } from '@app/base/utils/types.util';
-import { createStoreInstance } from '@app/global-state/store';
+import { createStoreInstance, PreloadedRootState } from '@app/global-state/store';
 import { queryClientRef, storeRef, dispatchRef } from '@app/operations/global-modules';
 import { createQueryClient, Globals } from '@app/ui/Globals';
 
@@ -20,16 +20,21 @@ export function deriveIdFromMetadataAndExportName(
   return toId(metadata.title, storyNameFromExport(nameOfStoryBinding));
 }
 
-export const globalDecorator: DecoratorFn = (story) => {
-  const queryClient = createQueryClient();
-  queryClientRef.current = queryClient;
-  const store = createStoreInstance();
-  storeRef.current = store;
-  dispatchRef.current = store.dispatch;
-
-  return (
-    <Globals queryClient={queryClient} store={store}>
-      {story()}
-    </Globals>
-  );
+type GlobalDecoratorArgs = {
+  preloadedState: PreloadedRootState;
 };
+export const createGlobalDecorator: (decoratorArgs?: GlobalDecoratorArgs) => DecoratorFn =
+  // eslint-disable-next-line react/display-name
+  (decoratorArgs) => (story) => {
+    const queryClient = createQueryClient();
+    queryClientRef.current = queryClient;
+    const store = createStoreInstance(decoratorArgs);
+    storeRef.current = store;
+    dispatchRef.current = store.dispatch;
+
+    return (
+      <Globals queryClient={queryClient} store={store}>
+        {story()}
+      </Globals>
+    );
+  };

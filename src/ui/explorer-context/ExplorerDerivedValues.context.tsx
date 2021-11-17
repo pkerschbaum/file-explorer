@@ -82,18 +82,25 @@ export const ExplorerDerivedValuesContextProvider: React.FC<ExplorerDerivedValue
       return result;
     }, [explorerState.filterInput, resourcesWithTags]);
 
-    const selectedShownResources = React.useMemo(
-      () =>
-        resourcesToShow.filter((resource) =>
-          explorerState.selection.keysOfSelectedResources.includes(resource.key),
-        ),
-      [resourcesToShow, explorerState.selection.keysOfSelectedResources],
-    );
+    const selectedShownResources = React.useMemo(() => {
+      const result: ResourceForUI[] = [];
+      for (const renameHistoryKeys of explorerState.selection.keysOfSelectedResources) {
+        for (const key of arrays.reverse(renameHistoryKeys)) {
+          const resource = resourcesToShow.find((r) => r.key === key);
+          if (resource) {
+            result.push(resource);
+            break;
+          }
+        }
+      }
+
+      return result;
+    }, [resourcesToShow, explorerState.selection.keysOfSelectedResources]);
 
     // if no resource is selected, reset selection
     React.useEffect(() => {
       if (selectedShownResources.length === 0 && resourcesToShow.length > 0) {
-        setKeysOfSelectedResources([resourcesToShow[0].key]);
+        setKeysOfSelectedResources([[resourcesToShow[0].key]]);
       }
     }, [selectedShownResources.length, resourcesToShow, setKeysOfSelectedResources]);
 
@@ -102,7 +109,7 @@ export const ExplorerDerivedValuesContextProvider: React.FC<ExplorerDerivedValue
     const filterInputChanged = explorerState.filterInput !== prevFilterInput;
     React.useEffect(() => {
       if (filterInputChanged && resourcesToShow.length > 0) {
-        setKeysOfSelectedResources([resourcesToShow[0].key]);
+        setKeysOfSelectedResources([[resourcesToShow[0].key]]);
       }
     }, [resourcesToShow, filterInputChanged, setKeysOfSelectedResources]);
 

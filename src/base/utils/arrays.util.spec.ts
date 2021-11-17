@@ -1,3 +1,5 @@
+import { describe, expect, it } from '@jest/globals';
+
 import { arrays } from '@app/base/utils/arrays.util';
 import { objects } from '@app/base/utils/objects.util';
 

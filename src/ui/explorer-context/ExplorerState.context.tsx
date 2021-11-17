@@ -5,19 +5,30 @@ import { ExplorerDerivedValuesContextProvider } from '@app/ui/explorer-context/E
 import { ExplorerOperationsContextProvider } from '@app/ui/explorer-context/ExplorerOperations.context';
 import { createSelectableContext } from '@app/ui/utils/react.util';
 
+type RenameHistoryKeys = string[];
+
 export type ExplorerState = {
   filterInput: string;
   selection: {
-    keysOfSelectedResources: string[];
-    keyOfResourceSelectionGotStartedWith: string | undefined;
+    keysOfSelectedResources: RenameHistoryKeys[];
+    keyOfResourceSelectionGotStartedWith: RenameHistoryKeys | undefined;
   };
   keyOfResourceToRename: string | undefined;
 };
 
 export type ExplorerStateUpdateFunctions = {
   setFilterInput: (newValue: string) => void;
-  setKeysOfSelectedResources: (newKeys: string[]) => void;
-  setKeyOfResourceToRename: (newValue: string | undefined) => void;
+  setKeysOfSelectedResources: (
+    newKeysOrFunction:
+      | RenameHistoryKeys[]
+      | ((currentKeysOfSelectedResources: RenameHistoryKeys[]) => RenameHistoryKeys[]),
+  ) => void;
+  setKeyOfResourceToRename: (
+    newValueOrFunction:
+      | string
+      | undefined
+      | ((currentKeyOfResourceToRename: string | undefined) => string | undefined),
+  ) => void;
 };
 
 type ExplorerStateContext = ExplorerState & ExplorerStateUpdateFunctions;
@@ -52,21 +63,35 @@ export const ExplorerContextProvider: React.FC<ExplorerContextProviderProps> = (
         });
       },
 
-      setKeysOfSelectedResources: (newKeys) => {
+      setKeysOfSelectedResources: (newKeysOrUpdateFn) => {
         updateExplorerState((draft) => {
+          let newKeysOfSelectedResources;
+          if (typeof newKeysOrUpdateFn === 'function') {
+            newKeysOfSelectedResources = newKeysOrUpdateFn(draft.selection.keysOfSelectedResources);
+          } else {
+            newKeysOfSelectedResources = newKeysOrUpdateFn;
+          }
+
           draft.selection = {
-            keysOfSelectedResources: newKeys,
+            keysOfSelectedResources: newKeysOfSelectedResources,
             keyOfResourceSelectionGotStartedWith:
-              newKeys.length === 1
-                ? newKeys[0]
+              newKeysOfSelectedResources.length === 1
+                ? newKeysOfSelectedResources[0]
                 : draft.selection.keyOfResourceSelectionGotStartedWith,
           };
         });
       },
 
-      setKeyOfResourceToRename: (newValue) => {
+      setKeyOfResourceToRename: (newValueOrUpdateFn) => {
         updateExplorerState((draft) => {
-          draft.keyOfResourceToRename = newValue;
+          let newKeyOfResourceToRename;
+          if (typeof newValueOrUpdateFn === 'function') {
+            newKeyOfResourceToRename = newValueOrUpdateFn(draft.keyOfResourceToRename);
+          } else {
+            newKeyOfResourceToRename = newValueOrUpdateFn;
+          }
+
+          draft.keyOfResourceToRename = newKeyOfResourceToRename;
         });
       },
     }),

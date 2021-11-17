@@ -106,18 +106,17 @@ export function cutOrCopyResources(resources: UriComponents[], cut: boolean) {
   dispatchRef.current(actions.cutOrCopyResources({ cut }));
 }
 
-export async function renameResource(resourceURI: UriComponents, newName: string) {
+export async function renameResource(resourceURI: UriComponents, uriToRenameTo: UriComponents) {
   const fileStatOfSourceResource = await fileSystemRef.current.resolve(URI.from(resourceURI), {
     resolveMetadata: true,
   });
-  const uriOfTargetResource = URI.joinPath(URI.from(resourceURI), '..', newName);
   await executeCopyOrMove({
     sourceResource: { uri: URI.from(resourceURI), fileStat: fileStatOfSourceResource },
-    targetResource: { uri: uriOfTargetResource },
+    targetResource: { uri: URI.from(uriToRenameTo) },
     pasteShouldMove: true,
   });
 
-  const distinctParents = getDistinctParents([resourceURI, uriOfTargetResource]);
+  const distinctParents = getDistinctParents([resourceURI, uriToRenameTo]);
   await Promise.all(distinctParents.map((directory) => refreshResourcesOfDirectory({ directory })));
 }
 
@@ -253,7 +252,7 @@ export async function executeCopyOrMove({
   cancellationTokenSource?: CancellationTokenSource;
   progressCb?: (args: ProgressCbArgs) => void;
 }) {
-  // Move/Copy File
+  // Move/Copy Resource
   const operation = pasteShouldMove
     ? fileSystemRef.current.move(sourceResource.uri, targetResource.uri, false, {
         token: cancellationTokenSource?.token,

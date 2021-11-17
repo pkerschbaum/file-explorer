@@ -5,10 +5,15 @@ import styled, { css } from 'styled-components';
 
 import { useExplorerPanels } from '@app/global-state/slices/explorers.hooks';
 import { EXPLORER_ACTIONSBAR_GRID_AREA } from '@app/ui/actions-bar/ActionsBar';
-import { EXPLORER_CWDBREADCRUMBS_GRID_AREA } from '@app/ui/cwd-breadcrumbs/CwdBreadcrumbs';
-import { ExplorerPanel } from '@app/ui/explorer-panel/ExplorerPanel';
+import {
+  CwdBreadcrumbs,
+  EXPLORER_CWDBREADCRUMBS_GRID_AREA,
+} from '@app/ui/cwd-breadcrumbs/CwdBreadcrumbs';
+import {
+  ExplorerPanel,
+  EXPLORER_RESOURCESTABLE_GRID_AREA,
+} from '@app/ui/explorer-panel/ExplorerPanel';
 import { Stack } from '@app/ui/layouts/Stack';
-import { EXPLORER_RESOURCESTABLE_GRID_AREA } from '@app/ui/resources-table/ResourcesTable';
 import {
   ROOTCONTAINER_PADDING_LEFT_FACTOR,
   ROOTCONTAINER_PADDING_RIGHT_FACTOR,
@@ -37,7 +42,10 @@ export const Shell: React.FC = () => {
       </TabsAndProcesses>
 
       {explorersToShow.map(({ explorerId }) => (
-        <ExplorerPanel key={explorerId} explorerId={explorerId} />
+        <React.Fragment key={explorerId}>
+          <CwdBreadcrumbs explorerId={explorerId} />
+          <ExplorerPanel explorerId={explorerId} />
+        </React.Fragment>
       ))}
     </RootContainer>
   );

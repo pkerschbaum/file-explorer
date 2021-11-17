@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "lib": ["es5", "dom"],
+    "target": "ES2017",
+    "lib": ["ES2017", "dom"],
     "module": "commonjs",
     "moduleResolution": "node",
     "types": ["node", "@testing-library/cypress"],
@@ -9,6 +9,7 @@
 
     "strict": true,
     "useUnknownInCatchVariables": true,
+    "skipLibCheck": true,
     "esModuleInterop": true,
     "sourceMap": true,
     "baseUrl": ".",

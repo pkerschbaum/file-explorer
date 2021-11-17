@@ -9,27 +9,25 @@ import { useCwd, useIdOfFocusedExplorerPanel } from '@app/global-state/slices/ex
 import { changeDirectory, revealCwdInOSExplorer } from '@app/operations/explorer.operations';
 import { KEYS, MOUSE_BUTTONS } from '@app/ui/constants';
 import { ChangeCwd } from '@app/ui/cwd-breadcrumbs/ChangeCwd';
-import { useExplorerId } from '@app/ui/explorer-context';
 import { useWindowEvent } from '@app/ui/utils/react.util';
 
 type CwdActionsMenuProps = {
+  explorerId: string;
   anchorEl: HTMLElement | null;
   onClose: () => void;
 };
 
 export const CwdActionsMenu: React.FC<CwdActionsMenuProps> = (props) => {
-  const explorerId = useExplorerId();
   const focusedExplorerId = useIdOfFocusedExplorerPanel();
 
-  if (explorerId !== focusedExplorerId) {
+  if (props.explorerId !== focusedExplorerId) {
     return null;
   }
 
   return <CwdActionsMenuImpl {...props} />;
 };
 
-const CwdActionsMenuImpl: React.FC<CwdActionsMenuProps> = ({ anchorEl, onClose }) => {
-  const explorerId = useExplorerId();
+const CwdActionsMenuImpl: React.FC<CwdActionsMenuProps> = ({ explorerId, anchorEl, onClose }) => {
   const cwd = useCwd(explorerId);
 
   async function navigateUp() {

@@ -1,3 +1,5 @@
+import { expect } from '@jest/globals';
+
 declare global {
   namespace jest {
     interface Matchers<R> {
@@ -18,5 +20,3 @@ expect.extend({
     };
   },
 });
-
-export {};

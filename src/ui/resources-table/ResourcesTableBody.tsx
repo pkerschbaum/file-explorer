@@ -1,4 +1,4 @@
-import { Box, Chip } from '@mui/material';
+import { Box, Button, Chip } from '@mui/material';
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
@@ -9,11 +9,7 @@ import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
 import { useNativeIconDataURL } from '@app/global-cache/resource-icons';
 import { changeDirectory } from '@app/operations/explorer.operations';
 import { nativeHostRef } from '@app/operations/global-modules';
-import {
-  openFiles,
-  removeTagsFromResources,
-  renameResource,
-} from '@app/operations/resource.operations';
+import { openFiles, removeTagsFromResources } from '@app/operations/resource.operations';
 import { KEYS } from '@app/ui/constants';
 import { Cell } from '@app/ui/elements/DataTable/Cell';
 import { Row } from '@app/ui/elements/DataTable/Row';
@@ -26,6 +22,7 @@ import {
   useKeyOfResourceToRename,
   useSelectedShownResources,
   useSetKeyOfResourceToRename,
+  useRenameResource,
 } from '@app/ui/explorer-context';
 import { useThemeResourceIconClasses } from '@app/ui/hooks/resources.hooks';
 import { Stack } from '@app/ui/layouts/Stack';
@@ -59,6 +56,7 @@ export const ResourcesTableRow: React.FC<ResourcesTableRowProps> = ({
 }) => {
   const explorerId = useExplorerId();
   const selectedShownResources = useSelectedShownResources();
+  const renameResource = useRenameResource();
   const changeSelectionByClick = useChangeSelectionByClick();
   const keyOfResourceToRename = useKeyOfResourceToRename();
   const setKeyOfResourceToRename = useSetKeyOfResourceToRename();
@@ -83,11 +81,6 @@ export const ResourcesTableRow: React.FC<ResourcesTableRowProps> = ({
     } else {
       await openFiles([resource.uri]);
     }
-  }
-
-  async function renameResourceHandler(resourceToRename: ResourceForUI, newName: string) {
-    await renameResource(resourceToRename.uri, newName);
-    setKeyOfResourceToRename(undefined);
   }
 
   function abortRename() {
@@ -127,7 +120,7 @@ export const ResourcesTableRow: React.FC<ResourcesTableRowProps> = ({
             {renameForResourceIsActive ? (
               <RenameInput
                 resource={resourceForRow}
-                onSubmit={(newName) => renameResourceHandler(resourceForRow, newName)}
+                onSubmit={(newName) => renameResource(resourceForRow, newName)}
                 abortRename={abortRename}
               />
             ) : (
@@ -169,8 +162,7 @@ const RenameInput: React.FC<RenameInputProps> = ({ resource, onSubmit, abortRena
   const [value, setValue] = React.useState(formatter.resourceBasename(resource));
 
   return (
-    <form
-      style={{ width: '100%' }}
+    <RenameInputForm
       onSubmit={(e) => {
         e.preventDefault();
         onSubmit(value);
@@ -178,21 +170,31 @@ const RenameInput: React.FC<RenameInputProps> = ({ resource, onSubmit, abortRena
     >
       <ResourceNameTextField
         fullWidth
+        inputProps={{ 'aria-label': 'new name for resource' }}
         autoFocus
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        onBlur={() => {
-          abortRename();
-        }}
         onKeyDown={(e) => {
           if (e.key === KEYS.ESC) {
             abortRename();
           }
         }}
       />
-    </form>
+      <Button size="small" disabled={check.isNullishOrEmptyString(value)} type="submit">
+        OK
+      </Button>
+      <Button size="small" onClick={abortRename}>
+        Abort
+      </Button>
+    </RenameInputForm>
   );
 };
+
+const RenameInputForm = styled.form`
+  width: 100%;
+  display: flex;
+  gap: ${(props) => props.theme.spacing(2)};
+`;
 
 const RowContent = styled(Stack)`
   height: ${(props) => props.theme.sizes.resourceRow.height};

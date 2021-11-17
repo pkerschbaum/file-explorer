@@ -1,13 +1,10 @@
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import * as React from 'react';
 
+import { uriHelper } from '@app/base/utils/uri-helper';
 import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
 import { changeDirectory, createFolder, pasteResources } from '@app/operations/explorer.operations';
-import {
-  scheduleMoveResourcesToTrash,
-  openFiles,
-  cutOrCopyResources,
-} from '@app/operations/resource.operations';
+import * as resourceOperations from '@app/operations/resource.operations';
 import { KEYS } from '@app/ui/constants';
 import {
   useExplorerId,
@@ -24,6 +21,7 @@ type ExplorerOperationsContext = {
   cutSelectedResources: () => void;
   pasteResourcesIntoExplorer: () => Promise<void>;
   triggerRenameForSelectedResources: () => void;
+  renameResource: (resourceToRename: ResourceForUI, newName: string) => Promise<void>;
   changeSelectionByKeyboard: (e: KeyboardEvent) => void;
   openSelectedResources: () => void;
   scheduleDeleteSelectedResources: () => void;
@@ -56,8 +54,10 @@ export const ExplorerOperationsContextProvider: React.FC<ExplorerOperationsConte
       const urisOfResourcesToCutOrCopy = selectedShownResources.map((resource) => resource.uri);
 
       return {
-        copySelectedResources: () => cutOrCopyResources(urisOfResourcesToCutOrCopy, false),
-        cutSelectedResources: () => cutOrCopyResources(urisOfResourcesToCutOrCopy, true),
+        copySelectedResources: () =>
+          resourceOperations.cutOrCopyResources(urisOfResourcesToCutOrCopy, false),
+        cutSelectedResources: () =>
+          resourceOperations.cutOrCopyResources(urisOfResourcesToCutOrCopy, true),
       };
     }, [selectedShownResources]);
 
@@ -67,11 +67,39 @@ export const ExplorerOperationsContextProvider: React.FC<ExplorerOperationsConte
     );
 
     const triggerRenameForSelectedResources = React.useCallback(() => {
-      if (selectedShownResources.length !== 1) {
-        return;
-      }
-      setKeyOfResourceToRename(selectedShownResources[0].key);
+      setKeyOfResourceToRename((currentKeyOfResourceToRename) => {
+        if (selectedShownResources.length !== 1) {
+          return undefined;
+        }
+        if (selectedShownResources[0].key === currentKeyOfResourceToRename) {
+          return undefined;
+        } else {
+          return selectedShownResources[0].key;
+        }
+      });
     }, [selectedShownResources, setKeyOfResourceToRename]);
+
+    const renameResource: ExplorerOperationsContext['renameResource'] = React.useCallback(
+      async (resourceToRename, newBaseName) => {
+        const uriToRenameTo = URI.joinPath(URI.from(resourceToRename.uri), '..', newBaseName);
+        setKeysOfSelectedResources((currentKeysOfSelectedResources) => {
+          const oldKeyOfRenamedResource = uriHelper.getComparisonKey(resourceToRename.uri);
+          const newKeyOfRenamedResource = uriHelper.getComparisonKey(uriToRenameTo);
+
+          const newKeys = currentKeysOfSelectedResources.map((renameHistoryKeys) => {
+            if (renameHistoryKeys.includes(oldKeyOfRenamedResource)) {
+              return [...renameHistoryKeys, newKeyOfRenamedResource];
+            }
+            return renameHistoryKeys;
+          });
+
+          return newKeys;
+        });
+        await resourceOperations.renameResource(resourceToRename.uri, uriToRenameTo);
+        setKeyOfResourceToRename(undefined);
+      },
+      [setKeyOfResourceToRename, setKeysOfSelectedResources],
+    );
 
     const changeSelectionByKeyboard = React.useCallback(
       (e: KeyboardEvent) => {
@@ -82,18 +110,18 @@ export const ExplorerOperationsContextProvider: React.FC<ExplorerOperationsConte
         }
 
         if (e.key === KEYS.ARROW_UP || e.key === KEYS.ARROW_DOWN) {
-          const keysOfSelectedShownResources = selectedShownResources.map(
-            (resource) => resource.key,
-          );
+          const keysOfSelectedShownResources = selectedShownResources.map((resource) => [
+            resource.key,
+          ]);
           const selectedResourcesMetas = resourcesToShow
             .map((resource, idx) => ({
               resource,
               idx,
-              isSelected: keysOfSelectedShownResources.includes(resource.key),
+              isSelected: keysOfSelectedShownResources.some((keys) => keys.includes(resource.key)),
             }))
             .filter((resource) => resource.isSelected);
-          const resourceSelectionGotStartedWith_idx = selectedResourcesMetas.find(
-            (sfi) => sfi.resource.key === keyOfResourceSelectionGotStartedWith,
+          const resourceSelectionGotStartedWith_idx = selectedResourcesMetas.find((srm) =>
+            keyOfResourceSelectionGotStartedWith?.includes(srm.resource.key),
           )?.idx;
 
           if (
@@ -101,7 +129,7 @@ export const ExplorerOperationsContextProvider: React.FC<ExplorerOperationsConte
             resourceSelectionGotStartedWith_idx === undefined
           ) {
             // If no resource is selected, just select the first resource
-            setKeysOfSelectedResources([resourcesToShow[0].key]);
+            setKeysOfSelectedResources([[resourcesToShow[0].key]]);
             return;
           }
 
@@ -119,7 +147,7 @@ export const ExplorerOperationsContextProvider: React.FC<ExplorerOperationsConte
                * --> select the resource above the resource which got selected first (if resource above exists)
                */
               setKeysOfSelectedResources([
-                resourcesToShow[resourceSelectionGotStartedWith_idx - 1].key,
+                [resourcesToShow[resourceSelectionGotStartedWith_idx - 1].key],
               ]);
             } else if (
               e.key === KEYS.ARROW_DOWN &&
@@ -130,7 +158,7 @@ export const ExplorerOperationsContextProvider: React.FC<ExplorerOperationsConte
                * --> select the resource below the resource which got selected first (if resource below exists)
                */
               setKeysOfSelectedResources([
-                resourcesToShow[resourceSelectionGotStartedWith_idx + 1].key,
+                [resourcesToShow[resourceSelectionGotStartedWith_idx + 1].key],
               ]);
             }
           } else {
@@ -142,8 +170,10 @@ export const ExplorerOperationsContextProvider: React.FC<ExplorerOperationsConte
                  */
                 setKeysOfSelectedResources(
                   keysOfSelectedShownResources.filter(
-                    (id) =>
-                      id !== selectedResourcesMetas[selectedResourcesMetas.length - 1].resource.key,
+                    (keys) =>
+                      !keys.includes(
+                        selectedResourcesMetas[selectedResourcesMetas.length - 1].resource.key,
+                      ),
                   ),
                 );
               } else if (firstSelectedResource_idx > 0) {
@@ -152,7 +182,7 @@ export const ExplorerOperationsContextProvider: React.FC<ExplorerOperationsConte
                  * --> The user wants to add the resource above all selected resources to the selection.
                  */
                 setKeysOfSelectedResources([
-                  resourcesToShow[firstSelectedResource_idx - 1].key,
+                  [resourcesToShow[firstSelectedResource_idx - 1].key],
                   ...keysOfSelectedShownResources,
                 ]);
               }
@@ -164,7 +194,7 @@ export const ExplorerOperationsContextProvider: React.FC<ExplorerOperationsConte
                  */
                 setKeysOfSelectedResources(
                   keysOfSelectedShownResources.filter(
-                    (id) => id !== selectedResourcesMetas[0].resource.key,
+                    (keys) => !keys.includes(selectedResourcesMetas[0].resource.key),
                   ),
                 );
               } else if (resourcesToShow.length > lastSelectedResource_idx + 1) {
@@ -174,17 +204,17 @@ export const ExplorerOperationsContextProvider: React.FC<ExplorerOperationsConte
                  */
                 setKeysOfSelectedResources([
                   ...keysOfSelectedShownResources,
-                  resourcesToShow[lastSelectedResource_idx + 1].key,
+                  [resourcesToShow[lastSelectedResource_idx + 1].key],
                 ]);
               }
             }
           }
         } else if (e.key === KEYS.PAGE_UP) {
-          setKeysOfSelectedResources([resourcesToShow[0].key]);
+          setKeysOfSelectedResources([[resourcesToShow[0].key]]);
         } else if (e.key === KEYS.PAGE_DOWN) {
-          setKeysOfSelectedResources([resourcesToShow[resourcesToShow.length - 1].key]);
+          setKeysOfSelectedResources([[resourcesToShow[resourcesToShow.length - 1].key]]);
         } else if (e.key === KEYS.A) {
-          setKeysOfSelectedResources(resourcesToShow.map((resource) => resource.key));
+          setKeysOfSelectedResources(resourcesToShow.map((resource) => [resource.key]));
         } else {
           throw new Error(`key not implemented. e.key=${e.key}`);
         }
@@ -204,7 +234,7 @@ export const ExplorerOperationsContextProvider: React.FC<ExplorerOperationsConte
       ) {
         await changeDirectory(explorerId, URI.from(selectedShownResources[0].uri));
       } else {
-        await openFiles(
+        await resourceOperations.openFiles(
           selectedShownResources
             .filter((selectedResource) => selectedResource.resourceType === RESOURCE_TYPE.FILE)
             .map((selectedResource) => selectedResource.uri),
@@ -213,7 +243,9 @@ export const ExplorerOperationsContextProvider: React.FC<ExplorerOperationsConte
     }, [explorerId, selectedShownResources]);
 
     const scheduleDeleteSelectedResources = React.useCallback(() => {
-      scheduleMoveResourcesToTrash(selectedShownResources.map((resource) => resource.uri));
+      resourceOperations.scheduleMoveResourcesToTrash(
+        selectedShownResources.map((resource) => resource.uri),
+      );
     }, [selectedShownResources]);
 
     const createFolderInExplorer = React.useCallback(
@@ -231,7 +263,7 @@ export const ExplorerOperationsContextProvider: React.FC<ExplorerOperationsConte
           (selectedResource) => selectedResource.key === resource.key,
         );
         function selectResources(resources: ResourceForUI[]) {
-          setKeysOfSelectedResources(resources.map((resource) => resource.key));
+          setKeysOfSelectedResources(resources.map((resource) => [resource.key]));
         }
 
         if (e.ctrlKey) {
@@ -251,8 +283,8 @@ export const ExplorerOperationsContextProvider: React.FC<ExplorerOperationsConte
             return;
           }
 
-          const idxSelectionGotStartedWith = resourcesToShow.findIndex(
-            (resource) => resource.key === keyOfResourceSelectionGotStartedWith,
+          const idxSelectionGotStartedWith = resourcesToShow.findIndex((resource) =>
+            keyOfResourceSelectionGotStartedWith.includes(resource.key),
           );
           let idxSelectFrom = idxSelectionGotStartedWith;
           let idxSelectTo = idxOfResource;
@@ -287,6 +319,7 @@ export const ExplorerOperationsContextProvider: React.FC<ExplorerOperationsConte
           cutSelectedResources,
           pasteResourcesIntoExplorer,
           triggerRenameForSelectedResources,
+          renameResource,
           changeSelectionByKeyboard,
           openSelectedResources,
           scheduleDeleteSelectedResources,
@@ -313,6 +346,10 @@ export function usePasteResourcesIntoExplorer() {
 
 export function useTriggerRenameForSelectedResources() {
   return useExplorerOperationsSelector((actions) => actions.triggerRenameForSelectedResources);
+}
+
+export function useRenameResource() {
+  return useExplorerOperationsSelector((actions) => actions.renameResource);
 }
 
 export function useChangeSelectionByKeyboard() {

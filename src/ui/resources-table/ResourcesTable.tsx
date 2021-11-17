@@ -1,4 +1,4 @@
-import { Box, Skeleton } from '@mui/material';
+import { Skeleton } from '@mui/material';
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -12,47 +12,43 @@ import { TextBox } from '@app/ui/elements/TextBox';
 import { useDataAvailable } from '@app/ui/explorer-context';
 import { ResourcesTableBody } from '@app/ui/resources-table/ResourcesTableBody';
 
-export const EXPLORER_RESOURCESTABLE_GRID_AREA = 'shell-explorer-resources-table';
-
 export const ResourcesTable: React.FC = () => {
   const dataAvailable = useDataAvailable();
 
   return (
-    <DataTableContainer>
-      <StyledDataTable>
-        <TableHead sx={{ userSelect: 'none' }}>
-          <Row>
-            <HeadCell>
-              <TextBox fontSize="sm" fontBold>
-                Name
-              </TextBox>
-            </HeadCell>
-            <HeadCell>
-              <TextBox fontSize="sm" fontBold>
-                Size
-              </TextBox>
-            </HeadCell>
-            <HeadCell>
-              <TextBox fontSize="sm" fontBold>
-                Last Modified
-              </TextBox>
-            </HeadCell>
-          </Row>
-        </TableHead>
+    <StyledDataTable>
+      <TableHead sx={{ userSelect: 'none' }}>
+        <Row>
+          <HeadCell>
+            <TextBox fontSize="sm" fontBold>
+              Name
+            </TextBox>
+          </HeadCell>
+          <HeadCell>
+            <TextBox fontSize="sm" fontBold>
+              Size
+            </TextBox>
+          </HeadCell>
+          <HeadCell>
+            <TextBox fontSize="sm" fontBold>
+              Last Modified
+            </TextBox>
+          </HeadCell>
+        </Row>
+      </TableHead>
 
-        <TableBody>
-          {dataAvailable ? (
-            <ResourcesTableBody />
-          ) : (
-            <>
-              <SkeletonRow />
-              <SkeletonRow opacity={0.66} />
-              <SkeletonRow opacity={0.33} />
-            </>
-          )}
-        </TableBody>
-      </StyledDataTable>
-    </DataTableContainer>
+      <TableBody>
+        {dataAvailable ? (
+          <ResourcesTableBody />
+        ) : (
+          <>
+            <SkeletonRow />
+            <SkeletonRow opacity={0.66} />
+            <SkeletonRow opacity={0.33} />
+          </>
+        )}
+      </TableBody>
+    </StyledDataTable>
   );
 };
 
@@ -92,8 +88,3 @@ const SkeletonRow: React.FC<SkeletonRowProps> = ({ opacity }) => (
     </Cell>
   </Row>
 );
-
-const DataTableContainer = styled(Box)`
-  grid-area: ${EXPLORER_RESOURCESTABLE_GRID_AREA};
-  padding-bottom: ${(props) => props.theme.spacing(0.5)};
-`;

@@ -21,9 +21,9 @@ const ignoredPaths = numbers
   .map((num) =>
     typedPath<RootState>()('processesSlice', 'processes', num, 'cancellationTokenSource'),
   );
-export function createStoreInstance(creationParams?: {
-  preloadedState: PreloadedState<CombinedState<NoInfer<RootState>>>;
-}) {
+
+export type PreloadedRootState = PreloadedState<CombinedState<NoInfer<RootState>>>;
+export function createStoreInstance(creationParams?: { preloadedState: PreloadedRootState }) {
   return configureStore({
     preloadedState: creationParams?.preloadedState,
     reducer: rootReducer,

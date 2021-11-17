@@ -12,12 +12,14 @@ import { uriHelper } from '@app/base/utils/uri-helper';
 import { useCwd } from '@app/global-state/slices/explorers.hooks';
 import { changeDirectory } from '@app/operations/explorer.operations';
 import { CwdActionsMenu } from '@app/ui/cwd-breadcrumbs/CwdActionsMenu';
-import { useExplorerId } from '@app/ui/explorer-context/ExplorerDerivedValues.context';
 
 export const EXPLORER_CWDBREADCRUMBS_GRID_AREA = 'shell-explorer-cwd-breadcrumbs';
 
-export const CwdBreadcrumbs: React.FC = () => {
-  const explorerId = useExplorerId();
+type CwdBreadcrumbsProps = {
+  explorerId: string;
+};
+
+export const CwdBreadcrumbs: React.FC<CwdBreadcrumbsProps> = ({ explorerId }) => {
   const cwd = useCwd(explorerId);
 
   // compute slugs of CWD
@@ -69,6 +71,7 @@ export const CwdBreadcrumbs: React.FC = () => {
         return (
           <Breadcrumb
             key={uriHelper.getComparisonKey(slug.uri)}
+            explorerId={explorerId}
             slugFormatted={slug.formatted}
             isLastSlug={isLastSlug}
             changeDirectory={() => changeDirectory(explorerId, slug.uri)}
@@ -80,12 +83,18 @@ export const CwdBreadcrumbs: React.FC = () => {
 };
 
 type BreadcrumbProps = {
+  explorerId: string;
   slugFormatted: string;
   isLastSlug: boolean;
   changeDirectory: () => Promise<void>;
 };
 
-const Breadcrumb: React.FC<BreadcrumbProps> = ({ slugFormatted, isLastSlug, changeDirectory }) => {
+const Breadcrumb: React.FC<BreadcrumbProps> = ({
+  explorerId,
+  slugFormatted,
+  isLastSlug,
+  changeDirectory,
+}) => {
   const [menuAnchorEl, setMenuAnchorEl] = React.useState<HTMLElement | null>(null);
 
   async function handleClick(e: React.MouseEvent<HTMLElement>) {
@@ -107,7 +116,11 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({ slugFormatted, isLastSlug, chan
         {slugFormatted}
       </Button>
       {isLastSlug && (
-        <CwdActionsMenu anchorEl={menuAnchorEl} onClose={() => setMenuAnchorEl(null)} />
+        <CwdActionsMenu
+          explorerId={explorerId}
+          anchorEl={menuAnchorEl}
+          onClose={() => setMenuAnchorEl(null)}
+        />
       )}
     </>
   );

@@ -7,13 +7,13 @@ import { Process } from '@app/ui/process/Process';
 
 import { fakeDeleteProcessBase } from '@app-test/utils/fake-data';
 
-import { globalDecorator } from '@app-storybook/storybook-utils';
+import { createGlobalDecorator } from '@app-storybook/storybook-utils';
 
 export default {
   title: 'Processes / Delete',
   component: Process,
   decorators: [
-    globalDecorator,
+    createGlobalDecorator(),
     (story) => {
       return <Box sx={{ maxWidth: 250 }}>{story()}</Box>;
     },
