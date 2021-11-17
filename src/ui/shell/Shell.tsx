@@ -5,10 +5,7 @@ import styled, { css } from 'styled-components';
 
 import { useExplorerPanels } from '@app/global-state/slices/explorers.hooks';
 import { EXPLORER_ACTIONSBAR_GRID_AREA } from '@app/ui/actions-bar/ActionsBar';
-import {
-  CwdBreadcrumbs,
-  EXPLORER_CWDBREADCRUMBS_GRID_AREA,
-} from '@app/ui/cwd-breadcrumbs/CwdBreadcrumbs';
+import { EXPLORER_CWDBREADCRUMBS_GRID_AREA } from '@app/ui/cwd-breadcrumbs/CwdBreadcrumbs';
 import {
   ExplorerPanel,
   EXPLORER_RESOURCESTABLE_GRID_AREA,
@@ -42,10 +39,7 @@ export const Shell: React.FC = () => {
       </TabsAndProcesses>
 
       {explorersToShow.map(({ explorerId }) => (
-        <React.Fragment key={explorerId}>
-          <CwdBreadcrumbs explorerId={explorerId} />
-          <ExplorerPanel explorerId={explorerId} />
-        </React.Fragment>
+        <ExplorerPanel key={explorerId} explorerId={explorerId} />
       ))}
     </RootContainer>
   );

@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { useCwd, useIdOfFocusedExplorerPanel } from '@app/global-state/slices/explorers.hooks';
 import { ActionsBar } from '@app/ui/actions-bar';
+import { CwdBreadcrumbs } from '@app/ui/cwd-breadcrumbs';
 import { ExplorerContextProvider } from '@app/ui/explorer-context';
 import { ResourcesTable } from '@app/ui/resources-table';
 
@@ -19,16 +20,19 @@ export const ExplorerPanel = React.memo<ExplorerPanelProps>(function ExplorerPan
   const isActiveExplorer = explorerId === focusedExplorerId;
 
   return (
-    <ExplorerContextProvider key={uriHelper.getComparisonKey(cwd)} explorerId={explorerId}>
-      {isActiveExplorer && (
-        <>
-          <ActionsBar />
-          <ResourcesTableContainer>
-            <ResourcesTable />
-          </ResourcesTableContainer>
-        </>
-      )}
-    </ExplorerContextProvider>
+    <>
+      {isActiveExplorer && <CwdBreadcrumbs explorerId={explorerId} />}
+      <ExplorerContextProvider key={uriHelper.getComparisonKey(cwd)} explorerId={explorerId}>
+        {isActiveExplorer && (
+          <>
+            <ActionsBar />
+            <ResourcesTableContainer>
+              <ResourcesTable />
+            </ResourcesTableContainer>
+          </>
+        )}
+      </ExplorerContextProvider>
+    </>
   );
 });
 
