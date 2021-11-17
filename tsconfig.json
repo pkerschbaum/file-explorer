@@ -1,8 +1,10 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
+    "target": "es5",
+    "lib": ["es5", "dom"],
     "module": "commonjs",
     "moduleResolution": "node",
+    "types": ["node", "@testing-library/cypress"],
     "jsx": "react-jsx",
 
     "strict": true,
@@ -23,5 +25,5 @@
       }
     ]
   },
-  "include": ["src/**/*", "test/**/*", "storybook/**/*", "scripts/**/*"]
+  "include": ["src/**/*", "test/**/*", "storybook/**/*", "cypress/**/*", "scripts/**/*"]
 }

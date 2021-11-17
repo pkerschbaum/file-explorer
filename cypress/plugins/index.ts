@@ -1,4 +1,4 @@
-import { addMatchImageSnapshotPlugin } from 'cypress-image-snapshot/plugin';
+import { addMatchImageSnapshotPlugin } from '@pkerschbaum/cypress-image-snapshot/lib/plugin';
 
 import { addLaunchOptionsPlugin } from '@app-cypress/plugins/add-launch-options';
 

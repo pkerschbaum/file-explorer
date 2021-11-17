@@ -1,3 +1,4 @@
 {
-  "ignoreTestFiles": ["cypress/snapshots/**"]
+  "integrationFolder": "src",
+  "testFiles": "**/*.component.spec.ts"
 }

@@ -4,15 +4,15 @@ import metadata, { PendingForUserInput } from '@app/ui/process/DeleteProcess.sto
 
 import { deriveIdFromMetadataAndExportName, varToString } from '@app-storybook/storybook-utils';
 
-import { getTestTitle, visitStorybook } from '@app-cypress/cypress.util';
+import { getTestTitle, bootstrap } from '@app-cypress/cypress.util';
 
-describe('Pending for User Input', () => {
-  it('Base Case', () => {
-    const storybookId = deriveIdFromMetadataAndExportName(
+describe('DeleteProcess.component', () => {
+  it('Pending for User Input', () => {
+    const storybookIdToVisit = deriveIdFromMetadataAndExportName(
       metadata,
       varToString({ PendingForUserInput }),
     );
-    visitStorybook(storybookId);
+    bootstrap({ storybookIdToVisit });
 
     cy.document().matchImageSnapshot(`${getTestTitle()}_1`);
   });
