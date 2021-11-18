@@ -6,10 +6,9 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import * as React from 'react';
+import styled from 'styled-components';
 
 import { check } from '@app/base/utils/assert.util';
-import { TextBox } from '@app/ui/elements/TextBox';
-import { Stack } from '@app/ui/layouts/Stack';
 
 type LinearProgressProps = MuiLinearProgressProps & {
   value?: number;
@@ -23,7 +22,7 @@ export const LinearProgress: React.FC<LinearProgressProps> = ({
   const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
 
   return (
-    <Stack spacing={1.5}>
+    <LinearProgressContainer>
       {!prefersReducedMotion ? (
         <MuiLinearProgress
           value={value}
@@ -32,17 +31,19 @@ export const LinearProgress: React.FC<LinearProgressProps> = ({
           sx={{ flexGrow: 1, ...otherProps.sx }}
         />
       ) : (
-        <Box sx={{ flexGrow: 1 }}>
-          <TextBox fontSize="sm" sx={{ textTransform: 'uppercase' }}>
-            In Progress...
-          </TextBox>
-        </Box>
+        <Box sx={{ flexGrow: 1, textTransform: 'uppercase' }}>In Progress...</Box>
       )}
       {variant === 'determinate' && check.isNotNullish(value) && (
-        <Box>
-          <TextBox fontSize="sm" sx={{ color: 'textSecondary' }}>{`${Math.round(value)}%`}</TextBox>
-        </Box>
+        <Box>{`${Math.round(value)}%`}</Box>
       )}
-    </Stack>
+    </LinearProgressContainer>
   );
 };
+
+const LinearProgressContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing(1.5)};
+
+  font-size: ${({ theme }) => theme.font.sizes.sm};
+`;

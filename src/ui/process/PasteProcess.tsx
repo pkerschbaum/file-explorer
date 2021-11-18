@@ -1,7 +1,7 @@
 import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
 import ContentCutOutlinedIcon from '@mui/icons-material/ContentCutOutlined';
 import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
-import { Button } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import * as React from 'react';
 
 import { assertThat } from '@app/base/utils/assert.util';
@@ -11,7 +11,6 @@ import { numbers } from '@app/base/utils/numbers.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { PasteProcess as PasteProcessType, PASTE_PROCESS_STATUS } from '@app/domain/types';
 import { LinearProgress } from '@app/ui/elements/LinearProgress';
-import { TextBox } from '@app/ui/elements/TextBox';
 import { Stack } from '@app/ui/layouts/Stack';
 import { ProcessCard } from '@app/ui/process/ProcessCard';
 
@@ -78,9 +77,7 @@ export const PasteProcess: React.FC<{ process: PasteProcessType }> = ({ process 
   switch (process.status) {
     case PASTE_PROCESS_STATUS.RUNNING_DETERMINING_TOTALSIZE: {
       content = (
-        <TextBox fontSize="sm">
-          Determining total size of files to {process.pasteShouldMove ? 'move' : 'copy'}...
-        </TextBox>
+        <Box>Determining total size of files to {process.pasteShouldMove ? 'move' : 'copy'}...</Box>
       );
       break;
     }
@@ -89,33 +86,29 @@ export const PasteProcess: React.FC<{ process: PasteProcessType }> = ({ process 
       break;
     }
     case PASTE_PROCESS_STATUS.SUCCESS: {
-      content = <TextBox fontSize="sm">Files transferred successfully</TextBox>;
+      content = <Box>Files transferred successfully</Box>;
       break;
     }
     case PASTE_PROCESS_STATUS.FAILURE: {
       content = (
         <Stack direction="column" alignItems="flex-start">
-          <TextBox fontSize="sm">Error occured during transfer of the files:</TextBox>
-          <TextBox fontSize="sm">{process.error}</TextBox>
+          <Box>Error occured during transfer of the files:</Box>
+          <Box>{process.error}</Box>
         </Stack>
       );
       break;
     }
     case PASTE_PROCESS_STATUS.ABORT_REQUESTED: {
       content = (
-        <TextBox fontSize="sm">
+        <Box>
           Cancellation requested, cleaning up files/folders which have been{' '}
           {process.pasteShouldMove ? 'moved' : 'copied'} already...
-        </TextBox>
+        </Box>
       );
       break;
     }
     case PASTE_PROCESS_STATUS.ABORT_SUCCESS: {
-      content = (
-        <TextBox fontSize="sm">
-          File {process.pasteShouldMove ? 'move' : 'copy'} process got cancelled
-        </TextBox>
-      );
+      content = <Box>File {process.pasteShouldMove ? 'move' : 'copy'} process got cancelled</Box>;
       break;
     }
     default: {
@@ -156,14 +149,14 @@ export const PasteProcess: React.FC<{ process: PasteProcessType }> = ({ process 
       details={
         <>
           <Stack direction="column" alignItems="stretch" spacing={0.5}>
-            <TextBox fontSize="sm">Destination:</TextBox>
-            <TextBox fontSize="sm" fontBold>
+            <Box>Destination:</Box>
+            <Box sx={{ fontWeight: (theme) => theme.font.weights.bold }}>
               {destinationFolderLabel}
-            </TextBox>
+            </Box>
           </Stack>
 
           <Stack direction="column" alignItems="stretch" spacing={0.5}>
-            <TextBox fontSize="sm">Files:</TextBox>
+            <Box>Files:</Box>
             {process.sourceUris.slice(0, 2).map((uri) => {
               const { resourceName, extension } = uriHelper.extractNameAndExtension(uri);
               const sourceResourceLabel = formatter.resourceBasename({
@@ -171,15 +164,18 @@ export const PasteProcess: React.FC<{ process: PasteProcessType }> = ({ process 
                 extension,
               });
               return (
-                <TextBox key={uriHelper.getComparisonKey(uri)} fontSize="sm" fontBold>
+                <Box
+                  key={uriHelper.getComparisonKey(uri)}
+                  sx={{ fontWeight: (theme) => theme.font.weights.bold }}
+                >
                   {sourceResourceLabel}
-                </TextBox>
+                </Box>
               );
             })}
             {process.sourceUris.length > 2 && (
-              <TextBox fontSize="sm" fontBold>
+              <Box sx={{ fontWeight: (theme) => theme.font.weights.bold }}>
                 + {process.sourceUris.length - 2} files
-              </TextBox>
+              </Box>
             )}
           </Stack>
 
@@ -205,13 +201,11 @@ export const PasteProcess: React.FC<{ process: PasteProcessType }> = ({ process 
 
               {processMeta.showProgressInBytes && (
                 <Stack spacing={0.5}>
-                  <TextBox fontSize="sm">
+                  <Box>
                     {formatter.bytes(process.bytesProcessed, { unit: smallestUnitOfTotalSize })}
-                  </TextBox>
-                  <TextBox fontSize="sm">/</TextBox>
-                  <TextBox fontSize="sm">
-                    {formatter.bytes(process.totalSize, { unit: smallestUnitOfTotalSize })}
-                  </TextBox>
+                  </Box>
+                  <Box>/</Box>
+                  <Box>{formatter.bytes(process.totalSize, { unit: smallestUnitOfTotalSize })}</Box>
                 </Stack>
               )}
             </Stack>

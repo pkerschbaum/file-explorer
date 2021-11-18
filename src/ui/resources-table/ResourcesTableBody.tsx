@@ -13,7 +13,6 @@ import { openFiles, removeTagsFromResources } from '@app/operations/resource.ope
 import { KEYS } from '@app/ui/constants';
 import { Cell } from '@app/ui/elements/DataTable/Cell';
 import { Row } from '@app/ui/elements/DataTable/Row';
-import { TextBox } from '@app/ui/elements/TextBox';
 import { TextField } from '@app/ui/elements/TextField';
 import {
   useChangeSelectionByClick,
@@ -35,7 +34,7 @@ export const ResourcesTableBody: React.FC = () => {
   return (
     <>
       {resourcesToShow.map((resourceForRow, idxOfResourceForRow) => (
-        <ResourcesTableRow
+        <ResourceRow
           key={resourceForRow.key}
           resourceForRow={resourceForRow}
           idxOfResourceForRow={idxOfResourceForRow}
@@ -45,15 +44,12 @@ export const ResourcesTableBody: React.FC = () => {
   );
 };
 
-type ResourcesTableRowProps = {
+type ResourceRowProps = {
   resourceForRow: ResourceForUI;
   idxOfResourceForRow: number;
 };
 
-export const ResourcesTableRow: React.FC<ResourcesTableRowProps> = ({
-  resourceForRow,
-  idxOfResourceForRow,
-}) => {
+const ResourceRow: React.FC<ResourceRowProps> = ({ resourceForRow, idxOfResourceForRow }) => {
   const explorerId = useExplorerId();
   const selectedShownResources = useSelectedShownResources();
   const renameResource = useRenameResource();
@@ -94,7 +90,6 @@ export const ResourcesTableRow: React.FC<ResourcesTableRowProps> = ({
 
   return (
     <Row
-      key={resourceForRow.key}
       data-window-keydownhandlers-enabled="true"
       draggable={!renameForResourceIsActive}
       onDragStart={(e) => {
@@ -105,52 +100,118 @@ export const ResourcesTableRow: React.FC<ResourcesTableRowProps> = ({
       onDoubleClick={() => openResource(resourceForRow)}
       selected={resourceIsSelected}
     >
-      <Cell>
-        <RowContent>
-          <Stack spacing={0} sx={{ width: '100%' }}>
-            <IconWrapper className={nativeIconDataURL ? undefined : themeResourceIconClasses}>
-              {nativeIconDataURL && (
-                <img
-                  src={nativeIconDataURL}
-                  alt="icon for resource"
-                  style={{ maxHeight: '100%', maxWidth: '100%' }}
-                />
-              )}
-            </IconWrapper>
-            {renameForResourceIsActive ? (
-              <RenameInput
-                resource={resourceForRow}
-                onSubmit={(newName) => renameResource(resourceForRow, newName)}
-                abortRename={abortRename}
+      <ResourceRowContent
+        iconSlot={
+          <IconWrapper className={nativeIconDataURL ? undefined : themeResourceIconClasses}>
+            {nativeIconDataURL && (
+              <img
+                src={nativeIconDataURL}
+                alt="icon for resource"
+                style={{ maxHeight: '100%', maxWidth: '100%' }}
               />
-            ) : (
-              <ResourceNameFormatted fontSize="sm">
-                {formatter.resourceBasename(resourceForRow)}
-              </ResourceNameFormatted>
             )}
-          </Stack>
-
-          {resourceForRow.tags.map((tag) => (
-            <Chip
-              key={tag.id}
-              sx={{ backgroundColor: (theme) => theme.availableTagColors[tag.colorId] }}
-              variant="outlined"
-              size="small"
-              label={tag.name}
-              onDelete={() => removeTagsFromResources([resourceForRow.uri], [tag.id])}
+          </IconWrapper>
+        }
+        resourceNameSlot={
+          renameForResourceIsActive ? (
+            <RenameInput
+              resource={resourceForRow}
+              onSubmit={(newName) => renameResource(resourceForRow, newName)}
+              abortRename={abortRename}
             />
-          ))}
-        </RowContent>
-      </Cell>
-      <Cell>
-        {resourceForRow.resourceType === RESOURCE_TYPE.FILE &&
+          ) : (
+            <ResourceNameFormatted>
+              {formatter.resourceBasename(resourceForRow)}
+            </ResourceNameFormatted>
+          )
+        }
+        tagsSlot={resourceForRow.tags.map((tag) => (
+          <Chip
+            key={tag.id}
+            sx={{ backgroundColor: (theme) => theme.availableTagColors[tag.colorId] }}
+            variant="outlined"
+            size="small"
+            label={tag.name}
+            onDelete={() => removeTagsFromResources([resourceForRow.uri], [tag.id])}
+          />
+        ))}
+        sizeSlot={
+          resourceForRow.resourceType === RESOURCE_TYPE.FILE &&
           resourceForRow.size !== undefined &&
-          formatter.bytes(resourceForRow.size)}
-      </Cell>
-      <Cell>{resourceForRow.mtime !== undefined && formatter.date(resourceForRow.mtime)}</Cell>
+          formatter.bytes(resourceForRow.size)
+        }
+        mtimeSlot={resourceForRow.mtime !== undefined && formatter.date(resourceForRow.mtime)}
+      />
     </Row>
   );
 };
+
+const ResourceNameFormatted = styled.div`
+  padding-left: ${(props) => props.theme.spacing(ResourceNameFormattedSpacingFactor * 2)};
+`;
+
+const iconStyles = css`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  max-width: 24px;
+  height: 24px;
+  max-height: 24px;
+`;
+
+export const IconWrapper = styled(Box)`
+  ${iconStyles}
+
+  ::before {
+    ${iconStyles}
+
+    background-size: 24px 24px;
+    background-repeat: no-repeat;
+    -webkit-font-smoothing: antialiased;
+  }
+`;
+
+type ResourceRowContentProps = {
+  iconSlot: React.ReactNode;
+  resourceNameSlot: React.ReactNode;
+  tagsSlot?: React.ReactNode;
+  sizeSlot: React.ReactNode;
+  mtimeSlot: React.ReactNode;
+};
+
+export const ResourceRowContent: React.FC<ResourceRowContentProps> = ({
+  iconSlot,
+  resourceNameSlot,
+  tagsSlot,
+  sizeSlot,
+  mtimeSlot,
+}) => (
+  <>
+    <ResourcesTableCell>
+      <Stack>
+        <ResourceIconAndName>
+          {iconSlot}
+          {resourceNameSlot}
+        </ResourceIconAndName>
+
+        {tagsSlot}
+      </Stack>
+    </ResourcesTableCell>
+    <ResourcesTableCell>{sizeSlot}</ResourcesTableCell>
+    <ResourcesTableCell>{mtimeSlot}</ResourcesTableCell>
+  </>
+);
+
+const ResourcesTableCell = styled(Cell)`
+  font-size: ${({ theme }) => theme.font.sizes.sm};
+`;
+
+const ResourceIconAndName = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+`;
 
 type RenameInputProps = {
   resource: ResourceForUI;
@@ -196,10 +257,6 @@ const RenameInputForm = styled.form`
   gap: ${(props) => props.theme.spacing(2)};
 `;
 
-const RowContent = styled(Stack)`
-  height: ${(props) => props.theme.sizes.resourceRow.height};
-`;
-
 const ResourceNameFormattedSpacingFactor = 0.5;
 
 const ResourceNameTextField = styled(TextField)`
@@ -212,31 +269,5 @@ const ResourceNameTextField = styled(TextField)`
     padding-left: ${(props) => props.theme.spacing(ResourceNameFormattedSpacingFactor)};
     padding-top: 5px;
     padding-bottom: 4px;
-  }
-`;
-
-const ResourceNameFormatted = styled(TextBox)`
-  padding-left: ${(props) => props.theme.spacing(ResourceNameFormattedSpacingFactor * 2)};
-`;
-
-const iconStyles = css`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  max-width: 24px;
-  height: 24px;
-  max-height: 24px;
-`;
-
-const IconWrapper = styled(Box)`
-  ${iconStyles}
-
-  ::before {
-    ${iconStyles}
-
-    background-size: 24px 24px;
-    background-repeat: no-repeat;
-    -webkit-font-smoothing: antialiased;
   }
 `;

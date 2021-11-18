@@ -27,8 +27,13 @@ declare module '@mui/material/styles' {
       card: {
         md: { width: number };
       };
-      resourceRow: {
-        height: string;
+    };
+    font: {
+      sizes: {
+        sm: string;
+      };
+      weights: {
+        bold: number;
       };
     };
   }
@@ -48,8 +53,13 @@ declare module '@mui/material/styles' {
       card: {
         md: { width: number };
       };
-      resourceRow: {
-        height: string;
+    };
+    font: {
+      sizes: {
+        sm: string;
+      };
+      weights: {
+        bold: number;
       };
     };
   }
@@ -322,8 +332,14 @@ export const createTheme = (locale: Localization) => {
       card: {
         md: { width: 280 },
       },
-      resourceRow: {
-        height: '1.5rem',
+    },
+
+    font: {
+      sizes: {
+        sm: '0.75rem',
+      },
+      weights: {
+        bold: 700,
       },
     },
   };

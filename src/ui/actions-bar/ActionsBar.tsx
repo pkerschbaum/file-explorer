@@ -19,7 +19,6 @@ import { addTag, removeTags } from '@app/operations/tag.operations';
 import { AddTag } from '@app/ui/actions-bar/AddTag';
 import { CreateFolder } from '@app/ui/actions-bar/CreateFolder';
 import { KEYS } from '@app/ui/constants';
-import { TextBox } from '@app/ui/elements/TextBox';
 import { TextField } from '@app/ui/elements/TextField';
 import {
   useFilterInput,
@@ -212,13 +211,11 @@ const PasteInfoBadge: React.FC = () => {
   return (
     <Tooltip
       title={
-        <Stack direction="column" alignItems="flex-start" sx={{ wordBreak: 'break-all' }}>
+        <ClipboardResourcesList>
           {clipboardResources.map((resource) => (
-            <TextBox key={uriHelper.getComparisonKey(resource)} fontSize="sm">
-              {formatter.resourcePath(resource)}
-            </TextBox>
+            <Box key={uriHelper.getComparisonKey(resource)}>{formatter.resourcePath(resource)}</Box>
           ))}
-        </Stack>
+        </ClipboardResourcesList>
       }
       arrow
       disableInteractive={false}
@@ -233,6 +230,17 @@ const PasteInfoBadge: React.FC = () => {
     </Tooltip>
   );
 };
+
+const ClipboardResourcesList = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: ${({ theme }) => theme.spacing()};
+
+  font-size: ${({ theme }) => theme.font.sizes.sm};
+  word-break: break-all;
+  white-space: pre-wrap;
+`;
 
 const StyledBadge = styled(Box)`
   position: absolute;

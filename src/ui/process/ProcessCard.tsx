@@ -1,14 +1,13 @@
 import AutorenewOutlinedIcon from '@mui/icons-material/AutorenewOutlined';
 import ClearAllIcon from '@mui/icons-material/ClearAll';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { AccordionDetails, AccordionSummary, IconButton, Tooltip } from '@mui/material';
+import { AccordionDetails, AccordionSummary, Box, IconButton, Tooltip } from '@mui/material';
 import * as React from 'react';
 import styled from 'styled-components';
 
 import { removeProcess } from '@app/operations/resource.operations';
 import { commonStyles } from '@app/ui/Common.styles';
 import { RoundedAccordion } from '@app/ui/elements/Accordion';
-import { TextBox } from '@app/ui/elements/TextBox';
 import { Stack } from '@app/ui/layouts/Stack';
 import { rotate } from '@app/ui/utils/animations';
 
@@ -34,9 +33,7 @@ export const ProcessCard: React.FC<ProcessCardProps> = ({
       <ProcessSummary justifyContent="space-between">
         <ProcessIconAndText>
           {summaryIcon}
-          <SummaryText fontSize="sm" disablePreserveNewlines>
-            {summaryText}
-          </SummaryText>
+          <SummaryText>{summaryText}</SummaryText>
         </ProcessIconAndText>
 
         {isBusy && <RotatingAutorenewOutlinedIcon fontSize="small" />}
@@ -52,9 +49,7 @@ export const ProcessCard: React.FC<ProcessCardProps> = ({
     </StyledAccordionSummary>
 
     <AccordionDetails>
-      <Stack direction="column" alignItems="stretch" spacing={2}>
-        {details}
-      </Stack>
+      <DetailsList>{details}</DetailsList>
     </AccordionDetails>
   </RoundedAccordion>
 );
@@ -73,8 +68,9 @@ const ProcessIconAndText = styled(Stack)`
   ${commonStyles.flex.shrinkAndFitHorizontal}
 `;
 
-const SummaryText = styled(TextBox)`
+const SummaryText = styled(Box)`
   flex-grow: 1;
+  font-size: ${({ theme }) => theme.font.sizes.sm};
   ${commonStyles.text.singleLineEllipsis}
 `;
 
@@ -83,4 +79,12 @@ const RotatingAutorenewOutlinedIcon = styled(AutorenewOutlinedIcon)`
   @media (prefers-reduced-motion: reduce) {
     display: none;
   }
+`;
+
+const DetailsList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing(2)};
+
+  font-size: ${({ theme }) => theme.font.sizes.sm};
 `;

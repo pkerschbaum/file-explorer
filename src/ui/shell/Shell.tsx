@@ -77,6 +77,7 @@ const RootContainer = styled(Box)`
 
 const TabsAndProcesses = styled(Stack)`
   grid-area: shell-tabs-and-processes;
+  overflow-y: auto;
 
   /* Overlap the TabsArea with the WindowDragRegion above it */
   margin-top: -20px;

@@ -1,8 +1,9 @@
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
-import { Button } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import * as React from 'react';
+import styled from 'styled-components';
 
 import { isUnreachable } from '@app/base/utils/assert.util';
 import { formatter } from '@app/base/utils/formatter.util';
@@ -10,7 +11,6 @@ import { uriHelper } from '@app/base/utils/uri-helper';
 import { DeleteProcess as DeleteProcessType, DELETE_PROCESS_STATUS } from '@app/domain/types';
 import { removeProcess, runDeleteProcess } from '@app/operations/resource.operations';
 import { LinearProgress } from '@app/ui/elements/LinearProgress';
-import { TextBox } from '@app/ui/elements/TextBox';
 import { Stack } from '@app/ui/layouts/Stack';
 import { ProcessCard } from '@app/ui/process/ProcessCard';
 
@@ -65,21 +65,21 @@ export const DeleteProcess: React.FC<{ process: DeleteProcessType }> = ({ proces
     case DELETE_PROCESS_STATUS.RUNNING: {
       contentToRender = (
         <>
-          <TextBox fontSize="sm">Deletion is in progress...</TextBox>
+          <Box>Deletion is in progress...</Box>
           <LinearProgress variant="indeterminate" />
         </>
       );
       break;
     }
     case DELETE_PROCESS_STATUS.SUCCESS: {
-      contentToRender = <TextBox fontSize="sm">Files deleted successfully</TextBox>;
+      contentToRender = <Box>Files deleted successfully</Box>;
       break;
     }
     case DELETE_PROCESS_STATUS.FAILURE: {
       contentToRender = (
         <Stack direction="column" alignItems="flex-start">
-          <TextBox fontSize="sm">Error occured during deletion of the files:</TextBox>
-          <TextBox fontSize="sm">{process.error}</TextBox>
+          <Box>Error occured during deletion of the files:</Box>
+          <Box>{process.error}</Box>
         </Stack>
       );
       break;
@@ -104,22 +104,23 @@ export const DeleteProcess: React.FC<{ process: DeleteProcessType }> = ({ proces
         .join(', ')}
       details={
         <>
-          <Stack direction="column" alignItems="stretch" spacing={0.5}>
-            <TextBox fontSize="sm">Files:</TextBox>
+          <ResourcesList>
+            <Box>Files:</Box>
             {process.uris.map((uri) => {
               const { resourceName, extension } = uriHelper.extractNameAndExtension(uri);
               const resourceLabel = formatter.resourceBasename({ name: resourceName, extension });
               return (
-                <TextBox key={uriHelper.getComparisonKey(uri)} fontSize="sm" fontBold>
+                <Box
+                  key={uriHelper.getComparisonKey(uri)}
+                  sx={{ fontWeight: (theme) => theme.font.weights.bold }}
+                >
                   {resourceLabel}
-                </TextBox>
+                </Box>
               );
             })}
-          </Stack>
+          </ResourcesList>
 
-          <Stack direction="column" alignItems="stretch">
-            {contentToRender}
-          </Stack>
+          <ContentList>{contentToRender}</ContentList>
         </>
       }
       isBusy={processMeta.isBusy}
@@ -127,3 +128,15 @@ export const DeleteProcess: React.FC<{ process: DeleteProcessType }> = ({ proces
     />
   );
 };
+
+const ResourcesList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing(0.5)};
+`;
+
+const ContentList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing()};
+`;

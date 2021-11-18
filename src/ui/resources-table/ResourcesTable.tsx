@@ -2,40 +2,30 @@ import { Skeleton } from '@mui/material';
 import * as React from 'react';
 import styled from 'styled-components';
 
-import { Cell } from '@app/ui/elements/DataTable/Cell';
 import { DataTable, DataTableProps } from '@app/ui/elements/DataTable/DataTable';
 import { HeadCell } from '@app/ui/elements/DataTable/HeadCell';
 import { Row } from '@app/ui/elements/DataTable/Row';
 import { TableBody } from '@app/ui/elements/DataTable/TableBody';
 import { TableHead } from '@app/ui/elements/DataTable/TableHead';
-import { TextBox } from '@app/ui/elements/TextBox';
 import { useDataAvailable } from '@app/ui/explorer-context';
-import { ResourcesTableBody } from '@app/ui/resources-table/ResourcesTableBody';
+import {
+  IconWrapper,
+  ResourceRowContent,
+  ResourcesTableBody,
+} from '@app/ui/resources-table/ResourcesTableBody';
 
 export const ResourcesTable: React.FC = () => {
   const dataAvailable = useDataAvailable();
 
   return (
     <StyledDataTable>
-      <TableHead sx={{ userSelect: 'none' }}>
+      <StyledTableHead>
         <Row>
-          <HeadCell>
-            <TextBox fontSize="sm" fontBold>
-              Name
-            </TextBox>
-          </HeadCell>
-          <HeadCell>
-            <TextBox fontSize="sm" fontBold>
-              Size
-            </TextBox>
-          </HeadCell>
-          <HeadCell>
-            <TextBox fontSize="sm" fontBold>
-              Last Modified
-            </TextBox>
-          </HeadCell>
+          <StyledHeadCell>Name</StyledHeadCell>
+          <StyledHeadCell>Size</StyledHeadCell>
+          <StyledHeadCell>Last Modified</StyledHeadCell>
         </Row>
-      </TableHead>
+      </StyledTableHead>
 
       <TableBody>
         {dataAvailable ? (
@@ -51,6 +41,15 @@ export const ResourcesTable: React.FC = () => {
     </StyledDataTable>
   );
 };
+
+const StyledTableHead = styled(TableHead)`
+  user-select: none;
+`;
+
+const StyledHeadCell = styled(HeadCell)`
+  font-size: ${({ theme }) => theme.font.sizes.sm};
+  font-weight: ${({ theme }) => theme.font.weights.bold};
+`;
 
 const ForwardClassNameTable: React.FC<DataTableProps & { className?: string }> = ({
   className,
@@ -76,15 +75,11 @@ type SkeletonRowProps = {
 
 const SkeletonRow: React.FC<SkeletonRowProps> = ({ opacity }) => (
   <Row sx={{ opacity }}>
-    <Cell>
-      <TextBox fontSize="sm">
-        <Skeleton variant="text" width={160} />
-      </TextBox>
-    </Cell>
-    <Cell>
-      <TextBox fontSize="sm">
-        <Skeleton variant="text" width={40} />
-      </TextBox>
-    </Cell>
+    <ResourceRowContent
+      iconSlot={<IconWrapper />}
+      resourceNameSlot={<Skeleton variant="text" width={160} />}
+      sizeSlot={<Skeleton variant="text" width={40} />}
+      mtimeSlot={<Skeleton variant="text" width={40} />}
+    />
   </Row>
 );
