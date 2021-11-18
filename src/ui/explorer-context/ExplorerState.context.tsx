@@ -39,11 +39,13 @@ export const ExplorerStateContextProvider = selectableContext.Provider;
 
 export type ExplorerContextProviderProps = {
   explorerId: string;
+  isActiveExplorer: boolean;
   children: React.ReactNode;
 };
 
 export const ExplorerContextProvider: React.FC<ExplorerContextProviderProps> = ({
   explorerId,
+  isActiveExplorer,
   children,
 }) => {
   const [explorerState, updateExplorerState] = useImmer<ExplorerState>({
@@ -107,6 +109,7 @@ export const ExplorerContextProvider: React.FC<ExplorerContextProviderProps> = (
     >
       <ExplorerDerivedValuesContextProvider
         explorerId={explorerId}
+        isActiveExplorer={isActiveExplorer}
         explorerState={explorerState}
         setKeysOfSelectedResources={explorerStateUpdateFunctions.setKeysOfSelectedResources}
       >

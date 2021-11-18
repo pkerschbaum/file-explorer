@@ -9,8 +9,10 @@ import { useCwd, useIdOfFocusedExplorerPanel } from '@app/global-state/slices/ex
 import { changeDirectory, revealCwdInOSExplorer } from '@app/operations/explorer.operations';
 import { KEYS, MOUSE_BUTTONS } from '@app/ui/constants';
 import { ChangeCwd } from '@app/ui/cwd-breadcrumbs/ChangeCwd';
-import { useRegisterGlobalShortcuts } from '@app/ui/GlobalShortcutsContext';
-import { useWindowEvent } from '@app/ui/utils/react.util';
+import {
+  useRegisterExplorerAuxclickHandler,
+  useRegisterExplorerShortcuts,
+} from '@app/ui/explorer-context';
 
 type CwdActionsMenuProps = {
   explorerId: string;
@@ -35,14 +37,14 @@ const CwdActionsMenuImpl: React.FC<CwdActionsMenuProps> = ({ explorerId, anchorE
     await changeDirectory(explorerId, URI.joinPath(URI.from(cwd), '..'));
   }
 
-  useRegisterGlobalShortcuts([
+  useRegisterExplorerShortcuts([
     { condition: (e) => e.altKey && e.key === KEYS.ARROW_LEFT, handler: navigateUp },
   ]);
 
   /*
    * "auxclick" event is fired when the "back" button on a mouse (e.g. Logitech MX Master 2) is clicked.
    */
-  useWindowEvent('auxclick', [
+  useRegisterExplorerAuxclickHandler([
     { condition: (e) => e.button === MOUSE_BUTTONS.BACK, handler: navigateUp },
   ]);
 

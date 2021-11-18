@@ -36,7 +36,7 @@ export const DATA_ATTRIBUTE_LAST_FOCUS_WAS_VISIBLE = {
   attrCamelCased: 'lastFocusWasVisible',
 } as const;
 
-type Shortcut = EventHandler<'keydown'>;
+export type Shortcut = EventHandler<'keydown'>;
 type AddGlobalShorcuts = (shortcuts: Shortcut[]) => DisposeShorcuts;
 type DisposeShorcuts = () => void;
 

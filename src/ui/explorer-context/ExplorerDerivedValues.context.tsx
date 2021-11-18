@@ -14,6 +14,7 @@ import { createSelectableContext, usePrevious } from '@app/ui/utils/react.util';
 
 type ExplorerDerivedValuesContext = {
   explorerId: string;
+  isActiveExplorer: boolean;
   dataAvailable: boolean;
   resourcesToShow: ResourceForUI[];
   selectedShownResources: ResourceForUI[];
@@ -30,7 +31,7 @@ type ExplorerDerivedValuesContextProviderProps = ExplorerContextProviderProps & 
 };
 
 export const ExplorerDerivedValuesContextProvider: React.FC<ExplorerDerivedValuesContextProviderProps> =
-  ({ explorerState, setKeysOfSelectedResources, explorerId, children }) => {
+  ({ explorerState, setKeysOfSelectedResources, explorerId, isActiveExplorer, children }) => {
     const { resources, dataAvailable } = useResourcesForUI(explorerId);
 
     const resourcesWithTags = useEnrichResourcesWithTags(resources);
@@ -117,6 +118,7 @@ export const ExplorerDerivedValuesContextProvider: React.FC<ExplorerDerivedValue
       <DerivedValuesContextProvider
         value={{
           explorerId,
+          isActiveExplorer,
           dataAvailable,
           resourcesToShow,
           selectedShownResources,
@@ -129,6 +131,10 @@ export const ExplorerDerivedValuesContextProvider: React.FC<ExplorerDerivedValue
 
 export function useExplorerId() {
   return useExplorerDerivedValuesSelector((explorerValues) => explorerValues.explorerId);
+}
+
+export function useIsActiveExplorer() {
+  return useExplorerDerivedValuesSelector((explorerValues) => explorerValues.isActiveExplorer);
 }
 
 export function useResourcesToShow() {

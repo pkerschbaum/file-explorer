@@ -8,13 +8,15 @@ import * as resourceOperations from '@app/operations/resource.operations';
 import { KEYS } from '@app/ui/constants';
 import {
   useExplorerId,
+  useIsActiveExplorer,
   useKeyOfResourceSelectionGotStartedWith,
   useResourcesToShow,
   useSelectedShownResources,
   useSetKeyOfResourceToRename,
   useSetKeysOfSelectedResources,
 } from '@app/ui/explorer-context';
-import { createSelectableContext } from '@app/ui/utils/react.util';
+import { Shortcut, useRegisterGlobalShortcuts } from '@app/ui/GlobalShortcutsContext';
+import { createSelectableContext, EventHandler, useWindowEvent } from '@app/ui/utils/react.util';
 
 type ExplorerOperationsContext = {
   copySelectedResources: () => void;
@@ -370,4 +372,14 @@ export function useCreateFolderInExplorer() {
 
 export function useChangeSelectionByClick() {
   return useExplorerOperationsSelector((actions) => actions.changeSelectionByClick);
+}
+
+export function useRegisterExplorerShortcuts(shortcuts: Shortcut[]) {
+  const isActiveExplorer = useIsActiveExplorer();
+  useRegisterGlobalShortcuts(!isActiveExplorer ? [] : shortcuts);
+}
+
+export function useRegisterExplorerAuxclickHandler(eventHandlers: EventHandler<'auxclick'>[]) {
+  const isActiveExplorer = useIsActiveExplorer();
+  useWindowEvent('auxclick', !isActiveExplorer ? [] : eventHandlers);
 }

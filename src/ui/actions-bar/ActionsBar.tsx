@@ -33,15 +33,11 @@ import {
   usePasteResourcesIntoExplorer,
   useScheduleDeleteSelectedResources,
   useTriggerRenameForSelectedResources,
+  useRegisterExplorerShortcuts,
 } from '@app/ui/explorer-context';
-import {
-  DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED,
-  useRegisterGlobalShortcuts,
-} from '@app/ui/GlobalShortcutsContext';
+import { DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED } from '@app/ui/GlobalShortcutsContext';
 import { useClipboardResources } from '@app/ui/hooks/clipboard-resources.hooks';
 import { Stack } from '@app/ui/layouts/Stack';
-
-export const EXPLORER_ACTIONSBAR_GRID_AREA = 'shell-explorer-actions-bar';
 
 export const ActionsBar: React.FC = () => {
   const draftPasteState = useDraftPasteState();
@@ -60,7 +56,7 @@ export const ActionsBar: React.FC = () => {
 
   const filterInputRef = React.useRef<HTMLDivElement>(null);
 
-  useRegisterGlobalShortcuts([
+  useRegisterExplorerShortcuts([
     { condition: (e) => e.ctrlKey && e.key === KEYS.C, handler: copySelectedResources },
     { condition: (e) => e.ctrlKey && e.key === KEYS.X, handler: cutSelectedResources },
     { condition: (e) => e.ctrlKey && e.key === KEYS.V, handler: pasteResourcesIntoExplorer },
@@ -102,7 +98,7 @@ export const ActionsBar: React.FC = () => {
     selectedShownResources.some((resource) => resource.resourceType !== RESOURCE_TYPE.DIRECTORY);
 
   return (
-    <ActionsBarContainer alignItems="stretch">
+    <Stack alignItems="stretch">
       <Stack alignItems="flex-end">
         <FilterInput filterInputRef={filterInputRef} />
       </Stack>
@@ -173,14 +169,9 @@ export const ActionsBar: React.FC = () => {
           />
         )}
       </Stack>
-    </ActionsBarContainer>
+    </Stack>
   );
 };
-
-const ActionsBarContainer = styled(Stack)`
-  grid-area: ${EXPLORER_ACTIONSBAR_GRID_AREA};
-  padding-bottom: ${(props) => props.theme.spacing()};
-`;
 
 type FilterInputProps = {
   filterInputRef: React.RefObject<HTMLDivElement>;

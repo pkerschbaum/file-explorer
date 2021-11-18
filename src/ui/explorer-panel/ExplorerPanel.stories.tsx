@@ -4,10 +4,10 @@ import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 import styled from 'styled-components';
 
-import { EXPLORER_ACTIONSBAR_GRID_AREA } from '@app/ui/actions-bar';
-import { EXPLORER_CWDBREADCRUMBS_GRID_AREA } from '@app/ui/cwd-breadcrumbs';
 import {
   ExplorerPanel,
+  EXPLORER_ACTIONSBAR_GRID_AREA,
+  EXPLORER_CWDBREADCRUMBS_GRID_AREA,
   EXPLORER_RESOURCESTABLE_GRID_AREA,
 } from '@app/ui/explorer-panel/ExplorerPanel';
 

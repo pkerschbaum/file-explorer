@@ -12,14 +12,10 @@ import { uriHelper } from '@app/base/utils/uri-helper';
 import { useCwd } from '@app/global-state/slices/explorers.hooks';
 import { changeDirectory } from '@app/operations/explorer.operations';
 import { CwdActionsMenu } from '@app/ui/cwd-breadcrumbs/CwdActionsMenu';
+import { useExplorerId } from '@app/ui/explorer-context';
 
-export const EXPLORER_CWDBREADCRUMBS_GRID_AREA = 'shell-explorer-cwd-breadcrumbs';
-
-type CwdBreadcrumbsProps = {
-  explorerId: string;
-};
-
-export const CwdBreadcrumbs: React.FC<CwdBreadcrumbsProps> = ({ explorerId }) => {
+export const CwdBreadcrumbs: React.FC = () => {
+  const explorerId = useExplorerId();
   const cwd = useCwd(explorerId);
 
   // compute slugs of CWD
@@ -127,15 +123,6 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
 };
 
 const StyledBreadcrumbs = styled(Breadcrumbs)`
-  /* Overlap the CwdBreadcrumbs with the WindowDragRegion above it */
-  margin-top: -20px;
-  -webkit-app-region: no-drag;
-
-  width: fit-content;
-  grid-area: ${EXPLORER_CWDBREADCRUMBS_GRID_AREA};
-  padding-bottom: ${(props) => props.theme.spacing()};
-  margin-bottom: ${(props) => props.theme.spacing()};
-
   & > .MuiBreadcrumbs-ol {
     gap: ${(props) => props.theme.spacing()};
   }
