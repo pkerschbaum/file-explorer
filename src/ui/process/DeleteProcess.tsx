@@ -112,7 +112,7 @@ export const DeleteProcess: React.FC<{ process: DeleteProcessType }> = ({ proces
               return (
                 <Box
                   key={uriHelper.getComparisonKey(uri)}
-                  sx={{ fontWeight: (theme) => theme.font.weights.bold }}
+                  sx={{ fontWeight: (theme) => theme.font.weights.bold, wordBreak: 'break-all' }}
                 >
                   {resourceLabel}
                 </Box>

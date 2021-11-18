@@ -150,7 +150,7 @@ export const PasteProcess: React.FC<{ process: PasteProcessType }> = ({ process 
         <>
           <Stack direction="column" alignItems="stretch" spacing={0.5}>
             <Box>Destination:</Box>
-            <Box sx={{ fontWeight: (theme) => theme.font.weights.bold }}>
+            <Box sx={{ fontWeight: (theme) => theme.font.weights.bold, wordBreak: 'break-all' }}>
               {destinationFolderLabel}
             </Box>
           </Stack>
@@ -166,7 +166,7 @@ export const PasteProcess: React.FC<{ process: PasteProcessType }> = ({ process 
               return (
                 <Box
                   key={uriHelper.getComparisonKey(uri)}
-                  sx={{ fontWeight: (theme) => theme.font.weights.bold }}
+                  sx={{ fontWeight: (theme) => theme.font.weights.bold, wordBreak: 'break-all' }}
                 >
                   {sourceResourceLabel}
                 </Box>

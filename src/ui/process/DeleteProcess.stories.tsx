@@ -1,11 +1,12 @@
 import { Box } from '@mui/material';
+import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 
 import { NarrowUnion } from '@app/base/utils/types.util';
 import { DeleteProcess, DELETE_PROCESS_STATUS } from '@app/domain/types';
 import { Process } from '@app/ui/process/Process';
 
-import { fakeDeleteProcessBase } from '@app-test/utils/fake-data';
+import { fakeDeleteProcessBase, fakeFileStat } from '@app-test/utils/fake-data';
 
 import { createGlobalDecorator } from '@app-storybook/storybook-utils';
 
@@ -54,3 +55,21 @@ const process_failure: NarrowUnion<DeleteProcess, 'status', DELETE_PROCESS_STATU
 };
 export const Failure = Template.bind({});
 Failure.args = { process: process_failure };
+
+const process_veryLongResourceNames: NarrowUnion<
+  DeleteProcess,
+  'status',
+  DELETE_PROCESS_STATUS.RUNNING
+> = {
+  ...fakeDeleteProcessBase,
+  uris: [
+    URI.joinPath(
+      fakeFileStat.resource,
+      './very-long-file-nameaaaaaaaaaaaaaaaaaaaaaaaaaaa.txt',
+    ).toJSON(),
+    ...fakeDeleteProcessBase.uris,
+  ],
+  status: DELETE_PROCESS_STATUS.RUNNING,
+};
+export const VeryLongResourceNames = Template.bind({});
+VeryLongResourceNames.args = { process: process_veryLongResourceNames };
