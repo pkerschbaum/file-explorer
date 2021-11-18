@@ -9,6 +9,7 @@ import { useCwd, useIdOfFocusedExplorerPanel } from '@app/global-state/slices/ex
 import { changeDirectory, revealCwdInOSExplorer } from '@app/operations/explorer.operations';
 import { KEYS, MOUSE_BUTTONS } from '@app/ui/constants';
 import { ChangeCwd } from '@app/ui/cwd-breadcrumbs/ChangeCwd';
+import { useRegisterGlobalShortcuts } from '@app/ui/GlobalShortcutsContext';
 import { useWindowEvent } from '@app/ui/utils/react.util';
 
 type CwdActionsMenuProps = {
@@ -34,7 +35,7 @@ const CwdActionsMenuImpl: React.FC<CwdActionsMenuProps> = ({ explorerId, anchorE
     await changeDirectory(explorerId, URI.joinPath(URI.from(cwd), '..'));
   }
 
-  useWindowEvent('keydown', [
+  useRegisterGlobalShortcuts([
     { condition: (e) => e.altKey && e.key === KEYS.ARROW_LEFT, handler: navigateUp },
   ]);
 

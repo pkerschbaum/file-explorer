@@ -16,9 +16,9 @@ import {
   FILE_ICON_THEME_PATH_FRAGMENT,
   FILE_ICON_THEME_RELATIVE_PATH,
 } from '@app/static-resources-renderer';
-import { DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED } from '@app/ui/actions-bar/ActionsBar';
 import { addIconThemeCssRulesToHead } from '@app/ui/file-icon-theme';
 import { createQueryClient } from '@app/ui/Globals';
+import { DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED } from '@app/ui/GlobalShortcutsContext';
 import { render } from '@app/ui/Root';
 
 const FILE_ICON_THEME_PATH_REPLACE_REGEX = /file:.+\/static\/icon-theme\//g;

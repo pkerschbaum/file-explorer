@@ -16,9 +16,9 @@ import {
   removeExplorerPanel,
 } from '@app/operations/app.operations';
 import { KEYS } from '@app/ui/constants';
+import { useRegisterGlobalShortcuts } from '@app/ui/GlobalShortcutsContext';
 import { Stack } from '@app/ui/layouts/Stack';
 import { tabIndicatorSpanClassName } from '@app/ui/theme';
-import { useWindowEvent } from '@app/ui/utils/react.util';
 
 type TabsAreaProps = { explorersToShow: ExplorerPanelEntry[] };
 
@@ -52,7 +52,7 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
     await addExplorerPanel(focusedExplorer?.cwd);
   }
 
-  useWindowEvent('keydown', [
+  useRegisterGlobalShortcuts([
     {
       condition: (e) => e.ctrlKey && e.key === KEYS.PAGE_UP,
       handler: () => switchFocusedExplorerPanel('UP'),

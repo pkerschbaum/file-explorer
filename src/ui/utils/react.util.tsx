@@ -1,6 +1,5 @@
 import { Event } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/event';
 import * as React from 'react';
-import { useDispatch } from 'react-redux';
 import * as useContextSelectorLib from 'use-context-selector';
 
 import { FunctionType } from '@app/base/utils/types.util';
@@ -13,13 +12,9 @@ export type EventHandler<E extends keyof WindowEventMap> = {
 
 export function useWindowEvent<E extends keyof WindowEventMap>(
   event: E,
-  eventHandlers: EventHandler<E>[] | null,
+  eventHandlers: EventHandler<E>[],
 ) {
   React.useEffect(() => {
-    if (eventHandlers === null) {
-      return;
-    }
-
     const eventListener = (e: WindowEventMap[E]) => {
       const eventHandler = eventHandlers.find((handler) => handler.condition(e));
       if (eventHandler) {
@@ -43,27 +38,6 @@ export function usePrevious<T>(value: T) {
   });
   return ref.current;
 }
-
-export const useActionsWithDispatch = <T extends {}>(actions: T) => {
-  // use type "Dispatch" just to clarify that dispatching is automatically done
-  type Dispatch<FuncType> = FuncType;
-
-  type DispatchType = {
-    [P in keyof typeof actions]: Dispatch<typeof actions[P]>;
-  };
-
-  const dispatch = useDispatch<any>();
-
-  const actionsWithDispatch: any = {};
-
-  for (const action in actions) {
-    if (Object.hasOwnProperty.call(actions, action)) {
-      actionsWithDispatch[action] = (...args: any[]) => dispatch((actions as any)[action](...args));
-    }
-  }
-
-  return actionsWithDispatch as DispatchType;
-};
 
 // https://usehooks.com/useDebounce/
 export function useDebounce<T>(value: T, delay: number): T {
@@ -123,7 +97,7 @@ export function createContext<ContextValue>(name: string) {
   }
 
   const Provider: React.FC<{
-    children: React.ReactElement;
+    children: React.ReactNode;
     value: ContextValue;
   }> = ({ children, value }) => {
     return <Context.Provider value={value}>{children}</Context.Provider>;
