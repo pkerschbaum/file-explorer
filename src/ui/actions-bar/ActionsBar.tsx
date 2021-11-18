@@ -37,7 +37,7 @@ import {
 } from '@app/ui/explorer-context';
 import { useClipboardResources } from '@app/ui/hooks/clipboard-resources.hooks';
 import { Stack } from '@app/ui/layouts/Stack';
-import { useWindowEvent } from '@app/ui/utils/react.util';
+import { EventHandler, useWindowEvent } from '@app/ui/utils/react.util';
 
 export const EXPLORER_ACTIONSBAR_GRID_AREA = 'shell-explorer-actions-bar';
 export const DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED = {
@@ -45,6 +45,9 @@ export const DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED = {
     'data-window-keydownhandlers-enabled': 'true',
   },
   attrCamelCased: 'windowKeydownhandlersEnabled',
+} as const;
+export const DATA_ATTRIBUTE_LAST_FOCUS_WAS_VISIBLE = {
+  attrCamelCased: 'lastFocusWasVisible',
 } as const;
 
 export const ActionsBar: React.FC = () => {
@@ -64,23 +67,34 @@ export const ActionsBar: React.FC = () => {
 
   const filterInputRef = React.useRef<HTMLDivElement>(null);
 
-  /*
+  /**
    * The following keydown handlers allow navigation of the directory content.
    *
-   * All keydown events which are targeted at specific HTML elements (like buttons) should not be overridden,
-   * that's why the first keydown handler will just execute NOOP if the target of the keydown event is
-   * _not_ the <body> element.
-   * There is one exception though: if the keydown event is targeted at the explorer filter component,
-   * keydown handlers should still be active to allow rapid filtering/navigation via keyboard.
+   * If the user navigates from one focusable HTML element to the next one using {Tab}/{Shift+Tab},
+   * keydown events should NOT be overridden (otherwise, the user would not be able to e.g. activate
+   * a button using {Enter}).
+   * That's why we check the data attribute "LAST_FOCUS_WAS_VISIBLE"; this data attribute is set by
+   * a global focus event listener in Globals.tsx and indicates if the event target matched the CSS
+   * pseudo class ":focus-visible" the last time it was focused.
+   * ":focus-visible" is set by the browser if a focus should be made evident on the element,
+   * it is set if the element was focused by keyboard but it is NOT set if the element was focused
+   * by click. Therefore it's the ideal pseudo class to determine if the user navigated to the event
+   * target via keyboard ({Tab}/{Shift+Tab}).
+   *
+   * There is one exception to the aforementioned rule: if the keydown event target is the explorer
+   * filter component, keydown handlers should still be active (in order to allow rapid filtering/navigation
+   * via keyboard).
    */
+  const propagateHandler: EventHandler<'keydown'> = {
+    condition: (e) =>
+      !(e.target instanceof HTMLElement) ||
+      (e.target.dataset[DATA_ATTRIBUTE_LAST_FOCUS_WAS_VISIBLE.attrCamelCased] !== 'false' &&
+        e.target.dataset[DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED.attrCamelCased] !== 'true'),
+    handler: functions.noop,
+    continuePropagation: true,
+  };
   useWindowEvent('keydown', [
-    {
-      condition: (e) =>
-        !(e.target instanceof HTMLElement) ||
-        e.target.dataset[DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED.attrCamelCased] !== 'true',
-      handler: functions.noop,
-      continuePropagation: true,
-    },
+    propagateHandler,
     { condition: (e) => e.ctrlKey && e.key === KEYS.C, handler: copySelectedResources },
     { condition: (e) => e.ctrlKey && e.key === KEYS.X, handler: cutSelectedResources },
     { condition: (e) => e.ctrlKey && e.key === KEYS.V, handler: pasteResourcesIntoExplorer },

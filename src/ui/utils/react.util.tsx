@@ -5,15 +5,15 @@ import * as useContextSelectorLib from 'use-context-selector';
 
 import { FunctionType } from '@app/base/utils/types.util';
 
-type EventHandlers<E extends keyof WindowEventMap> = Array<{
+export type EventHandler<E extends keyof WindowEventMap> = {
   condition: (e: WindowEventMap[E]) => boolean;
   handler: (e: WindowEventMap[E]) => void;
   continuePropagation?: boolean;
-}>;
+};
 
 export function useWindowEvent<E extends keyof WindowEventMap>(
   event: E,
-  eventHandlers: EventHandlers<E> | null,
+  eventHandlers: EventHandler<E>[] | null,
 ) {
   React.useEffect(() => {
     if (eventHandlers === null) {
