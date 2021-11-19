@@ -59,7 +59,7 @@ async function rendererScriptEntryPoint() {
   // boot global state (redux) with (possibly) persisted data
   const persistedStorageState: StorageState = await persistentStorage.read();
   const preloadedGlobalState = await reviveGlobalStateFromStorageState(persistedStorageState);
-  const store = createStoreInstance({ preloadedState: preloadedGlobalState });
+  const store = await createStoreInstance({ preloadedState: preloadedGlobalState });
 
   storeRef.current = store;
   dispatchRef.current = store.dispatch;

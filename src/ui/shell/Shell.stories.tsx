@@ -1,12 +1,15 @@
-import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
-import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 
+import { createStoreInstance } from '@app/global-state/store';
 import { Shell } from '@app/ui/shell';
 
 import { fakeDeleteProcess, fakePasteProcess } from '@app-test/utils/fake-data';
 
-import { createGlobalDecorator } from '@app-storybook/storybook-utils';
+import {
+  GlobalDefaultWrapper,
+  initializeFakePlatformModules,
+  loadCssRulesAndAddToStyleTag,
+} from '@app-storybook/storybook-utils';
 
 export default {
   title: 'Shell',
@@ -14,22 +17,24 @@ export default {
   parameters: {
     layout: 'fullscreen',
   },
-  decorators: [
-    createGlobalDecorator({
-      preloadedState: {
-        explorersSlice: {
-          explorerPanels: {
-            'panel-id-1': {
-              cwd: URI.parse(`${Schemas.inMemory}:///home/testdir`).toJSON(),
-            },
+  loaders: [
+    loadCssRulesAndAddToStyleTag,
+    async () => {
+      await initializeFakePlatformModules();
+      const store = await createStoreInstance({
+        preloadedState: {
+          processesSlice: {
+            processes: [fakePasteProcess, fakeDeleteProcess],
           },
-          focusedExplorerPanelId: 'panel-id-1',
         },
-        processesSlice: {
-          processes: [fakePasteProcess, fakeDeleteProcess],
-        },
-      },
-    }),
+      });
+      return { store };
+    },
+  ],
+  decorators: [
+    (story, { loaded }) => (
+      <GlobalDefaultWrapper store={loaded.store}>{story()}</GlobalDefaultWrapper>
+    ),
   ],
 } as ComponentMeta<typeof Shell>;
 

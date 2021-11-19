@@ -12,7 +12,7 @@ import { deriveIdFromMetadataAndExportName, varToString } from '@app-storybook/s
 
 import { getTestTitle, bootstrap } from '@app-cypress/cypress.util';
 
-describe('DeleteProcess.component', () => {
+describe('DeleteProcess [visual]', () => {
   it('Pending for User Input', () => {
     const storybookIdToVisit = deriveIdFromMetadataAndExportName(
       metadata,

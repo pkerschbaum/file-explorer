@@ -4,20 +4,33 @@ import { ComponentMeta, ComponentStory } from '@storybook/react';
 
 import { NarrowUnion } from '@app/base/utils/types.util';
 import { DeleteProcess, DELETE_PROCESS_STATUS } from '@app/domain/types';
+import { createStoreInstance } from '@app/global-state/store';
 import { Process } from '@app/ui/process/Process';
 
 import { fakeDeleteProcessBase, fakeFileStat } from '@app-test/utils/fake-data';
 
-import { createGlobalDecorator } from '@app-storybook/storybook-utils';
+import {
+  GlobalDefaultWrapper,
+  initializeFakePlatformModules,
+  loadCssRulesAndAddToStyleTag,
+} from '@app-storybook/storybook-utils';
 
 export default {
   title: 'Processes / Delete',
   component: Process,
-  decorators: [
-    createGlobalDecorator(),
-    (story) => {
-      return <Box sx={{ maxWidth: 250 }}>{story()}</Box>;
+  loaders: [
+    loadCssRulesAndAddToStyleTag,
+    async () => {
+      await initializeFakePlatformModules();
+      const store = await createStoreInstance();
+      return { store };
     },
+  ],
+  decorators: [
+    (story, { loaded }) => (
+      <GlobalDefaultWrapper store={loaded.store}>{story()}</GlobalDefaultWrapper>
+    ),
+    (story) => <Box sx={{ maxWidth: 250 }}>{story()}</Box>,
   ],
 } as ComponentMeta<typeof Process>;
 

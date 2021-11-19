@@ -6,7 +6,7 @@ import { deriveIdFromMetadataAndExportName, varToString } from '@app-storybook/s
 
 import { getTestTitle, bootstrap } from '@app-cypress/cypress.util';
 
-describe('Shell.component', () => {
+describe('Shell [visual]', () => {
   it('Base Case', () => {
     const storybookIdToVisit = deriveIdFromMetadataAndExportName(
       metadata,

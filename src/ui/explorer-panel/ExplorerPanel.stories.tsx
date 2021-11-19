@@ -1,9 +1,8 @@
 import { Box } from '@mui/material';
-import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
-import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 import styled from 'styled-components';
 
+import { createStoreInstance, RootStore } from '@app/global-state/store';
 import {
   ExplorerPanel,
   EXPLORER_ACTIONSBAR_GRID_AREA,
@@ -11,28 +10,37 @@ import {
   EXPLORER_RESOURCESTABLE_GRID_AREA,
 } from '@app/ui/explorer-panel/ExplorerPanel';
 
-import { createGlobalDecorator } from '@app-storybook/storybook-utils';
+import {
+  GlobalDefaultWrapper,
+  initializeFakePlatformModules,
+  loadCssRulesAndAddToStyleTag,
+} from '@app-storybook/storybook-utils';
 
 export default {
   title: 'ExplorerPanel',
   component: ExplorerPanel,
+  loaders: [
+    loadCssRulesAndAddToStyleTag,
+    async () => {
+      await initializeFakePlatformModules();
+      const store = await createStoreInstance();
+      return { store };
+    },
+  ],
   decorators: [
-    createGlobalDecorator({
-      preloadedState: {
-        explorersSlice: {
-          explorerPanels: {
-            'test-explorerid': { cwd: URI.parse(`${Schemas.inMemory}:///home/testdir`).toJSON() },
-          },
-          focusedExplorerPanelId: 'test-explorerid',
-        },
-      },
-    }),
+    (story, { loaded }) => (
+      <GlobalDefaultWrapper store={loaded.store}>{story()}</GlobalDefaultWrapper>
+    ),
   ],
 } as ComponentMeta<typeof ExplorerPanel>;
 
-const Template: ComponentStory<typeof ExplorerPanel> = (args) => (
+const Template: ComponentStory<typeof ExplorerPanel> = (args, { loaded }) => (
   <ExplorerPanelGrid>
-    <ExplorerPanel {...args} />
+    <ExplorerPanel
+      {...args}
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      explorerId={(loaded.store as RootStore).getState().explorersSlice.focusedExplorerPanelId!}
+    />
   </ExplorerPanelGrid>
 );
 

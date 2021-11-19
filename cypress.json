@@ -1,4 +1,4 @@
 {
   "integrationFolder": "src",
-  "testFiles": "**/*.component.spec.ts"
+  "testFiles": "**/*.visual.spec.ts"
 }

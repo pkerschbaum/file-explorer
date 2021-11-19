@@ -6,8 +6,8 @@ import { deriveIdFromMetadataAndExportName, varToString } from '@app-storybook/s
 
 import { getTestTitle, bootstrap } from '@app-cypress/cypress.util';
 
-describe('ExplorerPanel.component', () => {
-  it('Default Case', () => {
+describe('ExplorerPanel [visual]', () => {
+  it.only('Default Case', () => {
     const storybookIdToVisit = deriveIdFromMetadataAndExportName(
       metadata,
       varToString({ DefaultCase }),

@@ -9,10 +9,11 @@ module.exports = {
   globalTeardown: './test/global-teardown.ts',
   setupFilesAfterEnv: ['./test/setup-after-env.ts'],
   rootDir: '.',
-  testRegex: 'src/.*\\.spec\\.(ts|tsx)$',
+  // exclude all visual tests from Jest (those are executed by Cypress)
+  testRegex: 'src/(?!.+\\.visual\\.spec\\.tsx?)(.+\\.spec\\.(?:t|j)sx?)',
   transform: {
-    '^.+\\.(t|j)sx?$': 'ts-jest',
+    '^.+\\.(?:t|j)sx?$': 'ts-jest',
   },
-  testEnvironment: 'node',
+  testEnvironment: 'jsdom',
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: '<rootDir>/' }),
 };
