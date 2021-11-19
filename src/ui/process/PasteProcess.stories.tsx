@@ -4,15 +4,13 @@ import { ComponentMeta, ComponentStory } from '@storybook/react';
 import { NarrowUnion } from '@app/base/utils/types.util';
 import { PasteProcess, PASTE_PROCESS_STATUS } from '@app/domain/types';
 import { createStoreInstance } from '@app/global-state/store';
+import { createQueryClient, Globals } from '@app/ui/Globals';
 import { Process } from '@app/ui/process/Process';
 
 import { fakePasteProcessBase } from '@app-test/utils/fake-data';
+import { initializeFakePlatformModules } from '@app-test/utils/fake-platform-modules';
 
-import {
-  GlobalDefaultWrapper,
-  initializeFakePlatformModules,
-  loadCssRulesAndAddToStyleTag,
-} from '@app-storybook/storybook-utils';
+import { loadCssRulesAndAddToStyleTag } from '@app-storybook/storybook-utils';
 
 export default {
   title: 'Processes / Paste',
@@ -22,12 +20,15 @@ export default {
     async () => {
       await initializeFakePlatformModules();
       const store = await createStoreInstance();
-      return { store };
+      const queryClient = createQueryClient();
+      return { store, queryClient };
     },
   ],
   decorators: [
     (story, { loaded }) => (
-      <GlobalDefaultWrapper store={loaded.store}>{story()}</GlobalDefaultWrapper>
+      <Globals queryClient={loaded.queryClient} store={loaded.store}>
+        {story()}
+      </Globals>
     ),
     (story) => <Box sx={{ maxWidth: 250 }}>{story()}</Box>,
   ],

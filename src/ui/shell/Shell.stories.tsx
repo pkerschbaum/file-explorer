@@ -1,15 +1,13 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 
 import { createStoreInstance } from '@app/global-state/store';
+import { createQueryClient, Globals } from '@app/ui/Globals';
 import { Shell } from '@app/ui/shell';
 
 import { fakeDeleteProcess, fakePasteProcess } from '@app-test/utils/fake-data';
+import { initializeFakePlatformModules } from '@app-test/utils/fake-platform-modules';
 
-import {
-  GlobalDefaultWrapper,
-  initializeFakePlatformModules,
-  loadCssRulesAndAddToStyleTag,
-} from '@app-storybook/storybook-utils';
+import { loadCssRulesAndAddToStyleTag } from '@app-storybook/storybook-utils';
 
 export default {
   title: 'Shell',
@@ -28,12 +26,15 @@ export default {
           },
         },
       });
-      return { store };
+      const queryClient = createQueryClient();
+      return { store, queryClient };
     },
   ],
   decorators: [
     (story, { loaded }) => (
-      <GlobalDefaultWrapper store={loaded.store}>{story()}</GlobalDefaultWrapper>
+      <Globals queryClient={loaded.queryClient} store={loaded.store}>
+        {story()}
+      </Globals>
     ),
   ],
 } as ComponentMeta<typeof Shell>;

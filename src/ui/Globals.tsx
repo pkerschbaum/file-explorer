@@ -9,7 +9,11 @@ import styled, { createGlobalStyle, css } from 'styled-components';
 import { config } from '@app/config';
 import { RootStore } from '@app/global-state/store';
 import { useDirectoryWatchers } from '@app/operations/directory-watchers';
-import { GlobalShortcutsContextProvider } from '@app/ui/GlobalShortcutsContext';
+import { queryClientRef, storeRef, dispatchRef } from '@app/operations/global-modules';
+import {
+  DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED,
+  GlobalShortcutsContextProvider,
+} from '@app/ui/GlobalShortcutsContext';
 import { createTheme } from '@app/ui/theme';
 
 export function createQueryClient() {
@@ -61,23 +65,43 @@ export type GlobalsProps = {
 };
 
 export const Globals: React.FC<GlobalsProps> = ({ queryClient, store, children }) => {
+  React.useEffect(
+    function setStoreAndQueryClientRefs() {
+      storeRef.current = store;
+      dispatchRef.current = store.dispatch;
+      queryClientRef.current = queryClient;
+    },
+    [queryClient, store],
+  );
+
+  React.useEffect(function enableGlobalShortcutsForBodyElement() {
+    // set data attribute which will enable global shortcuts whenever the <body> element has focus
+    const bodyElement = document.querySelector('body');
+    if (!bodyElement) {
+      throw new Error(`Could not query body element`);
+    }
+    bodyElement.dataset[DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED.attrCamelCased] = 'true';
+  }, []);
+
   useDirectoryWatchers();
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider theme={theme}>
-        <Provider store={store}>
-          <GlobalShortcutsContextProvider>
-            <CssBaseline />
-            <GlobalStyle />
-            {/* class "show-file-icons" will enable file icon theme of code-oss project */}
-            <RootContainer className="show-file-icons">{children}</RootContainer>
-          </GlobalShortcutsContextProvider>
-        </Provider>
-      </ThemeProvider>
+    <React.StrictMode>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider theme={theme}>
+          <Provider store={store}>
+            <GlobalShortcutsContextProvider>
+              <CssBaseline />
+              <GlobalStyle />
+              {/* class "show-file-icons" will enable file icon theme of code-oss project */}
+              <RootContainer className="show-file-icons">{children}</RootContainer>
+            </GlobalShortcutsContextProvider>
+          </Provider>
+        </ThemeProvider>
 
-      {config.showReactQueryDevtools && <ReactQueryDevtools />}
-    </QueryClientProvider>
+        {config.showReactQueryDevtools && <ReactQueryDevtools />}
+      </QueryClientProvider>
+    </React.StrictMode>
   );
 };
 

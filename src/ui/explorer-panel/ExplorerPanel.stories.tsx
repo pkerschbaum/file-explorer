@@ -9,12 +9,11 @@ import {
   EXPLORER_CWDBREADCRUMBS_GRID_AREA,
   EXPLORER_RESOURCESTABLE_GRID_AREA,
 } from '@app/ui/explorer-panel/ExplorerPanel';
+import { createQueryClient, Globals } from '@app/ui/Globals';
 
-import {
-  GlobalDefaultWrapper,
-  initializeFakePlatformModules,
-  loadCssRulesAndAddToStyleTag,
-} from '@app-storybook/storybook-utils';
+import { initializeFakePlatformModules } from '@app-test/utils/fake-platform-modules';
+
+import { loadCssRulesAndAddToStyleTag } from '@app-storybook/storybook-utils';
 
 export default {
   title: 'ExplorerPanel',
@@ -24,12 +23,15 @@ export default {
     async () => {
       await initializeFakePlatformModules();
       const store = await createStoreInstance();
-      return { store };
+      const queryClient = createQueryClient();
+      return { store, queryClient };
     },
   ],
   decorators: [
     (story, { loaded }) => (
-      <GlobalDefaultWrapper store={loaded.store}>{story()}</GlobalDefaultWrapper>
+      <Globals queryClient={loaded.queryClient} store={loaded.store}>
+        {story()}
+      </Globals>
     ),
   ],
 } as ComponentMeta<typeof ExplorerPanel>;

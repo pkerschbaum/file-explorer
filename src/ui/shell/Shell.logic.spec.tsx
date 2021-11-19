@@ -6,21 +6,20 @@ import { render, fireEvent, waitFor, screen } from '@testing-library/react';
 
 import { createStoreInstance } from '@app/global-state/store';
 import { nativeHostRef, storeRef } from '@app/operations/global-modules';
+import { createQueryClient, Globals } from '@app/ui/Globals';
 import { Shell } from '@app/ui/shell';
 
-import {
-  GlobalDefaultWrapper,
-  initializeFakePlatformModules,
-} from '@app-storybook/storybook-utils';
+import { initializeFakePlatformModules } from '@app-test/utils/fake-platform-modules';
 
 describe('Shell [logic]', () => {
   it('Click on button "Copy" should store selected resources in clipboard and "pasteShouldMove: false" in global-state', async () => {
     await initializeFakePlatformModules();
     const store = await createStoreInstance();
+    const queryClient = createQueryClient();
     render(
-      <GlobalDefaultWrapper store={store}>
+      <Globals queryClient={queryClient} store={store}>
         <Shell />
-      </GlobalDefaultWrapper>,
+      </Globals>,
     );
 
     await waitFor(() => screen.getByRole('button', { name: /Copy/i }));
