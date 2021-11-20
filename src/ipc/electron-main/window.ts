@@ -1,6 +1,5 @@
 import { BrowserWindow, ipcMain, IpcMainInvokeEvent } from 'electron';
 
-import { Awaited } from '@app/base/utils/types.util';
 import { IpcWindow, WINDOW_CHANNEL } from '@app/ipc/common/window';
 
 export function registerListeners(window: BrowserWindow): void {

@@ -155,8 +155,6 @@ export type Immutable<T> = T extends ImmutablePrimitive
   ? ImmutableSet<M>
   : ImmutableObject<T>;
 
-export type Awaited<T> = T extends PromiseLike<infer U> ? U : T;
-
 export type FunctionType<Args extends unknown[], ReturnType> = (...args: Args) => ReturnType;
 
 /**

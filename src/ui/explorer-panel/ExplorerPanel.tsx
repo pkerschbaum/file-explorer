@@ -60,5 +60,4 @@ const ActionsBarContainer = styled(Box)`
 
 const ResourcesTableContainer = styled(Box)`
   grid-area: ${EXPLORER_RESOURCESTABLE_GRID_AREA};
-  padding-bottom: ${(props) => props.theme.spacing(0.5)};
 `;

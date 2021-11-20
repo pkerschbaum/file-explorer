@@ -6,7 +6,7 @@ import { createSelectorHook, useDispatch as useReduxDispatch } from 'react-redux
 import { createLogger } from '@app/base/logger/logger';
 import { check } from '@app/base/utils/assert.util';
 import { numbers } from '@app/base/utils/numbers.util';
-import { Awaited, typedPath } from '@app/base/utils/types.util';
+import { typedPath } from '@app/base/utils/types.util';
 import loggerMiddleware from '@app/global-state/logger.middleware';
 import { persistMiddleware } from '@app/global-state/persist-state.middleware';
 import rootReducer from '@app/global-state/reducers';

@@ -1,7 +1,6 @@
 import { ipcMain, IpcMainInvokeEvent, shell } from 'electron';
 
 import { check } from '@app/base/utils/assert.util';
-import { Awaited } from '@app/base/utils/types.util';
 import { IpcShell, SHELL_CHANNEL } from '@app/ipc/common/shell';
 
 export function registerListeners(): void {

@@ -2,7 +2,7 @@ import { expect } from '@jest/globals';
 import 'setimmediate';
 import '@shopify/polyfills/idle-callback.jest';
 import '@testing-library/jest-dom';
-import { render, fireEvent, waitFor, screen } from '@testing-library/react';
+import { render, fireEvent, screen } from '@testing-library/react';
 
 import { createStoreInstance } from '@app/global-state/store';
 import { nativeHostRef, storeRef } from '@app/operations/global-modules';
@@ -22,8 +22,8 @@ describe('Shell [logic]', () => {
       </Globals>,
     );
 
-    await waitFor(() => screen.getByRole('button', { name: /Copy/i }));
-    fireEvent.click(screen.getByRole('button', { name: /Copy/i }));
+    const copyButton = await screen.findByRole('button', { name: /Copy/i });
+    fireEvent.click(copyButton);
 
     const resourcesInClipboard = nativeHostRef.current.clipboard.readResources();
     expect(resourcesInClipboard).toHaveLength(1);

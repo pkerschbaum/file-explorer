@@ -1,6 +1,5 @@
 import { app, ipcMain, IpcMainInvokeEvent } from 'electron';
 
-import { Awaited } from '@app/base/utils/types.util';
 import { IpcApp, APP_CHANNEL } from '@app/ipc/common/app';
 
 export function registerListeners(): void {

@@ -17,6 +17,7 @@ module.exports = {
     'plugin:react-hooks/recommended',
     'plugin:jsx-a11y/recommended',
     'plugin:cypress/recommended',
+    'plugin:jest-dom/recommended',
   ],
   /**
    * add "only-warn" plugin to change all errors to warnings.
@@ -24,7 +25,7 @@ module.exports = {
    * allows to distinguish ESLint warnings from other errors (e.g. TypeScript compile errors) in the
    * code editor (e.g. VS Code).
    */
-  plugins: ['node', 'jsx-a11y', 'import', 'only-warn', 'cypress'],
+  plugins: ['only-warn', 'node', 'import', 'jsx-a11y', 'cypress', 'jest-dom', 'testing-library'],
   ignorePatterns: ['**/*.js'],
   rules: {
     curly: 'error',
@@ -118,6 +119,13 @@ module.exports = {
     '@typescript-eslint/switch-exhaustiveness-check': 'error',
     '@typescript-eslint/unified-signatures': 'error',
   },
+  overrides: [
+    {
+      // enable eslint-plugin-testing-library for "logic" specs
+      files: ['**/?(*.)+(logic.spec).[jt]s?(x)'],
+      extends: ['plugin:testing-library/react'],
+    },
+  ],
   settings: {
     react: {
       version: 'detect',
