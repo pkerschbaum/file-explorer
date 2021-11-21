@@ -1,26 +1,26 @@
 import { cy } from 'local-cypress';
 
-import metadata, { DefaultCase } from '@app/ui/shell/Shell.stories';
+import metadata, { WithProcesses, SimpleCase } from '@app/ui/shell/Shell.stories';
 
 import { deriveIdFromMetadataAndExportName, varToString } from '@app-storybook/storybook-utils';
 
 import { getTestTitle, bootstrap } from '@app-cypress/cypress.util';
 
 describe('Shell [visual]', () => {
-  it('Base Case', () => {
+  it('with processes', () => {
     const storybookIdToVisit = deriveIdFromMetadataAndExportName(
       metadata,
-      varToString({ DefaultCase }),
+      varToString({ WithProcesses }),
     );
     bootstrap({ storybookIdToVisit });
 
     cy.document().matchImageSnapshot(`${getTestTitle()}_1`);
   });
 
-  it('Filter Resources', () => {
+  it('filter resources', () => {
     const storybookIdToVisit = deriveIdFromMetadataAndExportName(
       metadata,
-      varToString({ DefaultCase }),
+      varToString({ SimpleCase }),
     );
     bootstrap({ storybookIdToVisit });
 
@@ -35,10 +35,10 @@ describe('Shell [visual]', () => {
     cy.document().matchImageSnapshot(`${getTestTitle()}_2_after-second-filter-input`);
   });
 
-  it('Trigger Rename', () => {
+  it('trigger rename', () => {
     const storybookIdToVisit = deriveIdFromMetadataAndExportName(
       metadata,
-      varToString({ DefaultCase }),
+      varToString({ SimpleCase }),
     );
     bootstrap({ storybookIdToVisit });
 
@@ -46,5 +46,34 @@ describe('Shell [visual]', () => {
     cy.findByRole('button', { name: /Rename/i }).click();
 
     cy.document().matchImageSnapshot(`${getTestTitle()}_1_after-trigger-of-rename`);
+  });
+
+  it('open and close sidebar', () => {
+    const storybookIdToVisit = deriveIdFromMetadataAndExportName(
+      metadata,
+      varToString({ SimpleCase }),
+    );
+    bootstrap({ storybookIdToVisit });
+
+    cy.findByRole('button', { name: /Open User Preferences/i }).click();
+
+    cy.document().matchImageSnapshot(`${getTestTitle()}_1_sidebar-open`);
+
+    cy.findByRole('button', { name: /Hide User Preferences/i }).click();
+
+    cy.document().matchImageSnapshot(`${getTestTitle()}_2_sidebar-hidden`);
+  });
+
+  it('switch theme', () => {
+    const storybookIdToVisit = deriveIdFromMetadataAndExportName(
+      metadata,
+      varToString({ SimpleCase }),
+    );
+    bootstrap({ storybookIdToVisit });
+
+    cy.findByRole('button', { name: /Open User Preferences/i }).click();
+    cy.findByRole('button', { name: /Flow/i }).click();
+
+    cy.document().matchImageSnapshot(`${getTestTitle()}_1_switched-theme`);
   });
 });

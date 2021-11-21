@@ -2,11 +2,14 @@ import ReactDOM from 'react-dom';
 
 import { createStoreInstance } from '@app/global-state/store';
 import { fileSystemRef, nativeHostRef, persistentStorageRef } from '@app/operations/global-modules';
-import { reviveGlobalStateFromStorageState } from '@app/operations/storage-state.operations';
+import {
+  readStorageState,
+  reviveGlobalStateFromStorageState,
+} from '@app/operations/storage-state.operations';
 import { loadCssRules } from '@app/platform/file-icon-theme';
 import { createFileSystem } from '@app/platform/file-system';
 import { createNativeHost } from '@app/platform/native-host';
-import { createPersistentStorage, StorageState } from '@app/platform/persistent-storage';
+import { createPersistentStorage } from '@app/platform/persistent-storage';
 import {
   FILE_ICON_THEME_PATH_FRAGMENT,
   FILE_ICON_THEME_RELATIVE_PATH,
@@ -27,7 +30,7 @@ async function rendererScriptEntryPoint() {
   persistentStorageRef.current = persistentStorage;
 
   // boot global state (redux) from (possibly) persisted data, and initialize empty global cache (react-query)
-  const persistedStorageState: StorageState = await persistentStorage.read();
+  const persistedStorageState = await readStorageState();
   const preloadedGlobalState = await reviveGlobalStateFromStorageState(persistedStorageState);
   const store = await createStoreInstance({ preloadedState: preloadedGlobalState });
   const queryClient = createQueryClient();

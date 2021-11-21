@@ -1,9 +1,8 @@
-import { CssBaseline, darken, ThemeProvider } from '@mui/material';
-import { enUS } from '@mui/material/locale';
+import { CssBaseline, darken } from '@mui/material';
 import * as React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
-import { Provider } from 'react-redux';
+import { Provider as ReactReduxProvider } from 'react-redux';
 import styled, { createGlobalStyle, css } from 'styled-components';
 
 import { config } from '@app/config';
@@ -14,7 +13,7 @@ import {
   DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED,
   GlobalShortcutsContextProvider,
 } from '@app/ui/GlobalShortcutsContext';
-import { createTheme } from '@app/ui/theme';
+import { ThemeProvider } from '@app/ui/ThemeProvider';
 
 export function createQueryClient() {
   return new QueryClient({
@@ -27,7 +26,6 @@ export function createQueryClient() {
     },
   });
 }
-const theme = createTheme(enUS);
 
 const globalStyle = css`
   html,
@@ -88,16 +86,16 @@ export const Globals: React.FC<GlobalsProps> = ({ queryClient, store, children }
   return (
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider theme={theme}>
-          <Provider store={store}>
+        <ReactReduxProvider store={store}>
+          <ThemeProvider>
             <GlobalShortcutsContextProvider>
               <CssBaseline />
               <GlobalStyle />
               {/* class "show-file-icons" will enable file icon theme of code-oss project */}
               <RootContainer className="show-file-icons">{children}</RootContainer>
             </GlobalShortcutsContextProvider>
-          </Provider>
-        </ThemeProvider>
+          </ThemeProvider>
+        </ReactReduxProvider>
 
         {config.showReactQueryDevtools && <ReactQueryDevtools />}
       </QueryClientProvider>

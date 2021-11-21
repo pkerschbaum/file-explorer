@@ -18,7 +18,7 @@ import {
 import { KEYS } from '@app/ui/constants';
 import { useRegisterGlobalShortcuts } from '@app/ui/GlobalShortcutsContext';
 import { Stack } from '@app/ui/layouts/Stack';
-import { tabIndicatorSpanClassName } from '@app/ui/theme';
+import { tabIndicatorSpanClassName } from '@app/ui/ThemeProvider';
 
 type TabsAreaProps = { explorersToShow: ExplorerPanelEntry[] };
 

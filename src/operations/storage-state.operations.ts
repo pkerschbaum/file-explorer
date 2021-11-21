@@ -5,10 +5,14 @@ import { NoInfer } from '@reduxjs/toolkit/dist/tsHelpers';
 import { createLogger } from '@app/base/logger/logger';
 import { ExplorersMap } from '@app/global-state/slices/explorers.slice';
 import type { RootState } from '@app/global-state/store';
-import { fileSystemRef } from '@app/operations/global-modules';
+import { fileSystemRef, persistentStorageRef } from '@app/operations/global-modules';
 import { StorageState } from '@app/platform/persistent-storage';
 
 const logger = createLogger('storage-state.operations');
+
+export async function readStorageState(): Promise<StorageState> {
+  return await persistentStorageRef.current.read();
+}
 
 export async function reviveGlobalStateFromStorageState(
   storageState: Partial<StorageState>,
@@ -35,5 +39,6 @@ export async function reviveGlobalStateFromStorageState(
       focusedExplorerPanelId: storageState.focusedExplorerPanelId,
     },
     tagsSlice: storageState.tagsState,
+    userSlice: storageState.userState,
   };
 }

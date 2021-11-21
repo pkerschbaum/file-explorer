@@ -25,5 +25,6 @@ function mapStorageStateFromGlobalState(state: RootState): StorageState {
     ),
     focusedExplorerPanelId: state.explorersSlice.focusedExplorerPanelId,
     tagsState: state.tagsSlice,
+    userState: state.userSlice,
   };
 }

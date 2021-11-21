@@ -15,21 +15,7 @@ export default {
   parameters: {
     layout: 'fullscreen',
   },
-  loaders: [
-    loadCssRulesAndAddToStyleTag,
-    async () => {
-      await initializeFakePlatformModules();
-      const store = await createStoreInstance({
-        preloadedState: {
-          processesSlice: {
-            processes: [fakePasteProcess, fakeDeleteProcess],
-          },
-        },
-      });
-      const queryClient = createQueryClient();
-      return { store, queryClient };
-    },
-  ],
+  loaders: [loadCssRulesAndAddToStyleTag],
   decorators: [
     (story, { loaded }) => (
       <Globals queryClient={loaded.queryClient} store={loaded.store}>
@@ -41,4 +27,28 @@ export default {
 
 const Template: ComponentStory<typeof Shell> = (args) => <Shell {...args} />;
 
-export const DefaultCase = Template.bind({});
+export const SimpleCase = Template.bind({});
+(SimpleCase as any).loaders = [
+  async () => {
+    await initializeFakePlatformModules();
+    const store = await createStoreInstance();
+    const queryClient = createQueryClient();
+    return { store, queryClient };
+  },
+];
+
+export const WithProcesses = Template.bind({});
+(WithProcesses as any).loaders = [
+  async () => {
+    await initializeFakePlatformModules();
+    const store = await createStoreInstance({
+      preloadedState: {
+        processesSlice: {
+          processes: [fakePasteProcess, fakeDeleteProcess],
+        },
+      },
+    });
+    const queryClient = createQueryClient();
+    return { store, queryClient };
+  },
+];

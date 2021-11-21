@@ -1,14 +1,17 @@
+import { ThemeProvider as MuiThemeProvider } from '@mui/material';
 import { cyan } from '@mui/material/colors';
-import { Localization } from '@mui/material/locale';
+import { Localization, enUS } from '@mui/material/locale';
 import {
   // https://github.com/mui-org/material-ui/issues/13394
   createTheme as createMuiTheme,
   Theme as MuiTheme,
 } from '@mui/material/styles';
+import * as React from 'react';
 import { css } from 'styled-components';
 
 import { assertThat } from '@app/base/utils/assert.util';
 import { AvailableTagIds, DELETE_PROCESS_STATUS, PASTE_PROCESS_STATUS } from '@app/domain/types';
+import { useActiveTheme } from '@app/global-state/slices/user.hooks';
 
 declare module '@mui/material/styles' {
   interface Theme {
@@ -91,8 +94,9 @@ export const THEMES = {
     primaryColor: 'hsl(203, 17%, 36%)',
   },
 } as const;
-type AvailableThemes = keyof typeof THEMES;
-export const ACTIVE_THEME = 'coffee' as AvailableThemes;
+export type AvailableTheme = keyof typeof THEMES;
+export const availableThemes = Object.keys(THEMES) as AvailableTheme[];
+export const defaultTheme: AvailableTheme = 'coffee';
 
 // border colors are taken from material-ui OutlinedInput <fieldset> border color
 const BORDER_COLOR_LIGHT = 'rgba(0, 0, 0, 0.23)';
@@ -100,18 +104,18 @@ const BORDER_COLOR_DARK = 'rgba(255, 255, 255, 0.23)';
 const OUTLINE_COLOR_LIGHT = 'rgba(0, 0, 0, 0.8)';
 const OUTLINE_COLOR_DARK = 'rgba(255, 255, 255, 0.8)';
 
-export const createTheme = (locale: Localization) => {
-  const activeTheme = THEMES[ACTIVE_THEME];
+export const createTheme = (locale: Localization, activeTheme: AvailableTheme) => {
+  const themeConfiguration = THEMES[activeTheme];
   let borderColorToUse;
   let outlineColorToUse;
-  if (activeTheme.mode === 'dark') {
+  if (themeConfiguration.mode === 'dark') {
     borderColorToUse = BORDER_COLOR_DARK;
     outlineColorToUse = OUTLINE_COLOR_DARK;
-  } else if (activeTheme.mode === 'light') {
+  } else if (themeConfiguration.mode === 'light') {
     borderColorToUse = BORDER_COLOR_LIGHT;
     outlineColorToUse = OUTLINE_COLOR_LIGHT;
   } else {
-    assertThat.isUnreachable(activeTheme);
+    assertThat.isUnreachable(themeConfiguration);
   }
 
   /* the theme changes the appearance of some material-ui components to better align with the Windows 11 design language */
@@ -154,7 +158,7 @@ export const createTheme = (locale: Localization) => {
             }
 
             &:hover {
-              border-color: ${activeTheme.background};
+              border-color: ${themeConfiguration.background};
               background-color: ${(props) => props.theme.palette.action.hover};
             }
           ` as any,
@@ -190,12 +194,12 @@ export const createTheme = (locale: Localization) => {
             }
           ` as any,
           outlined: css`
-            color: ${activeTheme.foregroundColor};
-            background-color: ${activeTheme.paperBackground};
-            border-color: ${activeTheme.paperBackground};
+            color: ${themeConfiguration.foregroundColor};
+            background-color: ${themeConfiguration.paperBackground};
+            border-color: ${themeConfiguration.paperBackground};
 
             &:hover {
-              border-color: ${activeTheme.background};
+              border-color: ${themeConfiguration.background};
               background-color: ${(props) => props.theme.palette.action.hover};
             }
           ` as any,
@@ -258,7 +262,7 @@ export const createTheme = (locale: Localization) => {
             & .${tabIndicatorSpanClassName} {
               max-height: 16px;
               height: 100%;
-              background-color: ${activeTheme.primaryColor};
+              background-color: ${themeConfiguration.primaryColor};
               border-radius: 4px;
             }
           ` as any,
@@ -280,19 +284,19 @@ export const createTheme = (locale: Localization) => {
     },
 
     palette: {
-      mode: activeTheme.mode,
+      mode: themeConfiguration.mode,
       action: {
-        hover: activeTheme.hoverBackground,
+        hover: themeConfiguration.hoverBackground,
       },
       background: {
-        default: activeTheme.background,
-        paper: activeTheme.paperBackground,
+        default: themeConfiguration.background,
+        paper: themeConfiguration.paperBackground,
       },
       primary: {
-        main: activeTheme.primaryColor,
+        main: themeConfiguration.primaryColor,
       },
       text: {
-        secondary: activeTheme.foregroundColor,
+        secondary: themeConfiguration.foregroundColor,
       },
       // divider does not only set the color of material-ui <Divider> components, but also of the border of e.g. Paper
       divider: borderColorToUse,
@@ -313,16 +317,16 @@ export const createTheme = (locale: Localization) => {
 
     processStatusColors: {
       pasteProcess: {
-        [PASTE_PROCESS_STATUS.RUNNING_DETERMINING_TOTALSIZE]: activeTheme.background,
-        [PASTE_PROCESS_STATUS.RUNNING_PERFORMING_PASTE]: activeTheme.background,
+        [PASTE_PROCESS_STATUS.RUNNING_DETERMINING_TOTALSIZE]: themeConfiguration.background,
+        [PASTE_PROCESS_STATUS.RUNNING_PERFORMING_PASTE]: themeConfiguration.background,
         [PASTE_PROCESS_STATUS.SUCCESS]: '#5B7E2F',
         [PASTE_PROCESS_STATUS.FAILURE]: '#B35C54',
-        [PASTE_PROCESS_STATUS.ABORT_REQUESTED]: activeTheme.background,
+        [PASTE_PROCESS_STATUS.ABORT_REQUESTED]: themeConfiguration.background,
         [PASTE_PROCESS_STATUS.ABORT_SUCCESS]: '#5B7E2F',
       },
       deleteProcess: {
         [DELETE_PROCESS_STATUS.PENDING_FOR_USER_INPUT]: '#A88518',
-        [DELETE_PROCESS_STATUS.RUNNING]: activeTheme.background,
+        [DELETE_PROCESS_STATUS.RUNNING]: themeConfiguration.background,
         [DELETE_PROCESS_STATUS.SUCCESS]: '#5B7E2F',
         [DELETE_PROCESS_STATUS.FAILURE]: '#B35C54',
       },
@@ -345,4 +349,10 @@ export const createTheme = (locale: Localization) => {
   };
 
   return createMuiTheme(theme, locale);
+};
+
+export const ThemeProvider: React.FC = ({ children }) => {
+  const activeTheme = useActiveTheme();
+
+  return <MuiThemeProvider theme={createTheme(enUS, activeTheme)}>{children}</MuiThemeProvider>;
 };

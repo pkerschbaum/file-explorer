@@ -13,6 +13,8 @@ import {
   ROOTCONTAINER_PADDING_RIGHT_FACTOR,
 } from '@app/ui/shell/constants';
 
+export const TITLE_BAR_GRID_AREA = 'shell-title-bar';
+
 export const TitleBar: React.FC = () => {
   return (
     <WindowDragRegion justifyContent="end">
@@ -32,7 +34,7 @@ export const TitleBar: React.FC = () => {
 };
 
 const WindowDragRegion = styled(Stack)`
-  grid-area: shell-title-bar;
+  grid-area: ${TITLE_BAR_GRID_AREA};
 
   /* revert padding on left and right side introduced by the Shell RootContainer */
   margin-left: ${(props) => props.theme.spacing(-ROOTCONTAINER_PADDING_LEFT_FACTOR)};

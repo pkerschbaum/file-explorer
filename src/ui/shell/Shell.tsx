@@ -17,15 +17,23 @@ import {
 } from '@app/ui/shell/constants';
 import { ProcessesArea } from '@app/ui/shell/ProcessesArea';
 import { TabsArea } from '@app/ui/shell/TabsArea';
-import { TitleBar } from '@app/ui/shell/TitleBar';
+import { TitleBar, TITLE_BAR_GRID_AREA } from '@app/ui/shell/TitleBar';
+import {
+  UserPreferencesButton,
+  UserPreferencesSidebar,
+  USER_PREFERENCES_BUTTON_GRID_AREA,
+  USER_PREFERENCES_SIDEBAR_GRID_AREA,
+} from '@app/ui/user-preferences';
 
 export const Shell: React.FC = () => {
+  const [userPreferencesSidebarOpen, setUserPreferencesSidebarOpen] = React.useState(false);
+
   const explorerPanels = useExplorerPanels();
 
   const explorersToShow = explorerPanels.filter((explorer) => !explorer.scheduledToRemove);
 
   return (
-    <RootContainer>
+    <RootContainer userPreferencesSidebarOpen={userPreferencesSidebarOpen}>
       {isWindows && <TitleBar />}
 
       <TabsAndProcesses
@@ -41,33 +49,51 @@ export const Shell: React.FC = () => {
       {explorersToShow.map(({ explorerId }) => (
         <ExplorerPanel key={explorerId} explorerId={explorerId} />
       ))}
+
+      <UserPreferencesButton
+        userPreferencesSidebarOpen={userPreferencesSidebarOpen}
+        setUserPreferencesSidebarOpen={setUserPreferencesSidebarOpen}
+      />
+
+      <UserPreferencesSidebar userPreferencesSidebarOpen={userPreferencesSidebarOpen} />
     </RootContainer>
   );
 };
 
-const WINDOWS_GRID_CONFIGURATION = css`
+const WINDOWS_GRID_CONFIGURATION = (userPreferencesSidebarOpen: boolean) => css`
   grid-template-rows: 28px max-content max-content 1fr max-content;
   grid-template-areas:
-    'shell-title-bar shell-title-bar'
-    'shell-tabs-and-processes ${EXPLORER_CWDBREADCRUMBS_GRID_AREA}'
-    'shell-tabs-and-processes ${EXPLORER_ACTIONSBAR_GRID_AREA}'
-    'shell-tabs-and-processes ${EXPLORER_RESOURCESTABLE_GRID_AREA}';
+    '${TITLE_BAR_GRID_AREA} ${TITLE_BAR_GRID_AREA} ${TITLE_BAR_GRID_AREA} ${userPreferencesSidebarOpen &&
+    TITLE_BAR_GRID_AREA}'
+    'shell-tabs-and-processes ${EXPLORER_CWDBREADCRUMBS_GRID_AREA} ${USER_PREFERENCES_BUTTON_GRID_AREA} ${userPreferencesSidebarOpen &&
+    USER_PREFERENCES_BUTTON_GRID_AREA}'
+    'shell-tabs-and-processes ${EXPLORER_ACTIONSBAR_GRID_AREA} ${USER_PREFERENCES_BUTTON_GRID_AREA} ${userPreferencesSidebarOpen &&
+    USER_PREFERENCES_BUTTON_GRID_AREA}'
+    'shell-tabs-and-processes ${EXPLORER_RESOURCESTABLE_GRID_AREA} ${EXPLORER_RESOURCESTABLE_GRID_AREA} ${userPreferencesSidebarOpen &&
+    USER_PREFERENCES_SIDEBAR_GRID_AREA}';
 `;
 
-const NON_WINDOWS_GRID_CONFIGURATION = css`
+const NON_WINDOWS_GRID_CONFIGURATION = (userPreferencesSidebarOpen: boolean) => css`
   grid-template-rows: max-content max-content 1fr max-content;
   grid-template-areas:
-    'shell-tabs-and-processes ${EXPLORER_CWDBREADCRUMBS_GRID_AREA}'
-    'shell-tabs-and-processes ${EXPLORER_ACTIONSBAR_GRID_AREA}'
-    'shell-tabs-and-processes ${EXPLORER_RESOURCESTABLE_GRID_AREA}';
+    'shell-tabs-and-processes ${EXPLORER_CWDBREADCRUMBS_GRID_AREA} ${USER_PREFERENCES_BUTTON_GRID_AREA} ${userPreferencesSidebarOpen &&
+    USER_PREFERENCES_BUTTON_GRID_AREA}'
+    'shell-tabs-and-processes ${EXPLORER_ACTIONSBAR_GRID_AREA} ${USER_PREFERENCES_BUTTON_GRID_AREA} ${userPreferencesSidebarOpen &&
+    USER_PREFERENCES_BUTTON_GRID_AREA}'
+    'shell-tabs-and-processes ${EXPLORER_RESOURCESTABLE_GRID_AREA} ${EXPLORER_RESOURCESTABLE_GRID_AREA} ${userPreferencesSidebarOpen &&
+    USER_PREFERENCES_SIDEBAR_GRID_AREA}';
 `;
 
-const RootContainer = styled(Box)`
+const RootContainer = styled(Box)<{ userPreferencesSidebarOpen: boolean }>`
   height: 100%;
 
   display: grid;
-  grid-template-columns: 250px 1fr;
-  ${isWindows ? WINDOWS_GRID_CONFIGURATION : NON_WINDOWS_GRID_CONFIGURATION}
+  grid-template-columns: ${({ userPreferencesSidebarOpen }) =>
+    userPreferencesSidebarOpen ? '250px 1fr max-content max-content' : '250px 1fr max-content'};
+  ${({ userPreferencesSidebarOpen }) =>
+    isWindows
+      ? WINDOWS_GRID_CONFIGURATION(userPreferencesSidebarOpen)
+      : NON_WINDOWS_GRID_CONFIGURATION(userPreferencesSidebarOpen)}
   grid-row-gap: ${(props) => props.theme.spacing(0.5)};
   grid-column-gap: ${(props) => props.theme.spacing(2)};
   padding-left: ${(props) => props.theme.spacing(ROOTCONTAINER_PADDING_LEFT_FACTOR)};

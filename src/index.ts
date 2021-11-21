@@ -1,5 +1,6 @@
 import { isWindows } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/platform';
 import { app, BrowserWindow } from 'electron';
+import Store from 'electron-store';
 
 import { config } from '@app/config';
 import { registerListeners as registerNativeFileIconListeners } from '@app/ipc/electron-main/app';
@@ -7,7 +8,8 @@ import { registerListeners as registerFileDragStartListeners } from '@app/ipc/el
 import { registerListeners as registerPersistentStoreListeners } from '@app/ipc/electron-main/persistent-store';
 import { registerListeners as registerShellListeners } from '@app/ipc/electron-main/shell';
 import { registerListeners as registerWindowListeners } from '@app/ipc/electron-main/window';
-import { ACTIVE_THEME, THEMES } from '@app/ui/theme';
+import type { StorageState } from '@app/platform/persistent-storage';
+import { AvailableTheme, defaultTheme, THEMES } from '@app/ui/ThemeProvider';
 
 const gotTheLock = app.requestSingleInstanceLock();
 
@@ -26,6 +28,10 @@ if (require('electron-squirrel-startup')) {
   app.quit();
 }
 
+const store = new Store();
+const activeTheme: AvailableTheme =
+  (store.store as StorageState).userState?.preferences.activeTheme ?? defaultTheme;
+
 const createMainWindow = (): BrowserWindow => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -36,7 +42,7 @@ const createMainWindow = (): BrowserWindow => {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
       contextIsolation: false,
     },
-    backgroundColor: THEMES[ACTIVE_THEME].background,
+    backgroundColor: THEMES[activeTheme].background,
     show: false,
     titleBarStyle: isWindows ? 'hidden' : undefined,
   });
@@ -69,7 +75,7 @@ app.on('ready', () => {
 
     registerFileDragStartListeners();
     registerNativeFileIconListeners();
-    registerPersistentStoreListeners();
+    registerPersistentStoreListeners(store);
     registerShellListeners();
     registerWindowListeners(mainWindow);
 
