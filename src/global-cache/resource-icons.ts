@@ -4,8 +4,8 @@ import * as React from 'react';
 import { useQuery, UseQueryOptions } from 'react-query';
 
 import { QUERY_KEYS } from '@app/global-cache/query-keys';
+import { loadIconClasses } from '@app/operations/file-icon-theme.operations';
 import { nativeHostRef } from '@app/operations/global-modules';
-import { loadIconClasses } from '@app/platform/file-icon-theme';
 
 export declare namespace IconClassesQuery {
   export type Args = { uri?: UriComponents; resourceKind: FileKind };

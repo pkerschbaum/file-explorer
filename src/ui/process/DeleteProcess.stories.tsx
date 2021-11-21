@@ -9,17 +9,15 @@ import { createQueryClient, Globals } from '@app/ui/Globals';
 import { Process } from '@app/ui/process/Process';
 
 import { fakeDeleteProcessBase, fakeFileStat } from '@app-test/utils/fake-data';
-import { initializeFakePlatformModules } from '@app-test/utils/fake-platform-modules';
 
-import { loadCssRulesAndAddToStyleTag } from '@app-storybook/storybook-utils';
+import { initializeStorybookPlatformModules } from '@app-storybook/storybook-utils';
 
 export default {
   title: 'Processes / Delete',
   component: Process,
   loaders: [
-    loadCssRulesAndAddToStyleTag,
     async () => {
-      await initializeFakePlatformModules();
+      await initializeStorybookPlatformModules();
       const store = await createStoreInstance();
       const queryClient = createQueryClient();
       return { store, queryClient };

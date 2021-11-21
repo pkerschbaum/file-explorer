@@ -12,6 +12,7 @@ import axios from 'axios';
 
 import { check } from '@app/base/utils/assert.util';
 import { formatter } from '@app/base/utils/formatter.util';
+import { FileIconTheme } from '@app/constants';
 
 export type LanguageExtensionPointJsonEntry = {
   packageName: string;
@@ -49,7 +50,7 @@ export async function loadCssRules({
   cssRulesPostProcessing,
 }: {
   fileIconThemeRelativePath: string;
-  fileIconThemePathFragment: string;
+  fileIconThemePathFragment: FileIconTheme['fsPathFragment'];
   cssRulesPostProcessing: (
     rawIconThemeCssRules: string,
     fileIconThemePathFragment: string,

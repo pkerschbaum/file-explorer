@@ -3,8 +3,12 @@ import * as React from 'react';
 
 import styled from 'styled-components';
 
-import { useActiveTheme } from '@app/global-state/slices/user.hooks';
-import { setActiveTheme } from '@app/operations/user-preferences.operations';
+import { AvailableFileIconTheme, FILE_ICON_THEMES } from '@app/constants';
+import { useActiveFileIconTheme, useActiveTheme } from '@app/global-state/slices/user.hooks';
+import {
+  setActiveFileIconTheme,
+  setActiveTheme,
+} from '@app/operations/user-preferences.operations';
 import { availableThemes, AvailableTheme } from '@app/ui/ThemeProvider';
 
 export const USER_PREFERENCES_SIDEBAR_GRID_AREA = 'shell-user-preferences-sidebar';
@@ -17,6 +21,7 @@ export const UserPreferencesSidebar: React.FC<UserPreferencesSidebarProps> = ({
   userPreferencesSidebarOpen,
 }) => {
   const activeTheme = useActiveTheme();
+  const activeFileIconTheme = useActiveFileIconTheme();
 
   return (
     <Container variant="outlined" userPreferencesSidebarOpen={userPreferencesSidebarOpen}>
@@ -36,6 +41,29 @@ export const UserPreferencesSidebar: React.FC<UserPreferencesSidebarProps> = ({
           {availableThemes.map((availableTheme) => (
             <ToggleButton key={availableTheme} value={availableTheme}>
               {availableTheme}
+            </ToggleButton>
+          ))}
+        </ToggleButtonGroup>
+      </PreferenceGroup>
+
+      <Divider />
+
+      <PreferenceGroup>
+        <PreferenceLabel>File Icons</PreferenceLabel>
+
+        <ToggleButtonGroup
+          color="primary"
+          value={activeFileIconTheme}
+          exclusive
+          onChange={(_1, newActiveFileIconTheme: AvailableFileIconTheme | null) => {
+            if (newActiveFileIconTheme) {
+              setActiveFileIconTheme(newActiveFileIconTheme);
+            }
+          }}
+        >
+          {Object.entries(FILE_ICON_THEMES).map(([id, availableFileIconTheme]) => (
+            <ToggleButton key={id} value={id as AvailableFileIconTheme}>
+              {availableFileIconTheme.label}
             </ToggleButton>
           ))}
         </ToggleButtonGroup>

@@ -11,17 +11,14 @@ import {
 } from '@app/ui/explorer-panel/ExplorerPanel';
 import { createQueryClient, Globals } from '@app/ui/Globals';
 
-import { initializeFakePlatformModules } from '@app-test/utils/fake-platform-modules';
-
-import { loadCssRulesAndAddToStyleTag } from '@app-storybook/storybook-utils';
+import { initializeStorybookPlatformModules } from '@app-storybook/storybook-utils';
 
 export default {
   title: 'ExplorerPanel',
   component: ExplorerPanel,
   loaders: [
-    loadCssRulesAndAddToStyleTag,
     async () => {
-      await initializeFakePlatformModules();
+      await initializeStorybookPlatformModules();
       const store = await createStoreInstance();
       const queryClient = createQueryClient();
       return { store, queryClient };

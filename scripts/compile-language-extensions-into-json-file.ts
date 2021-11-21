@@ -5,8 +5,8 @@ import { VSBuffer } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import path from 'path';
 
+import { LanguageExtensionPointJsonEntry } from '@app/operations/file-icon-theme.operations';
 import { bootstrapModule as bootstrapFileServiceModule } from '@app/platform/electron-preload/file-service';
-import { LanguageExtensionPointJsonEntry } from '@app/platform/file-icon-theme';
 
 const CODE_OSS_FILE_ICON_THEME_LANGUAGES_PATH = URI.file(
   path.resolve(

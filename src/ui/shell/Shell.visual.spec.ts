@@ -76,4 +76,21 @@ describe('Shell [visual]', () => {
 
     cy.document().matchImageSnapshot(`${getTestTitle()}_1_switched-theme`);
   });
+
+  it.only('switch file icon theme', () => {
+    const storybookIdToVisit = deriveIdFromMetadataAndExportName(
+      metadata,
+      varToString({ SimpleCase }),
+    );
+    bootstrap({ storybookIdToVisit });
+
+    cy.intercept({ url: /icons\/folder\.svg/i }).as('iconRequest');
+
+    cy.findByRole('button', { name: /Open User Preferences/i }).click();
+    cy.findByRole('button', { name: /Material Design/i }).click();
+
+    cy.wait('@iconRequest');
+
+    cy.document().matchImageSnapshot(`${getTestTitle()}_1_switched-file-icon-theme`);
+  });
 });
