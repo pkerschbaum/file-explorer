@@ -4,6 +4,11 @@ import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/ba
 
 import { check } from '@app/base/utils/assert.util';
 
+export type ResourceUIDescription = {
+  resourceName: string;
+  extension?: string;
+};
+
 export const uriHelper = {
   parseUri(scheme: string, path: string) {
     if (path === '') {
@@ -15,7 +20,7 @@ export const uriHelper = {
     return scheme === Schemas.file ? URI.file(path) : URI.parse(`${scheme}://${path}`);
   },
 
-  extractNameAndExtension(uri: UriComponents): { resourceName: string; extension?: string } {
+  extractNameAndExtension(uri: UriComponents): ResourceUIDescription {
     let resourceName = resources.basename(URI.from(uri));
     let extension: string | undefined = resources.extname(URI.from(uri));
 
