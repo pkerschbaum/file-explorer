@@ -77,7 +77,7 @@ describe('Shell [visual]', () => {
     cy.document().matchImageSnapshot(`${getTestTitle()}_1_switched-theme`);
   });
 
-  it.only('switch file icon theme', () => {
+  it('switch file icon theme', () => {
     const storybookIdToVisit = deriveIdFromMetadataAndExportName(
       metadata,
       varToString({ SimpleCase }),
@@ -92,5 +92,21 @@ describe('Shell [visual]', () => {
     cy.wait('@iconRequest');
 
     cy.document().matchImageSnapshot(`${getTestTitle()}_1_switched-file-icon-theme`);
+  });
+
+  it('the CWD should automatically update if a new folder is created', () => {
+    const storybookIdToVisit = deriveIdFromMetadataAndExportName(
+      metadata,
+      varToString({ SimpleCase }),
+    );
+    bootstrap({ storybookIdToVisit });
+
+    cy.findByRole('button', { name: /New Folder/i }).click();
+    cy.findByRole('textbox', { name: /Name of folder/i }).type('name of new folder');
+    cy.findByRole('button', { name: /Create/i }).click();
+
+    cy.findByRole('table', { name: /Table of resources/i }).matchImageSnapshot(
+      `${getTestTitle()}_1_folder-created`,
+    );
   });
 });

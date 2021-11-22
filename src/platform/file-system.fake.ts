@@ -61,6 +61,18 @@ export const createFakeFileSystem: () => Promise<PlatformFileSystem> = async () 
     uri: URI.parse(`${Schemas.inMemory}:///home/testdir/testfile3.pdf`),
     mtimeIso8601: '2021-05-08T18:59:01.456Z',
   });
+  await createFolder({
+    uri: URI.parse(
+      `${Schemas.inMemory}:///home/testdir/zz test folder/zz test folder sub directory`,
+    ),
+    mtimeIso8601: '2021-05-08T18:59:01.456Z',
+  });
+  await createFile({
+    uri: URI.parse(
+      `${Schemas.inMemory}:///home/testdir/zz test folder/zz test folder sub directory/testfile1.txt`,
+    ),
+    mtimeIso8601: '2021-05-08T18:59:01.456Z',
+  });
 
   return {
     resolve: fileService.resolve.bind(fileService),

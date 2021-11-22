@@ -9,7 +9,7 @@ import { config } from '@app/config';
 import { FILE_ICON_THEMES } from '@app/constants';
 import { useActiveFileIconTheme } from '@app/global-state/slices/user.hooks';
 import { RootStore } from '@app/global-state/store';
-import { useDirectoryWatchers } from '@app/operations/directory-watchers';
+import { useGlobalCacheSubscriptions } from '@app/operations/global-cache-subscriptions';
 import {
   queryClientRef,
   storeRef,
@@ -88,7 +88,7 @@ export const Globals: React.FC<GlobalsProps> = ({ queryClient, store, children }
     bodyElement.dataset[DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED.attrCamelCased] = 'true';
   }, []);
 
-  useDirectoryWatchers();
+  useGlobalCacheSubscriptions();
 
   return (
     <React.StrictMode>

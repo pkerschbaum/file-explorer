@@ -48,7 +48,7 @@ describe('UserPreferences [logic]', () => {
     renderApp({ queryClient, store });
 
     const vsCodeThemeId: AvailableFileIconTheme = 'vsCode';
-    const materialDesignId: AvailableFileIconTheme = 'vsCode';
+    const materialDesignId: AvailableFileIconTheme = 'materialDesign';
 
     expect(storeRef.current.getState().userSlice.preferences.activeFileIconTheme).toEqual(
       vsCodeThemeId,

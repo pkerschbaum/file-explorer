@@ -18,12 +18,12 @@ export const ResourcesTable: React.FC = () => {
   const dataAvailable = useDataAvailable();
 
   return (
-    <StyledDataTable>
+    <StyledDataTable labels={{ table: 'Table of resources' }}>
       <StyledTableHead>
         <Row>
           <StyledHeadCell>Name</StyledHeadCell>
-          <StyledHeadCell>Size</StyledHeadCell>
-          <StyledHeadCell>Last Modified</StyledHeadCell>
+          <SizeHeadCell>Size</SizeHeadCell>
+          <MtimeHeadCell>Last Modified</MtimeHeadCell>
         </Row>
       </StyledTableHead>
 
@@ -49,6 +49,14 @@ const StyledTableHead = styled(TableHead)`
 const StyledHeadCell = styled(HeadCell)`
   font-size: ${({ theme }) => theme.font.sizes.sm};
   font-weight: ${({ theme }) => theme.font.weights.bold};
+`;
+
+const SizeHeadCell = styled(StyledHeadCell)`
+  min-width: 90px;
+`;
+
+const MtimeHeadCell = styled(StyledHeadCell)`
+  min-width: 150px;
 `;
 
 const ForwardClassNameTable: React.FC<DataTableProps & { className?: string }> = ({
@@ -78,8 +86,8 @@ const SkeletonRow: React.FC<SkeletonRowProps> = ({ opacity }) => (
     <ResourceRowContent
       iconSlot={<IconWrapper />}
       resourceNameSlot={<Skeleton variant="text" width={160} />}
-      sizeSlot={<Skeleton variant="text" width={40} />}
-      mtimeSlot={<Skeleton variant="text" width={40} />}
+      sizeSlot={<Skeleton variant="text" width={50} />}
+      mtimeSlot={<Skeleton variant="text" width={110} />}
     />
   </Row>
 );

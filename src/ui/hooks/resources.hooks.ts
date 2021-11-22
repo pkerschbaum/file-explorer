@@ -1,21 +1,14 @@
-import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { FileKind } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 import * as React from 'react';
 
 import { createLogger } from '@app/base/logger/logger';
-import { formatter } from '@app/base/utils/formatter.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { config } from '@app/config';
 import { Resource, ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
 import { useResourceIconClasses } from '@app/global-cache/resource-icons';
-import {
-  useResources,
-  getCachedResourcesOfDirectory,
-  setCachedResourcesOfDirectory,
-} from '@app/global-cache/resources';
+import { useResources } from '@app/global-cache/resources';
 import { useCwd } from '@app/global-state/slices/explorers.hooks';
-import { fileSystemRef } from '@app/operations/global-modules';
-import { fetchResources } from '@app/platform/file-system';
 
 const logger = createLogger('resources.hooks');
 
@@ -30,80 +23,13 @@ type ResourcesLoadingResult =
     };
 export const useResourcesForUI = (explorerId: string): ResourcesLoadingResult => {
   const cwd = useCwd(explorerId);
-  const { data: resourcesQueryWithMetadataData, isFetching: resourcesQueryWithMetadataIsFetching } =
-    useResources({ directory: cwd, resolveMetadata: true });
+  const { data: resourcesQueryWithMetadataData } = useResources({
+    directory: cwd,
+    resolveMetadata: true,
+  });
   const { data: filesQueryWithoutMetadataData } = useResources(
     { directory: cwd, resolveMetadata: false },
     { enabled: resourcesQueryWithMetadataData === undefined },
-  );
-
-  React.useEffect(
-    function preloadChildrenOfParentAndAllSubDirectories() {
-      if (resourcesQueryWithMetadataData === undefined || resourcesQueryWithMetadataIsFetching) {
-        return;
-      }
-
-      const doPreloadContents = async () => {
-        const parentDirectoryUri = URI.joinPath(URI.from(cwd), '..');
-        const subDirectoriesUris = resourcesQueryWithMetadataData
-          .filter((resource) => resource.resourceType === RESOURCE_TYPE.DIRECTORY)
-          .map((resource) => resource.uri);
-        const allDirectoriesUris = [parentDirectoryUri, ...subDirectoriesUris];
-
-        await Promise.all(
-          allDirectoriesUris
-            .filter((uri) => {
-              const cachedQueryData = getCachedResourcesOfDirectory({ directory: uri });
-              if (cachedQueryData) {
-                logger.debug(
-                  `some data is already cached --> skip preloading of children of directory`,
-                  { directory: formatter.resourcePath(uri) },
-                );
-                return false;
-              }
-              return true;
-            })
-            .map(async (uri) => {
-              logger.debug(`start preloading of children of directory`, {
-                directory: formatter.resourcePath(uri),
-              });
-
-              const fetchArgs = {
-                directory: uri,
-                resolveMetadata: false,
-              };
-              const contents = await fetchResources(fileSystemRef.current, fetchArgs);
-
-              const cachedQueryData = getCachedResourcesOfDirectory(fetchArgs);
-              if (cachedQueryData) {
-                // in the meantime, some data for this query got loaded --> don't alter that data
-                return;
-              }
-
-              setCachedResourcesOfDirectory(fetchArgs, contents);
-            }),
-        );
-      };
-
-      let preloadingIsNotNeccessaryAnymore = false;
-      requestIdleCallback(() => {
-        if (preloadingIsNotNeccessaryAnymore) {
-          logger.debug(`skipped preloading children of parent and sub directories`, {
-            uriContentsGetPreloadedFor: formatter.resourcePath(cwd),
-          });
-        }
-
-        logger.debug(`preloading children of parent and sub directorie...`, {
-          uriContentsGetPreloadedFor: formatter.resourcePath(cwd),
-        });
-        void doPreloadContents();
-      });
-
-      return () => {
-        preloadingIsNotNeccessaryAnymore = true;
-      };
-    },
-    [resourcesQueryWithMetadataData, resourcesQueryWithMetadataIsFetching, cwd],
   );
 
   let dataAvailable: boolean;

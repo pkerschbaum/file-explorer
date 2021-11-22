@@ -1,15 +1,14 @@
-import { Paper, Table, TableContainer } from '@mui/material';
+import { Box, Paper, Table, TableContainer } from '@mui/material';
 import * as React from 'react';
 import styled from 'styled-components';
 
 import { commonStyles } from '@app/ui/Common.styles';
 import { EmptyRow } from '@app/ui/elements/DataTable/EmptyRow';
 import { TableBody } from '@app/ui/elements/DataTable/TableBody';
-import { Stack } from '@app/ui/layouts/Stack';
 
 export type DataTableProps = {
   renderNoDataPresentMessage?: boolean;
-  labels?: { container?: string };
+  labels?: { container?: string; table?: string };
   classes?: { tableContainer?: string; table?: string };
   applyIntrinsicHeight?: boolean;
 
@@ -28,7 +27,7 @@ export const DataTable: React.FC<DataTableProps> = (props) => {
   } = props;
 
   return (
-    <DataTableWrapper aria-label={labels?.container} direction="column" spacing={0}>
+    <DataTableWrapper aria-label={labels?.container}>
       <StyledTableContainer
         className={classesFromProps?.tableContainer}
         sx={{ flexBasis: !applyIntrinsicHeight ? 0 : 'auto' }}
@@ -36,6 +35,7 @@ export const DataTable: React.FC<DataTableProps> = (props) => {
         variant="outlined"
       >
         <Table
+          aria-label={labels?.table}
           className={classesFromProps?.table}
           stickyHeader
           size="small"
@@ -54,11 +54,15 @@ export const DataTable: React.FC<DataTableProps> = (props) => {
   );
 };
 
-const DataTableWrapper = styled(Stack)`
+const DataTableWrapper = styled(Box)`
   height: 100%;
   max-height: 100%;
   min-height: 0;
   overflow-x: auto;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const StyledTableContainer: typeof TableContainer = styled(TableContainer)`
