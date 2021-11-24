@@ -1,30 +1,26 @@
-export const KEYS = {
-  C: 'c',
-  R: 'r',
-  X: 'x',
-  V: 'v',
-  ARROW_UP: 'ArrowUp',
-  ARROW_RIGHT: 'ArrowRight',
-  ARROW_DOWN: 'ArrowDown',
-  ARROW_LEFT: 'ArrowLeft',
-  PAGE_UP: 'PageUp',
-  PAGE_DOWN: 'PageDown',
-  DELETE: 'Delete',
-  ENTER: 'Enter',
-  SHIFT: 'Shift',
-  ESC: 'Escape',
-  TAB: 'Tab',
-  A: 'a',
-  T: 't',
-  F2: 'F2',
-} as const;
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export type KEYS = typeof KEYS;
+export enum KEY {
+  A = 'a',
+  C = 'c',
+  N = 'n',
+  R = 'r',
+  T = 't',
+  X = 'x',
+  V = 'v',
+  ARROW_UP = 'ArrowUp',
+  ARROW_RIGHT = 'ArrowRight',
+  ARROW_DOWN = 'ArrowDown',
+  ARROW_LEFT = 'ArrowLeft',
+  PAGE_UP = 'PageUp',
+  PAGE_DOWN = 'PageDown',
+  DELETE = 'Delete',
+  ENTER = 'Enter',
+  ESC = 'Escape',
+  TAB = 'Tab',
+  ALT = 'Alt',
+}
 
 // https://javascript.info/mouse-events-basics#mouse-button
-export const MOUSE_BUTTONS = {
-  BACK: 3,
-  FORWARD: 4,
-} as const;
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export type MOUSE_BUTTONS = typeof MOUSE_BUTTONS;
+export enum MOUSE_BUTTONS {
+  BACK = 3,
+  FORWARD = 4,
+}

@@ -1,10 +1,9 @@
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
-import { Tabs, Tab, Button, IconButton, Tooltip } from '@mui/material';
+import { Tabs, Tab, IconButton, Tooltip } from '@mui/material';
 import * as React from 'react';
 import styled from 'styled-components';
 
-import { objects } from '@app/base/utils/objects.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import {
   ExplorerPanelEntry,
@@ -15,7 +14,8 @@ import {
   changeFocusedExplorer,
   removeExplorerPanel,
 } from '@app/operations/app.operations';
-import { KEYS } from '@app/ui/constants';
+import { KEY } from '@app/ui/constants';
+import { ActionButton, ActionButtonRef } from '@app/ui/elements/ActionButton';
 import { useRegisterGlobalShortcuts } from '@app/ui/GlobalShortcutsContext';
 import { Stack } from '@app/ui/layouts/Stack';
 import { tabIndicatorSpanClassName } from '@app/ui/ThemeProvider';
@@ -25,47 +25,59 @@ type TabsAreaProps = { explorersToShow: ExplorerPanelEntry[] };
 export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
   const idOfFocusedExplorerPanel = useIdOfFocusedExplorerPanel();
 
+  const addTabButtonRef = React.useRef<ActionButtonRef>(null);
+  const prevTabButtonRef = React.useRef<ActionButtonRef>(null);
+  const nextTabButtonRef = React.useRef<ActionButtonRef>(null);
+
   const focusedExplorer = explorersToShow.find(
     (explorer) => explorer.explorerId === idOfFocusedExplorerPanel,
   );
-
-  function switchFocusedExplorerPanel(direction: 'UP' | 'DOWN') {
-    const focusedExplorerIdx = explorersToShow.findIndex(
-      (explorer) => explorer.explorerId === idOfFocusedExplorerPanel,
-    );
-
-    if (
-      focusedExplorerIdx === -1 ||
-      (direction === 'UP' && focusedExplorerIdx === 0) ||
-      (direction === 'DOWN' && focusedExplorerIdx === explorersToShow.length - 1)
-    ) {
-      return;
-    }
-
-    const explorerIdxToSwitchTo =
-      direction === 'UP' ? focusedExplorerIdx - 1 : focusedExplorerIdx + 1;
-
-    changeFocusedExplorer(explorersToShow[explorerIdxToSwitchTo].explorerId);
-  }
+  const focusedExplorerIdx = explorersToShow.findIndex(
+    (explorer) => explorer.explorerId === idOfFocusedExplorerPanel,
+  );
+  const explorerIdxPrevious = focusedExplorerIdx === 0 ? undefined : focusedExplorerIdx - 1;
+  const explorerIdxNext =
+    focusedExplorerIdx === explorersToShow.length - 1 ? undefined : focusedExplorerIdx + 1;
 
   async function duplicateFocusedExplorerPanel() {
     await addExplorerPanel(focusedExplorer?.cwd);
   }
 
-  useRegisterGlobalShortcuts([
-    {
-      condition: (e) => e.ctrlKey && e.key === KEYS.PAGE_UP,
-      handler: () => switchFocusedExplorerPanel('UP'),
+  const registerShortcutsResult = useRegisterGlobalShortcuts({
+    changeToPrevTabShortcut: {
+      keybindings: [
+        {
+          key: KEY.ARROW_UP,
+          modifiers: {
+            alt: 'SET',
+          },
+        },
+      ],
+      handler: () => prevTabButtonRef.current?.triggerSyntheticClick(),
     },
-    {
-      condition: (e) => e.ctrlKey && e.key === KEYS.PAGE_DOWN,
-      handler: () => switchFocusedExplorerPanel('DOWN'),
+    changeToNextTabShortcut: {
+      keybindings: [
+        {
+          key: KEY.ARROW_DOWN,
+          modifiers: {
+            alt: 'SET',
+          },
+        },
+      ],
+      handler: () => nextTabButtonRef.current?.triggerSyntheticClick(),
     },
-    {
-      condition: (e) => e.ctrlKey && e.key === KEYS.T,
+    addNewTabShortcut: {
+      keybindings: [
+        {
+          key: KEY.T,
+          modifiers: {
+            alt: 'SET',
+          },
+        },
+      ],
       handler: duplicateFocusedExplorerPanel,
     },
-  ]);
+  });
 
   const removeExplorerActionDisabled = explorersToShow.length < 2;
 
@@ -77,39 +89,68 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
         onChange={(_, newValue: string) => changeFocusedExplorer(newValue)}
         TabIndicatorProps={{ children: <span className={tabIndicatorSpanClassName} /> }}
       >
-        {explorersToShow.map((explorer) => (
-          <Tab
-            key={explorer.explorerId}
-            component="div"
-            disableRipple
-            label={
-              <ExplorerPanelTab
-                label={uriHelper.extractNameAndExtension(explorer.cwd).resourceName}
-                removeExplorerActionDisabled={removeExplorerActionDisabled}
-                onRemove={() => removeExplorerPanel(explorer.explorerId)}
-              />
-            }
-            value={explorer.explorerId}
-          />
-        ))}
+        {explorersToShow.map((explorer, explorerIdx) => {
+          const isPrevExplorer = explorerIdx === explorerIdxPrevious;
+          const isNextExplorer = explorerIdx === explorerIdxNext;
+
+          return (
+            <Tab
+              key={explorer.explorerId}
+              component="div"
+              disableRipple
+              label={
+                <ExplorerPanelTab
+                  label={uriHelper.extractNameAndExtension(explorer.cwd).resourceName}
+                  buttonRef={
+                    isPrevExplorer
+                      ? prevTabButtonRef
+                      : isNextExplorer
+                      ? nextTabButtonRef
+                      : undefined
+                  }
+                  buttonEndIcon={
+                    isPrevExplorer
+                      ? registerShortcutsResult.changeToPrevTabShortcut.icon
+                      : isNextExplorer
+                      ? registerShortcutsResult.changeToNextTabShortcut.icon
+                      : undefined
+                  }
+                  onRemove={() => removeExplorerPanel(explorer.explorerId)}
+                  removeExplorerActionDisabled={removeExplorerActionDisabled}
+                />
+              }
+              value={explorer.explorerId}
+            />
+          );
+        })}
       </Tabs>
-      <Button onClick={duplicateFocusedExplorerPanel} startIcon={<AddCircleOutlineOutlinedIcon />}>
+      <ActionButton
+        ref={addTabButtonRef}
+        onClick={duplicateFocusedExplorerPanel}
+        StartIconComponent={AddCircleOutlineOutlinedIcon}
+        endIcon={registerShortcutsResult.addNewTabShortcut.icon}
+      >
         Add tab
-      </Button>
+      </ActionButton>
     </Stack>
   );
 };
 
 type ExplorerPanelTabProps = {
   label: string;
-  removeExplorerActionDisabled: boolean;
+  buttonRef?: React.Ref<ActionButtonRef>;
+  buttonEndIcon?: React.ReactNode;
   onRemove: () => void;
+  removeExplorerActionDisabled: boolean;
 };
 
-const ExplorerPanelTab = React.memo<ExplorerPanelTabProps>(function ExplorerPanelTab(props) {
+const ExplorerPanelTab: React.FC<ExplorerPanelTabProps> = (props) => {
   return (
     <>
-      <Button
+      <ActionButton
+        ref={props.buttonRef}
+        endIcon={props.buttonEndIcon}
+        disableLayoutAnimation
         sx={{
           width: '100%',
           justifyContent: 'start',
@@ -119,7 +160,7 @@ const ExplorerPanelTab = React.memo<ExplorerPanelTabProps>(function ExplorerPane
         }}
       >
         {props.label}
-      </Button>
+      </ActionButton>
       {!props.removeExplorerActionDisabled && (
         <Tooltip title="Close tab">
           <TabCloseButton>
@@ -138,7 +179,7 @@ const ExplorerPanelTab = React.memo<ExplorerPanelTabProps>(function ExplorerPane
       )}
     </>
   );
-}, objects.shallowIsEqualIgnoreFunctions);
+};
 
 const TabCloseButton = styled.span`
   position: absolute;

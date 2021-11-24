@@ -10,7 +10,7 @@ import { useNativeIconDataURL } from '@app/global-cache/resource-icons';
 import { changeDirectory } from '@app/operations/explorer.operations';
 import { nativeHostRef } from '@app/operations/global-modules';
 import { openFiles, removeTagsFromResources } from '@app/operations/resource.operations';
-import { KEYS } from '@app/ui/constants';
+import { KEY } from '@app/ui/constants';
 import { Cell } from '@app/ui/elements/DataTable/Cell';
 import { Row } from '@app/ui/elements/DataTable/Row';
 import { TextField } from '@app/ui/elements/TextField';
@@ -236,7 +236,7 @@ const RenameInput: React.FC<RenameInputProps> = ({ resource, onSubmit, abortRena
         value={value}
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={(e) => {
-          if (e.key === KEYS.ESC) {
+          if (e.key === KEY.ESC) {
             abortRename();
           }
         }}

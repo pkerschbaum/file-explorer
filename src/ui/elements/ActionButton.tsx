@@ -1,0 +1,95 @@
+import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
+import { Button, ButtonProps, useMediaQuery } from '@mui/material';
+// @ts-expect-error -- we have to import from /node here because jest would otherwise import the ESM module (which Jest cannot handle)
+import TouchRipple from '@mui/material/node/ButtonBase/TouchRipple';
+import { motion } from 'framer-motion';
+import * as React from 'react';
+import styled from 'styled-components';
+import invariant from 'tiny-invariant';
+
+type ActionButtonProps = ButtonProps<
+  typeof motion.button,
+  {
+    StartIconComponent?: typeof ContentCopyOutlinedIcon;
+    disableLayoutAnimation?: boolean;
+  }
+>;
+
+export type ActionButtonRef = {
+  triggerSyntheticClick: () => void;
+};
+
+type TouchRippleRef = {
+  start: (e: MouseEvent) => void;
+  stop: (e: MouseEvent) => void;
+};
+
+export const ActionButton = React.forwardRef<ActionButtonRef, ActionButtonProps>(
+  function ActionButtonWithRef(
+    { children, StartIconComponent, endIcon, onClick, disableLayoutAnimation, ...delegated },
+    ref,
+  ) {
+    const buttonRef = React.useRef<HTMLButtonElement>(null);
+    const touchRippleRef = React.useRef<TouchRippleRef>(null);
+
+    const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+
+    React.useImperativeHandle(
+      ref,
+      () => ({
+        triggerSyntheticClick: () => {
+          invariant(buttonRef.current);
+          const clickEvent = new MouseEvent('click', {
+            bubbles: true,
+            cancelable: true,
+            view: window,
+          });
+          buttonRef.current.dispatchEvent(clickEvent);
+
+          touchRippleRef.current?.start(clickEvent);
+          setTimeout(() => {
+            touchRippleRef.current?.stop(clickEvent);
+          }, 200);
+        },
+      }),
+      [],
+    );
+
+    disableLayoutAnimation = prefersReducedMotion || disableLayoutAnimation;
+
+    return (
+      <Button
+        ref={buttonRef}
+        component={motion.button}
+        layout={!disableLayoutAnimation}
+        startIcon={
+          StartIconComponent && (
+            <motion.span style={{ display: 'flex' }} layout={!disableLayoutAnimation}>
+              <StartIconComponent
+                sx={{ fontSize: 'inherit' }}
+                component={motion.svg}
+                layout={!disableLayoutAnimation}
+              />
+            </motion.span>
+          )
+        }
+        endIcon={
+          <motion.span style={{ display: 'flex' }} layout={!disableLayoutAnimation}>
+            {endIcon}
+          </motion.span>
+        }
+        onClick={onClick}
+        {...delegated}
+      >
+        <TouchRipple ref={touchRippleRef} center={false} />
+        <ActionButtonContent layout={!disableLayoutAnimation}>{children}</ActionButtonContent>
+      </Button>
+    );
+  },
+);
+
+const ActionButtonContent = styled(motion.span)`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing()};
+`;

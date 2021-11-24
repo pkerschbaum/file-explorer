@@ -1,4 +1,3 @@
-import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { CombinedState, configureStore, PreloadedState } from '@reduxjs/toolkit';
 import { NoInfer } from '@reduxjs/toolkit/dist/tsHelpers';
 import { createSelectorHook, useDispatch as useReduxDispatch } from 'react-redux';
@@ -41,7 +40,7 @@ export async function createStoreInstance(creationParams?: {
 
   if (Object.keys(explorerPanels).length < 1) {
     logger.debug(`no explorer present --> add default explorer panel`);
-    const cwdOfNewExplorer = URI.from(await getDefaultExplorerCwd());
+    const cwdOfNewExplorer = await getDefaultExplorerCwd();
     const explorerId = generateExplorerId();
     explorerPanels[explorerId] = { cwd: cwdOfNewExplorer };
   }

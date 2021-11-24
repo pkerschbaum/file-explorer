@@ -5,7 +5,7 @@ import { uriHelper } from '@app/base/utils/uri-helper';
 import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
 import { changeDirectory, createFolder, pasteResources } from '@app/operations/explorer.operations';
 import * as resourceOperations from '@app/operations/resource.operations';
-import { KEYS } from '@app/ui/constants';
+import { KEY } from '@app/ui/constants';
 import {
   useExplorerId,
   useIsActiveExplorer,
@@ -15,7 +15,11 @@ import {
   useSetKeyOfResourceToRename,
   useSetKeysOfSelectedResources,
 } from '@app/ui/explorer-context';
-import { Shortcut, useRegisterGlobalShortcuts } from '@app/ui/GlobalShortcutsContext';
+import {
+  ShortcutMap,
+  useRegisterGlobalShortcuts,
+  RegisterShortcutsResultMap,
+} from '@app/ui/GlobalShortcutsContext';
 import { createSelectableContext, EventHandler, useWindowEvent } from '@app/ui/utils/react.util';
 
 type ExplorerOperationsContext = {
@@ -111,7 +115,7 @@ export const ExplorerOperationsContextProvider: React.FC<ExplorerOperationsConte
           return;
         }
 
-        if (e.key === KEYS.ARROW_UP || e.key === KEYS.ARROW_DOWN) {
+        if (e.key === KEY.ARROW_UP || e.key === KEY.ARROW_DOWN) {
           const keysOfSelectedShownResources = selectedShownResources.map((resource) => [
             resource.key,
           ]);
@@ -143,7 +147,7 @@ export const ExplorerOperationsContextProvider: React.FC<ExplorerOperationsConte
             resourceSelectionGotStartedWith_idx === firstSelectedResource_idx;
 
           if (!e.shiftKey) {
-            if (e.key === KEYS.ARROW_UP && resourceSelectionGotStartedWith_idx > 0) {
+            if (e.key === KEY.ARROW_UP && resourceSelectionGotStartedWith_idx > 0) {
               /*
                * UP without shift key is pressed
                * --> select the resource above the resource which got selected first (if resource above exists)
@@ -152,7 +156,7 @@ export const ExplorerOperationsContextProvider: React.FC<ExplorerOperationsConte
                 [resourcesToShow[resourceSelectionGotStartedWith_idx - 1].key],
               ]);
             } else if (
-              e.key === KEYS.ARROW_DOWN &&
+              e.key === KEY.ARROW_DOWN &&
               resourcesToShow.length > resourceSelectionGotStartedWith_idx + 1
             ) {
               /*
@@ -164,7 +168,7 @@ export const ExplorerOperationsContextProvider: React.FC<ExplorerOperationsConte
               ]);
             }
           } else {
-            if (e.key === KEYS.ARROW_UP) {
+            if (e.key === KEY.ARROW_UP) {
               if (selectedResourcesMetas.length > 1 && selectionWasStartedDownwards) {
                 /*
                  * SHIFT+UP is pressed, multiple resources are selected, and the selection was started downwards.
@@ -188,7 +192,7 @@ export const ExplorerOperationsContextProvider: React.FC<ExplorerOperationsConte
                   ...keysOfSelectedShownResources,
                 ]);
               }
-            } else if (e.key === KEYS.ARROW_DOWN) {
+            } else if (e.key === KEY.ARROW_DOWN) {
               if (selectedResourcesMetas.length > 1 && !selectionWasStartedDownwards) {
                 /*
                  * SHIFT+DOWN is pressed, multiple resources are selected, and the selection was started upwards.
@@ -211,11 +215,11 @@ export const ExplorerOperationsContextProvider: React.FC<ExplorerOperationsConte
               }
             }
           }
-        } else if (e.key === KEYS.PAGE_UP) {
+        } else if (e.key === KEY.PAGE_UP) {
           setKeysOfSelectedResources([[resourcesToShow[0].key]]);
-        } else if (e.key === KEYS.PAGE_DOWN) {
+        } else if (e.key === KEY.PAGE_DOWN) {
           setKeysOfSelectedResources([[resourcesToShow[resourcesToShow.length - 1].key]]);
-        } else if (e.key === KEYS.A) {
+        } else if (e.key === KEY.A) {
           setKeysOfSelectedResources(resourcesToShow.map((resource) => [resource.key]));
         } else {
           throw new Error(`key not implemented. e.key=${e.key}`);
@@ -374,9 +378,11 @@ export function useChangeSelectionByClick() {
   return useExplorerOperationsSelector((actions) => actions.changeSelectionByClick);
 }
 
-export function useRegisterExplorerShortcuts(shortcuts: Shortcut[]) {
+export function useRegisterExplorerShortcuts<ActualShortcutMap extends ShortcutMap>(
+  shortcutMap: ActualShortcutMap,
+): Partial<RegisterShortcutsResultMap<ActualShortcutMap>> {
   const isActiveExplorer = useIsActiveExplorer();
-  useRegisterGlobalShortcuts(!isActiveExplorer ? [] : shortcuts);
+  return useRegisterGlobalShortcuts(!isActiveExplorer ? {} : shortcutMap);
 }
 
 export function useRegisterExplorerAuxclickHandler(eventHandlers: EventHandler<'auxclick'>[]) {

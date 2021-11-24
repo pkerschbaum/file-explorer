@@ -3,14 +3,21 @@ import { Button, Popover } from '@mui/material';
 import * as React from 'react';
 
 import { check } from '@app/base/utils/assert.util';
+import { ActionButton, ActionButtonRef } from '@app/ui/elements/ActionButton';
 import { TextField } from '@app/ui/elements/TextField';
 import { Stack } from '@app/ui/layouts/Stack';
 
 type CreateFolderProps = {
+  actionButtonRef?: React.Ref<ActionButtonRef>;
+  actionButtonEndIcon?: React.ReactNode;
   onSubmit: (folderName: string) => void | Promise<void>;
 };
 
-export const CreateFolder: React.FC<CreateFolderProps> = ({ onSubmit }) => {
+export const CreateFolder: React.FC<CreateFolderProps> = ({
+  actionButtonRef,
+  actionButtonEndIcon,
+  onSubmit,
+}) => {
   const [createFolderValue, setCreateFolderValue] = React.useState('');
   const [createFolderAnchorEl, setCreateFolderAnchorEl] = React.useState<HTMLButtonElement | null>(
     null,
@@ -36,12 +43,14 @@ export const CreateFolder: React.FC<CreateFolderProps> = ({ onSubmit }) => {
 
   return (
     <>
-      <Button
+      <ActionButton
+        ref={actionButtonRef}
         onClick={(e) => setCreateFolderAnchorEl(e.currentTarget)}
-        startIcon={<CreateNewFolderOutlinedIcon />}
+        StartIconComponent={CreateNewFolderOutlinedIcon}
+        endIcon={actionButtonEndIcon}
       >
         New Folder
-      </Button>
+      </ActionButton>
 
       <Popover
         open={createFolderAnchorEl !== null}

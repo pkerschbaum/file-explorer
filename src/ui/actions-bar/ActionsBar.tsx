@@ -4,9 +4,10 @@ import ContentPasteOutlinedIcon from '@mui/icons-material/ContentPasteOutlined';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import LaunchOutlinedIcon from '@mui/icons-material/LaunchOutlined';
-import { Box, Button, Divider, Tooltip } from '@mui/material';
+import { Box, Divider, Tooltip } from '@mui/material';
 import * as React from 'react';
 import styled from 'styled-components';
+import invariant from 'tiny-invariant';
 
 import { formatter } from '@app/base/utils/formatter.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
@@ -18,7 +19,8 @@ import { addTagsToResources } from '@app/operations/resource.operations';
 import { addTag, removeTags } from '@app/operations/tag.operations';
 import { AddTag } from '@app/ui/actions-bar/AddTag';
 import { CreateFolder } from '@app/ui/actions-bar/CreateFolder';
-import { KEYS } from '@app/ui/constants';
+import { KEY } from '@app/ui/constants';
+import { ActionButton, ActionButtonRef } from '@app/ui/elements/ActionButton';
 import { TextField } from '@app/ui/elements/TextField';
 import {
   useFilterInput,
@@ -44,43 +46,156 @@ export const ActionsBar: React.FC = () => {
 
   const selectedShownResources = useSelectedShownResources();
 
+  const openSelectedResources = useOpenSelectedResources();
   const copySelectedResources = useCopySelectedResources();
   const cutSelectedResources = useCutSelectedResources();
   const pasteResourcesIntoExplorer = usePasteResourcesIntoExplorer();
   const triggerRenameForSelectedResources = useTriggerRenameForSelectedResources();
-  const changeSelectionByKeyboard = useChangeSelectionByKeyboard();
-  const openSelectedResources = useOpenSelectedResources();
   const scheduleDeleteSelectedResources = useScheduleDeleteSelectedResources();
   const createFolderInExplorer = useCreateFolderInExplorer();
+  const changeSelectionByKeyboard = useChangeSelectionByKeyboard();
+
+  const openButtonRef = React.useRef<ActionButtonRef>(null);
+  const copyButtonRef = React.useRef<ActionButtonRef>(null);
+  const cutButtonRef = React.useRef<ActionButtonRef>(null);
+  const pasteButtonRef = React.useRef<ActionButtonRef>(null);
+  const triggerRenameButtonRef = React.useRef<ActionButtonRef>(null);
+  const scheduleDeleteButtonRef = React.useRef<ActionButtonRef>(null);
+  const triggerCreateNewFolderButtonRef = React.useRef<ActionButtonRef>(null);
 
   const filterInputRef = React.useRef<HTMLDivElement>(null);
 
-  useRegisterExplorerShortcuts([
-    { condition: (e) => e.ctrlKey && e.key === KEYS.C, handler: copySelectedResources },
-    { condition: (e) => e.ctrlKey && e.key === KEYS.X, handler: cutSelectedResources },
-    { condition: (e) => e.ctrlKey && e.key === KEYS.V, handler: pasteResourcesIntoExplorer },
-    {
-      condition: (e) => e.key === KEYS.F2 || (e.altKey && e.key === KEYS.R),
-      handler: triggerRenameForSelectedResources,
+  const registerShortcutsResult = useRegisterExplorerShortcuts({
+    openShortcut: {
+      keybindings: [
+        {
+          key: KEY.ENTER,
+        },
+      ],
+      handler: () => {
+        invariant(openButtonRef.current);
+        openButtonRef.current.triggerSyntheticClick();
+      },
     },
-    {
-      condition: (e) =>
-        e.key === KEYS.ARROW_UP ||
-        e.key === KEYS.ARROW_DOWN ||
-        (e.ctrlKey && e.key === KEYS.A) ||
-        (!e.ctrlKey && e.key === KEYS.PAGE_UP) ||
-        (!e.ctrlKey && e.key === KEYS.PAGE_DOWN),
+    copyShortcut: {
+      keybindings: [
+        {
+          key: KEY.C,
+          modifiers: {
+            ctrl: 'SET',
+          },
+        },
+      ],
+      handler: () => {
+        invariant(copyButtonRef.current);
+        copyButtonRef.current.triggerSyntheticClick();
+      },
+    },
+    cutShortcut: {
+      keybindings: [
+        {
+          key: KEY.X,
+          modifiers: {
+            ctrl: 'SET',
+          },
+        },
+      ],
+      handler: () => {
+        invariant(cutButtonRef.current);
+        cutButtonRef.current.triggerSyntheticClick();
+      },
+    },
+    pasteShortcut: {
+      keybindings: [
+        {
+          key: KEY.V,
+          modifiers: {
+            ctrl: 'SET',
+          },
+        },
+      ],
+      handler: () => {
+        invariant(pasteButtonRef.current);
+        pasteButtonRef.current.triggerSyntheticClick();
+      },
+    },
+    triggerRenameShortcut: {
+      keybindings: [
+        {
+          key: KEY.R,
+          modifiers: {
+            ctrl: 'SET',
+          },
+        },
+      ],
+      handler: (e) => {
+        invariant(triggerRenameButtonRef.current);
+        triggerRenameButtonRef.current.triggerSyntheticClick();
+        // avoid reload of window (default browser action for CTRL+R)
+        e.preventDefault();
+      },
+    },
+    scheduleDeleteShortcut: {
+      keybindings: [
+        {
+          key: KEY.DELETE,
+        },
+      ],
+      handler: () => {
+        invariant(scheduleDeleteButtonRef.current);
+        scheduleDeleteButtonRef.current.triggerSyntheticClick();
+      },
+    },
+    triggerCreateNewFolderShortcut: {
+      keybindings: [
+        {
+          key: KEY.N,
+          modifiers: {
+            ctrl: 'SET',
+          },
+        },
+      ],
+      handler: () => {
+        invariant(triggerCreateNewFolderButtonRef.current);
+        triggerCreateNewFolderButtonRef.current.triggerSyntheticClick();
+      },
+    },
+    changeSelectionByKeyboardShortcut: {
+      keybindings: [
+        {
+          key: KEY.ARROW_UP,
+        },
+        {
+          key: KEY.ARROW_DOWN,
+        },
+        {
+          key: KEY.A,
+          modifiers: {
+            ctrl: 'SET',
+          },
+        },
+        {
+          key: KEY.PAGE_UP,
+          modifiers: {
+            ctrl: 'NOT_SET',
+          },
+        },
+        {
+          key: KEY.PAGE_DOWN,
+          modifiers: {
+            ctrl: 'NOT_SET',
+          },
+        },
+      ],
       handler: (e) => changeSelectionByKeyboard(e),
     },
-    { condition: (e) => e.key === KEYS.ENTER, handler: openSelectedResources },
-    { condition: (e) => e.key === KEYS.DELETE, handler: scheduleDeleteSelectedResources },
-    {
+    focusFilterInputShortcut: {
       condition: (e) =>
         !e.altKey &&
         !e.ctrlKey &&
         !e.shiftKey &&
-        e.key !== KEYS.TAB &&
-        e.key !== KEYS.ESC &&
+        e.key !== KEY.TAB &&
+        e.key !== KEY.ESC &&
         filterInputRef.current !== null,
       handler: () => {
         if (filterInputRef.current !== null) {
@@ -88,7 +203,7 @@ export const ActionsBar: React.FC = () => {
         }
       },
     },
-  ]);
+  });
 
   const singleResourceActionsDisabled = selectedShownResources.length !== 1;
   const multipleResourcesActionsDisabled = selectedShownResources.length < 1;
@@ -105,51 +220,67 @@ export const ActionsBar: React.FC = () => {
       <Divider orientation="vertical" flexItem />
 
       <Stack wrap>
-        <Button
+        <ActionButton
+          ref={openButtonRef}
           onClick={openSelectedResources}
           disabled={singleResourceActionsDisabled}
-          startIcon={<LaunchOutlinedIcon />}
+          StartIconComponent={LaunchOutlinedIcon}
+          endIcon={registerShortcutsResult.openShortcut?.icon}
         >
           Open
-        </Button>
-        <Button
+        </ActionButton>
+        <ActionButton
+          ref={copyButtonRef}
           onClick={copySelectedResources}
           disabled={multipleResourcesActionsDisabled}
-          startIcon={<ContentCopyOutlinedIcon />}
+          StartIconComponent={ContentCopyOutlinedIcon}
+          endIcon={registerShortcutsResult.copyShortcut?.icon}
         >
           Copy
-        </Button>
-        <Button
+        </ActionButton>
+        <ActionButton
+          ref={cutButtonRef}
           onClick={cutSelectedResources}
           disabled={multipleResourcesActionsDisabled}
-          startIcon={<ContentCutOutlinedIcon />}
+          StartIconComponent={ContentCutOutlinedIcon}
+          endIcon={registerShortcutsResult.cutShortcut?.icon}
         >
           Cut
-        </Button>
-        <Button
+        </ActionButton>
+        <ActionButton
+          ref={pasteButtonRef}
           variant={draftPasteState === undefined ? undefined : 'contained'}
           onClick={pasteResourcesIntoExplorer}
           disabled={draftPasteState === undefined}
-          startIcon={<ContentPasteOutlinedIcon />}
+          StartIconComponent={ContentPasteOutlinedIcon}
+          endIcon={registerShortcutsResult.pasteShortcut?.icon}
         >
           Paste
           <PasteInfoBadge />
-        </Button>
-        <Button
+        </ActionButton>
+        <ActionButton
+          ref={triggerRenameButtonRef}
           onClick={triggerRenameForSelectedResources}
           disabled={singleResourceActionsDisabled}
-          startIcon={<EditOutlinedIcon />}
+          StartIconComponent={EditOutlinedIcon}
+          endIcon={registerShortcutsResult.triggerRenameShortcut?.icon}
         >
           Rename
-        </Button>
-        <Button
+        </ActionButton>
+        <ActionButton
+          ref={scheduleDeleteButtonRef}
           onClick={scheduleDeleteSelectedResources}
           disabled={multipleResourcesActionsDisabled}
-          startIcon={<DeleteOutlinedIcon />}
+          StartIconComponent={DeleteOutlinedIcon}
+          endIcon={registerShortcutsResult.scheduleDeleteShortcut?.icon}
         >
           Delete
-        </Button>
-        <CreateFolder onSubmit={createFolderInExplorer} />
+        </ActionButton>
+        <CreateFolder
+          actionButtonRef={triggerCreateNewFolderButtonRef}
+          actionButtonEndIcon={registerShortcutsResult.triggerCreateNewFolderShortcut?.icon}
+          onSubmit={createFolderInExplorer}
+        />
         {config.featureFlags.tags && (
           <AddTag
             options={Object.entries(tags).map(([id, otherValues]) => ({
@@ -222,9 +353,9 @@ const PasteInfoBadge: React.FC = () => {
     >
       <StyledBadge>
         {draftPasteState.pasteShouldMove ? (
-          <ContentCutOutlinedIcon fontSize="small" />
+          <ContentCutOutlinedIcon fontSize="inherit" />
         ) : (
-          <ContentCopyOutlinedIcon fontSize="small" />
+          <ContentCopyOutlinedIcon fontSize="inherit" />
         )}
       </StyledBadge>
     </Tooltip>
@@ -243,10 +374,6 @@ const ClipboardResourcesList = styled.div`
 `;
 
 const StyledBadge = styled(Box)`
-  position: absolute;
-  right: -8px;
-  bottom: -16px;
-
   display: flex;
   justify-content: center;
   align-items: center;

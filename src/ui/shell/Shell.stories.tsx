@@ -1,6 +1,7 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 
 import { createStoreInstance } from '@app/global-state/store';
+import { getDefaultExplorerCwd } from '@app/operations/app.operations';
 import { createQueryClient, Globals } from '@app/ui/Globals';
 import { Shell } from '@app/ui/shell';
 
@@ -43,6 +44,28 @@ export const WithProcesses = Template.bind({});
       preloadedState: {
         processesSlice: {
           processes: [fakePasteProcess, fakeDeleteProcess],
+        },
+      },
+    });
+    const queryClient = createQueryClient();
+    return { store, queryClient };
+  },
+];
+
+export const MultipleTabs = Template.bind({});
+(MultipleTabs as any).loaders = [
+  async () => {
+    await initializeStorybookPlatformModules();
+    const cwd = await getDefaultExplorerCwd();
+    const store = await createStoreInstance({
+      preloadedState: {
+        explorersSlice: {
+          explorerPanels: {
+            'panel-1': { cwd },
+            'panel-2': { cwd },
+            'panel-3': { cwd },
+          },
+          focusedExplorerPanelId: 'panel-2',
         },
       },
     });

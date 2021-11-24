@@ -41,6 +41,11 @@ const globalStyle = css`
     height: 100%;
   }
 
+  /* create separate stacking context for root container */
+  #root {
+    isolation: isolate;
+  }
+
   /* change scrollbar to a thin variant which lightens up on hover */
   *::-webkit-scrollbar {
     width: 10px;

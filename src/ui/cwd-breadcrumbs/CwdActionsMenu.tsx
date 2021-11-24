@@ -1,18 +1,12 @@
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import { ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
-import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import * as React from 'react';
 
 import { formatter } from '@app/base/utils/formatter.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
-import { useCwd, useIdOfFocusedExplorerPanel } from '@app/global-state/slices/explorers.hooks';
+import { useCwd } from '@app/global-state/slices/explorers.hooks';
 import { changeDirectory, revealCwdInOSExplorer } from '@app/operations/explorer.operations';
-import { KEYS, MOUSE_BUTTONS } from '@app/ui/constants';
 import { ChangeCwd } from '@app/ui/cwd-breadcrumbs/ChangeCwd';
-import {
-  useRegisterExplorerAuxclickHandler,
-  useRegisterExplorerShortcuts,
-} from '@app/ui/explorer-context';
 
 type CwdActionsMenuProps = {
   explorerId: string;
@@ -20,33 +14,12 @@ type CwdActionsMenuProps = {
   onClose: () => void;
 };
 
-export const CwdActionsMenu: React.FC<CwdActionsMenuProps> = (props) => {
-  const focusedExplorerId = useIdOfFocusedExplorerPanel();
-
-  if (props.explorerId !== focusedExplorerId) {
-    return null;
-  }
-
-  return <CwdActionsMenuImpl {...props} />;
-};
-
-const CwdActionsMenuImpl: React.FC<CwdActionsMenuProps> = ({ explorerId, anchorEl, onClose }) => {
+export const CwdActionsMenu: React.FC<CwdActionsMenuProps> = ({
+  explorerId,
+  anchorEl,
+  onClose,
+}) => {
   const cwd = useCwd(explorerId);
-
-  async function navigateUp() {
-    await changeDirectory(explorerId, URI.joinPath(URI.from(cwd), '..'));
-  }
-
-  useRegisterExplorerShortcuts([
-    { condition: (e) => e.altKey && e.key === KEYS.ARROW_LEFT, handler: navigateUp },
-  ]);
-
-  /*
-   * "auxclick" event is fired when the "back" button on a mouse (e.g. Logitech MX Master 2) is clicked.
-   */
-  useRegisterExplorerAuxclickHandler([
-    { condition: (e) => e.button === MOUSE_BUTTONS.BACK, handler: navigateUp },
-  ]);
 
   return (
     <Menu open={anchorEl !== null} anchorEl={anchorEl} onClose={onClose}>

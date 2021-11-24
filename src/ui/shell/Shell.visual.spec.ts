@@ -1,6 +1,6 @@
 import { cy } from 'local-cypress';
 
-import metadata, { WithProcesses, SimpleCase } from '@app/ui/shell/Shell.stories';
+import metadata, { MultipleTabs, SimpleCase, WithProcesses } from '@app/ui/shell/Shell.stories';
 
 import { deriveIdFromMetadataAndExportName, varToString } from '@app-storybook/storybook-utils';
 
@@ -108,5 +108,32 @@ describe('Shell [visual]', () => {
     cy.findByRole('table', { name: /Table of resources/i }).matchImageSnapshot(
       `${getTestTitle()}_1_folder-created`,
     );
+  });
+
+  it('if modifier keys are pressed, possible shortcuts should be shown next to the shortcut actions', () => {
+    const storybookIdToVisit = deriveIdFromMetadataAndExportName(
+      metadata,
+      varToString({ MultipleTabs }),
+    );
+    bootstrap({ storybookIdToVisit });
+
+    cy.get('body').type('{ctrl}', { release: false });
+    cy.document().matchImageSnapshot(`${getTestTitle()}_1_ctrl-keydown`);
+    cy.get('body').type('{ctrl}');
+    cy.get('body').type('{alt}', { release: false });
+    cy.document().matchImageSnapshot(`${getTestTitle()}_2_alt-keydown`);
+    cy.get('body').type('{alt}');
+    cy.document().matchImageSnapshot(`${getTestTitle()}_3_no-modifier-keydown`);
+  });
+
+  it('ctrl+c should trigger copy action', () => {
+    const storybookIdToVisit = deriveIdFromMetadataAndExportName(
+      metadata,
+      varToString({ MultipleTabs }),
+    );
+    bootstrap({ storybookIdToVisit });
+
+    cy.get('body').type('{ctrl}c');
+    cy.document().matchImageSnapshot(`${getTestTitle()}_1_ctrl-and-c-pressed`);
   });
 });

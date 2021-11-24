@@ -28,13 +28,13 @@ export const ExplorerPanel = React.memo<ExplorerPanelProps>(function ExplorerPan
         explorerId={explorerId}
         isActiveExplorer={isActiveExplorer}
       >
-        <CwdBreadcrumbsContainer hidden={!isActiveExplorer}>
+        <CwdBreadcrumbsContainer hide={!isActiveExplorer}>
           <CwdBreadcrumbs />
         </CwdBreadcrumbsContainer>
-        <ActionsBarContainer hidden={!isActiveExplorer}>
+        <ActionsBarContainer hide={!isActiveExplorer}>
           <ActionsBar />
         </ActionsBarContainer>
-        <ResourcesTableContainer hidden={!isActiveExplorer}>
+        <ResourcesTableContainer hide={!isActiveExplorer}>
           <ResourcesTable />
         </ResourcesTableContainer>
       </ExplorerContextProvider>
@@ -42,7 +42,9 @@ export const ExplorerPanel = React.memo<ExplorerPanelProps>(function ExplorerPan
   );
 });
 
-const CwdBreadcrumbsContainer = styled(Box)`
+const CwdBreadcrumbsContainer = styled(Box)<{ hide: boolean }>`
+  visibility: ${({ hide }) => (hide ? 'hidden' : undefined)};
+
   /* Overlap the CwdBreadcrumbs with the WindowDragRegion above it */
   margin-top: -20px;
   -webkit-app-region: no-drag;
@@ -53,11 +55,15 @@ const CwdBreadcrumbsContainer = styled(Box)`
   margin-bottom: ${(props) => props.theme.spacing()};
 `;
 
-const ActionsBarContainer = styled(Box)`
+const ActionsBarContainer = styled(Box)<{ hide: boolean }>`
+  visibility: ${({ hide }) => (hide ? 'hidden' : undefined)};
+
   grid-area: ${EXPLORER_ACTIONSBAR_GRID_AREA};
   padding-bottom: ${(props) => props.theme.spacing()};
 `;
 
-const ResourcesTableContainer = styled(Box)`
+const ResourcesTableContainer = styled(Box)<{ hide: boolean }>`
+  visibility: ${({ hide }) => (hide ? 'hidden' : undefined)};
+
   grid-area: ${EXPLORER_RESOURCESTABLE_GRID_AREA};
 `;

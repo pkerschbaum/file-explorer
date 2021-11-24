@@ -9,7 +9,7 @@ export async function addExplorerPanel(cwdToUse?: UriComponents) {
   if (cwdToUse) {
     cwdOfNewExplorer = URI.from(cwdToUse);
   } else {
-    cwdOfNewExplorer = await getDefaultExplorerCwd();
+    cwdOfNewExplorer = URI.from(await getDefaultExplorerCwd());
   }
 
   const explorerId = generateExplorerId();
@@ -57,6 +57,6 @@ export async function windowClose(): Promise<void> {
   return await window.privileged.window.close();
 }
 
-export async function getDefaultExplorerCwd(): Promise<URI> {
-  return URI.from(await nativeHostRef.current.app.getPath({ name: 'desktop' }));
+export async function getDefaultExplorerCwd(): Promise<UriComponents> {
+  return await nativeHostRef.current.app.getPath({ name: 'desktop' });
 }

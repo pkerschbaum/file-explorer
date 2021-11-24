@@ -1,18 +1,25 @@
 import KeyboardArrowDownOutlined from '@mui/icons-material/KeyboardArrowDownOutlined';
-import { Breadcrumbs, Button } from '@mui/material';
+import { Breadcrumbs } from '@mui/material';
 import { isWindows } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/platform';
 import * as resources from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import * as React from 'react';
 import styled from 'styled-components';
+import invariant from 'tiny-invariant';
 
 import { CustomError } from '@app/base/custom-error';
 import { check } from '@app/base/utils/assert.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { useCwd } from '@app/global-state/slices/explorers.hooks';
 import { changeDirectory } from '@app/operations/explorer.operations';
+import { KEY, MOUSE_BUTTONS } from '@app/ui/constants';
 import { CwdActionsMenu } from '@app/ui/cwd-breadcrumbs/CwdActionsMenu';
-import { useExplorerId } from '@app/ui/explorer-context';
+import { ActionButton, ActionButtonRef } from '@app/ui/elements/ActionButton';
+import {
+  useExplorerId,
+  useRegisterExplorerAuxclickHandler,
+  useRegisterExplorerShortcuts,
+} from '@app/ui/explorer-context';
 
 export const CwdBreadcrumbs: React.FC = () => {
   const explorerId = useExplorerId();
@@ -63,6 +70,7 @@ export const CwdBreadcrumbs: React.FC = () => {
     <StyledBreadcrumbs maxItems={999}>
       {slugsWithFormatting.map((slug, idx) => {
         const isLastSlug = idx === slugsWithFormatting.length - 1;
+        const isSecondToLastSlug = idx === slugsWithFormatting.length - 2;
 
         return (
           <Breadcrumb
@@ -70,6 +78,7 @@ export const CwdBreadcrumbs: React.FC = () => {
             explorerId={explorerId}
             slugFormatted={slug.formatted}
             isLastSlug={isLastSlug}
+            isSecondToLastSlug={isSecondToLastSlug}
             changeDirectory={() => changeDirectory(explorerId, slug.uri)}
           />
         );
@@ -82,6 +91,7 @@ type BreadcrumbProps = {
   explorerId: string;
   slugFormatted: string;
   isLastSlug: boolean;
+  isSecondToLastSlug: boolean;
   changeDirectory: () => Promise<void>;
 };
 
@@ -89,9 +99,39 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
   explorerId,
   slugFormatted,
   isLastSlug,
+  isSecondToLastSlug,
   changeDirectory,
 }) => {
+  const actionButtonRef = React.useRef<ActionButtonRef>(null);
   const [menuAnchorEl, setMenuAnchorEl] = React.useState<HTMLElement | null>(null);
+
+  const registerShortcutsResult = useRegisterExplorerShortcuts({
+    changeDirectoryShortcut: {
+      keybindings: !isSecondToLastSlug
+        ? []
+        : [
+            {
+              key: KEY.ARROW_LEFT,
+              modifiers: {
+                alt: 'SET',
+              },
+            },
+          ],
+      handler: () => {
+        invariant(actionButtonRef.current);
+        actionButtonRef.current.triggerSyntheticClick();
+      },
+    },
+  });
+
+  /*
+   * "auxclick" event is fired when the "back" button on a mouse (e.g. Logitech MX Master 2) is clicked.
+   */
+  useRegisterExplorerAuxclickHandler(
+    !isSecondToLastSlug
+      ? []
+      : [{ condition: (e) => e.button === MOUSE_BUTTONS.BACK, handler: changeDirectory }],
+  );
 
   async function handleClick(e: React.MouseEvent<HTMLElement>) {
     if (isLastSlug) {
@@ -103,14 +143,21 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
 
   return (
     <>
-      <Button
+      <ActionButton
+        ref={actionButtonRef}
         variant="outlined"
         color="inherit"
         onClick={handleClick}
-        endIcon={!isLastSlug ? undefined : <KeyboardArrowDownOutlined />}
+        endIcon={
+          isLastSlug ? (
+            <KeyboardArrowDownOutlined />
+          ) : (
+            registerShortcutsResult.changeDirectoryShortcut?.icon
+          )
+        }
       >
         {slugFormatted}
-      </Button>
+      </ActionButton>
       {isLastSlug && (
         <CwdActionsMenu
           explorerId={explorerId}
