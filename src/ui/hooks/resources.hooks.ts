@@ -2,13 +2,13 @@ import { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/co
 import { FileKind } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 import * as React from 'react';
 
-import { createLogger } from '@app/base/logger/logger';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { config } from '@app/config';
 import { Resource, ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
 import { useResourceIconClasses } from '@app/global-cache/resource-icons';
 import { useResources } from '@app/global-cache/resources';
 import { useCwd } from '@app/global-state/slices/explorers.hooks';
+import { createLogger } from '@app/operations/create-logger';
 
 const logger = createLogger('resources.hooks');
 

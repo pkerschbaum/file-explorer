@@ -5,7 +5,6 @@ import {
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { Query } from 'react-query';
 
-import { createLogger } from '@app/base/logger/logger';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import {
   isResourcesOfDirectoryQueryKey,
@@ -13,6 +12,7 @@ import {
   RESOURCES_OF_DIRECTORY_KEY_PREFIX,
 } from '@app/global-cache/query-keys';
 import { refreshResourcesOfDirectory } from '@app/global-cache/resources';
+import { createLogger } from '@app/operations/create-logger';
 import type {
   QueryCacheNotifyEvent,
   QueryCacheSubscription,

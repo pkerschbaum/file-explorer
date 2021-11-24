@@ -4,6 +4,7 @@ import { createStoreInstance } from '@app/global-state/store';
 import {
   fileIconThemeLoaderRef,
   fileSystemRef,
+  logWriterRef,
   nativeHostRef,
   persistentStorageRef,
 } from '@app/operations/global-modules';
@@ -13,6 +14,7 @@ import {
 } from '@app/operations/storage-state.operations';
 import { createFileIconThemeLoader } from '@app/platform/file-icon-theme-loader';
 import { createFileSystem } from '@app/platform/file-system';
+import { createLogWriter } from '@app/platform/log-writer';
 import { createNativeHost } from '@app/platform/native-host';
 import { createPersistentStorage } from '@app/platform/persistent-storage';
 import { createQueryClient, Globals } from '@app/ui/Globals';
@@ -22,6 +24,7 @@ async function rendererScriptEntryPoint() {
   // set up platform modules
   fileIconThemeLoaderRef.current = createFileIconThemeLoader();
   fileSystemRef.current = createFileSystem();
+  logWriterRef.current = createLogWriter();
   nativeHostRef.current = createNativeHost();
   persistentStorageRef.current = createPersistentStorage();
 

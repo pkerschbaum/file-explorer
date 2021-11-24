@@ -5,7 +5,6 @@ import * as uuid from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uui
 import { IFileStatWithMetadata } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 
 import { CustomError } from '@app/base/custom-error';
-import { createLogger } from '@app/base/logger/logger';
 import { objects } from '@app/base/utils/objects.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import {
@@ -20,6 +19,7 @@ import { refreshResourcesOfDirectory } from '@app/global-cache/resources';
 import { mapProcess } from '@app/global-state/slices/processes.hooks';
 import { actions } from '@app/global-state/slices/processes.slice';
 import { actions as tagsSliceActions } from '@app/global-state/slices/tags.slice';
+import { createLogger } from '@app/operations/create-logger';
 import {
   dispatchRef,
   fileSystemRef,

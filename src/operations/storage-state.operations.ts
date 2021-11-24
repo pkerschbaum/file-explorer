@@ -2,9 +2,9 @@ import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { CombinedState, PreloadedState } from '@reduxjs/toolkit';
 import { NoInfer } from '@reduxjs/toolkit/dist/tsHelpers';
 
-import { createLogger } from '@app/base/logger/logger';
 import { ExplorersMap } from '@app/global-state/slices/explorers.slice';
 import type { RootState } from '@app/global-state/store';
+import { createLogger } from '@app/operations/create-logger';
 import { fileSystemRef, persistentStorageRef } from '@app/operations/global-modules';
 import { StorageState } from '@app/platform/persistent-storage';
 

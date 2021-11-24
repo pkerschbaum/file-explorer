@@ -11,6 +11,8 @@ import { createRefreshResourcesOfDirectorySubscription } from '@app/operations/g
 import { fileSystemRef } from '@app/operations/global-modules';
 import { PlatformFileSystem } from '@app/platform/file-system';
 
+import { initializeFakePlatformModules } from '@app-test/utils/fake-platform-modules';
+
 class DummyDisposable implements IDisposable {
   public isDisposed = false;
   public dispose(): void {
@@ -48,7 +50,8 @@ function createFakeFileSystem() {
 }
 
 describe('refresh-resources-of-directory', () => {
-  it('dispose() of subscription should dispose all aquired watch() and onDidFilesChange() disposables', () => {
+  it('dispose() of subscription should dispose all aquired watch() and onDidFilesChange() disposables', async () => {
+    await initializeFakePlatformModules();
     const { allCreatedDisposables, fakeWatch, fakeOnDidFilesChange, fakeFileSystem } =
       createFakeFileSystem();
     fileSystemRef.current = fakeFileSystem;
@@ -114,7 +117,8 @@ describe('refresh-resources-of-directory', () => {
     }
   });
 
-  it('no second watcher should get set up for already watched directories', () => {
+  it('no second watcher should get set up for already watched directories', async () => {
+    await initializeFakePlatformModules();
     const { allCreatedDisposables, fakeWatch, fakeOnDidFilesChange, fakeFileSystem } =
       createFakeFileSystem();
     fileSystemRef.current = fakeFileSystem;
@@ -164,7 +168,8 @@ describe('refresh-resources-of-directory', () => {
     }
   });
 
-  it('when observer gets removed, the active file watcher should get released', () => {
+  it('when observer gets removed, the active file watcher should get released', async () => {
+    await initializeFakePlatformModules();
     const { allCreatedDisposables, fakeWatch, fakeOnDidFilesChange, fakeFileSystem } =
       createFakeFileSystem();
     fileSystemRef.current = fakeFileSystem;

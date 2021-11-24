@@ -1,8 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument, no-console */
-
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { CustomError } from '@app/base/custom-error';
 import { objects } from '@app/base/utils/objects.util';
 import { JsonObject } from '@app/base/utils/types.util';
+import { logWriterRef } from '@app/operations/global-modules';
 
 type Logger = {
   debug: <A, B>(
@@ -22,7 +22,7 @@ type Logger = {
   ) => void;
   error: <A, B>(
     message: string,
-    error?: any,
+    error?: unknown,
     logPayload?: JsonObject<A>,
     verboseLogPayload?: JsonObject<B>,
   ) => void;
@@ -73,7 +73,7 @@ export function createLogger(context: string): Logger {
       if (extendedLog.verboseLogPayload !== undefined) {
         additionalParams.push(extendedLog.verboseLogPayload);
       }
-      console.debug(extendedLog.message, ...additionalParams);
+      logWriterRef.current.debug(extendedLog.message, ...additionalParams);
     },
     info: (...args) => {
       const extendedLog = extendLog(...args);
@@ -85,7 +85,7 @@ export function createLogger(context: string): Logger {
       if (extendedLog.verboseLogPayload !== undefined) {
         additionalParams.push(extendedLog.verboseLogPayload);
       }
-      console.info(extendedLog.message, ...additionalParams);
+      logWriterRef.current.info(extendedLog.message, ...additionalParams);
     },
     warn: (...args) => {
       const extendedLog = extendLog(...args);
@@ -97,11 +97,11 @@ export function createLogger(context: string): Logger {
       if (extendedLog.verboseLogPayload !== undefined) {
         additionalParams.push(extendedLog.verboseLogPayload);
       }
-      console.warn(extendedLog.message, ...additionalParams);
+      logWriterRef.current.warn(extendedLog.message, ...additionalParams);
     },
     error: <A, B>(
       message: string,
-      error?: any,
+      error?: unknown,
       logPayload?: JsonObject<A>,
       verboseLogPayload?: JsonObject<B>,
     ) => {
@@ -114,9 +114,9 @@ export function createLogger(context: string): Logger {
       if (extendedLog.verboseLogPayload !== undefined) {
         additionalParams.push(extendedLog.verboseLogPayload);
       }
-      console.error(extendedLog.message, error, ...additionalParams);
+      logWriterRef.current.error(extendedLog.message, error, ...additionalParams);
     },
-    group: console.group,
-    groupEnd: console.groupEnd,
+    group: (...args) => logWriterRef.current.group(...args),
+    groupEnd: (...args) => logWriterRef.current.groupEnd(...args),
   };
 }

@@ -1,7 +1,6 @@
 import * as resources from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 
-import { createLogger } from '@app/base/logger/logger';
 import { formatter } from '@app/base/utils/formatter.util';
 import { Resource, RESOURCE_TYPE } from '@app/domain/types';
 import {
@@ -12,6 +11,7 @@ import {
   getCachedResourcesOfDirectory,
   setCachedResourcesOfDirectory,
 } from '@app/global-cache/resources';
+import { createLogger } from '@app/operations/create-logger';
 import type {
   QueryCacheNotifyEvent,
   QueryCacheSubscription,

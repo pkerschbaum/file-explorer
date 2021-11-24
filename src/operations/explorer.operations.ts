@@ -9,7 +9,6 @@ import * as uuid from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uui
 import { IFileStat } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 
 import { CustomError } from '@app/base/custom-error';
-import { createLogger } from '@app/base/logger/logger';
 import { check } from '@app/base/utils/assert.util';
 import { formatter } from '@app/base/utils/formatter.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
@@ -17,6 +16,7 @@ import { PASTE_PROCESS_STATUS } from '@app/domain/types';
 import { refreshResourcesOfDirectory } from '@app/global-cache/resources';
 import { actions as explorerActions } from '@app/global-state/slices/explorers.slice';
 import { actions as processesActions } from '@app/global-state/slices/processes.slice';
+import { createLogger } from '@app/operations/create-logger';
 import {
   dispatchRef,
   fileSystemRef,

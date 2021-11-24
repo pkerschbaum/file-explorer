@@ -1,7 +1,9 @@
 import { storyNameFromExport, toId } from '@storybook/csf';
 
 import { ObjectLiteral } from '@app/base/utils/types.util';
-import { fileIconThemeLoaderRef } from '@app/operations/global-modules';
+import { fileIconThemeLoaderRef, logWriterRef } from '@app/operations/global-modules';
+
+import { createLogWriter } from '@app/platform/log-writer';
 
 import { initializeFakePlatformModules } from '@app-test/utils/fake-platform-modules';
 
@@ -24,4 +26,5 @@ export function deriveIdFromMetadataAndExportName(
 export async function initializeStorybookPlatformModules() {
   await initializeFakePlatformModules();
   fileIconThemeLoaderRef.current = createStorybookFileIconThemeLoader();
+  logWriterRef.current = createLogWriter();
 }
