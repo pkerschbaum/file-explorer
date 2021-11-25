@@ -104,11 +104,7 @@ const ResourceRow: React.FC<ResourceRowProps> = ({ resourceForRow, idxOfResource
         iconSlot={
           <IconWrapper className={nativeIconDataURL ? undefined : themeResourceIconClasses}>
             {nativeIconDataURL && (
-              <img
-                src={nativeIconDataURL}
-                alt="icon for resource"
-                style={{ maxHeight: '100%', maxWidth: '100%' }}
-              />
+              <img src={nativeIconDataURL} alt="icon for resource" style={{ maxHeight: '100%' }} />
             )}
           </IconWrapper>
         }

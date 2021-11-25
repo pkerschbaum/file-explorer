@@ -46,6 +46,21 @@ const globalStyle = css`
     isolation: isolate;
   }
 
+  /* Sensible media defaults, https://www.joshwcomeau.com/css/custom-css-reset/#digit-sensible-media-defaults */
+  img,
+  picture,
+  video,
+  canvas,
+  svg {
+    display: block;
+    max-width: 100%;
+  }
+
+  /* Word wrapping, https://www.joshwcomeau.com/css/custom-css-reset/#digit-word-wrapping, https://twitter.com/sophiebits/status/1462921205359386628 */
+  * {
+    overflow-wrap: break-word;
+  }
+
   /* change scrollbar to a thin variant which lightens up on hover */
   *::-webkit-scrollbar {
     width: 10px;
