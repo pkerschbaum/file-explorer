@@ -13,8 +13,9 @@
     "lint": "eslint --max-warnings 0 .",
     "test": "jest --no-cache",
     "test:watch": "jest --no-cache --runInBand --watch",
+    "cypress:run": "cross-env ELECTRON_EXTRA_LAUNCH_ARGS=\"--force-prefers-reduced-motion\" cypress run --browser chrome",
+    "cypress:run:update": "cross-env ELECTRON_EXTRA_LAUNCH_ARGS=\"--force-prefers-reduced-motion\" cypress run --browser chrome --env updateSnapshots=true",
     "cypress:open": "cross-env ELECTRON_EXTRA_LAUNCH_ARGS=\"--force-prefers-reduced-motion\" cypress open --browser chrome",
-    "cypress:open:update": "cross-env ELECTRON_EXTRA_LAUNCH_ARGS=\"--force-prefers-reduced-motion\" cypress open --browser chrome --env updateSnapshots=true",
     "storybook": "cross-env STORYBOOK_RQDEVTOOLS_ENABLED=false start-storybook -c storybook -p 6006 -s ./src/static",
     "build-storybook": "cross-env STORYBOOK_RQDEVTOOLS_ENABLED=false build-storybook -c storybook -s ./src/static",
     "compile-language-extensions-into-json-file": "ts-node --project ./tsconfig.json -r tsconfig-paths/register ./scripts/compile-language-extensions-into-json-file.ts && prettier --write ./src/static/icon-theme/language-extension-points.json"
