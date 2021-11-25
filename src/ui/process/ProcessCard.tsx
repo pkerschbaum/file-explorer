@@ -4,28 +4,27 @@ import { Box, IconButton, Paper, Tooltip } from '@mui/material';
 import * as React from 'react';
 import styled from 'styled-components';
 
-import { removeProcess } from '@app/operations/resource.operations';
 import { commonStyles } from '@app/ui/Common.styles';
 import { rotate } from '@app/ui/utils/animations';
 
-type ProcessCardProps = {
-  processId: string;
+export type ProcessCardProps = {
   summaryIcon: React.ReactNode;
   summaryText: React.ReactNode;
   details: React.ReactNode;
   isBusy: boolean;
   isRemovable: boolean;
+  onRemove: () => void | Promise<void>;
   labels: { container: string };
   className?: string;
 };
 
 export const ProcessCard: React.FC<ProcessCardProps> = ({
-  processId,
   summaryIcon,
   summaryText,
   details,
   isBusy,
   isRemovable,
+  onRemove,
   labels,
   className,
 }) => (
@@ -40,7 +39,7 @@ export const ProcessCard: React.FC<ProcessCardProps> = ({
 
       {isRemovable && (
         <Tooltip title="Discard card">
-          <DiscardIconButton onClick={() => removeProcess(processId)}>
+          <DiscardIconButton onClick={onRemove}>
             <ClearAllIcon fontSize="inherit" />
           </DiscardIconButton>
         </Tooltip>

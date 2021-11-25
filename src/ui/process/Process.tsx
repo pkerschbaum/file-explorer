@@ -1,9 +1,13 @@
 import * as React from 'react';
 
-import { assertThat } from '@app/base/utils/assert.util';
+import { assertIsUnreachable } from '@app/base/utils/assert.util';
 import { AppProcess, PROCESS_TYPE } from '@app/domain/types';
-import { DeleteProcess } from '@app/ui/process/DeleteProcess';
-import { PasteProcess } from '@app/ui/process/PasteProcess';
+import { removeProcess } from '@app/operations/resource.operations';
+import { computeProcessCardPropsFromDeleteProcess } from '@app/ui/process/process-variant-delete';
+import { computeProcessCardPropsFromPasteProcess } from '@app/ui/process/process-variant-paste';
+import { ProcessCard, ProcessCardProps } from '@app/ui/process/ProcessCard';
+
+export type ProcessVariantProps = Omit<ProcessCardProps, 'className' | 'onRemove'>;
 
 type ProcessProps = {
   process: AppProcess;
@@ -11,15 +15,20 @@ type ProcessProps = {
 };
 
 export const Process: React.FC<ProcessProps> = ({ process, className }) => {
+  let processVariantProps: ProcessVariantProps;
+  if (process.type === PROCESS_TYPE.PASTE) {
+    processVariantProps = computeProcessCardPropsFromPasteProcess(process);
+  } else if (process.type === PROCESS_TYPE.DELETE) {
+    processVariantProps = computeProcessCardPropsFromDeleteProcess(process);
+  } else {
+    assertIsUnreachable(process);
+  }
+
   return (
-    <>
-      {process.type === PROCESS_TYPE.PASTE ? (
-        <PasteProcess process={process} className={className} />
-      ) : process.type === PROCESS_TYPE.DELETE ? (
-        <DeleteProcess process={process} className={className} />
-      ) : (
-        assertThat.isUnreachable(process)
-      )}
-    </>
+    <ProcessCard
+      className={className}
+      onRemove={() => removeProcess(process.id)}
+      {...processVariantProps}
+    />
   );
 };

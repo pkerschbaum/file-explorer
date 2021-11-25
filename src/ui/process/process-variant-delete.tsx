@@ -5,14 +5,14 @@ import { Box, Button } from '@mui/material';
 import * as React from 'react';
 import styled from 'styled-components';
 
-import { isUnreachable } from '@app/base/utils/assert.util';
+import { assertIsUnreachable } from '@app/base/utils/assert.util';
 import { formatter } from '@app/base/utils/formatter.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { DeleteProcess as DeleteProcessType, DELETE_PROCESS_STATUS } from '@app/domain/types';
 import { removeProcess, runDeleteProcess } from '@app/operations/resource.operations';
 import { LinearProgress } from '@app/ui/elements/LinearProgress';
 import { Stack } from '@app/ui/layouts/Stack';
-import { ProcessCard } from '@app/ui/process/ProcessCard';
+import type { ProcessVariantProps } from '@app/ui/process/Process';
 
 type StatusMetaInfos = {
   [status in DELETE_PROCESS_STATUS]: {
@@ -39,12 +39,9 @@ const STATUS_META_INFOS: StatusMetaInfos = {
   },
 };
 
-type DeleteProcessProps = {
-  process: DeleteProcessType;
-  className?: string;
-};
-
-export const DeleteProcess: React.FC<DeleteProcessProps> = ({ process, className }) => {
+export function computeProcessCardPropsFromDeleteProcess(
+  process: DeleteProcessType,
+): ProcessVariantProps {
   let contentToRender;
   switch (process.status) {
     case DELETE_PROCESS_STATUS.PENDING_FOR_USER_INPUT: {
@@ -90,51 +87,47 @@ export const DeleteProcess: React.FC<DeleteProcessProps> = ({ process, className
       break;
     }
     default: {
-      isUnreachable(process);
+      assertIsUnreachable(process);
     }
   }
 
   const processMeta = STATUS_META_INFOS[process.status];
 
-  return (
-    <ProcessCard
-      className={className}
-      labels={{ container: 'Delete Process' }}
-      processId={process.id}
-      summaryIcon={<DeleteOutlinedIcon fontSize="inherit" />}
-      summaryText={process.uris
-        .map((uri) => {
-          const { resourceName, extension } = uriHelper.extractNameAndExtension(uri);
-          const resourceLabel = formatter.resourceBasename({ name: resourceName, extension });
-          return resourceLabel;
-        })
-        .join(', ')}
-      details={
-        <>
-          <ResourcesList>
-            <Box>Files/Folders:</Box>
-            {process.uris.map((uri) => {
-              const { resourceName, extension } = uriHelper.extractNameAndExtension(uri);
-              const resourceLabel = formatter.resourceBasename({ name: resourceName, extension });
-              return (
-                <Box
-                  key={uriHelper.getComparisonKey(uri)}
-                  sx={{ fontWeight: (theme) => theme.font.weights.bold, wordBreak: 'break-all' }}
-                >
-                  {resourceLabel}
-                </Box>
-              );
-            })}
-          </ResourcesList>
+  return {
+    labels: { container: 'Delete Process' },
+    summaryIcon: <DeleteOutlinedIcon fontSize="inherit" />,
+    summaryText: process.uris
+      .map((uri) => {
+        const { resourceName, extension } = uriHelper.extractNameAndExtension(uri);
+        const resourceLabel = formatter.resourceBasename({ name: resourceName, extension });
+        return resourceLabel;
+      })
+      .join(', '),
+    details: (
+      <>
+        <ResourcesList>
+          <Box>Files/Folders:</Box>
+          {process.uris.map((uri) => {
+            const { resourceName, extension } = uriHelper.extractNameAndExtension(uri);
+            const resourceLabel = formatter.resourceBasename({ name: resourceName, extension });
+            return (
+              <Box
+                key={uriHelper.getComparisonKey(uri)}
+                sx={{ fontWeight: (theme) => theme.font.weights.bold, wordBreak: 'break-all' }}
+              >
+                {resourceLabel}
+              </Box>
+            );
+          })}
+        </ResourcesList>
 
-          <ContentList>{contentToRender}</ContentList>
-        </>
-      }
-      isBusy={processMeta.isBusy}
-      isRemovable={processMeta.isRemovable}
-    />
-  );
-};
+        <ContentList>{contentToRender}</ContentList>
+      </>
+    ),
+    isBusy: processMeta.isBusy,
+    isRemovable: processMeta.isRemovable,
+  };
+}
 
 const ResourcesList = styled.div`
   display: flex;

@@ -12,7 +12,7 @@ import { uriHelper } from '@app/base/utils/uri-helper';
 import { PasteProcess as PasteProcessType, PASTE_PROCESS_STATUS } from '@app/domain/types';
 import { LinearProgress } from '@app/ui/elements/LinearProgress';
 import { Stack } from '@app/ui/layouts/Stack';
-import { ProcessCard } from '@app/ui/process/ProcessCard';
+import type { ProcessVariantProps } from '@app/ui/process/Process';
 
 type StatusMetaInfos = {
   [status in PASTE_PROCESS_STATUS]: {
@@ -70,12 +70,9 @@ const STATUS_META_INFOS: StatusMetaInfos = {
   },
 };
 
-type PasteProcessProps = {
-  process: PasteProcessType;
-  className?: string;
-};
-
-export const PasteProcess: React.FC<PasteProcessProps> = ({ process, className }) => {
+export function computeProcessCardPropsFromPasteProcess(
+  process: PasteProcessType,
+): ProcessVariantProps {
   const smallestUnitOfTotalSize = byteSize.probe(process.totalSize).unit;
 
   let content;
@@ -137,96 +134,92 @@ export const PasteProcess: React.FC<PasteProcessProps> = ({ process, className }
       ? 'indeterminate'
       : 'determinate';
 
-  return (
-    <ProcessCard
-      className={className}
-      labels={{ container: 'Paste Process' }}
-      processId={process.id}
-      summaryIcon={
-        <>
-          {process.pasteShouldMove ? (
-            <ContentCutOutlinedIcon fontSize="inherit" />
-          ) : !process.pasteShouldMove ? (
-            <ContentCopyOutlinedIcon fontSize="inherit" />
-          ) : (
-            assertThat.isUnreachable(process.pasteShouldMove)
-          )}
-          <DoubleArrowIcon fontSize="inherit" />
-        </>
-      }
-      summaryText={destinationFolderLabel}
-      details={
-        <>
-          <Stack direction="column" alignItems="stretch" spacing={0.5}>
-            <Box>Destination:</Box>
-            <Box sx={{ fontWeight: (theme) => theme.font.weights.bold, wordBreak: 'break-all' }}>
-              {destinationFolderLabel}
-            </Box>
-          </Stack>
+  return {
+    labels: { container: 'Paste Process' },
+    summaryIcon: (
+      <>
+        {process.pasteShouldMove ? (
+          <ContentCutOutlinedIcon fontSize="inherit" />
+        ) : !process.pasteShouldMove ? (
+          <ContentCopyOutlinedIcon fontSize="inherit" />
+        ) : (
+          assertThat.isUnreachable(process.pasteShouldMove)
+        )}
+        <DoubleArrowIcon fontSize="inherit" />
+      </>
+    ),
+    summaryText: destinationFolderLabel,
+    details: (
+      <>
+        <Stack direction="column" alignItems="stretch" spacing={0.5}>
+          <Box>Destination:</Box>
+          <Box sx={{ fontWeight: (theme) => theme.font.weights.bold, wordBreak: 'break-all' }}>
+            {destinationFolderLabel}
+          </Box>
+        </Stack>
 
-          <Stack direction="column" alignItems="stretch" spacing={0.5}>
-            <Box>Files/Folders:</Box>
-            {process.sourceUris.slice(0, 2).map((uri) => {
-              const { resourceName, extension } = uriHelper.extractNameAndExtension(uri);
-              const sourceResourceLabel = formatter.resourceBasename({
-                name: resourceName,
-                extension,
-              });
-              return (
-                <Box
-                  key={uriHelper.getComparisonKey(uri)}
-                  sx={{ fontWeight: (theme) => theme.font.weights.bold, wordBreak: 'break-all' }}
-                >
-                  {sourceResourceLabel}
-                </Box>
-              );
-            })}
-            {process.sourceUris.length > 2 && (
-              <Box sx={{ fontWeight: (theme) => theme.font.weights.bold }}>
-                + {process.sourceUris.length - 2} files/folders
+        <Stack direction="column" alignItems="stretch" spacing={0.5}>
+          <Box>Files/Folders:</Box>
+          {process.sourceUris.slice(0, 2).map((uri) => {
+            const { resourceName, extension } = uriHelper.extractNameAndExtension(uri);
+            const sourceResourceLabel = formatter.resourceBasename({
+              name: resourceName,
+              extension,
+            });
+            return (
+              <Box
+                key={uriHelper.getComparisonKey(uri)}
+                sx={{ fontWeight: (theme) => theme.font.weights.bold, wordBreak: 'break-all' }}
+              >
+                {sourceResourceLabel}
               </Box>
+            );
+          })}
+          {process.sourceUris.length > 2 && (
+            <Box sx={{ fontWeight: (theme) => theme.font.weights.bold }}>
+              + {process.sourceUris.length - 2} files/folders
+            </Box>
+          )}
+        </Stack>
+
+        {content}
+
+        {processMeta.showProgress && (
+          <Stack
+            direction="column"
+            alignItems="stretch"
+            sx={{
+              color: (theme) =>
+                process.status === PASTE_PROCESS_STATUS.FAILURE
+                  ? theme.palette.action.disabled
+                  : undefined,
+            }}
+          >
+            <LinearProgress
+              // disable animation from indeterminate to determinate variant by resetting component on variant change (via key prop)
+              key={progressIndicatorVariant}
+              variant={progressIndicatorVariant}
+              value={percentageBytesProcessed}
+            />
+
+            {processMeta.showProgressInBytes && (
+              <Stack spacing={0.5}>
+                <Box>
+                  {formatter.bytes(process.bytesProcessed, { unit: smallestUnitOfTotalSize })}
+                </Box>
+                <Box>/</Box>
+                <Box>{formatter.bytes(process.totalSize, { unit: smallestUnitOfTotalSize })}</Box>
+              </Stack>
             )}
           </Stack>
+        )}
 
-          {content}
-
-          {processMeta.showProgress && (
-            <Stack
-              direction="column"
-              alignItems="stretch"
-              sx={{
-                color: (theme) =>
-                  process.status === PASTE_PROCESS_STATUS.FAILURE
-                    ? theme.palette.action.disabled
-                    : undefined,
-              }}
-            >
-              <LinearProgress
-                // disable animation from indeterminate to determinate variant by resetting component on variant change (via key prop)
-                key={progressIndicatorVariant}
-                variant={progressIndicatorVariant}
-                value={percentageBytesProcessed}
-              />
-
-              {processMeta.showProgressInBytes && (
-                <Stack spacing={0.5}>
-                  <Box>
-                    {formatter.bytes(process.bytesProcessed, { unit: smallestUnitOfTotalSize })}
-                  </Box>
-                  <Box>/</Box>
-                  <Box>{formatter.bytes(process.totalSize, { unit: smallestUnitOfTotalSize })}</Box>
-                </Stack>
-              )}
-            </Stack>
-          )}
-
-          {processMeta.allowCancellation && (
-            <Button onClick={() => process.cancellationTokenSource.cancel()}>Cancel</Button>
-          )}
-        </>
-      }
-      isBusy={processMeta.isBusy}
-      isRemovable={processMeta.isRemovable}
-    />
-  );
-};
+        {processMeta.allowCancellation && (
+          <Button onClick={() => process.cancellationTokenSource.cancel()}>Cancel</Button>
+        )}
+      </>
+    ),
+    isBusy: processMeta.isBusy,
+    isRemovable: processMeta.isRemovable,
+  };
+}
