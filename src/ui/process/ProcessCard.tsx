@@ -1,14 +1,11 @@
 import AutorenewOutlinedIcon from '@mui/icons-material/AutorenewOutlined';
 import ClearAllIcon from '@mui/icons-material/ClearAll';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { AccordionDetails, AccordionSummary, Box, IconButton, Tooltip } from '@mui/material';
+import { Box, IconButton, Paper, Tooltip } from '@mui/material';
 import * as React from 'react';
 import styled from 'styled-components';
 
 import { removeProcess } from '@app/operations/resource.operations';
 import { commonStyles } from '@app/ui/Common.styles';
-import { RoundedAccordion } from '@app/ui/elements/Accordion';
-import { Stack } from '@app/ui/layouts/Stack';
 import { rotate } from '@app/ui/utils/animations';
 
 type ProcessCardProps = {
@@ -19,6 +16,7 @@ type ProcessCardProps = {
   isBusy: boolean;
   isRemovable: boolean;
   labels: { container: string };
+  className?: string;
 };
 
 export const ProcessCard: React.FC<ProcessCardProps> = ({
@@ -29,61 +27,85 @@ export const ProcessCard: React.FC<ProcessCardProps> = ({
   isBusy,
   isRemovable,
   labels,
+  className,
 }) => (
-  <RoundedAccordion defaultExpanded aria-label={labels.container}>
-    <StyledAccordionSummary expandIcon={<ExpandMoreIcon />}>
-      <ProcessSummary justifyContent="space-between">
-        <ProcessIconAndText>
-          {summaryIcon}
-          <SummaryText>{summaryText}</SummaryText>
-        </ProcessIconAndText>
+  <ProcessCardContainer aria-label={labels.container} className={className}>
+    <SummarySection>
+      <ProcessIconAndText>
+        <ProcessIconWrapper>{summaryIcon}</ProcessIconWrapper>
+        <SummaryText>{summaryText}</SummaryText>
+      </ProcessIconAndText>
 
-        {isBusy && <RotatingAutorenewOutlinedIcon fontSize="small" />}
+      {isBusy && <RotatingAutorenewOutlinedIcon fontSize="inherit" />}
 
-        {isRemovable && (
-          <Tooltip title="Discard card">
-            <IconButton size="medium" onClick={() => removeProcess(processId)}>
-              <ClearAllIcon fontSize="inherit" />
-            </IconButton>
-          </Tooltip>
-        )}
-      </ProcessSummary>
-    </StyledAccordionSummary>
+      {isRemovable && (
+        <Tooltip title="Discard card">
+          <DiscardIconButton onClick={() => removeProcess(processId)}>
+            <ClearAllIcon fontSize="inherit" />
+          </DiscardIconButton>
+        </Tooltip>
+      )}
+    </SummarySection>
 
-    <AccordionDetails>
-      <DetailsList>{details}</DetailsList>
-    </AccordionDetails>
-  </RoundedAccordion>
+    <DetailsSection>{details}</DetailsSection>
+  </ProcessCardContainer>
 );
 
-const StyledAccordionSummary = styled(AccordionSummary)`
-  & .MuiAccordionSummary-content {
-    min-width: 0;
-  }
+const ProcessCardContainer = styled(Paper)`
+  padding: ${({ theme }) => theme.spacing(2)};
+
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing(2)};
 `;
 
-const ProcessSummary = styled(Stack)`
-  ${commonStyles.flex.shrinkAndFitHorizontal}
+const SummarySection = styled(Box)`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing()};
 `;
 
-const ProcessIconAndText = styled(Stack)`
-  ${commonStyles.flex.shrinkAndFitHorizontal}
+const ProcessIconAndText = styled(Box)`
+  ${commonStyles.layout.flex.shrinkAndFitHorizontal}
+
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing()};
+`;
+
+const ProcessIconWrapper = styled(Box)`
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-items: center;
+  gap: ${({ theme }) => theme.spacing()};
+
+  font-size: ${({ theme }) => theme.font.sizes.md};
 `;
 
 const SummaryText = styled(Box)`
-  flex-grow: 1;
+  ${commonStyles.layout.flex.shrinkAndFitHorizontal}
+
   font-size: ${({ theme }) => theme.font.sizes.sm};
   ${commonStyles.text.singleLineEllipsis}
 `;
 
 const RotatingAutorenewOutlinedIcon = styled(AutorenewOutlinedIcon)`
+  font-size: ${({ theme }) => theme.font.sizes.md};
   animation: ${rotate} 2s linear infinite;
   @media (prefers-reduced-motion: reduce) {
     display: none;
   }
 `;
 
-const DetailsList = styled.div`
+const DiscardIconButton = styled(IconButton)`
+  /* undo vertical padding of IconButton */
+  margin-block: -9px;
+  font-size: ${({ theme }) => theme.font.sizes.lg};
+`;
+
+const DetailsSection = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing(2)};

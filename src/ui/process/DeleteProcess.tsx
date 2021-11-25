@@ -39,7 +39,12 @@ const STATUS_META_INFOS: StatusMetaInfos = {
   },
 };
 
-export const DeleteProcess: React.FC<{ process: DeleteProcessType }> = ({ process }) => {
+type DeleteProcessProps = {
+  process: DeleteProcessType;
+  className?: string;
+};
+
+export const DeleteProcess: React.FC<DeleteProcessProps> = ({ process, className }) => {
   let contentToRender;
   switch (process.status) {
     case DELETE_PROCESS_STATUS.PENDING_FOR_USER_INPUT: {
@@ -93,9 +98,10 @@ export const DeleteProcess: React.FC<{ process: DeleteProcessType }> = ({ proces
 
   return (
     <ProcessCard
+      className={className}
       labels={{ container: 'Delete Process' }}
       processId={process.id}
-      summaryIcon={<DeleteOutlinedIcon fontSize="small" />}
+      summaryIcon={<DeleteOutlinedIcon fontSize="inherit" />}
       summaryText={process.uris
         .map((uri) => {
           const { resourceName, extension } = uriHelper.extractNameAndExtension(uri);

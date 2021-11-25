@@ -213,7 +213,7 @@ const TagAutocomplete: typeof Autocomplete = styled(Autocomplete)`
 `;
 
 const OptionLabel = styled('span')`
-  ${commonStyles.flex.shrinkAndFitHorizontal}
+  ${commonStyles.layout.flex.shrinkAndFitHorizontal}
 `;
 
 const ColorButton = styled(Button)`

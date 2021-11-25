@@ -34,6 +34,8 @@ declare module '@mui/material/styles' {
     font: {
       sizes: {
         sm: string;
+        md: string;
+        lg: string;
       };
       weights: {
         bold: number;
@@ -60,6 +62,8 @@ declare module '@mui/material/styles' {
     font: {
       sizes: {
         sm: string;
+        md: string;
+        lg: string;
       };
       weights: {
         bold: number;
@@ -121,57 +125,6 @@ export const createTheme = (locale: Localization, activeTheme: AvailableTheme) =
   /* the theme changes the appearance of some material-ui components to better align with the Windows 11 design language */
   const theme: Parameters<typeof createMuiTheme>[0] = {
     components: {
-      MuiAccordion: {
-        styleOverrides: {
-          root: css`
-            &.Mui-expanded {
-              margin: 0;
-            }
-
-            /* disable additional material-ui border applied on 2nd, 3rd, ... Accordion in a list */
-            &::before {
-              content: none;
-            }
-          ` as any,
-        },
-      },
-
-      MuiAccordionDetails: {
-        styleOverrides: {
-          root: css`
-            padding-top: 0;
-            padding-inline: ${(props) => props.theme.spacing(1.5)};
-          ` as any,
-        },
-      },
-
-      MuiAccordionSummary: {
-        styleOverrides: {
-          root: css`
-            /* min-height taken from MuiButton */
-            min-height: 32.8px;
-            padding-inline: ${(props) => props.theme.spacing(1.5)};
-            gap: ${(props) => props.theme.spacing(0.5)};
-
-            &.Mui-expanded {
-              min-height: 52px;
-            }
-
-            &:hover {
-              border-color: ${themeConfiguration.background};
-              background-color: ${(props) => props.theme.palette.action.hover};
-            }
-          ` as any,
-          content: css`
-            margin: 0;
-
-            &.Mui-expanded {
-              margin: 0;
-            }
-          ` as any,
-        },
-      },
-
       MuiButton: {
         defaultProps: {
           variant: 'outlined',
@@ -341,6 +294,8 @@ export const createTheme = (locale: Localization, activeTheme: AvailableTheme) =
     font: {
       sizes: {
         sm: '0.75rem',
+        md: '1.00rem',
+        lg: '1.25rem',
       },
       weights: {
         bold: 700,

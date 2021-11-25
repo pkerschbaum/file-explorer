@@ -12,6 +12,7 @@ import {
 } from '@app/ui/explorer-panel/ExplorerPanel';
 import { Stack } from '@app/ui/layouts/Stack';
 import {
+  ROOTCONTAINER_PADDING_BOTTOM_FACTOR,
   ROOTCONTAINER_PADDING_LEFT_FACTOR,
   ROOTCONTAINER_PADDING_RIGHT_FACTOR,
 } from '@app/ui/shell/constants';
@@ -98,7 +99,7 @@ const RootContainer = styled(Box)<{ userPreferencesSidebarOpen: boolean }>`
   grid-column-gap: ${(props) => props.theme.spacing(2)};
   padding-left: ${(props) => props.theme.spacing(ROOTCONTAINER_PADDING_LEFT_FACTOR)};
   padding-right: ${(props) => props.theme.spacing(ROOTCONTAINER_PADDING_RIGHT_FACTOR)};
-  padding-bottom: ${(props) => props.theme.spacing()};
+  padding-bottom: ${(props) => props.theme.spacing(ROOTCONTAINER_PADDING_BOTTOM_FACTOR)};
 `;
 
 const TabsAndProcesses = styled(Stack)`
@@ -108,4 +109,13 @@ const TabsAndProcesses = styled(Stack)`
   /* Overlap the TabsArea with the WindowDragRegion above it */
   margin-top: -20px;
   -webkit-app-region: no-drag;
+
+  /* 
+   * Stretch to the end of the RootContainer (i.e., revert the padding-bottom of the RootContainer
+   * via negative margin-bottom).
+   * The goal is to get a more aesthetically pleasant overflow-y behavior: If the tabs and processes
+   * are too many to fit into the TabsAndProcesses container, the resulting overflow will reach till
+   * the lower border of the RootContainer.
+   */
+  margin-bottom: ${(props) => props.theme.spacing(-ROOTCONTAINER_PADDING_BOTTOM_FACTOR)};
 `;

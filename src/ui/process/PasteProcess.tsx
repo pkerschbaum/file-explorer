@@ -70,7 +70,12 @@ const STATUS_META_INFOS: StatusMetaInfos = {
   },
 };
 
-export const PasteProcess: React.FC<{ process: PasteProcessType }> = ({ process }) => {
+type PasteProcessProps = {
+  process: PasteProcessType;
+  className?: string;
+};
+
+export const PasteProcess: React.FC<PasteProcessProps> = ({ process, className }) => {
   const smallestUnitOfTotalSize = byteSize.probe(process.totalSize).unit;
 
   let content;
@@ -134,18 +139,19 @@ export const PasteProcess: React.FC<{ process: PasteProcessType }> = ({ process 
 
   return (
     <ProcessCard
+      className={className}
       labels={{ container: 'Paste Process' }}
       processId={process.id}
       summaryIcon={
         <>
           {process.pasteShouldMove ? (
-            <ContentCutOutlinedIcon fontSize="small" />
+            <ContentCutOutlinedIcon fontSize="inherit" />
           ) : !process.pasteShouldMove ? (
-            <ContentCopyOutlinedIcon fontSize="small" />
+            <ContentCopyOutlinedIcon fontSize="inherit" />
           ) : (
             assertThat.isUnreachable(process.pasteShouldMove)
           )}
-          <DoubleArrowIcon fontSize="small" />
+          <DoubleArrowIcon fontSize="inherit" />
         </>
       }
       summaryText={destinationFolderLabel}
