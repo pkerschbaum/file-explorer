@@ -20,7 +20,7 @@ describe('DeleteProcess [visual]', () => {
     );
     bootstrap({ storybookIdToVisit });
 
-    cy.document().matchImageSnapshot(`${getTestTitle()}_1`);
+    cy.findByLabelText(/Delete Process/i).matchImageSnapshot(`${getTestTitle()}_1`);
   });
 
   it('Running', () => {
@@ -30,7 +30,7 @@ describe('DeleteProcess [visual]', () => {
     );
     bootstrap({ storybookIdToVisit });
 
-    cy.document().matchImageSnapshot(`${getTestTitle()}_1`);
+    cy.findByLabelText(/Delete Process/i).matchImageSnapshot(`${getTestTitle()}_1`);
   });
 
   it('Success', () => {
@@ -40,7 +40,7 @@ describe('DeleteProcess [visual]', () => {
     );
     bootstrap({ storybookIdToVisit });
 
-    cy.document().matchImageSnapshot(`${getTestTitle()}_1`);
+    cy.findByLabelText(/Delete Process/i).matchImageSnapshot(`${getTestTitle()}_1`);
   });
 
   it('Failure', () => {
@@ -50,7 +50,7 @@ describe('DeleteProcess [visual]', () => {
     );
     bootstrap({ storybookIdToVisit });
 
-    cy.document().matchImageSnapshot(`${getTestTitle()}_1`);
+    cy.findByLabelText(/Delete Process/i).matchImageSnapshot(`${getTestTitle()}_1`);
   });
 
   it('Very Long Resource Names', () => {
@@ -60,6 +60,6 @@ describe('DeleteProcess [visual]', () => {
     );
     bootstrap({ storybookIdToVisit });
 
-    cy.document().matchImageSnapshot(`${getTestTitle()}_1`);
+    cy.findByLabelText(/Delete Process/i).matchImageSnapshot(`${getTestTitle()}_1`);
   });
 });

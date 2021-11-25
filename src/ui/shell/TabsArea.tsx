@@ -93,6 +93,9 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
           const isPrevExplorer = explorerIdx === explorerIdxPrevious;
           const isNextExplorer = explorerIdx === explorerIdxNext;
 
+          const uriSlugs = uriHelper.splitUriIntoSlugs(explorer.cwd);
+          const uriSlugToRender = uriSlugs[uriSlugs.length - 1];
+
           return (
             <Tab
               key={explorer.explorerId}
@@ -100,7 +103,7 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
               disableRipple
               label={
                 <ExplorerPanelTab
-                  label={uriHelper.extractNameAndExtension(explorer.cwd).resourceName}
+                  label={uriSlugToRender.formatted}
                   buttonRef={
                     isPrevExplorer
                       ? prevTabButtonRef

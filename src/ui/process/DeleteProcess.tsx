@@ -72,13 +72,13 @@ export const DeleteProcess: React.FC<{ process: DeleteProcessType }> = ({ proces
       break;
     }
     case DELETE_PROCESS_STATUS.SUCCESS: {
-      contentToRender = <Box>Files deleted successfully</Box>;
+      contentToRender = <Box>Files/Folders deleted successfully</Box>;
       break;
     }
     case DELETE_PROCESS_STATUS.FAILURE: {
       contentToRender = (
         <Stack direction="column" alignItems="flex-start">
-          <Box>Error occured during deletion of the files:</Box>
+          <Box>Error occured during deletion of the files/folders:</Box>
           <Box>{process.error}</Box>
         </Stack>
       );
@@ -93,6 +93,7 @@ export const DeleteProcess: React.FC<{ process: DeleteProcessType }> = ({ proces
 
   return (
     <ProcessCard
+      labels={{ container: 'Delete Process' }}
       processId={process.id}
       summaryIcon={<DeleteOutlinedIcon fontSize="small" />}
       summaryText={process.uris
@@ -105,7 +106,7 @@ export const DeleteProcess: React.FC<{ process: DeleteProcessType }> = ({ proces
       details={
         <>
           <ResourcesList>
-            <Box>Files:</Box>
+            <Box>Files/Folders:</Box>
             {process.uris.map((uri) => {
               const { resourceName, extension } = uriHelper.extractNameAndExtension(uri);
               const resourceLabel = formatter.resourceBasename({ name: resourceName, extension });

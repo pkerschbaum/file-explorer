@@ -18,6 +18,7 @@ type ProcessCardProps = {
   details: React.ReactNode;
   isBusy: boolean;
   isRemovable: boolean;
+  labels: { container: string };
 };
 
 export const ProcessCard: React.FC<ProcessCardProps> = ({
@@ -27,8 +28,9 @@ export const ProcessCard: React.FC<ProcessCardProps> = ({
   details,
   isBusy,
   isRemovable,
+  labels,
 }) => (
-  <RoundedAccordion defaultExpanded>
+  <RoundedAccordion defaultExpanded aria-label={labels.container}>
     <StyledAccordionSummary expandIcon={<ExpandMoreIcon />}>
       <ProcessSummary justifyContent="space-between">
         <ProcessIconAndText>

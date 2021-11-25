@@ -77,7 +77,9 @@ export const PasteProcess: React.FC<{ process: PasteProcessType }> = ({ process 
   switch (process.status) {
     case PASTE_PROCESS_STATUS.RUNNING_DETERMINING_TOTALSIZE: {
       content = (
-        <Box>Determining total size of files to {process.pasteShouldMove ? 'move' : 'copy'}...</Box>
+        <Box>
+          Determining total size of files/folders to {process.pasteShouldMove ? 'move' : 'copy'}...
+        </Box>
       );
       break;
     }
@@ -86,13 +88,13 @@ export const PasteProcess: React.FC<{ process: PasteProcessType }> = ({ process 
       break;
     }
     case PASTE_PROCESS_STATUS.SUCCESS: {
-      content = <Box>Files transferred successfully</Box>;
+      content = <Box>Files/Folders transferred successfully</Box>;
       break;
     }
     case PASTE_PROCESS_STATUS.FAILURE: {
       content = (
         <Stack direction="column" alignItems="flex-start">
-          <Box>Error occured during transfer of the files:</Box>
+          <Box>Error occured during transfer of the files/folders:</Box>
           <Box>{process.error}</Box>
         </Stack>
       );
@@ -132,6 +134,7 @@ export const PasteProcess: React.FC<{ process: PasteProcessType }> = ({ process 
 
   return (
     <ProcessCard
+      labels={{ container: 'Paste Process' }}
       processId={process.id}
       summaryIcon={
         <>
@@ -156,7 +159,7 @@ export const PasteProcess: React.FC<{ process: PasteProcessType }> = ({ process 
           </Stack>
 
           <Stack direction="column" alignItems="stretch" spacing={0.5}>
-            <Box>Files:</Box>
+            <Box>Files/Folders:</Box>
             {process.sourceUris.slice(0, 2).map((uri) => {
               const { resourceName, extension } = uriHelper.extractNameAndExtension(uri);
               const sourceResourceLabel = formatter.resourceBasename({
@@ -174,7 +177,7 @@ export const PasteProcess: React.FC<{ process: PasteProcessType }> = ({ process 
             })}
             {process.sourceUris.length > 2 && (
               <Box sx={{ fontWeight: (theme) => theme.font.weights.bold }}>
-                + {process.sourceUris.length - 2} files
+                + {process.sourceUris.length - 2} files/folders
               </Box>
             )}
           </Stack>
