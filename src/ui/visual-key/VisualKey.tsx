@@ -2,28 +2,31 @@ import { Box } from '@mui/material';
 import React from 'react';
 import styled from 'styled-components';
 
-export const VisualKey: React.FC = ({ children }) => {
-  return <VisualKeyContainer>{children}</VisualKeyContainer>;
+type VisualKeyProps = {
+  children: React.ReactNode;
+  type?: 'char' | 'icon';
 };
 
-const VisualKeyContainer = styled(Box)`
+export const VisualKey: React.FC<VisualKeyProps> = ({ children, type = 'char' }) => {
+  return <VisualKeyContainer type={type}>{children}</VisualKeyContainer>;
+};
+
+const VisualKeyContainer = styled(Box)<{ type: 'char' | 'icon' }>`
   height: 24px;
   width: 24px;
-  padding-top: 4px;
-  padding-left: 4px;
 
   display: flex;
-  align-items: flex-start;
-
-  color: black;
-  background-color: lightgrey;
+  justify-content: ${(props) => (props.type === 'char' ? 'flex-start' : 'center')};
+  align-items: ${(props) => (props.type === 'char' ? 'flex-start' : 'center')};
+  padding-top: ${(props) => (props.type === 'char' ? '2px' : '3px')};
+  padding-left: ${(props) => (props.type === 'char' ? '4px' : undefined)};
   border-bottom: 3px solid rgba(0, 0, 0, 0.2);
   border-right: 1px solid rgba(0, 0, 0, 0.1);
   border-left: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 4px;
-  line-height: 1;
 
-  && {
-    font-size: 0.75rem;
-  }
+  color: black;
+  background-color: lightgrey;
+  font-size: ${({ theme }) => theme.font.sizes.md};
+  line-height: 1;
 `;

@@ -1,11 +1,13 @@
 import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
-import { Button, ButtonProps, useMediaQuery } from '@mui/material';
+import { Button, ButtonProps, ButtonTypeMap, ExtendButtonBase, useMediaQuery } from '@mui/material';
 // @ts-expect-error -- we have to import from /node here because jest would otherwise import the ESM module (which Jest cannot handle)
 import TouchRipple from '@mui/material/node/ButtonBase/TouchRipple';
 import { motion } from 'framer-motion';
 import * as React from 'react';
 import styled from 'styled-components';
 import invariant from 'tiny-invariant';
+
+import { MUI_BUTTON_SPACING_FACTOR } from '@app/ui/ThemeProvider';
 
 type ActionButtonProps = ButtonProps<
   typeof motion.button,
@@ -58,7 +60,7 @@ export const ActionButton = React.forwardRef<ActionButtonRef, ActionButtonProps>
     disableLayoutAnimation = prefersReducedMotion || disableLayoutAnimation;
 
     return (
-      <Button
+      <StyledButton
         ref={buttonRef}
         component={motion.button}
         layout={!disableLayoutAnimation}
@@ -73,6 +75,7 @@ export const ActionButton = React.forwardRef<ActionButtonRef, ActionButtonProps>
             </motion.span>
           )
         }
+        endIconPresent={!!endIcon}
         endIcon={
           <motion.span style={{ display: 'flex' }} layout={!disableLayoutAnimation}>
             {endIcon}
@@ -83,7 +86,7 @@ export const ActionButton = React.forwardRef<ActionButtonRef, ActionButtonProps>
       >
         <TouchRipple ref={touchRippleRef} center={false} />
         <ActionButtonContent layout={!disableLayoutAnimation}>{children}</ActionButtonContent>
-      </Button>
+      </StyledButton>
     );
   },
 );
@@ -92,4 +95,18 @@ const ActionButtonContent = styled(motion.span)`
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing()};
+`;
+
+type StyledButtonProps = { endIconPresent: boolean };
+
+const StyledButton: ExtendButtonBase<ButtonTypeMap<StyledButtonProps>> = styled(
+  Button,
+)<StyledButtonProps>`
+  & > .MuiButton-endIcon {
+    /* If no endIcon is present, we revert the gap introduced by the surrounding flexbox container. 
+     * We cannot just remove the endIcon (via display: none or conditional rendering) because then 
+     * we would not have any framer-motion layout animation for the endIcon. */
+    margin-left: ${(props) =>
+      !props.endIconPresent ? props.theme.spacing(-MUI_BUTTON_SPACING_FACTOR) : 0};
+  }
 `;

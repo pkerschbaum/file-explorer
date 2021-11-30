@@ -36,6 +36,7 @@ declare module '@mui/material/styles' {
         sm: string;
         md: string;
         lg: string;
+        xl: string;
       };
       weights: {
         bold: number;
@@ -64,6 +65,7 @@ declare module '@mui/material/styles' {
         sm: string;
         md: string;
         lg: string;
+        xl: string;
       };
       weights: {
         bold: number;
@@ -78,29 +80,90 @@ declare module 'styled-components' {
 }
 
 export const tabIndicatorSpanClassName = 'MuiTabs-indicatorSpan';
+export const MUI_BUTTON_SPACING_FACTOR = 1;
+export const TARGET_MEDIUM_FONTSIZE = 13;
+
+// "Nord" theme color palette (https://www.nordtheme.com/docs/colors-and-palettes)
+const NORD_THEME = {
+  // Polar Night
+  nord0: '#2E3440',
+  nord1: '#3B4252',
+  nord2: '#434C5E',
+  nord3: '#4C566A',
+  // Snow Storm
+  nord4: '#D8DEE9',
+  nord5: '#E5E9F0',
+  nord6: '#ECEFF4',
+  // Frost
+  nord7: '#8FBCBB',
+  nord8: '#88C0D0',
+  nord9: '#81A1C1',
+  nord10: '#5E81AC',
+  // Aurora
+  nord11: '#BF616A',
+  nord12: '#D08770',
+  nord13: '#EBCB8B',
+  nord14: '#A3BE8C',
+  nord15: '#B48EAD',
+} as const;
 
 export const THEMES = {
+  nord: {
+    mode: 'dark',
+    background: {
+      0: NORD_THEME.nord0,
+      1: NORD_THEME.nord1,
+      2: NORD_THEME.nord2,
+    },
+    foreground: {
+      0: NORD_THEME.nord6,
+    },
+    highlight: {
+      primary: NORD_THEME.nord8,
+      success: NORD_THEME.nord14,
+      error: NORD_THEME.nord11,
+      warning: NORD_THEME.nord13,
+    },
+  },
   coffee: {
     mode: 'dark',
-    background: '#231f1a',
-    paperBackground: 'hsl(27, 11%, 17%)',
-    hoverBackground: 'hsl(27, 11%, 21%)',
-    foregroundColor: 'hsl(0, 0%, 100%)',
-    primaryColor: cyan[300],
+    background: {
+      0: '#231f1a',
+      1: 'hsl(27, 11%, 17%)',
+      2: 'hsl(27, 11%, 21%)',
+    },
+    foreground: {
+      0: 'hsl(0, 0%, 100%)',
+    },
+    highlight: {
+      primary: cyan[300],
+      success: '#A3BE8C',
+      error: '#BF616A',
+      warning: '#EBCB8B',
+    },
   },
   flow: {
     // inspired by Windows 11 "Flow" theme
     mode: 'light',
-    background: 'hsl(0, 0%, 100%)',
-    paperBackground: 'hsl(202, 48%, 95%)',
-    hoverBackground: 'hsl(202, 48%, 84%)',
-    foregroundColor: 'hsl(0, 0%, 11%)',
-    primaryColor: 'hsl(203, 17%, 36%)',
+    background: {
+      0: 'hsl(0, 0%, 100%)',
+      1: 'hsl(202, 48%, 95%)',
+      2: 'hsl(202, 48%, 84%)',
+    },
+    foreground: {
+      0: 'hsl(0, 0%, 11%)',
+    },
+    highlight: {
+      primary: 'hsl(203, 17%, 36%)',
+      success: '#A3BE8C',
+      error: '#BF616A',
+      warning: '#EBCB8B',
+    },
   },
 } as const;
 export type AvailableTheme = keyof typeof THEMES;
 export const availableThemes = Object.keys(THEMES) as AvailableTheme[];
-export const defaultTheme: AvailableTheme = 'coffee';
+export const defaultTheme: AvailableTheme = 'nord';
 
 // border colors are taken from material-ui OutlinedInput <fieldset> border color
 const BORDER_COLOR_LIGHT = 'rgba(0, 0, 0, 0.23)';
@@ -134,9 +197,12 @@ export const createTheme = (locale: Localization, activeTheme: AvailableTheme) =
         styleOverrides: {
           root: css`
             text-transform: initial;
-            padding-left: 12px;
-            padding-right: 12px;
+            padding-left: 10px;
+            padding-right: 10px;
             transition-duration: 150ms;
+
+            /* implement spacing between startIcon - content - endIcon via gap property */
+            gap: ${({ theme }) => theme.spacing(MUI_BUTTON_SPACING_FACTOR)};
 
             &.Mui-focusVisible {
               outline: 2px solid ${outlineColorToUse};
@@ -146,32 +212,57 @@ export const createTheme = (locale: Localization, activeTheme: AvailableTheme) =
               filter: brightness(70%);
             }
           ` as any,
+          contained: css`
+            font-weight: ${({ theme }) => theme.font.weights.bold};
+          ` as any,
           outlined: css`
-            color: ${themeConfiguration.foregroundColor};
-            background-color: ${themeConfiguration.paperBackground};
-            border-color: ${themeConfiguration.paperBackground};
+            color: ${themeConfiguration.foreground[0]};
+            background-color: ${themeConfiguration.background[1]};
+            border-color: ${themeConfiguration.background[1]};
 
             &:hover {
-              border-color: ${themeConfiguration.background};
+              border-color: ${themeConfiguration.background[0]};
               background-color: ${(props) => props.theme.palette.action.hover};
             }
           ` as any,
           startIcon: css`
+            /* spacing between startIcon - content is implemented via gap property */
+            margin-right: 0;
+            margin-left: 0;
+
             & > *:nth-of-type(1) {
-              font-size: ${18 / 16}rem;
+              font-size: ${({ theme }) => theme.font.sizes.lg};
             }
           ` as any,
+
+          endIcon: css`
+            /* spacing between content - endIcon is implemented via gap property */
+            margin-right: 0;
+            margin-left: 0;
+          ` as any,
+        },
+      },
+
+      MuiCssBaseline: {
+        styleOverrides: {
+          body: {
+            // just use font-size set on the HTML document
+            fontSize: `1rem`,
+          },
         },
       },
 
       MuiInputBase: {
         styleOverrides: {
+          root: css`
+            font: inherit;
+          `,
           input: css`
             padding-top: 6px;
             padding-bottom: 6px;
             padding-left: 12px;
             padding-right: 12px;
-          ` as any,
+          `,
         },
       },
 
@@ -184,7 +275,7 @@ export const createTheme = (locale: Localization, activeTheme: AvailableTheme) =
             & > .MuiListItemIcon-root {
               min-width: 0;
             }
-          ` as any,
+          `,
         },
       },
 
@@ -194,7 +285,7 @@ export const createTheme = (locale: Localization, activeTheme: AvailableTheme) =
             text-transform: none;
             padding: 0;
             min-height: 0;
-          ` as any,
+          `,
         },
       },
 
@@ -202,7 +293,7 @@ export const createTheme = (locale: Localization, activeTheme: AvailableTheme) =
         styleOverrides: {
           flexContainer: css`
             gap: 8px;
-          ` as any,
+          `,
 
           indicator: css`
             right: initial;
@@ -215,10 +306,10 @@ export const createTheme = (locale: Localization, activeTheme: AvailableTheme) =
             & .${tabIndicatorSpanClassName} {
               max-height: 16px;
               height: 100%;
-              background-color: ${themeConfiguration.primaryColor};
+              background-color: ${themeConfiguration.highlight.primary};
               border-radius: 4px;
             }
-          ` as any,
+          `,
         },
       },
 
@@ -228,28 +319,36 @@ export const createTheme = (locale: Localization, activeTheme: AvailableTheme) =
 
       MuiTooltip: {
         defaultProps: { disableInteractive: true },
+        styleOverrides: {
+          tooltip: css`
+            font-size: ${({ theme }) => theme.font.sizes.sm};
+          ` as any,
+        },
       },
     },
 
     typography: {
-      fontFamily: ['Segoe UI Variable', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'].join(','),
-      fontSize: 12,
+      fontFamily: ['"Segoe UI Variable"', '"Roboto"', '"Helvetica"', '"Arial"', 'sans-serif'].join(
+        ',',
+      ),
+      fontSize: TARGET_MEDIUM_FONTSIZE,
+      htmlFontSize: TARGET_MEDIUM_FONTSIZE,
     },
 
     palette: {
       mode: themeConfiguration.mode,
       action: {
-        hover: themeConfiguration.hoverBackground,
+        hover: themeConfiguration.background[2],
       },
       background: {
-        default: themeConfiguration.background,
-        paper: themeConfiguration.paperBackground,
+        default: themeConfiguration.background[0],
+        paper: themeConfiguration.background[1],
       },
       primary: {
-        main: themeConfiguration.primaryColor,
+        main: themeConfiguration.highlight.primary,
       },
       text: {
-        secondary: themeConfiguration.foregroundColor,
+        secondary: themeConfiguration.foreground[0],
       },
       // divider does not only set the color of material-ui <Divider> components, but also of the border of e.g. Paper
       divider: borderColorToUse,
@@ -270,18 +369,18 @@ export const createTheme = (locale: Localization, activeTheme: AvailableTheme) =
 
     processStatusColors: {
       pasteProcess: {
-        [PASTE_PROCESS_STATUS.RUNNING_DETERMINING_TOTALSIZE]: themeConfiguration.background,
-        [PASTE_PROCESS_STATUS.RUNNING_PERFORMING_PASTE]: themeConfiguration.background,
-        [PASTE_PROCESS_STATUS.SUCCESS]: '#5B7E2F',
-        [PASTE_PROCESS_STATUS.FAILURE]: '#B35C54',
-        [PASTE_PROCESS_STATUS.ABORT_REQUESTED]: themeConfiguration.background,
-        [PASTE_PROCESS_STATUS.ABORT_SUCCESS]: '#5B7E2F',
+        [PASTE_PROCESS_STATUS.RUNNING_DETERMINING_TOTALSIZE]: themeConfiguration.background[0],
+        [PASTE_PROCESS_STATUS.RUNNING_PERFORMING_PASTE]: themeConfiguration.background[0],
+        [PASTE_PROCESS_STATUS.SUCCESS]: themeConfiguration.highlight.success,
+        [PASTE_PROCESS_STATUS.FAILURE]: themeConfiguration.highlight.error,
+        [PASTE_PROCESS_STATUS.ABORT_REQUESTED]: themeConfiguration.background[0],
+        [PASTE_PROCESS_STATUS.ABORT_SUCCESS]: themeConfiguration.highlight.success,
       },
       deleteProcess: {
-        [DELETE_PROCESS_STATUS.PENDING_FOR_USER_INPUT]: '#A88518',
-        [DELETE_PROCESS_STATUS.RUNNING]: themeConfiguration.background,
-        [DELETE_PROCESS_STATUS.SUCCESS]: '#5B7E2F',
-        [DELETE_PROCESS_STATUS.FAILURE]: '#B35C54',
+        [DELETE_PROCESS_STATUS.PENDING_FOR_USER_INPUT]: themeConfiguration.highlight.primary,
+        [DELETE_PROCESS_STATUS.RUNNING]: themeConfiguration.background[0],
+        [DELETE_PROCESS_STATUS.SUCCESS]: themeConfiguration.highlight.success,
+        [DELETE_PROCESS_STATUS.FAILURE]: themeConfiguration.highlight.error,
       },
     },
 
@@ -293,9 +392,10 @@ export const createTheme = (locale: Localization, activeTheme: AvailableTheme) =
 
     font: {
       sizes: {
-        sm: '0.75rem',
-        md: '1.00rem',
-        lg: '1.25rem',
+        sm: `${(TARGET_MEDIUM_FONTSIZE - 2) / 13}rem`,
+        md: `${TARGET_MEDIUM_FONTSIZE / 13}rem`,
+        lg: `${(TARGET_MEDIUM_FONTSIZE + 2) / 13}rem`,
+        xl: `${(TARGET_MEDIUM_FONTSIZE + 4) / 13}rem`,
       },
       weights: {
         bold: 700,

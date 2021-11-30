@@ -80,18 +80,19 @@ const ProcessIconWrapper = styled(Box)`
   justify-items: center;
   gap: ${({ theme }) => theme.spacing()};
 
-  font-size: ${({ theme }) => theme.font.sizes.md};
+  font-size: ${({ theme }) => theme.font.sizes.lg};
 `;
 
 const SummaryText = styled(Box)`
   ${commonStyles.layout.flex.shrinkAndFitHorizontal}
 
-  font-size: ${({ theme }) => theme.font.sizes.sm};
+  line-height: 1;
   ${commonStyles.text.singleLineEllipsis}
 `;
 
 const RotatingAutorenewOutlinedIcon = styled(AutorenewOutlinedIcon)`
-  font-size: ${({ theme }) => theme.font.sizes.md};
+  font-size: ${({ theme }) => theme.font.sizes.lg};
+
   animation: ${rotate} 2s linear infinite;
   @media (prefers-reduced-motion: reduce) {
     display: none;
@@ -99,15 +100,13 @@ const RotatingAutorenewOutlinedIcon = styled(AutorenewOutlinedIcon)`
 `;
 
 const DiscardIconButton = styled(IconButton)`
-  /* undo vertical padding of IconButton */
-  margin-block: -9px;
-  font-size: ${({ theme }) => theme.font.sizes.lg};
+  /* undo paddings of IconButton via negative margin */
+  margin: -9px -9px -9px 0;
+  font-size: ${({ theme }) => theme.font.sizes.xl};
 `;
 
 const DetailsSection = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing(2)};
-
-  font-size: ${({ theme }) => theme.font.sizes.sm};
 `;

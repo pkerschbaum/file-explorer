@@ -91,7 +91,6 @@ const PreferenceGroup = styled(Box)`
 `;
 
 const PreferenceLabel = styled(Box)`
-  font-size: ${({ theme }) => theme.font.sizes.sm};
   font-weight: ${({ theme }) => theme.font.weights.bold};
   text-transform: uppercase;
 `;

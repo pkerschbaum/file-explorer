@@ -44,6 +44,4 @@ const LinearProgressContainer = styled.div`
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing(1.5)};
-
-  font-size: ${({ theme }) => theme.font.sizes.sm};
 `;

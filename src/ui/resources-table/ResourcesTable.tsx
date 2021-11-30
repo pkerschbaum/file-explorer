@@ -47,7 +47,6 @@ const StyledTableHead = styled(TableHead)`
 `;
 
 const StyledHeadCell = styled(HeadCell)`
-  font-size: ${({ theme }) => theme.font.sizes.sm};
   font-weight: ${({ theme }) => theme.font.weights.bold};
 `;
 

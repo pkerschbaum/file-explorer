@@ -368,7 +368,6 @@ const ClipboardResourcesList = styled.div`
   align-items: flex-start;
   gap: ${({ theme }) => theme.spacing()};
 
-  font-size: ${({ theme }) => theme.font.sizes.sm};
   word-break: break-all;
   white-space: pre-wrap;
 `;

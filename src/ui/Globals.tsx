@@ -20,7 +20,7 @@ import {
   DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED,
   GlobalShortcutsContextProvider,
 } from '@app/ui/GlobalShortcutsContext';
-import { ThemeProvider } from '@app/ui/ThemeProvider';
+import { TARGET_MEDIUM_FONTSIZE, ThemeProvider } from '@app/ui/ThemeProvider';
 
 export function createQueryClient() {
   return new QueryClient({
@@ -35,7 +35,19 @@ export function createQueryClient() {
 }
 
 const globalStyle = css`
-  html,
+  :root {
+    /*
+      We want to set a default font-size of 13px for the application, for users which have the 
+      (default) font-size of 16px set for their user agent.
+      About 13-14px is used by many applications like VS Code, Chrome, ...
+
+      In order to respect changes of the font-size of the user (e.g., they have increased the 
+      font-size to 20px), we use a percentage-based value here.
+     */
+    font-size: ${(TARGET_MEDIUM_FONTSIZE / 16) * 100}%;
+  }
+
+  :root,
   body,
   #root {
     height: 100%;
@@ -168,5 +180,5 @@ const FileIconThemeLoader: React.FC = ({ children }) => {
 
 const RootContainer = styled.div`
   height: 100%;
-  background-color: ${(props) => props.theme.palette.background.default};
+  background-color: ${({ theme }) => theme.palette.background.default};
 `;

@@ -17,7 +17,7 @@ describe('UserPreferences [logic]', () => {
     const queryClient = createQueryClient();
     renderApp({ queryClient, store });
 
-    expect(storeRef.current.getState().userSlice.preferences.activeTheme).toEqual('coffee');
+    expect(storeRef.current.getState().userSlice.preferences.activeTheme).toEqual('nord');
 
     const openUserPreferencesButton = await screen.findByRole('button', {
       name: /Open User Preferences/i,

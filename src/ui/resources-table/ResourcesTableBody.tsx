@@ -144,6 +144,8 @@ const ResourceRow: React.FC<ResourceRowProps> = ({ resourceForRow, idxOfResource
 
 const ResourceNameFormatted = styled.div`
   padding-left: ${(props) => props.theme.spacing(ResourceNameFormattedSpacingFactor * 2)};
+  display: flex;
+  align-items: center;
 `;
 
 const iconStyles = css`
@@ -184,7 +186,7 @@ export const ResourceRowContent: React.FC<ResourceRowContentProps> = ({
   mtimeSlot,
 }) => (
   <>
-    <ResourcesTableCell>
+    <Cell>
       <Stack>
         <ResourceIconAndName>
           {iconSlot}
@@ -193,20 +195,16 @@ export const ResourceRowContent: React.FC<ResourceRowContentProps> = ({
 
         {tagsSlot}
       </Stack>
-    </ResourcesTableCell>
-    <ResourcesTableCell>{sizeSlot}</ResourcesTableCell>
-    <ResourcesTableCell>{mtimeSlot}</ResourcesTableCell>
+    </Cell>
+    <Cell>{sizeSlot}</Cell>
+    <Cell>{mtimeSlot}</Cell>
   </>
 );
-
-const ResourcesTableCell = styled(Cell)`
-  font-size: ${({ theme }) => theme.font.sizes.sm};
-`;
 
 const ResourceIconAndName = styled.div`
   width: 100%;
   display: flex;
-  align-items: center;
+  align-items: stretch;
 `;
 
 type RenameInputProps = {
@@ -237,12 +235,12 @@ const RenameInput: React.FC<RenameInputProps> = ({ resource, onSubmit, abortRena
           }
         }}
       />
-      <Button size="small" disabled={check.isNullishOrEmptyString(value)} type="submit">
+      <RenameActionButton size="small" disabled={check.isNullishOrEmptyString(value)} type="submit">
         OK
-      </Button>
-      <Button size="small" onClick={abortRename}>
+      </RenameActionButton>
+      <RenameActionButton size="small" onClick={abortRename}>
         Abort
-      </Button>
+      </RenameActionButton>
     </RenameInputForm>
   );
 };
@@ -250,6 +248,7 @@ const RenameInput: React.FC<RenameInputProps> = ({ resource, onSubmit, abortRena
 const RenameInputForm = styled.form`
   width: 100%;
   display: flex;
+  align-items: stretch;
   gap: ${(props) => props.theme.spacing(2)};
 `;
 
@@ -257,13 +256,16 @@ const ResourceNameFormattedSpacingFactor = 0.5;
 
 const ResourceNameTextField = styled(TextField)`
   & .MuiInputBase-root {
-    font-size: ${12 / 16}rem;
+    height: 100%;
     margin-left: ${(props) => props.theme.spacing(ResourceNameFormattedSpacingFactor)};
   }
 
   & .MuiInputBase-input {
     padding-left: ${(props) => props.theme.spacing(ResourceNameFormattedSpacingFactor)};
-    padding-top: 5px;
-    padding-bottom: 4px;
+    padding-block: 0;
   }
+`;
+
+const RenameActionButton = styled(Button)`
+  padding-block: 0;
 `;
