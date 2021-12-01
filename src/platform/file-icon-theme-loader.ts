@@ -5,8 +5,8 @@ export type PlatformFileIconThemeLoader = {
   loadCssRules: (fileIconThemePathFragment: FileIconTheme['fsPathFragment']) => Promise<string>;
 };
 
-const FILE_ICON_THEME_RELATIVE_PATH = './static/icon-theme/';
-const FILE_ICON_THEME_PATH_REPLACE_REGEX = /file:.+\/static\/icon-theme\//g;
+const FILE_ICON_THEME_RELATIVE_PATH = './icon-theme/';
+const FILE_ICON_THEME_PATH_REPLACE_REGEX = /file:.+\/icon-theme\//g;
 
 export const createFileIconThemeLoader = () => {
   const instance: PlatformFileIconThemeLoader = {

@@ -1,8 +1,9 @@
 import { storyNameFromExport, toId } from '@storybook/csf';
+import type { ComponentMeta } from '@storybook/react';
+import invariant from 'tiny-invariant';
 
 import { ObjectLiteral } from '@app/base/utils/types.util';
 import { fileIconThemeLoaderRef, logWriterRef } from '@app/operations/global-modules';
-
 import { createLogWriter } from '@app/platform/log-writer';
 
 import { initializeFakePlatformModules } from '@app-test/utils/fake-platform-modules';
@@ -17,9 +18,10 @@ export function varToString(varObj: ObjectLiteral): string {
 }
 
 export function deriveIdFromMetadataAndExportName(
-  metadata: { title: string },
+  metadata: ComponentMeta<any>,
   nameOfStoryBinding: string,
 ): string {
+  invariant(metadata.title);
   return toId(metadata.title, storyNameFromExport(nameOfStoryBinding));
 }
 

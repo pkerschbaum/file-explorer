@@ -1,4 +1,4 @@
-import KeyboardArrowDownOutlined from '@mui/icons-material/KeyboardArrowDownOutlined';
+import ArrowDropDownOutlinedIcon from '@mui/icons-material/ArrowDropDownOutlined';
 import { Breadcrumbs } from '@mui/material';
 import * as React from 'react';
 import styled from 'styled-components';
@@ -63,16 +63,36 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
 
   const registerShortcutsResult = useRegisterExplorerShortcuts({
     changeDirectoryShortcut: {
-      keybindings: !isSecondToLastSlug
-        ? []
-        : [
+      keybindings: isSecondToLastSlug
+        ? [
             {
               key: KEY.ARROW_LEFT,
               modifiers: {
+                ctrl: 'NOT_SET',
                 alt: 'SET',
+                shift: 'NOT_SET',
               },
             },
-          ],
+          ]
+        : [],
+      handler: () => {
+        invariant(actionButtonRef.current);
+        actionButtonRef.current.triggerSyntheticClick();
+      },
+    },
+    openCwdMenuShortcut: {
+      keybindings: isLastSlug
+        ? [
+            {
+              key: KEY.ENTER,
+              modifiers: {
+                ctrl: 'NOT_SET',
+                alt: 'SET',
+                shift: 'NOT_SET',
+              },
+            },
+          ]
+        : [],
       handler: () => {
         invariant(actionButtonRef.current);
         actionButtonRef.current.triggerSyntheticClick();
@@ -101,19 +121,23 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
     <>
       <ActionButton
         ref={actionButtonRef}
-        variant="outlined"
-        color="inherit"
         onClick={handleClick}
         endIcon={
           isLastSlug ? (
-            <KeyboardArrowDownOutlined />
+            <>
+              <ArrowDropDownOutlinedIcon />
+              {registerShortcutsResult.changeDirectoryShortcut?.icon ??
+                registerShortcutsResult.openCwdMenuShortcut?.icon}
+            </>
           ) : (
-            registerShortcutsResult.changeDirectoryShortcut?.icon
+            registerShortcutsResult.changeDirectoryShortcut?.icon ??
+            registerShortcutsResult.openCwdMenuShortcut?.icon
           )
         }
       >
         {slugFormatted}
       </ActionButton>
+
       {isLastSlug && (
         <CwdActionsMenu
           explorerId={explorerId}
@@ -136,16 +160,5 @@ const StyledBreadcrumbs = styled(Breadcrumbs)`
 
   & > .MuiBreadcrumbs-ol .MuiBreadcrumbs-li > * {
     min-width: 0;
-    padding-inline: ${(props) => props.theme.spacing(1.5)};
-  }
-
-  & > .MuiBreadcrumbs-ol .MuiBreadcrumbs-li > *:not(button) {
-    /* MUI outlined button height */
-    height: 30.8px;
-    /* compensate for inline border of MUI outlined button */
-    padding-inline: calc(${(props) => props.theme.spacing(1.5)} + 1px);
-
-    display: flex;
-    align-items: center;
   }
 `;

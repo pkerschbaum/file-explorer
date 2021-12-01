@@ -50,17 +50,17 @@ export const KEY_TO_VISUALIZATION_MAP: { [key in KEY]: React.ReactNode } = {
       <ArrowCircleDownOutlinedIcon sx={{ fontSize: visualKeyFontSize }} />
     </VisualKey>
   ),
-  [KEY.DELETE]: <VisualKey>DEL</VisualKey>,
+  [KEY.DELETE]: <VisualKey fontSize="sm">Del</VisualKey>,
   [KEY.ENTER]: (
     <VisualKey type="icon">
       <KeyboardReturnOutlinedIcon sx={{ fontSize: visualKeyFontSize }} />
     </VisualKey>
   ),
-  [KEY.ESC]: <VisualKey>ESC</VisualKey>,
+  [KEY.ESC]: <VisualKey fontSize="sm">Esc</VisualKey>,
   [KEY.TAB]: (
     <VisualKey type="icon">
       <KeyboardTabOutlinedIcon sx={{ fontSize: visualKeyFontSize }} />
     </VisualKey>
   ),
-  [KEY.ALT]: <VisualKey>ALT</VisualKey>,
+  [KEY.ALT]: <VisualKey fontSize="sm">Alt</VisualKey>,
 };

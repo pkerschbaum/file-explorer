@@ -86,8 +86,10 @@ const ProcessIconWrapper = styled(Box)`
 const SummaryText = styled(Box)`
   ${commonStyles.layout.flex.shrinkAndFitHorizontal}
 
-  line-height: 1;
   ${commonStyles.text.singleLineEllipsis}
+
+  /* some margin for optical alignment */
+  margin-bottom: 3px;
 `;
 
 const RotatingAutorenewOutlinedIcon = styled(AutorenewOutlinedIcon)`

@@ -70,6 +70,11 @@ export const ActionsBar: React.FC = () => {
       keybindings: [
         {
           key: KEY.ENTER,
+          modifiers: {
+            ctrl: 'NOT_SET',
+            alt: 'NOT_SET',
+            shift: 'NOT_SET',
+          },
         },
       ],
       handler: () => {
@@ -83,6 +88,8 @@ export const ActionsBar: React.FC = () => {
           key: KEY.C,
           modifiers: {
             ctrl: 'SET',
+            alt: 'NOT_SET',
+            shift: 'NOT_SET',
           },
         },
       ],
@@ -97,6 +104,8 @@ export const ActionsBar: React.FC = () => {
           key: KEY.X,
           modifiers: {
             ctrl: 'SET',
+            alt: 'NOT_SET',
+            shift: 'NOT_SET',
           },
         },
       ],
@@ -111,6 +120,8 @@ export const ActionsBar: React.FC = () => {
           key: KEY.V,
           modifiers: {
             ctrl: 'SET',
+            alt: 'NOT_SET',
+            shift: 'NOT_SET',
           },
         },
       ],
@@ -125,6 +136,8 @@ export const ActionsBar: React.FC = () => {
           key: KEY.R,
           modifiers: {
             ctrl: 'SET',
+            alt: 'NOT_SET',
+            shift: 'NOT_SET',
           },
         },
       ],
@@ -139,6 +152,11 @@ export const ActionsBar: React.FC = () => {
       keybindings: [
         {
           key: KEY.DELETE,
+          modifiers: {
+            ctrl: 'NOT_SET',
+            alt: 'NOT_SET',
+            shift: 'NOT_SET',
+          },
         },
       ],
       handler: () => {
@@ -152,6 +170,8 @@ export const ActionsBar: React.FC = () => {
           key: KEY.N,
           modifiers: {
             ctrl: 'SET',
+            alt: 'NOT_SET',
+            shift: 'NOT_SET',
           },
         },
       ],
@@ -164,26 +184,42 @@ export const ActionsBar: React.FC = () => {
       keybindings: [
         {
           key: KEY.ARROW_UP,
+          modifiers: {
+            ctrl: 'NOT_SET',
+            alt: 'NOT_SET',
+            shift: 'NOT_SET',
+          },
         },
         {
           key: KEY.ARROW_DOWN,
+          modifiers: {
+            ctrl: 'NOT_SET',
+            alt: 'NOT_SET',
+            shift: 'NOT_SET',
+          },
         },
         {
           key: KEY.A,
           modifiers: {
             ctrl: 'SET',
+            alt: 'NOT_SET',
+            shift: 'NOT_SET',
           },
         },
         {
           key: KEY.PAGE_UP,
           modifiers: {
             ctrl: 'NOT_SET',
+            alt: 'NOT_SET',
+            shift: 'NOT_SET',
           },
         },
         {
           key: KEY.PAGE_DOWN,
           modifiers: {
             ctrl: 'NOT_SET',
+            alt: 'NOT_SET',
+            shift: 'NOT_SET',
           },
         },
       ],

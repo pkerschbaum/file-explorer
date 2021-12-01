@@ -50,12 +50,12 @@ type Shortcut = {
 };
 type Keybinding = {
   key: KEY;
-  modifiers?: Modifiers;
+  modifiers: Modifiers;
 };
 type Modifiers = {
-  ctrl?: 'SET' | 'NOT_SET';
-  alt?: 'SET' | 'NOT_SET';
-  shift?: 'SET' | 'NOT_SET';
+  ctrl: 'SET' | 'NOT_SET';
+  alt: 'SET' | 'NOT_SET';
+  shift: 'SET' | 'NOT_SET';
 };
 type AddGlobalShortcuts = (shortcuts: Shortcut[]) => DisposeShortcuts;
 type DisposeShortcuts = () => void;
@@ -76,7 +76,11 @@ export const GlobalShortcutsContextProvider: React.FC<GlobalShortcutsContextProv
   children,
 }) => {
   const shortcutsMapRef = React.useRef(new Map<symbol, Shortcut[]>());
-  const [currentlyActiveModifiers, setCurrentlyActiveModifiers] = React.useState<Modifiers>({});
+  const [currentlyActiveModifiers, setCurrentlyActiveModifiers] = React.useState<Modifiers>({
+    ctrl: 'NOT_SET',
+    alt: 'NOT_SET',
+    shift: 'NOT_SET',
+  });
 
   React.useEffect(function storeInfoIfFocusVisibleClassMatches() {
     const eventListener = (e: WindowEventMap['focus']) => {
@@ -203,16 +207,9 @@ function doesEventMatchKeybindingModifiers(
 ): boolean {
   let matches = true;
 
-  matches =
-    matches &&
-    (keybindingModifiers.ctrl === undefined || keybindingModifiers.ctrl === activeModifiers.ctrl);
-  matches =
-    matches &&
-    (keybindingModifiers.alt === undefined || keybindingModifiers.alt === activeModifiers.alt);
-  matches =
-    matches &&
-    (keybindingModifiers.shift === undefined ||
-      keybindingModifiers.shift === activeModifiers.shift);
+  matches = matches && keybindingModifiers.ctrl === activeModifiers.ctrl;
+  matches = matches && keybindingModifiers.alt === activeModifiers.alt;
+  matches = matches && keybindingModifiers.shift === activeModifiers.shift;
 
   return matches;
 }

@@ -49,7 +49,9 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
         {
           key: KEY.ARROW_UP,
           modifiers: {
+            ctrl: 'NOT_SET',
             alt: 'SET',
+            shift: 'NOT_SET',
           },
         },
       ],
@@ -60,7 +62,9 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
         {
           key: KEY.ARROW_DOWN,
           modifiers: {
+            ctrl: 'NOT_SET',
             alt: 'SET',
+            shift: 'NOT_SET',
           },
         },
       ],
@@ -71,7 +75,9 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
         {
           key: KEY.T,
           modifiers: {
+            ctrl: 'NOT_SET',
             alt: 'SET',
+            shift: 'NOT_SET',
           },
         },
       ],

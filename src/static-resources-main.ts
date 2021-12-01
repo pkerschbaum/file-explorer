@@ -10,6 +10,5 @@ export const OUTLINE_INSERT_DRIVE_FILE_ICON_PATH = path.join(
   __dirname,
   '..',
   'renderer',
-  'static',
   'outline_insert_drive_file_black_24dp.png',
 );

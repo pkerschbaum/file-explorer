@@ -11,7 +11,7 @@ module.exports = [
     patterns: [
       {
         from: LOCAL_STATIC_ASSETS_PATH,
-        to: 'static',
+        to: '.',
       },
     ],
   }),

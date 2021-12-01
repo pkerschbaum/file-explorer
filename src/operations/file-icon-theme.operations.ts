@@ -21,7 +21,7 @@ export type LanguageExtensionPointJsonEntry = {
 
 const httpIconThemeFileService: { readFile: IFileService['readFile'] } = {
   readFile: async (resource) => {
-    const relativeUrlToFetch = /((?:\/static)?\/icon-theme\/.+)/g.exec(resource.path)?.[1];
+    const relativeUrlToFetch = /(\/icon-theme\/.+)/g.exec(resource.path)?.[1];
     if (check.isNullishOrEmptyString(relativeUrlToFetch)) {
       throw new Error(
         `could not extract relative url to fetch! resource=${formatter.resourcePath(resource)}`,

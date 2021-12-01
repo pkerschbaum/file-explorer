@@ -35,6 +35,13 @@ export function createQueryClient() {
 }
 
 const globalStyle = css`
+  @font-face {
+    font-family: 'Segoe UI Variable';
+    src: url('./fonts/SegoeUI-VF.ttf') format('truetype-variations');
+    font-weight: 1 999;
+    font-display: fallback;
+  }
+
   :root {
     /*
       We want to set a default font-size of 13px for the application, for users which have the 

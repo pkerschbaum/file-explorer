@@ -33,6 +33,7 @@ declare module '@mui/material/styles' {
     };
     font: {
       sizes: {
+        xs: string;
         sm: string;
         md: string;
         lg: string;
@@ -62,6 +63,7 @@ declare module '@mui/material/styles' {
     };
     font: {
       sizes: {
+        xs: string;
         sm: string;
         md: string;
         lg: string;
@@ -199,6 +201,10 @@ export const createTheme = (locale: Localization, activeTheme: AvailableTheme) =
             text-transform: initial;
             padding-left: 10px;
             padding-right: 10px;
+            &.MuiButton-sizeSmall {
+              padding-left: 6px;
+              padding-right: 6px;
+            }
             transition-duration: 150ms;
 
             /* implement spacing between startIcon - content - endIcon via gap property */
@@ -240,6 +246,16 @@ export const createTheme = (locale: Localization, activeTheme: AvailableTheme) =
             margin-right: 0;
             margin-left: 0;
           ` as any,
+        },
+      },
+
+      MuiButtonGroup: {
+        styleOverrides: {
+          root: css`
+            & .MuiButtonGroup-grouped {
+              min-width: 0;
+            }
+          `,
         },
       },
 
@@ -392,6 +408,7 @@ export const createTheme = (locale: Localization, activeTheme: AvailableTheme) =
 
     font: {
       sizes: {
+        xs: `${(TARGET_MEDIUM_FONTSIZE - 4) / 13}rem`,
         sm: `${(TARGET_MEDIUM_FONTSIZE - 2) / 13}rem`,
         md: `${TARGET_MEDIUM_FONTSIZE / 13}rem`,
         lg: `${(TARGET_MEDIUM_FONTSIZE + 2) / 13}rem`,
