@@ -70,7 +70,6 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
               modifiers: {
                 ctrl: 'NOT_SET',
                 alt: 'SET',
-                shift: 'NOT_SET',
               },
             },
           ]
@@ -88,7 +87,6 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
               modifiers: {
                 ctrl: 'NOT_SET',
                 alt: 'SET',
-                shift: 'NOT_SET',
               },
             },
           ]

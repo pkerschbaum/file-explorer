@@ -55,7 +55,6 @@ type Keybinding = {
 type Modifiers = {
   ctrl: 'SET' | 'NOT_SET';
   alt: 'SET' | 'NOT_SET';
-  shift: 'SET' | 'NOT_SET';
 };
 type AddGlobalShortcuts = (shortcuts: Shortcut[]) => DisposeShortcuts;
 type DisposeShortcuts = () => void;
@@ -79,7 +78,6 @@ export const GlobalShortcutsContextProvider: React.FC<GlobalShortcutsContextProv
   const [currentlyActiveModifiers, setCurrentlyActiveModifiers] = React.useState<Modifiers>({
     ctrl: 'NOT_SET',
     alt: 'NOT_SET',
-    shift: 'NOT_SET',
   });
 
   React.useEffect(function storeInfoIfFocusVisibleClassMatches() {
@@ -104,7 +102,6 @@ export const GlobalShortcutsContextProvider: React.FC<GlobalShortcutsContextProv
       const newActiveModifiers: Modifiers = {
         ctrl: e.ctrlKey ? 'SET' : 'NOT_SET',
         alt: e.altKey ? 'SET' : 'NOT_SET',
-        shift: e.shiftKey ? 'SET' : 'NOT_SET',
       };
 
       let matchingShortcut: Shortcut | undefined;
@@ -154,7 +151,6 @@ export const GlobalShortcutsContextProvider: React.FC<GlobalShortcutsContextProv
       const newActiveModifiers: Modifiers = {
         ctrl: e.ctrlKey ? 'SET' : 'NOT_SET',
         alt: e.altKey ? 'SET' : 'NOT_SET',
-        shift: e.shiftKey ? 'SET' : 'NOT_SET',
       };
       setCurrentlyActiveModifiers((currentActiveModifiers) => {
         if (objects.shallowIsEqual(currentActiveModifiers, newActiveModifiers)) {
@@ -209,7 +205,6 @@ function doesEventMatchKeybindingModifiers(
 
   matches = matches && keybindingModifiers.ctrl === activeModifiers.ctrl;
   matches = matches && keybindingModifiers.alt === activeModifiers.alt;
-  matches = matches && keybindingModifiers.shift === activeModifiers.shift;
 
   return matches;
 }

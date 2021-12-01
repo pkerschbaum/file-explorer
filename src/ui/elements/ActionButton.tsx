@@ -41,6 +41,9 @@ export const ActionButton = React.forwardRef<ActionButtonRef, ActionButtonProps>
       () => ({
         triggerSyntheticClick: () => {
           invariant(buttonRef.current);
+          if (buttonRef.current.disabled || buttonRef.current.ariaDisabled === 'true') {
+            return;
+          }
           const clickEvent = new MouseEvent('click', {
             bubbles: true,
             cancelable: true,

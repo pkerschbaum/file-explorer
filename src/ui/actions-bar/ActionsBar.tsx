@@ -73,7 +73,6 @@ export const ActionsBar: React.FC = () => {
           modifiers: {
             ctrl: 'NOT_SET',
             alt: 'NOT_SET',
-            shift: 'NOT_SET',
           },
         },
       ],
@@ -89,7 +88,6 @@ export const ActionsBar: React.FC = () => {
           modifiers: {
             ctrl: 'SET',
             alt: 'NOT_SET',
-            shift: 'NOT_SET',
           },
         },
       ],
@@ -105,7 +103,6 @@ export const ActionsBar: React.FC = () => {
           modifiers: {
             ctrl: 'SET',
             alt: 'NOT_SET',
-            shift: 'NOT_SET',
           },
         },
       ],
@@ -121,7 +118,6 @@ export const ActionsBar: React.FC = () => {
           modifiers: {
             ctrl: 'SET',
             alt: 'NOT_SET',
-            shift: 'NOT_SET',
           },
         },
       ],
@@ -137,7 +133,6 @@ export const ActionsBar: React.FC = () => {
           modifiers: {
             ctrl: 'SET',
             alt: 'NOT_SET',
-            shift: 'NOT_SET',
           },
         },
       ],
@@ -155,7 +150,6 @@ export const ActionsBar: React.FC = () => {
           modifiers: {
             ctrl: 'NOT_SET',
             alt: 'NOT_SET',
-            shift: 'NOT_SET',
           },
         },
       ],
@@ -171,7 +165,6 @@ export const ActionsBar: React.FC = () => {
           modifiers: {
             ctrl: 'SET',
             alt: 'NOT_SET',
-            shift: 'NOT_SET',
           },
         },
       ],
@@ -187,7 +180,6 @@ export const ActionsBar: React.FC = () => {
           modifiers: {
             ctrl: 'NOT_SET',
             alt: 'NOT_SET',
-            shift: 'NOT_SET',
           },
         },
         {
@@ -195,7 +187,6 @@ export const ActionsBar: React.FC = () => {
           modifiers: {
             ctrl: 'NOT_SET',
             alt: 'NOT_SET',
-            shift: 'NOT_SET',
           },
         },
         {
@@ -203,7 +194,6 @@ export const ActionsBar: React.FC = () => {
           modifiers: {
             ctrl: 'SET',
             alt: 'NOT_SET',
-            shift: 'NOT_SET',
           },
         },
         {
@@ -211,7 +201,6 @@ export const ActionsBar: React.FC = () => {
           modifiers: {
             ctrl: 'NOT_SET',
             alt: 'NOT_SET',
-            shift: 'NOT_SET',
           },
         },
         {
@@ -219,7 +208,6 @@ export const ActionsBar: React.FC = () => {
           modifiers: {
             ctrl: 'NOT_SET',
             alt: 'NOT_SET',
-            shift: 'NOT_SET',
           },
         },
       ],
@@ -261,7 +249,7 @@ export const ActionsBar: React.FC = () => {
           onClick={openSelectedResources}
           disabled={singleResourceActionsDisabled}
           StartIconComponent={LaunchOutlinedIcon}
-          endIcon={registerShortcutsResult.openShortcut?.icon}
+          endIcon={!singleResourceActionsDisabled && registerShortcutsResult.openShortcut?.icon}
         >
           Open
         </ActionButton>
@@ -270,7 +258,7 @@ export const ActionsBar: React.FC = () => {
           onClick={copySelectedResources}
           disabled={multipleResourcesActionsDisabled}
           StartIconComponent={ContentCopyOutlinedIcon}
-          endIcon={registerShortcutsResult.copyShortcut?.icon}
+          endIcon={!multipleResourcesActionsDisabled && registerShortcutsResult.copyShortcut?.icon}
         >
           Copy
         </ActionButton>
@@ -279,7 +267,7 @@ export const ActionsBar: React.FC = () => {
           onClick={cutSelectedResources}
           disabled={multipleResourcesActionsDisabled}
           StartIconComponent={ContentCutOutlinedIcon}
-          endIcon={registerShortcutsResult.cutShortcut?.icon}
+          endIcon={!multipleResourcesActionsDisabled && registerShortcutsResult.cutShortcut?.icon}
         >
           Cut
         </ActionButton>
@@ -289,7 +277,7 @@ export const ActionsBar: React.FC = () => {
           onClick={pasteResourcesIntoExplorer}
           disabled={draftPasteState === undefined}
           StartIconComponent={ContentPasteOutlinedIcon}
-          endIcon={registerShortcutsResult.pasteShortcut?.icon}
+          endIcon={draftPasteState !== undefined && registerShortcutsResult.pasteShortcut?.icon}
         >
           Paste
           <PasteInfoBadge />
@@ -299,7 +287,9 @@ export const ActionsBar: React.FC = () => {
           onClick={triggerRenameForSelectedResources}
           disabled={singleResourceActionsDisabled}
           StartIconComponent={EditOutlinedIcon}
-          endIcon={registerShortcutsResult.triggerRenameShortcut?.icon}
+          endIcon={
+            !singleResourceActionsDisabled && registerShortcutsResult.triggerRenameShortcut?.icon
+          }
         >
           Rename
         </ActionButton>
@@ -308,7 +298,10 @@ export const ActionsBar: React.FC = () => {
           onClick={scheduleDeleteSelectedResources}
           disabled={multipleResourcesActionsDisabled}
           StartIconComponent={DeleteOutlinedIcon}
-          endIcon={registerShortcutsResult.scheduleDeleteShortcut?.icon}
+          endIcon={
+            !multipleResourcesActionsDisabled &&
+            registerShortcutsResult.scheduleDeleteShortcut?.icon
+          }
         >
           Delete
         </ActionButton>

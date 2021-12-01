@@ -116,6 +116,7 @@ export const THEMES = {
       0: NORD_THEME.nord0,
       1: NORD_THEME.nord1,
       2: NORD_THEME.nord2,
+      3: NORD_THEME.nord3,
     },
     foreground: {
       0: NORD_THEME.nord6,
@@ -132,7 +133,8 @@ export const THEMES = {
     background: {
       0: '#231f1a',
       1: 'hsl(27, 11%, 17%)',
-      2: 'hsl(27, 11%, 21%)',
+      2: 'hsl(27, 11%, 22%)',
+      3: 'hsl(27, 11%, 26%)',
     },
     foreground: {
       0: 'hsl(0, 0%, 100%)',
@@ -144,6 +146,24 @@ export const THEMES = {
       warning: '#EBCB8B',
     },
   },
+  ayu: {
+    mode: 'light',
+    background: {
+      0: 'hsl(0, 0%, 99%)',
+      1: 'hsl(210, 17%, 91%)',
+      2: 'hsl(210, 14%, 80%)',
+      3: 'hsl(210, 14%, 69%)',
+    },
+    foreground: {
+      0: 'rgba(0, 0, 0, 1)',
+    },
+    highlight: {
+      primary: 'hsl(35, 100%, 60%)',
+      success: '#A3BE8C',
+      error: 'hsl(359, 54%, 40%)',
+      warning: '#EBCB8B',
+    },
+  },
   flow: {
     // inspired by Windows 11 "Flow" theme
     mode: 'light',
@@ -151,6 +171,7 @@ export const THEMES = {
       0: 'hsl(0, 0%, 100%)',
       1: 'hsl(202, 48%, 95%)',
       2: 'hsl(202, 48%, 84%)',
+      3: 'hsl(202, 48%, 73%)',
     },
     foreground: {
       0: 'hsl(0, 0%, 11%)',
@@ -227,8 +248,18 @@ export const createTheme = (locale: Localization, activeTheme: AvailableTheme) =
             border-color: ${themeConfiguration.background[1]};
 
             &:hover {
-              border-color: ${themeConfiguration.background[0]};
-              background-color: ${(props) => props.theme.palette.action.hover};
+              border-color: ${themeConfiguration.background[2]};
+              background-color: ${themeConfiguration.background[2]};
+            }
+
+            .MuiPaper-root &.MuiButton-outlined {
+              background-color: ${themeConfiguration.background[2]};
+              border-color: ${themeConfiguration.background[2]};
+            }
+
+            .MuiPaper-root &.MuiButton-outlined:hover {
+              border-color: ${themeConfiguration.background[3]};
+              background-color: ${themeConfiguration.background[3]};
             }
           ` as any,
           startIcon: css`
@@ -295,6 +326,15 @@ export const createTheme = (locale: Localization, activeTheme: AvailableTheme) =
         },
       },
 
+      MuiPaper: {
+        styleOverrides: {
+          root: css`
+            /* disable change of background color via linear-gradient */
+            background-image: none;
+          `,
+        },
+      },
+
       MuiTab: {
         styleOverrides: {
           root: css`
@@ -354,7 +394,7 @@ export const createTheme = (locale: Localization, activeTheme: AvailableTheme) =
     palette: {
       mode: themeConfiguration.mode,
       action: {
-        hover: themeConfiguration.background[2],
+        hover: themeConfiguration.background[1],
       },
       background: {
         default: themeConfiguration.background[0],
