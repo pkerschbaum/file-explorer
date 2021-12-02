@@ -38,6 +38,8 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
   const explorerIdxPrevious = focusedExplorerIdx === 0 ? undefined : focusedExplorerIdx - 1;
   const explorerIdxNext =
     focusedExplorerIdx === explorersToShow.length - 1 ? undefined : focusedExplorerIdx + 1;
+  const previousExplorer =
+    explorerIdxPrevious === undefined ? undefined : explorersToShow[explorerIdxPrevious];
 
   async function duplicateFocusedExplorerPanel() {
     await addExplorerPanel(focusedExplorer?.cwd);
@@ -121,7 +123,9 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
                       ? registerShortcutsResult.changeToNextTabShortcut.icon
                       : undefined
                   }
-                  onRemove={() => removeExplorerPanel(explorer.explorerId)}
+                  onRemove={() =>
+                    removeExplorerPanel(explorer.explorerId, previousExplorer?.explorerId)
+                  }
                   removeExplorerActionDisabled={removeExplorerActionDisabled}
                 />
               }
@@ -168,31 +172,26 @@ const ExplorerPanelTab: React.FC<ExplorerPanelTabProps> = (props) => {
         {props.label}
       </ActionButton>
       {!props.removeExplorerActionDisabled && (
-        <Tooltip title="Close tab">
-          <TabCloseButton>
-            <TabIconButton
-              size="small"
-              onClick={(e) => {
-                // stop propagation so that the click on the close button does not get through to the button of the Tab
-                e.stopPropagation();
-                props.onRemove();
-              }}
-            >
-              <CloseOutlinedIcon />
-            </TabIconButton>
-          </TabCloseButton>
+        <Tooltip title="Close Tab">
+          <TabIconButton
+            size="small"
+            onClick={(e) => {
+              // stop propagation so that the click on the close button does not get through to the button of the Tab
+              e.stopPropagation();
+              props.onRemove();
+            }}
+          >
+            <CloseOutlinedIcon />
+          </TabIconButton>
         </Tooltip>
       )}
     </>
   );
 };
 
-const TabCloseButton = styled.span`
+const TabIconButton = styled(IconButton)`
   position: absolute;
   right: ${(props) => props.theme.spacing(1.5)};
-`;
-
-const TabIconButton = styled(IconButton)`
   border-radius: 0;
   padding: 0;
 `;

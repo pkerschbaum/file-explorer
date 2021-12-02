@@ -1,4 +1,3 @@
-import { expect } from '@jest/globals';
 import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
 import * as resources from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';

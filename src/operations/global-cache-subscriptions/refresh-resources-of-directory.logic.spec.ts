@@ -1,4 +1,3 @@
-import { expect } from '@jest/globals';
 import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { screen } from '@testing-library/react';

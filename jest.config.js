@@ -1,21 +1,28 @@
+const fs = require('fs');
+const stripJsonComments = require('strip-json-comments');
 const { pathsToModuleNameMapper } = require('ts-jest/utils');
 
-const { compilerOptions } = require('./tsconfig.json');
+const { compilerOptions } = JSON.parse(
+  stripJsonComments(fs.readFileSync('./tsconfig.json', 'utf8')),
+);
+const moduleNameMapper = pathsToModuleNameMapper(compilerOptions.paths, {
+  prefix: '<rootDir>/../',
+});
 
 module.exports = {
   preset: 'ts-jest',
   moduleFileExtensions: ['js', 'json', 'ts', 'tsx'],
-  globalSetup: './test/global-setup.ts',
-  globalTeardown: './test/global-teardown.ts',
-  setupFilesAfterEnv: ['./test/setup-after-env.ts'],
-  rootDir: '.',
+  globalSetup: '../test/global-setup.ts',
+  globalTeardown: '../test/global-teardown.ts',
+  setupFilesAfterEnv: ['../test/setup-after-env.ts'],
+  rootDir: './src',
   // exclude all visual tests from Jest (those are executed by Cypress)
   testRegex: 'src/(?!.+\\.visual\\.spec\\.tsx?)(.+\\.spec\\.(?:t|j)sx?)',
   transform: {
     '^.+\\.(?:t|j)sx?$': 'ts-jest',
   },
   testEnvironment: 'jsdom',
-  moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: '<rootDir>/' }),
+  moduleNameMapper,
   /**
    * Jest will time out sometimes when loading the tests.
    * It seems like Jest takes the ts-jest compile time into account for the timeout calculation,

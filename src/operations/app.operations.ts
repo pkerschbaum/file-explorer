@@ -1,5 +1,6 @@
 import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 
+import { check } from '@app/base/utils/assert.util';
 import { formatter } from '@app/base/utils/formatter.util';
 import { actions, generateExplorerId } from '@app/global-state/slices/explorers.slice';
 import { dispatchRef, fileSystemRef, nativeHostRef } from '@app/operations/global-modules';
@@ -26,7 +27,7 @@ export async function addExplorerPanel(cwdToUse?: UriComponents) {
   dispatchRef.current(actions.changeFocusedExplorer({ explorerId }));
 }
 
-export function removeExplorerPanel(explorerId: string) {
+export function removeExplorerPanel(explorerId: string, explorerIdToSwitchTo?: string) {
   /*
    * If the explorer gets removed immediately, redux subscriptions (e.g. useSelectors) currently
    * listening on that explorer will throw errors. So first, mark explorer for deletion, so that
@@ -36,6 +37,9 @@ export function removeExplorerPanel(explorerId: string) {
    * After that, remove the explorer.
    */
   dispatchRef.current(actions.markExplorerForRemoval({ explorerId }));
+  if (check.isNonEmptyString(explorerIdToSwitchTo)) {
+    dispatchRef.current(actions.changeFocusedExplorer({ explorerId: explorerIdToSwitchTo }));
+  }
   setTimeout(() => {
     dispatchRef.current(actions.removeExplorer({ explorerId }));
   });

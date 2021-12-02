@@ -26,6 +26,14 @@ const LANGUAGE_EXTENSION_POINTS_PATH = URI.file(
 async function compileLanguageExtensionsIntoJsonFile() {
   const { fileService } = bootstrapFileServiceModule();
 
+  let origLanguageExtensionPointsContent: string | undefined;
+  try {
+    const origFileContent = await fileService.readFile(LANGUAGE_EXTENSION_POINTS_PATH);
+    origLanguageExtensionPointsContent = origFileContent.value.toString();
+  } catch {
+    origLanguageExtensionPointsContent = undefined;
+  }
+
   const extensionDirStat = await fileService.resolve(CODE_OSS_FILE_ICON_THEME_LANGUAGES_PATH);
   if (!extensionDirStat.children) {
     return;
@@ -64,9 +72,17 @@ async function compileLanguageExtensionsIntoJsonFile() {
 
   packagesWithExtensionPoint.sort((a, b) => a.packageName.localeCompare(b.packageName));
 
+  const newLanguageExtensionPointsContent = JSON.stringify(packagesWithExtensionPoint);
+  if (origLanguageExtensionPointsContent === newLanguageExtensionPointsContent) {
+    console.log('no change detected for language-extension-points');
+    return;
+  }
+
+  console.log('language-extension-points changed --> writing file...');
+
   await fileService.writeFile(
     LANGUAGE_EXTENSION_POINTS_PATH,
-    VSBuffer.fromString(JSON.stringify(packagesWithExtensionPoint)),
+    VSBuffer.fromString(newLanguageExtensionPointsContent),
   );
 }
 

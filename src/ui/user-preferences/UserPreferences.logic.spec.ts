@@ -1,4 +1,3 @@
-import { expect } from '@jest/globals';
 import { fireEvent, screen } from '@testing-library/react';
 
 import { AvailableFileIconTheme } from '@app/constants';

@@ -2,6 +2,7 @@ import { Box } from '@mui/material';
 import * as React from 'react';
 import styled from 'styled-components';
 
+import { arrays } from '@app/base/utils/arrays.util';
 import { useProcesses } from '@app/global-state/slices/processes.hooks';
 import { Process } from '@app/ui/process';
 import { ROOTCONTAINER_PADDING_BOTTOM_FACTOR } from '@app/ui/shell/constants';
@@ -15,7 +16,7 @@ export const ProcessesArea: React.FC = () => {
 
   return (
     <ProcessesAreaContainer>
-      {processes.map((process) => (
+      {arrays.reverse(processes).map((process) => (
         <StyledProcess key={process.id} process={process} />
       ))}
     </ProcessesAreaContainer>

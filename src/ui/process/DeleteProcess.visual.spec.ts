@@ -1,4 +1,4 @@
-import { cy } from 'local-cypress';
+import { cy, describe, it } from 'local-cypress';
 
 import metadata, {
   Failure,

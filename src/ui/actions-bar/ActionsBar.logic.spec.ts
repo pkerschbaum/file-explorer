@@ -1,4 +1,3 @@
-import { expect } from '@jest/globals';
 import { fireEvent, screen } from '@testing-library/react';
 
 import { ResourceUIDescription, uriHelper } from '@app/base/utils/uri-helper';

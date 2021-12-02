@@ -1,4 +1,4 @@
-import { cy } from 'local-cypress';
+import { cy, describe, it } from 'local-cypress';
 
 import metadata, { MultipleTabs, SimpleCase, WithProcesses } from '@app/ui/shell/Shell.stories';
 

@@ -1,4 +1,5 @@
 // https://github.com/cypress-io/cypress/issues/3090#issuecomment-889470707
+import { Cypress } from 'local-cypress';
 import path from 'path';
 
 declare global {

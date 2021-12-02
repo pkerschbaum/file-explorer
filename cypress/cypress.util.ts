@@ -1,5 +1,5 @@
 import { sanitize } from '@storybook/csf';
-import { cy } from 'local-cypress';
+import { cy, Cypress } from 'local-cypress';
 
 export function bootstrap({ storybookIdToVisit }: { storybookIdToVisit: string }) {
   cy.fixCypressSpec();
