@@ -19,7 +19,7 @@ export function isResourcesOfDirectoryQueryKey(
 ): something is ResourcesOfDirectoryKey {
   return (
     Array.isArray(something) &&
-    something.length >= 2 &&
+    something.length === 2 &&
     something[0] === RESOURCES_OF_DIRECTORY_KEY_PREFIX &&
     typeof something[1] === 'object' &&
     typeof (something[1] as ResourcesOfDirectoryOptions).directoryId === 'string'

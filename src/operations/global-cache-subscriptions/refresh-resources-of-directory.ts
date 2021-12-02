@@ -113,8 +113,15 @@ function addDirectoryWatcherIfNonePresent(
     logger.debug('no directory watcher present --> creating watcher...', { queryKey });
     const watcherDisposable = fileSystemRef.current.watch(directoryUri);
     const didFilesChangeDisposable = fileSystemRef.current.onDidFilesChange((e) => {
+      logger.debug(
+        'did receive onDidFilesChange event --> checking if refreshing resources of directory is necessary...',
+        { queryKey, fileChangesEvent: JSON.parse(JSON.stringify(e)) as {} },
+      );
       if (e.affects(directoryUri)) {
+        logger.debug('refreshing of resources is necessary, trigger refresh...', { queryKey });
         void refreshResourcesOfDirectory({ directory: directoryUri }, { active: true });
+      } else {
+        logger.debug('refreshing of resources is not necessary, skipping.', { queryKey });
       }
     });
     const disposables = new DisposableStore();

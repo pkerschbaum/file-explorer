@@ -1,6 +1,6 @@
 import { TableRow, TableRowProps } from '@mui/material';
 
-type RowProps = TableRowProps;
+export type RowProps = TableRowProps;
 
 export function Row(props: RowProps) {
   const { onClick, onDoubleClick, children, ...rest } = props;

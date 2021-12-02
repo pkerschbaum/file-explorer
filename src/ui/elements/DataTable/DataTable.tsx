@@ -10,6 +10,7 @@ export type DataTableProps = {
   renderNoDataPresentMessage?: boolean;
   labels?: { container?: string; table?: string };
   classes?: { tableContainer?: string; table?: string };
+  refs?: { tableContainer?: React.RefObject<HTMLDivElement> };
   applyIntrinsicHeight?: boolean;
 
   children: null | React.ReactNode;
@@ -21,6 +22,7 @@ export const DataTable: React.FC<DataTableProps> = (props) => {
     renderNoDataPresentMessage,
     labels,
     classes: classesFromProps,
+    refs,
     applyIntrinsicHeight,
     children,
     footer,
@@ -29,6 +31,7 @@ export const DataTable: React.FC<DataTableProps> = (props) => {
   return (
     <DataTableWrapper aria-label={labels?.container}>
       <StyledTableContainer
+        ref={refs?.tableContainer}
         className={classesFromProps?.tableContainer}
         sx={{ flexBasis: !applyIntrinsicHeight ? 0 : 'auto' }}
         component={Paper}
