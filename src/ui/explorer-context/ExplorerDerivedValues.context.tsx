@@ -93,15 +93,18 @@ export const ExplorerDerivedValuesContextProvider: React.FC<
       }
     }
 
-    return result;
-  }, [resourcesToShow, explorerState.selection.keysOfSelectedResources]);
-
-  // if no resource is selected, reset selection
-  React.useEffect(() => {
-    if (selectedShownResources.length === 0 && resourcesToShow.length > 0) {
+    // if no resource is selected, but at least one resource will be shown, just select the first resource
+    if (result.length === 0 && resourcesToShow.length > 0) {
+      result.push(resourcesToShow[0]);
       setKeysOfSelectedResources([[resourcesToShow[0].key]]);
     }
-  }, [selectedShownResources.length, resourcesToShow, setKeysOfSelectedResources]);
+
+    return result;
+  }, [
+    explorerState.selection.keysOfSelectedResources,
+    resourcesToShow,
+    setKeysOfSelectedResources,
+  ]);
 
   // every time the filter input changes, reset selection
   const prevFilterInput = usePrevious(explorerState.filterInput);
