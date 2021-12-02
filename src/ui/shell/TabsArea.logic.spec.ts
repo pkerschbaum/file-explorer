@@ -9,7 +9,7 @@ import { initializeFakePlatformModules } from '@app-test/utils/fake-platform-mod
 import { renderApp } from '@app-test/utils/render-app';
 
 describe('TabsArea [logic]', () => {
-  it('Closing the currently active tab should focus the previous tab', async () => {
+  it('Closing the currently focused tab should focus the previous tab', async () => {
     await initializeFakePlatformModules();
     const cwd = await getDefaultExplorerCwd();
     const store = await createStoreInstance({
@@ -29,6 +29,7 @@ describe('TabsArea [logic]', () => {
 
     const currentlySelectedTab = await screen.findByRole('tab', { name: /test-folder/i });
     expect(currentlySelectedTab).toHaveAttribute('aria-selected', 'true');
+
     const closeButton = await within(currentlySelectedTab).findByRole('button', {
       name: /Close Tab/i,
     });
@@ -41,5 +42,42 @@ describe('TabsArea [logic]', () => {
 
     const newSelectedTab = await screen.findByRole('tab', { name: /testdir/i });
     expect(newSelectedTab).toHaveAttribute('aria-selected', 'true');
+  });
+
+  it('Closing an unfocused tab should not change which tab is currently focused', async () => {
+    await initializeFakePlatformModules();
+    const cwd = await getDefaultExplorerCwd();
+    const store = await createStoreInstance({
+      preloadedState: {
+        explorersSlice: {
+          explorerPanels: {
+            'panel-1': { cwd: URI.joinPath(URI.from(cwd), '..').toJSON() },
+            'panel-2': { cwd },
+            'panel-3': { cwd: URI.joinPath(URI.from(cwd), 'test-folder').toJSON() },
+          },
+          focusedExplorerPanelId: 'panel-3',
+        },
+      },
+    });
+    const queryClient = createQueryClient();
+    renderApp({ queryClient, store });
+
+    const currentlySelectedTab = await screen.findByRole('tab', { name: /test-folder/i });
+    expect(currentlySelectedTab).toHaveAttribute('aria-selected', 'true');
+    const nonFocusedTab = await screen.findByRole('tab', { name: /testdir/i });
+    expect(nonFocusedTab).toHaveAttribute('aria-selected', 'false');
+
+    const closeButton = await within(nonFocusedTab).findByRole('button', {
+      name: /Close Tab/i,
+    });
+    fireEvent.click(closeButton);
+
+    await waitFor(async () => {
+      const tabs = await screen.findAllByRole('tab');
+      expect(tabs).toHaveLength(2);
+    });
+
+    const stillSelectedTab = await screen.findByRole('tab', { name: /test-folder/i });
+    expect(stillSelectedTab).toHaveAttribute('aria-selected', 'true');
   });
 });

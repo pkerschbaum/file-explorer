@@ -95,6 +95,7 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
         TabIndicatorProps={{ children: <span className={tabIndicatorSpanClassName} /> }}
       >
         {explorersToShow.map((explorer, explorerIdx) => {
+          const isFocusedExplorer = explorerIdx === focusedExplorerIdx;
           const isPrevExplorer = explorerIdx === explorerIdxPrevious;
           const isNextExplorer = explorerIdx === explorerIdxNext;
 
@@ -124,7 +125,10 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
                       : undefined
                   }
                   onRemove={() =>
-                    removeExplorerPanel(explorer.explorerId, previousExplorer?.explorerId)
+                    removeExplorerPanel(
+                      explorer.explorerId,
+                      !isFocusedExplorer ? undefined : previousExplorer?.explorerId,
+                    )
                   }
                   removeExplorerActionDisabled={removeExplorerActionDisabled}
                 />
