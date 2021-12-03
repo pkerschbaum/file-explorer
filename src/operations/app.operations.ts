@@ -2,6 +2,7 @@ import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/ba
 
 import { check } from '@app/base/utils/assert.util';
 import { formatter } from '@app/base/utils/formatter.util';
+import { ResourceForUI } from '@app/domain/types';
 import { actions, generateExplorerId } from '@app/global-state/slices/explorers.slice';
 import { dispatchRef, fileSystemRef, nativeHostRef } from '@app/operations/global-modules';
 
@@ -63,4 +64,12 @@ export async function windowClose(): Promise<void> {
 
 export async function getDefaultExplorerCwd(): Promise<UriComponents> {
   return await nativeHostRef.current.app.getPath({ name: 'desktop' });
+}
+
+export function getNativeIconURLForResource(resource: ResourceForUI) {
+  return nativeHostRef.current.app.getNativeIconURLForResource(resource);
+}
+
+export function startNativeFileDnD(uri: UriComponents) {
+  return nativeHostRef.current.webContents.startNativeFileDnD(uri);
 }

@@ -2,9 +2,12 @@ import { Event } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/eve
 import { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { app } from 'electron';
 
+import { ResourceForUI } from '@app/domain/types';
+
 export type PlatformNativeHost = {
   app: {
     getPath: (args: { name: Parameters<typeof app.getPath>[0] }) => Promise<UriComponents>;
+    getNativeIconURLForResource: (resource: ResourceForUI) => string | undefined;
   };
   shell: {
     revealResourcesInOS(resources: UriComponents[]): Promise<void>;

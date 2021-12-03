@@ -1,7 +1,11 @@
 import { Emitter } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/event';
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 
+import { check } from '@app/base/utils/assert.util';
+import { NATIVE_FILE_ICON_PROTOCOL_SCHEME } from '@app/platform/electron/protocol/common/app';
 import type { PlatformNativeHost } from '@app/platform/native-host.types';
+
+const USE_NATIVE_ICON_FOR_REGEX = /(?:exe|ico|dll)/i;
 
 export const createNativeHost = () => {
   const onClipboardChanged = new Emitter<void>();
@@ -11,6 +15,20 @@ export const createNativeHost = () => {
       getPath: async (args) => {
         const fsPath = await window.privileged.app.getPath(args);
         return URI.file(fsPath);
+      },
+      getNativeIconURLForResource: (resource) => {
+        const fsPath = URI.from(resource.uri).fsPath;
+        const extension = resource.extension;
+        const isResourceQualifiedForNativeIcon =
+          check.isNonEmptyString(fsPath) &&
+          check.isNonEmptyString(extension) &&
+          USE_NATIVE_ICON_FOR_REGEX.test(extension);
+
+        if (!isResourceQualifiedForNativeIcon) {
+          return undefined;
+        } else {
+          return `${NATIVE_FILE_ICON_PROTOCOL_SCHEME}:///${fsPath}`;
+        }
       },
     },
     shell: {

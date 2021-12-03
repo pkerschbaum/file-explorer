@@ -7,10 +7,9 @@ import styled, { css } from 'styled-components';
 import { check } from '@app/base/utils/assert.util';
 import { formatter } from '@app/base/utils/formatter.util';
 import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
+import { getNativeIconURLForResource, startNativeFileDnD } from '@app/operations/app.operations';
 import { changeDirectory } from '@app/operations/explorer.operations';
-import { nativeHostRef } from '@app/operations/global-modules';
 import { openFiles, removeTagsFromResources } from '@app/operations/resource.operations';
-import { NATIVE_FILE_ICON_PROTOCOL_SCHEME } from '@app/platform/electron/protocol/common/app';
 import { KEY } from '@app/ui/constants';
 import { Cell } from '@app/ui/elements/DataTable/Cell';
 import { DataTable, DataTableProps } from '@app/ui/elements/DataTable/DataTable';
@@ -160,8 +159,6 @@ const VirtualizedTableBody: React.FC<VirtualizedTableBodyProps> = ({
   );
 };
 
-const USE_NATIVE_ICON_FOR_REGEX = /(?:exe|ico|dll)/i;
-
 type ResourceRowProps = {
   resourceForRow: ResourceForUI;
   idxOfResourceForRow: number;
@@ -208,12 +205,7 @@ const ResourceRow = React.memo<ResourceRowProps>(
             transform: `translateY(${virtualRowStart}px)`,
           };
 
-    const fsPath = URI.from(resourceForRow.uri).fsPath;
-    const extension = resourceForRow.extension;
-    const isResourceQualifiedForNativeIcon =
-      check.isNonEmptyString(fsPath) &&
-      check.isNonEmptyString(extension) &&
-      USE_NATIVE_ICON_FOR_REGEX.test(extension);
+    const nativeIconUrl = getNativeIconURLForResource(resourceForRow);
 
     return (
       <Row
@@ -221,7 +213,7 @@ const ResourceRow = React.memo<ResourceRowProps>(
         draggable={!renameForResourceIsActive}
         onDragStart={(e) => {
           e.preventDefault();
-          nativeHostRef.current.webContents.startNativeFileDnD(resourceForRow.uri);
+          startNativeFileDnD(resourceForRow.uri);
         }}
         onClick={(e) => changeSelectionByClick(e, resourceForRow, idxOfResourceForRow)}
         onDoubleClick={() => openResource(resourceForRow)}
@@ -233,11 +225,11 @@ const ResourceRow = React.memo<ResourceRowProps>(
             <IconWrapper
               className={nativeIconLoadStatus === 'SUCCESS' ? undefined : themeResourceIconClasses}
             >
-              {isResourceQualifiedForNativeIcon &&
+              {check.isNonEmptyString(nativeIconUrl) &&
                 (nativeIconLoadStatus === 'NOT_LOADED_YET' ||
                   nativeIconLoadStatus === 'SUCCESS') && (
                   <img
-                    src={`${NATIVE_FILE_ICON_PROTOCOL_SCHEME}:///${fsPath}`}
+                    src={nativeIconUrl}
                     alt="icon for resource"
                     style={{ maxHeight: '100%' }}
                     onLoad={() => {
