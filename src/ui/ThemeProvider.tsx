@@ -252,12 +252,12 @@ export const createTheme = (locale: Localization, activeTheme: AvailableTheme) =
               background-color: ${themeConfiguration.background[2]};
             }
 
-            .MuiPaper-root &.MuiButton-outlined {
+            .MuiPaper-elevation &.MuiButton-outlined {
               background-color: ${themeConfiguration.background[2]};
               border-color: ${themeConfiguration.background[2]};
             }
 
-            .MuiPaper-root &.MuiButton-outlined:hover {
+            .MuiPaper-elevation &.MuiButton-outlined:hover {
               border-color: ${themeConfiguration.background[3]};
               background-color: ${themeConfiguration.background[3]};
             }
