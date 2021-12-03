@@ -10,7 +10,7 @@ import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
 import { changeDirectory } from '@app/operations/explorer.operations';
 import { nativeHostRef } from '@app/operations/global-modules';
 import { openFiles, removeTagsFromResources } from '@app/operations/resource.operations';
-import { NATIVE_FILE_ICON_PROTOCOL_SCHEME } from '@app/protocol/common/app';
+import { NATIVE_FILE_ICON_PROTOCOL_SCHEME } from '@app/platform/electron/protocol/common/app';
 import { KEY } from '@app/ui/constants';
 import { Cell } from '@app/ui/elements/DataTable/Cell';
 import { DataTable, DataTableProps } from '@app/ui/elements/DataTable/DataTable';

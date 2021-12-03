@@ -6,7 +6,7 @@ import { ExplorersMap } from '@app/global-state/slices/explorers.slice';
 import type { RootState } from '@app/global-state/store';
 import { createLogger } from '@app/operations/create-logger';
 import { fileSystemRef, persistentStorageRef } from '@app/operations/global-modules';
-import { StorageState } from '@app/platform/persistent-storage';
+import { StorageState } from '@app/platform/persistent-storage.types';
 
 const logger = createLogger('storage-state.operations');
 

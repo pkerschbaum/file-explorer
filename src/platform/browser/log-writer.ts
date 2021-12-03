@@ -1,15 +1,6 @@
 /* eslint-disable no-console */
 
-export type PlatformLogWriter = {
-  debug(...args: LogFnArgs): void;
-  info(...args: LogFnArgs): void;
-  warn(...args: LogFnArgs): void;
-  error(message: string, error?: unknown, ...additionalArgs: unknown[]): void;
-  group(groupName: string): void;
-  groupEnd(): void;
-};
-
-type LogFnArgs = [message: string, ...additionalArgs: unknown[]];
+import type { PlatformLogWriter } from '@app/platform/log-writer.types';
 
 export const createLogWriter = () => {
   const instance: PlatformLogWriter = {

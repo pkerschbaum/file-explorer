@@ -6,14 +6,12 @@ import {
   LogService,
 } from '@pkerschbaum/code-oss-file-service/out/vs/platform/log/common/log';
 
-export function bootstrapModule() {
+export function bootstrapDiskFileService() {
   const logger = new ConsoleMainLogger();
   const logService = new LogService(logger);
   const fileService = new FileService(logService);
   const diskFileSystemProvider = new DiskFileSystemProvider(logService);
   fileService.registerProvider(Schemas.file, diskFileSystemProvider);
 
-  return { fileService };
+  return fileService;
 }
-
-export type PlatformFileService = ReturnType<typeof bootstrapModule>['fileService'];

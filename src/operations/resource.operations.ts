@@ -27,7 +27,6 @@ import {
   storeRef,
 } from '@app/operations/global-modules';
 import * as tagOperations from '@app/operations/tag.operations';
-import { getDistinctParents } from '@app/platform/file-system';
 
 const logger = createLogger('resource.operations');
 
@@ -85,7 +84,7 @@ export async function runDeleteProcess(deleteProcessId: string, options: { useTr
   );
 
   // invalidate resources of all affected directories
-  const distinctParents = getDistinctParents(deleteProcess.uris);
+  const distinctParents = uriHelper.getDistinctParents(deleteProcess.uris);
   await Promise.all(distinctParents.map((directory) => refreshResourcesOfDirectory({ directory })));
 }
 
@@ -116,7 +115,7 @@ export async function renameResource(resourceURI: UriComponents, uriToRenameTo: 
     pasteShouldMove: true,
   });
 
-  const distinctParents = getDistinctParents([resourceURI, uriToRenameTo]);
+  const distinctParents = uriHelper.getDistinctParents([resourceURI, uriToRenameTo]);
   await Promise.all(distinctParents.map((directory) => refreshResourcesOfDirectory({ directory })));
 }
 
@@ -300,7 +299,7 @@ export async function executeCopyOrMove({
     }
   } finally {
     // invalidate files of the target directory
-    const distinctParents = getDistinctParents([sourceResource.uri, targetResource.uri]);
+    const distinctParents = uriHelper.getDistinctParents([sourceResource.uri, targetResource.uri]);
     void Promise.all(
       distinctParents.map((directory) => refreshResourcesOfDirectory({ directory })),
     );

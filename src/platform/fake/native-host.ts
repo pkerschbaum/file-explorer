@@ -3,7 +3,7 @@ import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/n
 import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 
 import { functions } from '@app/base/utils/functions.util';
-import { PlatformNativeHost } from '@app/platform/native-host';
+import type { PlatformNativeHost } from '@app/platform/native-host.types';
 
 export function createFakeNativeHost(): PlatformNativeHost {
   let currentClipboardValue: UriComponents[] = [];

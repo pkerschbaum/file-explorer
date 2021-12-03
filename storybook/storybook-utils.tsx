@@ -4,11 +4,10 @@ import invariant from 'tiny-invariant';
 
 import { ObjectLiteral } from '@app/base/utils/types.util';
 import { fileIconThemeLoaderRef, logWriterRef } from '@app/operations/global-modules';
-import { createLogWriter } from '@app/platform/log-writer';
+import { createLogWriter } from '@app/platform/browser/log-writer';
+import { createStorybookFileIconThemeLoader } from '@app/platform/storybook/file-icon-theme-loader';
 
 import { initializeFakePlatformModules } from '@app-test/utils/fake-platform-modules';
-
-import { createStorybookFileIconThemeLoader } from '@app-storybook/file-icon-theme-loader';
 
 /**
  * https://stackoverflow.com/a/42791996/1700319

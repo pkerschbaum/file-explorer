@@ -17,7 +17,6 @@ import type {
   QueryCacheSubscription,
 } from '@app/operations/global-cache-subscriptions/setup-subscriptions';
 import { fileSystemRef } from '@app/operations/global-modules';
-import { fetchResources } from '@app/platform/file-system';
 
 const logger = createLogger('preload-parent-dir-and-subdirs');
 
@@ -80,7 +79,7 @@ async function doPreloadResources(directoryUri: URI, childrenOfDirectory: Resour
   }
 
   const allDirectoriesWithoutAlreadyCachedData = allDirectoriesUris.filter((uri) => {
-    const cachedQueryData = getCachedResourcesOfDirectory({ directory: uri });
+    const cachedQueryData = getCachedResourcesOfDirectory(uri);
     if (cachedQueryData) {
       logger.debug(`some data is already cached --> skip preloading of resources of directory.`, {
         directory: formatter.resourcePath(uri),
@@ -99,9 +98,11 @@ async function doPreloadResources(directoryUri: URI, childrenOfDirectory: Resour
         directory: uri,
         resolveMetadata: false,
       };
-      const contents = await fetchResources(fileSystemRef.current, fetchArgs);
+      const statsWithMetadata = await fileSystemRef.current.resolve(URI.from(fetchArgs.directory), {
+        resolveMetadata: fetchArgs.resolveMetadata,
+      });
 
-      const cachedQueryData = getCachedResourcesOfDirectory(fetchArgs);
+      const cachedQueryData = getCachedResourcesOfDirectory(fetchArgs.directory);
       if (cachedQueryData) {
         logger.debug(
           `in the meantime, some data for this query got loaded ` +
@@ -111,7 +112,7 @@ async function doPreloadResources(directoryUri: URI, childrenOfDirectory: Resour
         return;
       } else {
         logger.debug(`fetched resources, caching them...`, { directory: formattedDirectory });
-        setCachedResourcesOfDirectory(fetchArgs, contents);
+        setCachedResourcesOfDirectory(fetchArgs, statsWithMetadata.children ?? []);
         logger.debug(`fetched resources got cached.`, { directory: formattedDirectory });
       }
     }),

@@ -8,7 +8,7 @@ import { RESOURCES_OF_DIRECTORY_KEY_PREFIX } from '@app/global-cache/query-keys'
 import { QueryCacheNotifyEvent } from '@app/operations/global-cache-subscriptions';
 import { createRefreshResourcesOfDirectorySubscription } from '@app/operations/global-cache-subscriptions/refresh-resources-of-directory';
 import { fileSystemRef } from '@app/operations/global-modules';
-import { PlatformFileSystem } from '@app/platform/file-system';
+import { PlatformFileSystem } from '@app/platform/file-system.types';
 
 import { initializeFakePlatformModules } from '@app-test/utils/fake-platform-modules';
 

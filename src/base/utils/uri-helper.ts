@@ -4,6 +4,7 @@ import * as resources from '@pkerschbaum/code-oss-file-service/out/vs/base/commo
 import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 
 import { CustomError } from '@app/base/custom-error';
+import { arrays } from '@app/base/utils/arrays.util';
 import { check } from '@app/base/utils/assert.util';
 
 export type ResourceUIDescription = {
@@ -16,6 +17,7 @@ export const uriHelper = {
   extractNameAndExtension,
   getComparisonKey,
   splitUriIntoSlugs,
+  getDistinctParents,
 };
 
 function parseUri(scheme: string, path: string) {
@@ -90,4 +92,11 @@ function splitUriIntoSlugs(uri: UriComponents) {
   }
 
   return slugsWithFormatting;
+}
+
+function getDistinctParents(resources: UriComponents[]): UriComponents[] {
+  return arrays.uniqueValues(
+    resources.map((resource) => URI.joinPath(URI.from(resource), '..')),
+    (resource) => uriHelper.getComparisonKey(resource),
+  );
 }

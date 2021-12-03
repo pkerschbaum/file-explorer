@@ -12,11 +12,11 @@ import {
   readStorageState,
   reviveGlobalStateFromStorageState,
 } from '@app/operations/storage-state.operations';
-import { createFileIconThemeLoader } from '@app/platform/file-icon-theme-loader';
-import { createFileSystem } from '@app/platform/file-system';
-import { createLogWriter } from '@app/platform/log-writer';
-import { createNativeHost } from '@app/platform/native-host';
-import { createPersistentStorage } from '@app/platform/persistent-storage';
+import { createLogWriter } from '@app/platform/browser/log-writer';
+import { createFileIconThemeLoader } from '@app/platform/electron/file-icon-theme-loader';
+import { createFileSystem } from '@app/platform/electron/file-system';
+import { createNativeHost } from '@app/platform/electron/native-host';
+import { createPersistentStorage } from '@app/platform/electron/persistent-storage';
 import { createQueryClient, Globals } from '@app/ui/Globals';
 import { Shell } from '@app/ui/shell';
 

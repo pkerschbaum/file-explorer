@@ -6,7 +6,7 @@ import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import path from 'path';
 
 import { LanguageExtensionPointJsonEntry } from '@app/operations/file-icon-theme.operations';
-import { bootstrapModule as bootstrapFileServiceModule } from '@app/platform/electron-preload/file-service';
+import { bootstrapDiskFileService } from '@app/platform/electron/electron-preload/bootstrap-disk-file-service';
 
 const CODE_OSS_FILE_ICON_THEME_LANGUAGES_PATH = URI.file(
   path.resolve(
@@ -24,7 +24,7 @@ const LANGUAGE_EXTENSION_POINTS_PATH = URI.file(
 );
 
 async function compileLanguageExtensionsIntoJsonFile() {
-  const { fileService } = bootstrapFileServiceModule();
+  const fileService = bootstrapDiskFileService();
 
   let origLanguageExtensionPointsContent: string | undefined;
   try {

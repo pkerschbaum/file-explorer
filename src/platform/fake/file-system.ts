@@ -11,7 +11,7 @@ import {
 import dayjs from 'dayjs';
 
 import { Writeable } from '@app/base/utils/types.util';
-import { PlatformFileSystem } from '@app/platform/file-system';
+import type { PlatformFileSystem } from '@app/platform/file-system.types';
 
 type WritableIStat = Writeable<IStat>;
 

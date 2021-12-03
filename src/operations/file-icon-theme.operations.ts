@@ -51,10 +51,7 @@ export async function loadCssRules({
 }: {
   fileIconThemeRelativePath: string;
   fileIconThemePathFragment: FileIconTheme['fsPathFragment'];
-  cssRulesPostProcessing: (
-    rawIconThemeCssRules: string,
-    fileIconThemePathFragment: string,
-  ) => string;
+  cssRulesPostProcessing: (rawIconThemeCssRules: string) => string;
 }): Promise<string> {
   if (!didInitializeLanguageExtensionPoints) {
     didInitializeLanguageExtensionPoints = true;
@@ -79,10 +76,10 @@ export async function loadCssRules({
 
   /**
    * The icon-theme logic of the code-oss project constructs URLs in the CSS which use a resource scheme (e.g. "file://").
-   * But we want to just use a relative path so that it works with this electron-forge setup.
+   * But we want to just use a relative path so that it works with the electron-forge setup.
    * That's why we replace all occurences of such URLs by relative paths.
    */
-  const cssRules = cssRulesPostProcessing(iconThemeCssRules, fileIconThemePathFragment);
+  const cssRules = cssRulesPostProcessing(iconThemeCssRules);
 
   return cssRules;
 }

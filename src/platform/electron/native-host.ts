@@ -1,29 +1,7 @@
-import { Emitter, Event } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/event';
-import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import type { app } from 'electron';
+import { Emitter } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/event';
+import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 
-export type PlatformNativeHost = {
-  app: {
-    getPath: (args: { name: Parameters<typeof app.getPath>[0] }) => Promise<UriComponents>;
-  };
-  shell: {
-    revealResourcesInOS(resources: UriComponents[]): Promise<void>;
-    openPath: (resources: UriComponents[]) => Promise<void>;
-  };
-  window: {
-    minimize: () => Promise<void>;
-    toggleMaximized: () => Promise<void>;
-    close: () => Promise<void>;
-  };
-  clipboard: {
-    readResources(): UriComponents[];
-    writeResources(resources: UriComponents[]): void;
-    onClipboardChanged: Event<void>;
-  };
-  webContents: {
-    startNativeFileDnD: (resource: UriComponents) => void;
-  };
-};
+import type { PlatformNativeHost } from '@app/platform/native-host.types';
 
 export const createNativeHost = () => {
   const onClipboardChanged = new Emitter<void>();

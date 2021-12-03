@@ -1,11 +1,11 @@
-import { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import { IFileStat } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 import { useQuery } from 'react-query';
 
 import { uriHelper } from '@app/base/utils/uri-helper';
-import { Resource } from '@app/domain/types';
+import { Resource, RESOURCE_TYPE } from '@app/domain/types';
 import { QUERY_KEYS } from '@app/global-cache/query-keys';
 import { fileSystemRef, queryClientRef } from '@app/operations/global-modules';
-import { fetchResources } from '@app/platform/file-system';
 
 type ResourcesQuery = {
   directory: UriComponents;
@@ -21,7 +21,16 @@ export function useResources(
       directoryId: uriHelper.getComparisonKey(directory),
       resolveMetadata,
     }),
-    () => fetchResources(fileSystemRef.current, { directory, resolveMetadata }),
+    async () => {
+      const statsWithMetadata = await fileSystemRef.current.resolve(URI.from(directory), {
+        resolveMetadata,
+      });
+
+      if (!statsWithMetadata.children) {
+        return [];
+      }
+      return statsWithMetadata.children.map(mapFileStatToResource);
+    },
     queryOptions,
   );
 
@@ -41,9 +50,7 @@ export async function refreshResourcesOfDirectory(
   );
 }
 
-export function getCachedResourcesOfDirectory({
-  directory,
-}: Omit<ResourcesQuery, 'resolveMetadata'>) {
+export function getCachedResourcesOfDirectory(directory: ResourcesQuery['directory']) {
   return queryClientRef.current.getQueryData(
     QUERY_KEYS.RESOURCES_OF_DIRECTORY({ directoryId: uriHelper.getComparisonKey(directory) }),
     {
@@ -54,13 +61,32 @@ export function getCachedResourcesOfDirectory({
 
 export function setCachedResourcesOfDirectory(
   { directory, resolveMetadata }: ResourcesQuery,
-  resources: Resource[],
+  resources: IFileStat[],
 ) {
   return queryClientRef.current.setQueryData(
     QUERY_KEYS.RESOURCES_OF_DIRECTORY({
       directoryId: uriHelper.getComparisonKey(directory),
       resolveMetadata,
     }),
-    resources,
+    resources.map(mapFileStatToResource),
   );
+}
+
+function mapFileStatToResource(resource: IFileStat): Resource {
+  const resourceType = resource.isDirectory
+    ? RESOURCE_TYPE.DIRECTORY
+    : resource.isSymbolicLink
+    ? RESOURCE_TYPE.SYMBOLIC_LINK
+    : resource.isFile
+    ? RESOURCE_TYPE.FILE
+    : RESOURCE_TYPE.UNKNOWN;
+
+  return {
+    key: uriHelper.getComparisonKey(resource.resource),
+    resourceType,
+    uri: resource.resource.toJSON(),
+    size: resource.size,
+    mtime: resource.mtime,
+    ctime: resource.ctime,
+  };
 }

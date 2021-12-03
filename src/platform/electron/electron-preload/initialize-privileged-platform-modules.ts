@@ -1,17 +1,18 @@
 import { VSBuffer } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/buffer';
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import { FileService } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/fileService';
 import { clipboard, ipcRenderer } from 'electron';
 
 import { config } from '@app/config';
-import { IpcApp, APP_CHANNEL } from '@app/ipc/common/app';
-import { IpcFileDragStart, FILEDRAGSTART_CHANNEL } from '@app/ipc/common/file-drag-start';
-import { PERSISTENT_STORE_CHANNEL } from '@app/ipc/common/persistent-store';
-import { IpcShell, SHELL_CHANNEL } from '@app/ipc/common/shell';
-import { IpcWindow, WINDOW_CHANNEL } from '@app/ipc/common/window';
+import { bootstrapDiskFileService } from '@app/platform/electron/electron-preload/bootstrap-disk-file-service';
+import { IpcApp, APP_CHANNEL } from '@app/platform/electron/ipc/common/app';
 import {
-  bootstrapModule as bootstrapFileServiceModule,
-  PlatformFileService,
-} from '@app/platform/electron-preload/file-service';
+  IpcFileDragStart,
+  FILEDRAGSTART_CHANNEL,
+} from '@app/platform/electron/ipc/common/file-drag-start';
+import { PERSISTENT_STORE_CHANNEL } from '@app/platform/electron/ipc/common/persistent-store';
+import { IpcShell, SHELL_CHANNEL } from '@app/platform/electron/ipc/common/shell';
+import { IpcWindow, WINDOW_CHANNEL } from '@app/platform/electron/ipc/common/window';
 
 declare global {
   interface Window {
@@ -21,7 +22,7 @@ declare global {
 
 type Privileged = {
   processEnv: NodeJS.ProcessEnv;
-  fileService: PlatformFileService;
+  fileService: FileService;
   app: {
     getPath: (args: IpcApp.GetPath.Args) => IpcApp.GetPath.ReturnValue;
   };
@@ -53,7 +54,7 @@ type Privileged = {
 const CLIPBOARD_FILELIST_FORMAT = `${config.productName}/file-list`;
 
 export function initializePrivilegedPlatformModules() {
-  const { fileService } = bootstrapFileServiceModule();
+  const fileService = bootstrapDiskFileService();
 
   window.privileged = {
     // eslint-disable-next-line node/no-process-env

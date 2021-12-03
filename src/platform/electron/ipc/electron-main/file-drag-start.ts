@@ -1,6 +1,9 @@
 import { ipcMain, IpcMainEvent } from 'electron';
 
-import { IpcFileDragStart, FILEDRAGSTART_CHANNEL } from '@app/ipc/common/file-drag-start';
+import {
+  IpcFileDragStart,
+  FILEDRAGSTART_CHANNEL,
+} from '@app/platform/electron/ipc/common/file-drag-start';
 import { OUTLINE_INSERT_DRIVE_FILE_ICON_PATH } from '@app/static-resources-main';
 
 export function registerListeners(): void {

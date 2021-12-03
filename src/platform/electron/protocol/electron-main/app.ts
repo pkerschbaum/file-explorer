@@ -1,6 +1,6 @@
 import { app, protocol } from 'electron';
 
-import { NATIVE_FILE_ICON_PROTOCOL_SCHEME } from '@app/protocol/common/app';
+import { NATIVE_FILE_ICON_PROTOCOL_SCHEME } from '@app/platform/electron/protocol/common/app';
 
 export function registerProtocols(): void {
   protocol.registerBufferProtocol(NATIVE_FILE_ICON_PROTOCOL_SCHEME, (request, callback) => {

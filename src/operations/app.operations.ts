@@ -50,15 +50,15 @@ export function changeFocusedExplorer(newFocusedExplorerId: string) {
 }
 
 export async function windowMinimize(): Promise<void> {
-  return await window.privileged.window.minimize();
+  return await nativeHostRef.current.window.minimize();
 }
 
 export async function windowToggleMaximized(): Promise<void> {
-  return await window.privileged.window.toggleMaximized();
+  return await nativeHostRef.current.window.toggleMaximized();
 }
 
 export async function windowClose(): Promise<void> {
-  return await window.privileged.window.close();
+  return await nativeHostRef.current.window.close();
 }
 
 export async function getDefaultExplorerCwd(): Promise<UriComponents> {

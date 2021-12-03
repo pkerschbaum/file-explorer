@@ -1,6 +1,6 @@
 import { app, ipcMain, IpcMainInvokeEvent } from 'electron';
 
-import { IpcApp, APP_CHANNEL } from '@app/ipc/common/app';
+import { IpcApp, APP_CHANNEL } from '@app/platform/electron/ipc/common/app';
 
 export function registerListeners(): void {
   ipcMain.handle(APP_CHANNEL.GET_PATH, getPathHandler);
