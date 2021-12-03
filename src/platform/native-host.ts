@@ -4,7 +4,6 @@ import type { app } from 'electron';
 
 export type PlatformNativeHost = {
   app: {
-    getNativeFileIconDataURL: (args: { fsPath: string }) => Promise<string | undefined>;
     getPath: (args: { name: Parameters<typeof app.getPath>[0] }) => Promise<UriComponents>;
   };
   shell: {
@@ -31,7 +30,6 @@ export const createNativeHost = () => {
 
   const instance: PlatformNativeHost = {
     app: {
-      getNativeFileIconDataURL: window.privileged.app.getNativeFileIconDataURL,
       getPath: async (args) => {
         const fsPath = await window.privileged.app.getPath(args);
         return URI.file(fsPath);

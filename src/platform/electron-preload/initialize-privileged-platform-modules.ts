@@ -23,9 +23,6 @@ type Privileged = {
   processEnv: NodeJS.ProcessEnv;
   fileService: PlatformFileService;
   app: {
-    getNativeFileIconDataURL: (
-      args: IpcApp.GetNativeFileIconDataURL.Args,
-    ) => IpcApp.GetNativeFileIconDataURL.ReturnValue;
     getPath: (args: IpcApp.GetPath.Args) => IpcApp.GetPath.ReturnValue;
   };
   shell: {
@@ -63,8 +60,6 @@ export function initializePrivilegedPlatformModules() {
     processEnv: process.env,
     fileService,
     app: {
-      getNativeFileIconDataURL: (...args) =>
-        ipcRenderer.invoke(APP_CHANNEL.NATIVE_FILE_ICON, ...args),
       getPath: (...args) => ipcRenderer.invoke(APP_CHANNEL.GET_PATH, ...args),
     },
     shell: {

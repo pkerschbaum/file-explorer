@@ -11,7 +11,6 @@ export function createFakeNativeHost(): PlatformNativeHost {
 
   return {
     app: {
-      getNativeFileIconDataURL: () => Promise.resolve(undefined),
       getPath: () => Promise.resolve(URI.parse(`${Schemas.inMemory}:///home/testdir`).toJSON()),
     },
     shell: {

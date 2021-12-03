@@ -7,10 +7,10 @@ import styled, { css } from 'styled-components';
 import { check } from '@app/base/utils/assert.util';
 import { formatter } from '@app/base/utils/formatter.util';
 import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
-import { useNativeIconDataURL } from '@app/global-cache/resource-icons';
 import { changeDirectory } from '@app/operations/explorer.operations';
 import { nativeHostRef } from '@app/operations/global-modules';
 import { openFiles, removeTagsFromResources } from '@app/operations/resource.operations';
+import { NATIVE_FILE_ICON_PROTOCOL_SCHEME } from '@app/protocol/common/app';
 import { KEY } from '@app/ui/constants';
 import { Cell } from '@app/ui/elements/DataTable/Cell';
 import { DataTable, DataTableProps } from '@app/ui/elements/DataTable/DataTable';
@@ -179,17 +179,9 @@ const ResourceRow = React.memo<ResourceRowProps>(
 
     const themeResourceIconClasses = useThemeResourceIconClasses(resourceForRow);
 
-    const fsPath = URI.from(resourceForRow.uri).fsPath;
-    const extension = resourceForRow.extension;
-    const nativeIconDataURL = useNativeIconDataURL(
-      { fsPath },
-      {
-        enabled:
-          check.isNonEmptyString(fsPath) &&
-          check.isNonEmptyString(extension) &&
-          USE_NATIVE_ICON_FOR_REGEX.test(extension),
-      },
-    );
+    const [nativeIconLoadStatus, setNativeIconLoadStatus] = React.useState<
+      'NOT_LOADED_YET' | 'SUCCESS' | 'ERROR'
+    >('NOT_LOADED_YET');
 
     async function openResource(resource: ResourceForUI) {
       if (resource.resourceType === RESOURCE_TYPE.DIRECTORY) {
@@ -216,6 +208,13 @@ const ResourceRow = React.memo<ResourceRowProps>(
             transform: `translateY(${virtualRowStart}px)`,
           };
 
+    const fsPath = URI.from(resourceForRow.uri).fsPath;
+    const extension = resourceForRow.extension;
+    const isResourceQualifiedForNativeIcon =
+      check.isNonEmptyString(fsPath) &&
+      check.isNonEmptyString(extension) &&
+      USE_NATIVE_ICON_FOR_REGEX.test(extension);
+
     return (
       <Row
         data-window-keydownhandlers-enabled="true"
@@ -231,14 +230,24 @@ const ResourceRow = React.memo<ResourceRowProps>(
       >
         <ResourceRowContent
           iconSlot={
-            <IconWrapper className={nativeIconDataURL ? undefined : themeResourceIconClasses}>
-              {nativeIconDataURL && (
-                <img
-                  src={nativeIconDataURL}
-                  alt="icon for resource"
-                  style={{ maxHeight: '100%' }}
-                />
-              )}
+            <IconWrapper
+              className={nativeIconLoadStatus === 'SUCCESS' ? undefined : themeResourceIconClasses}
+            >
+              {isResourceQualifiedForNativeIcon &&
+                (nativeIconLoadStatus === 'NOT_LOADED_YET' ||
+                  nativeIconLoadStatus === 'SUCCESS') && (
+                  <img
+                    src={`${NATIVE_FILE_ICON_PROTOCOL_SCHEME}:///${fsPath}`}
+                    alt="icon for resource"
+                    style={{ maxHeight: '100%' }}
+                    onLoad={() => {
+                      setNativeIconLoadStatus('SUCCESS');
+                    }}
+                    onError={() => {
+                      setNativeIconLoadStatus('ERROR');
+                    }}
+                  />
+                )}
             </IconWrapper>
           }
           resourceNameSlot={
