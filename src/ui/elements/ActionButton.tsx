@@ -69,20 +69,20 @@ export const ActionButton = React.forwardRef<ActionButtonRef, ActionButtonProps>
         layout={!disableLayoutAnimation}
         startIcon={
           StartIconComponent && (
-            <motion.span style={{ display: 'flex' }} layout={!disableLayoutAnimation}>
+            <ActionButtonAnimatedIcon layout={!disableLayoutAnimation}>
               <StartIconComponent
-                sx={{ fontSize: 'inherit' }}
+                fontSize="inherit"
                 component={motion.svg}
                 layout={!disableLayoutAnimation}
               />
-            </motion.span>
+            </ActionButtonAnimatedIcon>
           )
         }
         endIconPresent={!!endIcon}
         endIcon={
-          <motion.span style={{ display: 'flex' }} layout={!disableLayoutAnimation}>
+          <ActionButtonAnimatedIcon layout={!disableLayoutAnimation}>
             {endIcon}
-          </motion.span>
+          </ActionButtonAnimatedIcon>
         }
         onClick={onClick}
         {...delegated}
@@ -93,6 +93,11 @@ export const ActionButton = React.forwardRef<ActionButtonRef, ActionButtonProps>
     );
   },
 );
+
+const ActionButtonAnimatedIcon = styled(motion.span)`
+  display: flex;
+  align-items: stretch;
+`;
 
 const ActionButtonContent = styled(motion.span)`
   display: flex;

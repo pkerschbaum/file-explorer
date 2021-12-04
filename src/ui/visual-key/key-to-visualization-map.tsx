@@ -11,56 +11,95 @@ import * as React from 'react';
 import { KEY } from '@app/ui/constants';
 import { VisualKey } from '@app/ui/visual-key';
 
-const visualKeyFontSize = 'inherit';
 export const KEY_TO_VISUALIZATION_MAP: { [key in KEY]: React.ReactNode } = {
-  [KEY.A]: <VisualKey>A</VisualKey>,
-  [KEY.C]: <VisualKey>C</VisualKey>,
-  [KEY.N]: <VisualKey>N</VisualKey>,
-  [KEY.R]: <VisualKey>R</VisualKey>,
-  [KEY.T]: <VisualKey>T</VisualKey>,
-  [KEY.X]: <VisualKey>X</VisualKey>,
-  [KEY.V]: <VisualKey>V</VisualKey>,
+  [KEY.A]: (
+    <VisualKey type="char" contentSize="md">
+      A
+    </VisualKey>
+  ),
+  [KEY.C]: (
+    <VisualKey type="char" contentSize="md">
+      C
+    </VisualKey>
+  ),
+  [KEY.N]: (
+    <VisualKey type="char" contentSize="md">
+      N
+    </VisualKey>
+  ),
+  [KEY.R]: (
+    <VisualKey type="char" contentSize="md">
+      R
+    </VisualKey>
+  ),
+  [KEY.T]: (
+    <VisualKey type="char" contentSize="md">
+      T
+    </VisualKey>
+  ),
+  [KEY.X]: (
+    <VisualKey type="char" contentSize="md">
+      X
+    </VisualKey>
+  ),
+  [KEY.V]: (
+    <VisualKey type="char" contentSize="md">
+      V
+    </VisualKey>
+  ),
   [KEY.ARROW_UP]: (
     <VisualKey type="icon">
-      <KeyboardArrowUpOutlinedIcon sx={{ fontSize: visualKeyFontSize }} />
+      <KeyboardArrowUpOutlinedIcon fontSize="inherit" />
     </VisualKey>
   ),
   [KEY.ARROW_RIGHT]: (
     <VisualKey type="icon">
-      <KeyboardArrowRightOutlinedIcon sx={{ fontSize: visualKeyFontSize }} />
+      <KeyboardArrowRightOutlinedIcon fontSize="inherit" />
     </VisualKey>
   ),
   [KEY.ARROW_DOWN]: (
     <VisualKey type="icon">
-      <KeyboardArrowDownOutlinedIcon sx={{ fontSize: visualKeyFontSize }} />
+      <KeyboardArrowDownOutlinedIcon fontSize="inherit" />
     </VisualKey>
   ),
   [KEY.ARROW_LEFT]: (
     <VisualKey type="icon">
-      <KeyboardArrowLeftOutlinedIcon sx={{ fontSize: visualKeyFontSize }} />
+      <KeyboardArrowLeftOutlinedIcon fontSize="inherit" />
     </VisualKey>
   ),
   [KEY.PAGE_UP]: (
     <VisualKey type="icon">
-      <ArrowCircleUpOutlinedIcon sx={{ fontSize: visualKeyFontSize }} />
+      <ArrowCircleUpOutlinedIcon fontSize="inherit" />
     </VisualKey>
   ),
   [KEY.PAGE_DOWN]: (
     <VisualKey type="icon">
-      <ArrowCircleDownOutlinedIcon sx={{ fontSize: visualKeyFontSize }} />
+      <ArrowCircleDownOutlinedIcon fontSize="inherit" />
     </VisualKey>
   ),
-  [KEY.DELETE]: <VisualKey fontSize="sm">Del</VisualKey>,
+  [KEY.DELETE]: (
+    <VisualKey type="char" contentSize="sm">
+      Del
+    </VisualKey>
+  ),
   [KEY.ENTER]: (
     <VisualKey type="icon">
-      <KeyboardReturnOutlinedIcon sx={{ fontSize: visualKeyFontSize }} />
+      <KeyboardReturnOutlinedIcon fontSize="inherit" />
     </VisualKey>
   ),
-  [KEY.ESC]: <VisualKey fontSize="sm">Esc</VisualKey>,
+  [KEY.ESC]: (
+    <VisualKey type="char" contentSize="sm">
+      Esc
+    </VisualKey>
+  ),
   [KEY.TAB]: (
     <VisualKey type="icon">
-      <KeyboardTabOutlinedIcon sx={{ fontSize: visualKeyFontSize }} />
+      <KeyboardTabOutlinedIcon fontSize="inherit" />
     </VisualKey>
   ),
-  [KEY.ALT]: <VisualKey fontSize="sm">Alt</VisualKey>,
+  [KEY.ALT]: (
+    <VisualKey type="char" contentSize="sm">
+      Alt
+    </VisualKey>
+  ),
 };

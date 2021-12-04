@@ -1,5 +1,5 @@
 import ArrowDropDownOutlinedIcon from '@mui/icons-material/ArrowDropDownOutlined';
-import { Breadcrumbs } from '@mui/material';
+import { Box, Breadcrumbs } from '@mui/material';
 import * as React from 'react';
 import styled from 'styled-components';
 import invariant from 'tiny-invariant';
@@ -122,11 +122,11 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
         onClick={handleClick}
         endIcon={
           isLastSlug ? (
-            <>
-              <ArrowDropDownOutlinedIcon />
+            <CwdActionsMenuTrigger>
+              <ArrowDropDownOutlinedIcon fontSize="small" />
               {registerShortcutsResult.changeDirectoryShortcut?.icon ??
                 registerShortcutsResult.openCwdMenuShortcut?.icon}
-            </>
+            </CwdActionsMenuTrigger>
           ) : (
             registerShortcutsResult.changeDirectoryShortcut?.icon ??
             registerShortcutsResult.openCwdMenuShortcut?.icon
@@ -159,4 +159,10 @@ const StyledBreadcrumbs = styled(Breadcrumbs)`
   & > .MuiBreadcrumbs-ol .MuiBreadcrumbs-li > * {
     min-width: 0;
   }
+`;
+
+const CwdActionsMenuTrigger = styled(Box)`
+  display: flex;
+  align-items: stretch;
+  gap: ${({ theme }) => theme.spacing()};
 `;

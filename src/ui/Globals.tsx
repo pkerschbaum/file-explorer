@@ -44,8 +44,8 @@ const globalStyle = css`
 
   :root {
     /*
-      We want to set a default font-size of 13px for the application, for users which have the 
-      (default) font-size of 16px set for their user agent.
+      We want to set a default font-size of TARGET_MEDIUM_FONTSIZE pixels for the application, 
+      for users which have the (default) font-size of 16px set for their user agent.
       About 13-14px is used by many applications like VS Code, Chrome, ...
 
       In order to respect changes of the font-size of the user (e.g., they have increased the 

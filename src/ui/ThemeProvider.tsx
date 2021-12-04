@@ -83,7 +83,8 @@ declare module 'styled-components' {
 
 export const tabIndicatorSpanClassName = 'MuiTabs-indicatorSpan';
 export const MUI_BUTTON_SPACING_FACTOR = 1;
-export const TARGET_MEDIUM_FONTSIZE = 13;
+export const MUI_BUTTON_LINE_HEIGHT = 1.5;
+export const TARGET_MEDIUM_FONTSIZE = 14;
 
 // "Nord" theme color palette (https://www.nordtheme.com/docs/colors-and-palettes)
 const NORD_THEME = {
@@ -219,7 +220,10 @@ export const createTheme = (locale: Localization, activeTheme: AvailableTheme) =
         },
         styleOverrides: {
           root: css`
+            align-items: stretch;
+
             text-transform: initial;
+
             padding-left: 10px;
             padding-right: 10px;
             &.MuiButton-sizeSmall {
@@ -263,6 +267,10 @@ export const createTheme = (locale: Localization, activeTheme: AvailableTheme) =
             }
           ` as any,
           startIcon: css`
+            display: flex;
+            align-items: stretch;
+            justify-content: center;
+
             /* spacing between startIcon - content is implemented via gap property */
             margin-right: 0;
             margin-left: 0;
@@ -273,9 +281,18 @@ export const createTheme = (locale: Localization, activeTheme: AvailableTheme) =
           ` as any,
 
           endIcon: css`
-            /* spacing between content - endIcon is implemented via gap property */
+            display: flex;
+            align-items: stretch;
+            justify-content: center;
+
+            /* spacing between content and endIcon is implemented via gap property --> no margin necessary */
             margin-right: 0;
             margin-left: 0;
+
+            /* disable fixed MUI font-size */
+            & > *:nth-of-type(1) {
+              font-size: inherit;
+            }
           ` as any,
         },
       },
@@ -389,6 +406,7 @@ export const createTheme = (locale: Localization, activeTheme: AvailableTheme) =
       ),
       fontSize: TARGET_MEDIUM_FONTSIZE,
       htmlFontSize: TARGET_MEDIUM_FONTSIZE,
+      button: { lineHeight: MUI_BUTTON_LINE_HEIGHT },
     },
 
     palette: {
@@ -448,11 +466,11 @@ export const createTheme = (locale: Localization, activeTheme: AvailableTheme) =
 
     font: {
       sizes: {
-        xs: `${(TARGET_MEDIUM_FONTSIZE - 4) / 13}rem`,
-        sm: `${(TARGET_MEDIUM_FONTSIZE - 2) / 13}rem`,
-        md: `${TARGET_MEDIUM_FONTSIZE / 13}rem`,
-        lg: `${(TARGET_MEDIUM_FONTSIZE + 2) / 13}rem`,
-        xl: `${(TARGET_MEDIUM_FONTSIZE + 4) / 13}rem`,
+        xs: `${(TARGET_MEDIUM_FONTSIZE - 4) / TARGET_MEDIUM_FONTSIZE}rem`,
+        sm: `${(TARGET_MEDIUM_FONTSIZE - 2) / TARGET_MEDIUM_FONTSIZE}rem`,
+        md: `1rem`,
+        lg: `${(TARGET_MEDIUM_FONTSIZE + 2) / TARGET_MEDIUM_FONTSIZE}rem`,
+        xl: `${(TARGET_MEDIUM_FONTSIZE + 4) / TARGET_MEDIUM_FONTSIZE}rem`,
       },
       weights: {
         bold: 700,

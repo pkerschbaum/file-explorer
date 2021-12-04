@@ -46,7 +46,6 @@ type Shortcut = {
   keybindings?: Keybinding[];
   condition?: (e: WindowEventMap['keydown']) => boolean;
   handler: (e: WindowEventMap['keydown']) => void;
-  continuePropagation?: boolean;
 };
 type Keybinding = {
   key: KEY;
@@ -132,9 +131,7 @@ export const GlobalShortcutsContextProvider: React.FC<GlobalShortcutsContextProv
 
       if (matchingShortcut) {
         matchingShortcut.handler(e);
-        if (!matchingShortcut.continuePropagation) {
-          e.stopPropagation();
-        }
+        e.stopPropagation();
       }
     };
 
@@ -160,11 +157,11 @@ export const GlobalShortcutsContextProvider: React.FC<GlobalShortcutsContextProv
       });
     };
 
-    window.addEventListener('keydown', eventListener);
-    window.addEventListener('keyup', eventListener);
+    window.addEventListener('keydown', eventListener, { capture: true });
+    window.addEventListener('keyup', eventListener, { capture: true });
     return () => {
-      window.removeEventListener('keydown', eventListener);
-      window.removeEventListener('keyup', eventListener);
+      window.removeEventListener('keydown', eventListener, { capture: true });
+      window.removeEventListener('keyup', eventListener, { capture: true });
     };
   }, []);
 
