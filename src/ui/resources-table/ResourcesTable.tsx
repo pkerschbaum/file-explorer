@@ -168,117 +168,118 @@ type ResourceRowProps = {
   virtualRowStart?: number;
 };
 
-const ResourceRow = React.memo<ResourceRowProps>(
-  ({ resourceForRow, idxOfResourceForRow, virtualRowStart }) => {
-    const explorerId = useExplorerId();
-    const selectedShownResources = useSelectedShownResources();
-    const renameResource = useRenameResource();
-    const changeSelectionByClick = useChangeSelectionByClick();
-    const keyOfResourceToRename = useKeyOfResourceToRename();
-    const setKeyOfResourceToRename = useSetKeyOfResourceToRename();
+const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
+  resourceForRow,
+  idxOfResourceForRow,
+  virtualRowStart,
+}) {
+  const explorerId = useExplorerId();
+  const selectedShownResources = useSelectedShownResources();
+  const renameResource = useRenameResource();
+  const changeSelectionByClick = useChangeSelectionByClick();
+  const keyOfResourceToRename = useKeyOfResourceToRename();
+  const setKeyOfResourceToRename = useSetKeyOfResourceToRename();
 
-    const themeResourceIconClasses = useThemeResourceIconClasses(resourceForRow);
+  const themeResourceIconClasses = useThemeResourceIconClasses(resourceForRow);
 
-    const [nativeIconLoadStatus, setNativeIconLoadStatus] = React.useState<
-      'NOT_LOADED_YET' | 'SUCCESS' | 'ERROR'
-    >('NOT_LOADED_YET');
+  const [nativeIconLoadStatus, setNativeIconLoadStatus] = React.useState<
+    'NOT_LOADED_YET' | 'SUCCESS' | 'ERROR'
+  >('NOT_LOADED_YET');
 
-    async function openResource(resource: ResourceForUI) {
-      if (resource.resourceType === RESOURCE_TYPE.DIRECTORY) {
-        await changeDirectory(explorerId, URI.from(resource.uri));
-      } else {
-        await openFiles([resource.uri]);
-      }
+  async function openResource(resource: ResourceForUI) {
+    if (resource.resourceType === RESOURCE_TYPE.DIRECTORY) {
+      await changeDirectory(explorerId, URI.from(resource.uri));
+    } else {
+      await openFiles([resource.uri]);
     }
+  }
 
-    function abortRename() {
-      setKeyOfResourceToRename(undefined);
-    }
+  function abortRename() {
+    setKeyOfResourceToRename(undefined);
+  }
 
-    const resourceIsSelected = !!selectedShownResources.find(
-      (resource) => resource.key === resourceForRow.key,
-    );
-    const renameForResourceIsActive = keyOfResourceToRename === resourceForRow.key;
-    const rowStyleForVirtualization: RowProps['style'] =
-      virtualRowStart === undefined
-        ? undefined
-        : {
-            position: 'absolute',
-            width: '100%',
-            transform: `translateY(${virtualRowStart}px)`,
-          };
+  const resourceIsSelected = !!selectedShownResources.find(
+    (resource) => resource.key === resourceForRow.key,
+  );
+  const renameForResourceIsActive = keyOfResourceToRename === resourceForRow.key;
+  const rowStyleForVirtualization: RowProps['style'] =
+    virtualRowStart === undefined
+      ? undefined
+      : {
+          position: 'absolute',
+          width: '100%',
+          transform: `translateY(${virtualRowStart}px)`,
+        };
 
-    const nativeIconUrl = getNativeIconURLForResource(resourceForRow);
+  const nativeIconUrl = getNativeIconURLForResource(resourceForRow);
 
-    return (
-      <Row
-        data-window-keydownhandlers-enabled="true"
-        draggable={!renameForResourceIsActive}
-        onDragStart={(e) => {
-          e.preventDefault();
-          startNativeFileDnD(resourceForRow.uri);
-        }}
-        onClick={(e) => changeSelectionByClick(e, resourceForRow, idxOfResourceForRow)}
-        onDoubleClick={() => openResource(resourceForRow)}
-        selected={resourceIsSelected}
-        style={rowStyleForVirtualization}
-      >
-        <ResourceRowContent
-          iconSlot={
-            <IconWrapper
-              className={nativeIconLoadStatus === 'SUCCESS' ? undefined : themeResourceIconClasses}
-            >
-              {check.isNonEmptyString(nativeIconUrl) &&
-                (nativeIconLoadStatus === 'NOT_LOADED_YET' ||
-                  nativeIconLoadStatus === 'SUCCESS') && (
-                  <img
-                    src={nativeIconUrl}
-                    alt="icon for resource"
-                    style={{ maxHeight: '100%' }}
-                    onLoad={() => {
-                      setNativeIconLoadStatus('SUCCESS');
-                    }}
-                    onError={() => {
-                      setNativeIconLoadStatus('ERROR');
-                    }}
-                  />
-                )}
-            </IconWrapper>
-          }
-          resourceNameSlot={
-            renameForResourceIsActive ? (
-              <RenameInput
-                resource={resourceForRow}
-                onSubmit={(newName) => renameResource(resourceForRow, newName)}
-                abortRename={abortRename}
-              />
-            ) : (
-              <ResourceNameFormatted>
-                {formatter.resourceBasename(resourceForRow)}
-              </ResourceNameFormatted>
-            )
-          }
-          tagsSlot={resourceForRow.tags.map((tag) => (
-            <Chip
-              key={tag.id}
-              sx={{ backgroundColor: (theme) => theme.availableTagColors[tag.colorId] }}
-              variant="outlined"
-              size="small"
-              label={tag.name}
-              onDelete={() => removeTagsFromResources([resourceForRow.uri], [tag.id])}
+  return (
+    <Row
+      data-window-keydownhandlers-enabled="true"
+      draggable={!renameForResourceIsActive}
+      onDragStart={(e) => {
+        e.preventDefault();
+        startNativeFileDnD(resourceForRow.uri);
+      }}
+      onClick={(e) => changeSelectionByClick(e, resourceForRow, idxOfResourceForRow)}
+      onDoubleClick={() => openResource(resourceForRow)}
+      selected={resourceIsSelected}
+      style={rowStyleForVirtualization}
+    >
+      <ResourceRowContent
+        iconSlot={
+          <IconWrapper
+            className={nativeIconLoadStatus === 'SUCCESS' ? undefined : themeResourceIconClasses}
+          >
+            {check.isNonEmptyString(nativeIconUrl) &&
+              (nativeIconLoadStatus === 'NOT_LOADED_YET' || nativeIconLoadStatus === 'SUCCESS') && (
+                <img
+                  src={nativeIconUrl}
+                  alt="icon for resource"
+                  style={{ maxHeight: '100%' }}
+                  onLoad={() => {
+                    setNativeIconLoadStatus('SUCCESS');
+                  }}
+                  onError={() => {
+                    setNativeIconLoadStatus('ERROR');
+                  }}
+                />
+              )}
+          </IconWrapper>
+        }
+        resourceNameSlot={
+          renameForResourceIsActive ? (
+            <RenameInput
+              resource={resourceForRow}
+              onSubmit={(newName) => renameResource(resourceForRow, newName)}
+              abortRename={abortRename}
             />
-          ))}
-          sizeSlot={
-            resourceForRow.resourceType === RESOURCE_TYPE.FILE &&
-            resourceForRow.size !== undefined &&
-            formatter.bytes(resourceForRow.size)
-          }
-          mtimeSlot={resourceForRow.mtime !== undefined && formatter.date(resourceForRow.mtime)}
-        />
-      </Row>
-    );
-  },
-);
+          ) : (
+            <ResourceNameFormatted>
+              {formatter.resourceBasename(resourceForRow)}
+            </ResourceNameFormatted>
+          )
+        }
+        tagsSlot={resourceForRow.tags.map((tag) => (
+          <Chip
+            key={tag.id}
+            sx={{ backgroundColor: (theme) => theme.availableTagColors[tag.colorId] }}
+            variant="outlined"
+            size="small"
+            label={tag.name}
+            onDelete={() => removeTagsFromResources([resourceForRow.uri], [tag.id])}
+          />
+        ))}
+        sizeSlot={
+          resourceForRow.resourceType === RESOURCE_TYPE.FILE &&
+          resourceForRow.size !== undefined &&
+          formatter.bytes(resourceForRow.size)
+        }
+        mtimeSlot={resourceForRow.mtime !== undefined && formatter.date(resourceForRow.mtime)}
+      />
+    </Row>
+  );
+});
 
 const ResourceNameFormatted = styled.div`
   padding-left: ${(props) => props.theme.spacing(ResourceNameFormattedSpacingFactor * 2)};
