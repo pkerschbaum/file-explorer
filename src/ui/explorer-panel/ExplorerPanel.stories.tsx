@@ -1,8 +1,8 @@
-import { Box } from '@mui/material';
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 import styled from 'styled-components';
 
 import { createStoreInstance, RootStore } from '@app/global-state/store';
+import { Box } from '@app/ui/components-library';
 import {
   ExplorerPanel,
   EXPLORER_ACTIONSBAR_GRID_AREA,

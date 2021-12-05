@@ -1,17 +1,14 @@
-import { ThemeProvider as MuiThemeProvider } from '@mui/material';
-import { cyan } from '@mui/material/colors';
+import { ThemeProvider as MuiThemeProvider, useTheme as useMuiTheme } from '@mui/material';
 import { Localization, enUS } from '@mui/material/locale';
-import {
-  // https://github.com/mui-org/material-ui/issues/13394
-  createTheme as createMuiTheme,
-  Theme as MuiTheme,
-} from '@mui/material/styles';
+import { createTheme as createMuiTheme, Theme as MuiTheme } from '@mui/material/styles';
 import * as React from 'react';
 import { css } from 'styled-components';
 
 import { assertThat } from '@app/base/utils/assert.util';
 import { AvailableTagIds, DELETE_PROCESS_STATUS, PASTE_PROCESS_STATUS } from '@app/domain/types';
 import { useActiveTheme } from '@app/global-state/slices/user.hooks';
+
+export type Theme = MuiTheme;
 
 declare module '@mui/material/styles' {
   interface Theme {
@@ -78,8 +75,11 @@ declare module '@mui/material/styles' {
 
 declare module 'styled-components' {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface -- styled-component's theme should have the same properties as that of MUI, no more. That's why it's empty (besides the "extends" clause)
-  export interface DefaultTheme extends MuiTheme {}
+  export interface DefaultTheme extends Theme {}
 }
+
+export const createTheme = createMuiTheme;
+export const useTheme = useMuiTheme;
 
 export const tabIndicatorSpanClassName = 'MuiTabs-indicatorSpan';
 export const MUI_BUTTON_SPACING_FACTOR = 1;
@@ -141,7 +141,7 @@ export const THEMES = {
       0: 'hsl(0, 0%, 100%)',
     },
     highlight: {
-      primary: cyan[300],
+      primary: '#4dd0e1',
       success: '#A3BE8C',
       error: '#BF616A',
       warning: '#EBCB8B',
@@ -195,7 +195,7 @@ const BORDER_COLOR_DARK = 'rgba(255, 255, 255, 0.23)';
 const OUTLINE_COLOR_LIGHT = 'rgba(0, 0, 0, 0.8)';
 const OUTLINE_COLOR_DARK = 'rgba(255, 255, 255, 0.8)';
 
-export const createTheme = (locale: Localization, activeTheme: AvailableTheme) => {
+const createAppTheme = (locale: Localization, activeTheme: AvailableTheme) => {
   const themeConfiguration = THEMES[activeTheme];
   let borderColorToUse;
   let outlineColorToUse;
@@ -210,7 +210,7 @@ export const createTheme = (locale: Localization, activeTheme: AvailableTheme) =
   }
 
   /* the theme changes the appearance of some material-ui components to better align with the Windows 11 design language */
-  const theme: Parameters<typeof createMuiTheme>[0] = {
+  const theme: Parameters<typeof createTheme>[0] = {
     components: {
       MuiButton: {
         defaultProps: {
@@ -478,11 +478,11 @@ export const createTheme = (locale: Localization, activeTheme: AvailableTheme) =
     },
   };
 
-  return createMuiTheme(theme, locale);
+  return createTheme(theme, locale);
 };
 
 export const ThemeProvider: React.FC = ({ children }) => {
   const activeTheme = useActiveTheme();
 
-  return <MuiThemeProvider theme={createTheme(enUS, activeTheme)}>{children}</MuiThemeProvider>;
+  return <MuiThemeProvider theme={createAppTheme(enUS, activeTheme)}>{children}</MuiThemeProvider>;
 };

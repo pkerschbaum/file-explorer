@@ -1,12 +1,12 @@
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import FullscreenOutlinedIcon from '@mui/icons-material/FullscreenOutlined';
 import MinimizeOutlinedIcon from '@mui/icons-material/MinimizeOutlined';
-import { Button } from '@mui/material';
 import * as React from 'react';
 import styled from 'styled-components';
 
 import { assertThat } from '@app/base/utils/assert.util';
 import { windowClose, windowMinimize, windowToggleMaximized } from '@app/operations/app.operations';
+import { Button } from '@app/ui/components-library';
 import { Stack } from '@app/ui/layouts/Stack';
 import {
   ROOTCONTAINER_PADDING_LEFT_FACTOR,

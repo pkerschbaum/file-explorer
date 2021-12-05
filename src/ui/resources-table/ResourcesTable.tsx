@@ -1,4 +1,3 @@
-import { Box, Button, Chip, Skeleton } from '@mui/material';
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import * as React from 'react';
 import { useVirtual } from 'react-virtual';
@@ -10,14 +9,18 @@ import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
 import { getNativeIconURLForResource, startNativeFileDnD } from '@app/operations/app.operations';
 import { changeDirectory } from '@app/operations/explorer.operations';
 import { openFiles, removeTagsFromResources } from '@app/operations/resource.operations';
+import { Box, Button, Chip, Skeleton, TextField } from '@app/ui/components-library';
+import {
+  Cell,
+  DataTable,
+  DataTableProps,
+  HeadCell,
+  Row,
+  RowProps,
+  TableBody,
+  TableHead,
+} from '@app/ui/components-library/DataTable';
 import { KEY } from '@app/ui/constants';
-import { Cell } from '@app/ui/elements/DataTable/Cell';
-import { DataTable, DataTableProps } from '@app/ui/elements/DataTable/DataTable';
-import { HeadCell } from '@app/ui/elements/DataTable/HeadCell';
-import { Row, RowProps } from '@app/ui/elements/DataTable/Row';
-import { TableBody } from '@app/ui/elements/DataTable/TableBody';
-import { TableHead } from '@app/ui/elements/DataTable/TableHead';
-import { TextField } from '@app/ui/elements/TextField';
 import {
   useChangeSelectionByClick,
   useExplorerId,

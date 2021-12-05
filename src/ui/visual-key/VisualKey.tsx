@@ -1,9 +1,8 @@
-import { Box } from '@mui/material';
 import React from 'react';
 import styled from 'styled-components';
 
 import { assertThat } from '@app/base/utils/assert.util';
-import { MUI_BUTTON_LINE_HEIGHT } from '@app/ui/ThemeProvider';
+import { Box, MUI_BUTTON_LINE_HEIGHT } from '@app/ui/components-library';
 
 type VisualKeyProps = IconVisualKey | CharVisualKey;
 

@@ -1,10 +1,10 @@
 import AutorenewOutlinedIcon from '@mui/icons-material/AutorenewOutlined';
 import ClearAllIcon from '@mui/icons-material/ClearAll';
-import { Box, IconButton, Paper, Tooltip } from '@mui/material';
 import * as React from 'react';
 import styled from 'styled-components';
 
 import { commonStyles } from '@app/ui/Common.styles';
+import { Box, IconButton, Paper, Tooltip } from '@app/ui/components-library';
 import { rotate } from '@app/ui/utils/animations';
 
 export type ProcessCardProps = {

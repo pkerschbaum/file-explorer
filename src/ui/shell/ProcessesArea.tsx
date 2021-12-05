@@ -1,9 +1,9 @@
-import { Box } from '@mui/material';
 import * as React from 'react';
 import styled from 'styled-components';
 
 import { arrays } from '@app/base/utils/arrays.util';
 import { useProcesses } from '@app/global-state/slices/processes.hooks';
+import { Box } from '@app/ui/components-library';
 import { Process } from '@app/ui/process';
 import { ROOTCONTAINER_PADDING_BOTTOM_FACTOR } from '@app/ui/shell/constants';
 

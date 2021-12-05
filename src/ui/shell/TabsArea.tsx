@@ -1,6 +1,5 @@
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
-import { Tabs, Tab, IconButton, Tooltip } from '@mui/material';
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -14,11 +13,18 @@ import {
   changeFocusedExplorer,
   removeExplorerPanel,
 } from '@app/operations/app.operations';
+import {
+  ActionButton,
+  ActionButtonRef,
+  IconButton,
+  Tab,
+  tabIndicatorSpanClassName,
+  Tabs,
+  Tooltip,
+} from '@app/ui/components-library';
 import { KEY } from '@app/ui/constants';
-import { ActionButton, ActionButtonRef } from '@app/ui/elements/ActionButton';
 import { useRegisterGlobalShortcuts } from '@app/ui/GlobalShortcutsContext';
 import { Stack } from '@app/ui/layouts/Stack';
-import { tabIndicatorSpanClassName } from '@app/ui/ThemeProvider';
 
 type TabsAreaProps = { explorersToShow: ExplorerPanelEntry[] };
 

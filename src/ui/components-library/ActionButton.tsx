@@ -7,7 +7,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import invariant from 'tiny-invariant';
 
-import { MUI_BUTTON_SPACING_FACTOR } from '@app/ui/ThemeProvider';
+import { MUI_BUTTON_SPACING_FACTOR } from '@app/ui/components-library';
 
 type ActionButtonProps = ButtonProps<
   typeof motion.button,

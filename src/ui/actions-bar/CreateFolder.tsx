@@ -1,10 +1,14 @@
 import CreateNewFolderOutlinedIcon from '@mui/icons-material/CreateNewFolderOutlined';
-import { Button, Popover } from '@mui/material';
 import * as React from 'react';
 
 import { check } from '@app/base/utils/assert.util';
-import { ActionButton, ActionButtonRef } from '@app/ui/elements/ActionButton';
-import { TextField } from '@app/ui/elements/TextField';
+import {
+  ActionButton,
+  ActionButtonRef,
+  Button,
+  Popover,
+  TextField,
+} from '@app/ui/components-library';
 import { Stack } from '@app/ui/layouts/Stack';
 
 type CreateFolderProps = {

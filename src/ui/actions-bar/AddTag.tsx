@@ -1,4 +1,11 @@
 import CancelIcon from '@mui/icons-material/Cancel';
+import * as React from 'react';
+import styled from 'styled-components';
+
+import { arrays } from '@app/base/utils/arrays.util';
+import { check } from '@app/base/utils/assert.util';
+import { AvailableTagIds, Tag } from '@app/domain/types';
+import { commonStyles } from '@app/ui/Common.styles';
 import {
   Autocomplete,
   Button,
@@ -11,14 +18,7 @@ import {
   Paper,
   TextField,
   useTheme,
-} from '@mui/material';
-import * as React from 'react';
-import styled from 'styled-components';
-
-import { arrays } from '@app/base/utils/arrays.util';
-import { check } from '@app/base/utils/assert.util';
-import { AvailableTagIds, Tag } from '@app/domain/types';
-import { commonStyles } from '@app/ui/Common.styles';
+} from '@app/ui/components-library';
 import { Stack } from '@app/ui/layouts/Stack';
 
 // derived from https://material-ui.com/components/autocomplete/#creatable

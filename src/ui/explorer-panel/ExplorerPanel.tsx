@@ -1,10 +1,10 @@
-import { Box } from '@mui/material';
 import * as React from 'react';
 import styled from 'styled-components';
 
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { useCwd, useIdOfFocusedExplorerPanel } from '@app/global-state/slices/explorers.hooks';
 import { ActionsBar } from '@app/ui/actions-bar';
+import { Box } from '@app/ui/components-library';
 import { CwdBreadcrumbs } from '@app/ui/cwd-breadcrumbs';
 import { ExplorerContextProvider } from '@app/ui/explorer-context';
 import { ResourcesTable } from '@app/ui/resources-table';

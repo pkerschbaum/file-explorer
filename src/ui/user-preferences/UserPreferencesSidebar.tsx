@@ -1,6 +1,4 @@
-import { Box, Divider, Paper, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import * as React from 'react';
-
 import styled from 'styled-components';
 
 import { AvailableFileIconTheme, FILE_ICON_THEMES } from '@app/constants';
@@ -9,7 +7,15 @@ import {
   setActiveFileIconTheme,
   setActiveTheme,
 } from '@app/operations/user-preferences.operations';
-import { availableThemes, AvailableTheme } from '@app/ui/ThemeProvider';
+import {
+  AvailableTheme,
+  availableThemes,
+  Box,
+  Divider,
+  Paper,
+  ToggleButton,
+  ToggleButtonGroup,
+} from '@app/ui/components-library';
 
 export const USER_PREFERENCES_SIDEBAR_GRID_AREA = 'shell-user-preferences-sidebar';
 

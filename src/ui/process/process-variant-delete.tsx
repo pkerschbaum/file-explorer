@@ -1,8 +1,6 @@
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
-import { Box, Button } from '@mui/material';
-import * as React from 'react';
 import styled from 'styled-components';
 
 import { assertIsUnreachable } from '@app/base/utils/assert.util';
@@ -10,7 +8,7 @@ import { formatter } from '@app/base/utils/formatter.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { DeleteProcess as DeleteProcessType, DELETE_PROCESS_STATUS } from '@app/domain/types';
 import { removeProcess, runDeleteProcess } from '@app/operations/resource.operations';
-import { LinearProgress } from '@app/ui/elements/LinearProgress';
+import { Box, Button, LinearProgress } from '@app/ui/components-library';
 import { Stack } from '@app/ui/layouts/Stack';
 import type { ProcessVariantProps } from '@app/ui/process/Process';
 

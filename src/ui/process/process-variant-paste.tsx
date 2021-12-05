@@ -1,7 +1,6 @@
 import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
 import ContentCutOutlinedIcon from '@mui/icons-material/ContentCutOutlined';
 import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
-import { Box, Button } from '@mui/material';
 import * as React from 'react';
 
 import { assertThat } from '@app/base/utils/assert.util';
@@ -10,7 +9,7 @@ import { formatter } from '@app/base/utils/formatter.util';
 import { numbers } from '@app/base/utils/numbers.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { PasteProcess as PasteProcessType, PASTE_PROCESS_STATUS } from '@app/domain/types';
-import { LinearProgress } from '@app/ui/elements/LinearProgress';
+import { Box, Button, LinearProgress } from '@app/ui/components-library';
 import { Stack } from '@app/ui/layouts/Stack';
 import type { ProcessVariantProps } from '@app/ui/process/Process';
 

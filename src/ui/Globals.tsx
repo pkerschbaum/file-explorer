@@ -1,4 +1,3 @@
-import { CssBaseline, darken } from '@mui/material';
 import * as React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
@@ -17,10 +16,15 @@ import {
   fileIconThemeLoaderRef,
 } from '@app/operations/global-modules';
 import {
+  CssBaseline,
+  TARGET_MEDIUM_FONTSIZE,
+  ThemeProvider,
+  uiUtils,
+} from '@app/ui/components-library';
+import {
   DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED,
   GlobalShortcutsContextProvider,
 } from '@app/ui/GlobalShortcutsContext';
-import { TARGET_MEDIUM_FONTSIZE, ThemeProvider } from '@app/ui/ThemeProvider';
 
 export function createQueryClient() {
   return new QueryClient({
@@ -88,7 +92,7 @@ const globalStyle = css`
   }
   *::-webkit-scrollbar-thumb {
     border-radius: 1000px;
-    background-color: ${(props) => darken(props.theme.palette.text.secondary, 0.25)};
+    background-color: ${(props) => uiUtils.darken(props.theme.palette.text.secondary, 0.25)};
     border: 2px solid ${(props) => props.theme.palette.background.default};
   }
   *::-webkit-scrollbar-thumb:hover {

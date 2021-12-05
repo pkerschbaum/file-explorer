@@ -4,7 +4,6 @@ import ContentPasteOutlinedIcon from '@mui/icons-material/ContentPasteOutlined';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import LaunchOutlinedIcon from '@mui/icons-material/LaunchOutlined';
-import { Box, Divider, Tooltip } from '@mui/material';
 import * as React from 'react';
 import styled from 'styled-components';
 import invariant from 'tiny-invariant';
@@ -19,9 +18,15 @@ import { addTagsToResources } from '@app/operations/resource.operations';
 import { addTag, removeTags } from '@app/operations/tag.operations';
 import { AddTag } from '@app/ui/actions-bar/AddTag';
 import { CreateFolder } from '@app/ui/actions-bar/CreateFolder';
+import {
+  ActionButton,
+  ActionButtonRef,
+  Box,
+  Divider,
+  TextField,
+  Tooltip,
+} from '@app/ui/components-library';
 import { KEY } from '@app/ui/constants';
-import { ActionButton, ActionButtonRef } from '@app/ui/elements/ActionButton';
-import { TextField } from '@app/ui/elements/TextField';
 import {
   useFilterInput,
   useSelectedShownResources,

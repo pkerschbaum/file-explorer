@@ -1,11 +1,11 @@
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
-import { ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
 import * as React from 'react';
 
 import { formatter } from '@app/base/utils/formatter.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { useCwd } from '@app/global-state/slices/explorers.hooks';
 import { changeDirectory, revealCwdInOSExplorer } from '@app/operations/explorer.operations';
+import { ListItemIcon, ListItemText, Menu, MenuItem } from '@app/ui/components-library';
 import { ChangeCwd } from '@app/ui/cwd-breadcrumbs/ChangeCwd';
 
 type CwdActionsMenuProps = {

@@ -1,7 +1,8 @@
 import SettingsIcon from '@mui/icons-material/Settings';
-import { Tooltip, IconButton, Box } from '@mui/material';
 import * as React from 'react';
 import styled from 'styled-components';
+
+import { Box, IconButton, Tooltip } from '@app/ui/components-library';
 
 export const USER_PREFERENCES_BUTTON_GRID_AREA = 'shell-app-settings-button';
 

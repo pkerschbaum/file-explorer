@@ -1,9 +1,9 @@
-import { Box } from '@mui/material';
 import { isWindows } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/platform';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 
 import { useExplorerPanels } from '@app/global-state/slices/explorers.hooks';
+import { Box } from '@app/ui/components-library';
 import {
   ExplorerPanel,
   EXPLORER_ACTIONSBAR_GRID_AREA,

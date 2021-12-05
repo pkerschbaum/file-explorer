@@ -1,9 +1,9 @@
-import { Box } from '@mui/material';
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 
 import { NarrowUnion } from '@app/base/utils/types.util';
 import { PasteProcess, PASTE_PROCESS_STATUS } from '@app/domain/types';
 import { createStoreInstance } from '@app/global-state/store';
+import { Box } from '@app/ui/components-library';
 import { createQueryClient, Globals } from '@app/ui/Globals';
 import { Process } from '@app/ui/process/Process';
 

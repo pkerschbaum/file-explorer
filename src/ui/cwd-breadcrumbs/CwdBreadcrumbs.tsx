@@ -1,5 +1,4 @@
 import ArrowDropDownOutlinedIcon from '@mui/icons-material/ArrowDropDownOutlined';
-import { Box, Breadcrumbs } from '@mui/material';
 import * as React from 'react';
 import styled from 'styled-components';
 import invariant from 'tiny-invariant';
@@ -7,9 +6,9 @@ import invariant from 'tiny-invariant';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { useCwd } from '@app/global-state/slices/explorers.hooks';
 import { changeDirectory } from '@app/operations/explorer.operations';
+import { ActionButton, ActionButtonRef, Box, Breadcrumbs } from '@app/ui/components-library';
 import { KEY, MOUSE_BUTTONS } from '@app/ui/constants';
 import { CwdActionsMenu } from '@app/ui/cwd-breadcrumbs/CwdActionsMenu';
-import { ActionButton, ActionButtonRef } from '@app/ui/elements/ActionButton';
 import {
   useExplorerId,
   useRegisterExplorerAuxclickHandler,
