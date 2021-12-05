@@ -5,11 +5,9 @@ import { reducer as processesReducer } from '@app/global-state/slices/processes.
 import { reducer as tagsReducer } from '@app/global-state/slices/tags.slice';
 import { reducer as userReducer } from '@app/global-state/slices/user.slice';
 
-const rootReducer = combineReducers({
+export const rootReducer = combineReducers({
   explorersSlice: explorersReducer,
   processesSlice: processesReducer,
   tagsSlice: tagsReducer,
   userSlice: userReducer,
 });
-
-export default rootReducer;

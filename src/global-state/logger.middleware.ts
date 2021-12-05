@@ -5,7 +5,7 @@ import { createLogger } from '@app/operations/create-logger';
 
 const logger = createLogger('store-logger-middleware');
 
-const loggerMiddleware = (store: any) => (next: any) => (action: PayloadAction) => {
+export const loggerMiddleware = (store: any) => (next: any) => (action: PayloadAction) => {
   logger.group(action.type);
   logger.debug(
     'dispatching action...',
@@ -18,5 +18,3 @@ const loggerMiddleware = (store: any) => (next: any) => (action: PayloadAction) 
   logger.groupEnd();
   return result;
 };
-
-export default loggerMiddleware;

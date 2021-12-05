@@ -11,7 +11,6 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
     'plugin:import/recommended',
-    'plugin:import/electron',
     'plugin:import/typescript',
     'plugin:react/recommended',
     'plugin:react-hooks/recommended',
@@ -29,7 +28,19 @@ module.exports = {
   ignorePatterns: ['**/*.js'],
   rules: {
     curly: 'error',
+    'import/first': 'error',
+    'import/newline-after-import': 'error',
+    'import/no-absolute-path': 'error',
+    'import/no-cycle': 'error',
+    'import/no-default-export': 'error',
+    'import/no-duplicates': 'error',
+    'import/no-dynamic-require': 'error',
+    'import/no-mutable-exports': 'error',
+    'import/no-relative-packages': 'error', // forbit relative imports, use TS path aliases instead
+    'import/no-relative-parent-imports': 'error',
+    'import/no-self-import': 'error',
     'import/no-unresolved': 'off',
+    'import/no-useless-path-segments': 'error',
     'import/order': [
       'error',
       {
@@ -95,6 +106,17 @@ module.exports = {
         allowDeclarations: true,
       },
     ],
+    '@typescript-eslint/no-restricted-imports': [
+      'error',
+      {
+        patterns: [
+          {
+            group: ['@mui/material'],
+            message: 'Import from the component-library instead (@app/ui/component-library).',
+          },
+        ],
+      },
+    ],
     '@typescript-eslint/no-unsafe-assignment': 'off',
     '@typescript-eslint/no-unsafe-call': 'off',
     '@typescript-eslint/no-unsafe-member-access': 'off',
@@ -124,6 +146,20 @@ module.exports = {
       // enable eslint-plugin-testing-library for "logic" specs
       files: ['**/?(*.)+(logic.spec).[jt]s?(x)'],
       extends: ['plugin:testing-library/react'],
+    },
+    {
+      // allow default export for Storybook stories and Cypress plugins index file
+      files: ['**/*.stories.@(js|jsx|ts|tsx)', 'cypress/plugins/index.@(js|ts)'],
+      rules: {
+        'import/no-default-export': 'off',
+      },
+    },
+    {
+      /* allow component-library to import from @mui/material */
+      files: ['src/ui/components-library/**/*'],
+      rules: {
+        '@typescript-eslint/no-restricted-imports': ['off'],
+      },
     },
   ],
   settings: {

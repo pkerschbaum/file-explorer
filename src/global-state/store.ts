@@ -5,9 +5,9 @@ import { createSelectorHook, useDispatch as useReduxDispatch } from 'react-redux
 import { check } from '@app/base/utils/assert.util';
 import { numbers } from '@app/base/utils/numbers.util';
 import { typedPath } from '@app/base/utils/types.util';
-import loggerMiddleware from '@app/global-state/logger.middleware';
+import { loggerMiddleware } from '@app/global-state/logger.middleware';
 import { persistMiddleware } from '@app/global-state/persist-state.middleware';
-import rootReducer from '@app/global-state/reducers';
+import { rootReducer } from '@app/global-state/reducers';
 import { ExplorersMap, generateExplorerId } from '@app/global-state/slices/explorers.slice';
 import { getDefaultExplorerCwd } from '@app/operations/app.operations';
 import { createLogger } from '@app/operations/create-logger';
