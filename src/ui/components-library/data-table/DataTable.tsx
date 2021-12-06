@@ -3,8 +3,8 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 import { commonStyles } from '@app/ui/Common.styles';
-import { EmptyRow } from '@app/ui/components-library/DataTable/EmptyRow';
-import { TableBody } from '@app/ui/components-library/DataTable/TableBody';
+import { EmptyRow } from '@app/ui/components-library/data-table/EmptyRow';
+import { TableBody } from '@app/ui/components-library/data-table/TableBody';
 
 export type DataTableProps = {
   renderNoDataPresentMessage?: boolean;

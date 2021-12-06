@@ -7,9 +7,9 @@ import {
   ActionButtonRef,
   Button,
   Popover,
+  Stack,
   TextField,
 } from '@app/ui/components-library';
-import { Stack } from '@app/ui/layouts/Stack';
 
 type CreateFolderProps = {
   actionButtonRef?: React.Ref<ActionButtonRef>;

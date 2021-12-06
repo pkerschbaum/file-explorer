@@ -114,6 +114,13 @@ module.exports = {
           {
             target: /\/src\/ui\/components-library\/.+/,
             allowedPatterns: [/^@mui\/material/],
+            forbiddenPatterns: [
+              {
+                pattern: /^@app\/ui\/components-library$/,
+                errorMessage:
+                  'Inside the components-library, prefer to import directly from the other components instead of the index file.',
+              },
+            ],
           },
           {
             target: /\/src\/ui\/(?!components-library)/,
@@ -122,6 +129,11 @@ module.exports = {
                 pattern: /^@mui\/material/,
                 errorMessage:
                   "Don't import from @mui/material directly. Import from @app/ui/component-library instead.",
+              },
+              {
+                pattern: /^@app\/ui\/components-library\/[A-Z].+/,
+                errorMessage:
+                  'Prefer to just use the import "@app/ui/components-library" instead of reaching for the component files.',
               },
             ],
           },

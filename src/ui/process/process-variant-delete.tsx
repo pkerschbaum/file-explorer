@@ -8,8 +8,7 @@ import { formatter } from '@app/base/utils/formatter.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { DeleteProcess as DeleteProcessType, DELETE_PROCESS_STATUS } from '@app/domain/types';
 import { removeProcess, runDeleteProcess } from '@app/operations/resource.operations';
-import { Box, Button, LinearProgress } from '@app/ui/components-library';
-import { Stack } from '@app/ui/layouts/Stack';
+import { Box, Button, LinearProgress, Stack } from '@app/ui/components-library';
 import type { ProcessVariantProps } from '@app/ui/process/Process';
 
 type StatusMetaInfos = {

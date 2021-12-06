@@ -2,7 +2,8 @@ import { Property } from 'csstype';
 import * as React from 'react';
 import styled, { css, FlattenInterpolation } from 'styled-components';
 
-import { Box, BoxProps, useTheme } from '@app/ui/components-library';
+import { Box, BoxProps } from '@app/ui/components-library/Box';
+import { useTheme } from '@app/ui/components-library/Theme';
 
 type StackProps = {
   direction?: 'row' | 'column' | 'row-reverse' | 'column-reverse';

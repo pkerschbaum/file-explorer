@@ -16,10 +16,10 @@ import {
   DialogTitle,
   IconButton,
   Paper,
+  Stack,
   TextField,
   useTheme,
 } from '@app/ui/components-library';
-import { Stack } from '@app/ui/layouts/Stack';
 
 // derived from https://material-ui.com/components/autocomplete/#creatable
 type WithInput<T> = T & {

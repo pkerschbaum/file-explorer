@@ -8,9 +8,9 @@ import {
   ListItemText,
   MenuItem,
   Popover,
+  Stack,
   TextField,
 } from '@app/ui/components-library';
-import { Stack } from '@app/ui/layouts/Stack';
 
 type ChangeCwdProps = {
   initialCwdValue: string;

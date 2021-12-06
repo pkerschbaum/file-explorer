@@ -17,6 +17,7 @@ import {
   ActionButton,
   ActionButtonRef,
   IconButton,
+  Stack,
   Tab,
   tabIndicatorSpanClassName,
   Tabs,
@@ -24,7 +25,6 @@ import {
 } from '@app/ui/components-library';
 import { KEY } from '@app/ui/constants';
 import { useRegisterGlobalShortcuts } from '@app/ui/GlobalShortcutsContext';
-import { Stack } from '@app/ui/layouts/Stack';
 
 type TabsAreaProps = { explorersToShow: ExplorerPanelEntry[] };
 

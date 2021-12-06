@@ -19,7 +19,7 @@ import {
   RowProps,
   TableBody,
   TableHead,
-} from '@app/ui/components-library/DataTable';
+} from '@app/ui/components-library/data-table';
 import { KEY } from '@app/ui/constants';
 import {
   useChangeSelectionByClick,

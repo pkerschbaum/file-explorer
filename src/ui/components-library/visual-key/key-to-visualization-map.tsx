@@ -8,8 +8,8 @@ import KeyboardReturnOutlinedIcon from '@mui/icons-material/KeyboardReturnOutlin
 import KeyboardTabOutlinedIcon from '@mui/icons-material/KeyboardTabOutlined';
 import * as React from 'react';
 
+import { VisualKey } from '@app/ui/components-library/visual-key';
 import { KEY } from '@app/ui/constants';
-import { VisualKey } from '@app/ui/visual-key';
 
 export const KEY_TO_VISUALIZATION_MAP: { [key in KEY]: React.ReactNode } = {
   [KEY.A]: (

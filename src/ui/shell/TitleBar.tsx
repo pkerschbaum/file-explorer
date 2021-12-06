@@ -6,8 +6,7 @@ import styled from 'styled-components';
 
 import { assertThat } from '@app/base/utils/assert.util';
 import { windowClose, windowMinimize, windowToggleMaximized } from '@app/operations/app.operations';
-import { Button } from '@app/ui/components-library';
-import { Stack } from '@app/ui/layouts/Stack';
+import { Button, Stack } from '@app/ui/components-library';
 import {
   ROOTCONTAINER_PADDING_LEFT_FACTOR,
   ROOTCONTAINER_PADDING_RIGHT_FACTOR,

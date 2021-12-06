@@ -3,14 +3,13 @@ import * as React from 'react';
 import styled, { css } from 'styled-components';
 
 import { useExplorerPanels } from '@app/global-state/slices/explorers.hooks';
-import { Box } from '@app/ui/components-library';
+import { Box, Stack } from '@app/ui/components-library';
 import {
   ExplorerPanel,
   EXPLORER_ACTIONSBAR_GRID_AREA,
   EXPLORER_CWDBREADCRUMBS_GRID_AREA,
   EXPLORER_RESOURCESTABLE_GRID_AREA,
 } from '@app/ui/explorer-panel/ExplorerPanel';
-import { Stack } from '@app/ui/layouts/Stack';
 import {
   ROOTCONTAINER_PADDING_BOTTOM_FACTOR,
   ROOTCONTAINER_PADDING_LEFT_FACTOR,

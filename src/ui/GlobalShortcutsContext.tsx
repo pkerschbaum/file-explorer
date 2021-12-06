@@ -25,9 +25,9 @@
 import * as React from 'react';
 
 import { objects } from '@app/base/utils/objects.util';
+import { KEY_TO_VISUALIZATION_MAP } from '@app/ui/components-library/visual-key';
 import { KEY } from '@app/ui/constants';
 import { createContext } from '@app/ui/utils/react.util';
-import { KEY_TO_VISUALIZATION_MAP } from '@app/ui/visual-key/key-to-visualization-map';
 
 export const DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED = {
   datasetAttr: {

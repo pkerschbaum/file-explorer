@@ -23,6 +23,7 @@ import {
   ActionButtonRef,
   Box,
   Divider,
+  Stack,
   TextField,
   Tooltip,
 } from '@app/ui/components-library';
@@ -43,7 +44,6 @@ import {
 } from '@app/ui/explorer-context';
 import { DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED } from '@app/ui/GlobalShortcutsContext';
 import { useClipboardResources } from '@app/ui/hooks/clipboard-resources.hooks';
-import { Stack } from '@app/ui/layouts/Stack';
 
 export const ActionsBar: React.FC = () => {
   const draftPasteState = useDraftPasteState();
