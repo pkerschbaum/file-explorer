@@ -408,12 +408,12 @@ const RenameInput: React.FC<RenameInputProps> = ({ resource, onSubmit, abortRena
           }
         }}
       />
-      <RenameActionButton size="small" disabled={check.isNullishOrEmptyString(value)} type="submit">
+      <Button buttonSize="sm" isDisabled={check.isNullishOrEmptyString(value)} type="submit">
         OK
-      </RenameActionButton>
-      <RenameActionButton size="small" onClick={abortRename}>
+      </Button>
+      <Button buttonSize="sm" onPress={abortRename}>
         Abort
-      </RenameActionButton>
+      </Button>
     </RenameInputForm>
   );
 };
@@ -437,8 +437,4 @@ const ResourceNameTextField = styled(TextField)`
     padding-left: ${(props) => props.theme.spacing(ResourceNameFormattedSpacingFactor)};
     padding-block: 0;
   }
-`;
-
-const RenameActionButton = styled(Button)`
-  padding-block: 0;
 `;

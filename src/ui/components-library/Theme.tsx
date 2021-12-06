@@ -238,6 +238,7 @@ const createAppTheme = (
       MuiTab: {
         styleOverrides: {
           root: css`
+            line-height: ${MUI_BUTTON_LINE_HEIGHT};
             text-transform: none;
             padding: 0;
             min-height: 0;
@@ -262,7 +263,7 @@ const createAppTheme = (
             & .${tabIndicatorSpanClassName} {
               max-height: 16px;
               height: 100%;
-              background-color: var(--color-primary);
+              background-color: var(--color-primary-main);
               border-radius: 4px;
             }
           `,

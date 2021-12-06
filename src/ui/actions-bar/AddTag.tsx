@@ -123,9 +123,8 @@ export const AddTag: React.FC<AddTagProps> = ({
             <TagAutocompleteEntry>
               {check.isNullishOrEmptyString(option.inputValue) && (
                 <ColorButton
-                  disableElevation
                   variant="contained"
-                  sx={{ backgroundColor: (theme) => theme.availableTagColors[option.colorId] }}
+                  style={{ backgroundColor: availableTagColors[option.colorId] }}
                 />
               )}
               <OptionLabel>{option.name}</OptionLabel>
@@ -149,9 +148,8 @@ export const AddTag: React.FC<AddTagProps> = ({
             <Stack direction="column" alignItems="start">
               <Stack>
                 <ColorButton
-                  disableElevation
                   variant="contained"
-                  sx={{ backgroundColor: (theme) => theme.availableTagColors[dialogValue.colorId] }}
+                  style={{ backgroundColor: availableTagColors[dialogValue.colorId] }}
                 />
                 <TagNameInput
                   autoFocus
@@ -182,10 +180,8 @@ export const AddTag: React.FC<AddTagProps> = ({
                                 backgroundColor: colorHex,
                                 opacity: isSelected ? '0.35' : undefined,
                               }}
-                              disableRipple
-                              disableElevation
                               variant={isSelected ? 'outlined' : 'contained'}
-                              onClick={() => setDialogValue({ ...dialogValue, colorId })}
+                              onPress={() => setDialogValue({ ...dialogValue, colorId })}
                             />
                           );
                         })}
@@ -196,7 +192,7 @@ export const AddTag: React.FC<AddTagProps> = ({
             </Stack>
           </DialogContent>
           <DialogActions>
-            <Button variant="text" onClick={handleClose}>
+            <Button variant="text" onPress={handleClose}>
               Cancel
             </Button>
             <Button variant="text" type="submit">

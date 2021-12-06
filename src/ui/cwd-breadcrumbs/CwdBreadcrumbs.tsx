@@ -6,7 +6,7 @@ import invariant from 'tiny-invariant';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { useCwd } from '@app/global-state/slices/explorers.hooks';
 import { changeDirectory } from '@app/operations/explorer.operations';
-import { ActionButton, ActionButtonRef, Box, Breadcrumbs } from '@app/ui/components-library';
+import { ButtonHandle, Box, Breadcrumbs, Button } from '@app/ui/components-library';
 import { KEY, MOUSE_BUTTONS } from '@app/ui/constants';
 import { CwdActionsMenu } from '@app/ui/cwd-breadcrumbs/CwdActionsMenu';
 import {
@@ -57,7 +57,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
   isSecondToLastSlug,
   changeDirectory,
 }) => {
-  const actionButtonRef = React.useRef<ActionButtonRef>(null);
+  const buttonHandleRef = React.useRef<ButtonHandle>(null);
   const [menuAnchorEl, setMenuAnchorEl] = React.useState<HTMLElement | null>(null);
 
   const registerShortcutsResult = useRegisterExplorerShortcuts({
@@ -74,8 +74,8 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
           ]
         : [],
       handler: () => {
-        invariant(actionButtonRef.current);
-        actionButtonRef.current.triggerSyntheticClick();
+        invariant(buttonHandleRef.current);
+        buttonHandleRef.current.triggerSyntheticClick();
       },
     },
     openCwdMenuShortcut: {
@@ -91,8 +91,8 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
           ]
         : [],
       handler: () => {
-        invariant(actionButtonRef.current);
-        actionButtonRef.current.triggerSyntheticClick();
+        invariant(buttonHandleRef.current);
+        buttonHandleRef.current.triggerSyntheticClick();
       },
     },
   });
@@ -106,9 +106,9 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
       : [{ condition: (e) => e.button === MOUSE_BUTTONS.BACK, handler: changeDirectory }],
   );
 
-  async function handleClick(e: React.MouseEvent<HTMLElement>) {
+  async function handleClick(e: { target: HTMLElement }) {
     if (isLastSlug) {
-      setMenuAnchorEl(e.currentTarget);
+      setMenuAnchorEl(e.target);
     } else {
       await changeDirectory();
     }
@@ -116,9 +116,9 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
 
   return (
     <>
-      <ActionButton
-        ref={actionButtonRef}
-        onClick={handleClick}
+      <Button
+        handleRef={buttonHandleRef}
+        onPress={handleClick}
         endIcon={
           isLastSlug ? (
             <CwdActionsMenuTrigger>
@@ -131,9 +131,10 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
             registerShortcutsResult.openCwdMenuShortcut?.icon
           )
         }
+        enableLayoutAnimation
       >
         {slugFormatted}
-      </ActionButton>
+      </Button>
 
       {isLastSlug && (
         <CwdActionsMenu

@@ -1,9 +1,11 @@
 import * as d3 from 'd3-color';
 import * as React from 'react';
 import { createGlobalStyle, css } from 'styled-components';
+import invariant from 'tiny-invariant';
 
 import { assertIsUnreachable } from '@app/base/utils/assert.util';
 import { useActiveTheme } from '@app/global-state/slices/user.hooks';
+import { TARGET_MEDIUM_FONTSIZE } from '@app/ui/components-library/Theme';
 import { createContext } from '@app/ui/utils/react.util';
 
 // "Nord" theme color palette (https://www.nordtheme.com/docs/colors-and-palettes)
@@ -146,6 +148,8 @@ export const DesignTokenProvider: React.FC<DesignTokenProviderProps> = ({ childr
   const DesignTokensGlobalStyle = React.useMemo(() => {
     const hsl = d3.hsl(themeConfiguration.background[0]);
     const bg0HSLString = `${hsl.h}deg ${hsl.s}% ${hsl.l}%`;
+    const primaryDarkened = d3.color(themeConfiguration.highlight.primary)?.darker(0.7);
+    invariant(primaryDarkened);
 
     const designTokensCss = css`
       :root {
@@ -154,7 +158,9 @@ export const DesignTokenProvider: React.FC<DesignTokenProviderProps> = ({ childr
         --color-bg-1: ${themeConfiguration.background[1]};
         --color-bg-2: ${themeConfiguration.background[2]};
         --color-bg-3: ${themeConfiguration.background[3]};
-        --color-primary: ${themeConfiguration.highlight.primary};
+        --color-primary-main: ${themeConfiguration.highlight.primary};
+        --color-primary-dark: ${primaryDarkened.formatHsl()};
+        --color-primary-contrast: ${themeConfiguration.background[0]};
         --color-success: ${themeConfiguration.highlight.success};
         --color-error: ${themeConfiguration.highlight.error};
         --color-warning: ${themeConfiguration.highlight.warning};
@@ -184,7 +190,11 @@ export const DesignTokenProvider: React.FC<DesignTokenProviderProps> = ({ childr
 
         --spacing-1: 4px;
         --spacing-2: calc(var(--spacing-1) * 2);
+        --spacing-3: calc(var(--spacing-1) * 3);
         --spacing-4: calc(var(--spacing-1) * 4);
+
+        --font-size-sm: ${`${(TARGET_MEDIUM_FONTSIZE - 2) / TARGET_MEDIUM_FONTSIZE}rem`};
+        --font-weight-bold: 700;
 
         --border-radius-1: 2px;
         --border-radius-2: calc(var(--border-radius-1) * 2);

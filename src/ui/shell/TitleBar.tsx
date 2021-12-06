@@ -18,13 +18,13 @@ export const TitleBar: React.FC = () => {
   return (
     <WindowDragRegion justifyContent="end">
       <TitleBarWindowControls spacing={0} alignItems="stretch">
-        <TitleBarButton tabIndex={-1} onClick={windowMinimize}>
+        <TitleBarButton tabIndex={-1} onPress={windowMinimize}>
           <MinimizeOutlinedIcon />
         </TitleBarButton>
-        <TitleBarButton tabIndex={-1} onClick={windowToggleMaximized}>
+        <TitleBarButton tabIndex={-1} onPress={windowToggleMaximized}>
           <FullscreenOutlinedIcon />
         </TitleBarButton>
-        <TitleBarCloseButton tabIndex={-1} onClick={windowClose}>
+        <TitleBarCloseButton tabIndex={-1} onPress={windowClose}>
           <CloseOutlinedIcon />
         </TitleBarCloseButton>
       </TitleBarWindowControls>

@@ -45,18 +45,18 @@ export function computeProcessCardPropsFromDeleteProcess(
       contentToRender = (
         <>
           <Button
-            onClick={() => runDeleteProcess(process.id, { useTrash: true })}
+            onPress={() => runDeleteProcess(process.id, { useTrash: true })}
             startIcon={<DeleteOutlineOutlinedIcon />}
           >
             Move to trash
           </Button>
           <Button
-            onClick={() => runDeleteProcess(process.id, { useTrash: false })}
+            onPress={() => runDeleteProcess(process.id, { useTrash: false })}
             startIcon={<DeleteForeverOutlinedIcon />}
           >
             Delete permanently
           </Button>
-          <Button onClick={() => removeProcess(process.id)}>Abort</Button>
+          <Button onPress={() => removeProcess(process.id)}>Abort</Button>
         </>
       );
       break;

@@ -80,7 +80,7 @@ export const ChangeCwd: React.FC<ChangeCwdProps> = ({ initialCwdValue, onSubmit 
               <Button
                 variant={check.isEmptyString(cwdValue) ? undefined : 'contained'}
                 type="submit"
-                disabled={check.isEmptyString(cwdValue)}
+                isDisabled={check.isEmptyString(cwdValue)}
               >
                 Change Directory
               </Button>

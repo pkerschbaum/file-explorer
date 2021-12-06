@@ -3,30 +3,28 @@ import * as React from 'react';
 
 import { check } from '@app/base/utils/assert.util';
 import {
-  ActionButton,
-  ActionButtonRef,
+  ButtonHandle,
   Button,
   Card,
+  Icon,
   Popover,
   Stack,
   TextField,
 } from '@app/ui/components-library';
 
 type CreateFolderProps = {
-  actionButtonRef?: React.Ref<ActionButtonRef>;
-  actionButtonEndIcon?: React.ReactNode;
+  buttonHandleRef?: React.RefObject<ButtonHandle>;
+  buttonEndIcon?: React.ReactNode;
   onSubmit: (folderName: string) => void | Promise<void>;
 };
 
 export const CreateFolder: React.FC<CreateFolderProps> = ({
-  actionButtonRef,
-  actionButtonEndIcon,
+  buttonHandleRef,
+  buttonEndIcon,
   onSubmit,
 }) => {
   const [createFolderValue, setCreateFolderValue] = React.useState('');
-  const [createFolderAnchorEl, setCreateFolderAnchorEl] = React.useState<HTMLButtonElement | null>(
-    null,
-  );
+  const [createFolderAnchorEl, setCreateFolderAnchorEl] = React.useState<HTMLElement | null>(null);
 
   React.useEffect(
     function resetValueOnPopoverClose() {
@@ -48,14 +46,15 @@ export const CreateFolder: React.FC<CreateFolderProps> = ({
 
   return (
     <>
-      <ActionButton
-        ref={actionButtonRef}
-        onClick={(e) => setCreateFolderAnchorEl(e.currentTarget)}
-        StartIconComponent={CreateNewFolderOutlinedIcon}
-        endIcon={actionButtonEndIcon}
+      <Button
+        handleRef={buttonHandleRef}
+        onPress={(e) => setCreateFolderAnchorEl(e.target)}
+        startIcon={<Icon Component={CreateNewFolderOutlinedIcon} />}
+        endIcon={buttonEndIcon}
+        enableLayoutAnimation
       >
         New Folder
-      </ActionButton>
+      </Button>
 
       <Popover
         open={createFolderAnchorEl !== null}
@@ -88,7 +87,7 @@ export const CreateFolder: React.FC<CreateFolderProps> = ({
               <Button
                 variant={check.isEmptyString(createFolderValue) ? undefined : 'contained'}
                 type="submit"
-                disabled={check.isEmptyString(createFolderValue)}
+                isDisabled={check.isEmptyString(createFolderValue)}
               >
                 Create
               </Button>

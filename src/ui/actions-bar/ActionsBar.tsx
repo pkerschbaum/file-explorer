@@ -19,10 +19,11 @@ import { addTag, removeTags } from '@app/operations/tag.operations';
 import { AddTag } from '@app/ui/actions-bar/AddTag';
 import { CreateFolder } from '@app/ui/actions-bar/CreateFolder';
 import {
-  ActionButton,
-  ActionButtonRef,
   Box,
+  Button,
+  ButtonHandle,
   Divider,
+  Icon,
   Stack,
   TextField,
   Tooltip,
@@ -61,13 +62,13 @@ export const ActionsBar: React.FC = () => {
   const createFolderInExplorer = useCreateFolderInExplorer();
   const changeSelectionByKeyboard = useChangeSelectionByKeyboard();
 
-  const openButtonRef = React.useRef<ActionButtonRef>(null);
-  const copyButtonRef = React.useRef<ActionButtonRef>(null);
-  const cutButtonRef = React.useRef<ActionButtonRef>(null);
-  const pasteButtonRef = React.useRef<ActionButtonRef>(null);
-  const triggerRenameButtonRef = React.useRef<ActionButtonRef>(null);
-  const scheduleDeleteButtonRef = React.useRef<ActionButtonRef>(null);
-  const triggerCreateNewFolderButtonRef = React.useRef<ActionButtonRef>(null);
+  const openButtonHandleRef = React.useRef<ButtonHandle>(null);
+  const copyButtonHandleRef = React.useRef<ButtonHandle>(null);
+  const cutButtonHandleRef = React.useRef<ButtonHandle>(null);
+  const pasteButtonHandleRef = React.useRef<ButtonHandle>(null);
+  const triggerRenameButtonHandleRef = React.useRef<ButtonHandle>(null);
+  const scheduleDeleteButtonHandleRef = React.useRef<ButtonHandle>(null);
+  const triggerCreateNewFolderButtonHandleRef = React.useRef<ButtonHandle>(null);
 
   const filterInputRef = React.useRef<HTMLDivElement>(null);
 
@@ -83,8 +84,8 @@ export const ActionsBar: React.FC = () => {
         },
       ],
       handler: () => {
-        invariant(openButtonRef.current);
-        openButtonRef.current.triggerSyntheticClick();
+        invariant(openButtonHandleRef.current);
+        openButtonHandleRef.current.triggerSyntheticClick();
       },
     },
     copyShortcut: {
@@ -98,8 +99,8 @@ export const ActionsBar: React.FC = () => {
         },
       ],
       handler: () => {
-        invariant(copyButtonRef.current);
-        copyButtonRef.current.triggerSyntheticClick();
+        invariant(copyButtonHandleRef.current);
+        copyButtonHandleRef.current.triggerSyntheticClick();
       },
     },
     cutShortcut: {
@@ -113,8 +114,8 @@ export const ActionsBar: React.FC = () => {
         },
       ],
       handler: () => {
-        invariant(cutButtonRef.current);
-        cutButtonRef.current.triggerSyntheticClick();
+        invariant(cutButtonHandleRef.current);
+        cutButtonHandleRef.current.triggerSyntheticClick();
       },
     },
     pasteShortcut: {
@@ -128,8 +129,8 @@ export const ActionsBar: React.FC = () => {
         },
       ],
       handler: () => {
-        invariant(pasteButtonRef.current);
-        pasteButtonRef.current.triggerSyntheticClick();
+        invariant(pasteButtonHandleRef.current);
+        pasteButtonHandleRef.current.triggerSyntheticClick();
       },
     },
     triggerRenameShortcut: {
@@ -143,8 +144,8 @@ export const ActionsBar: React.FC = () => {
         },
       ],
       handler: (e) => {
-        invariant(triggerRenameButtonRef.current);
-        triggerRenameButtonRef.current.triggerSyntheticClick();
+        invariant(triggerRenameButtonHandleRef.current);
+        triggerRenameButtonHandleRef.current.triggerSyntheticClick();
         // avoid reload of window (default browser action for CTRL+R)
         e.preventDefault();
       },
@@ -160,8 +161,8 @@ export const ActionsBar: React.FC = () => {
         },
       ],
       handler: () => {
-        invariant(scheduleDeleteButtonRef.current);
-        scheduleDeleteButtonRef.current.triggerSyntheticClick();
+        invariant(scheduleDeleteButtonHandleRef.current);
+        scheduleDeleteButtonHandleRef.current.triggerSyntheticClick();
       },
     },
     triggerCreateNewFolderShortcut: {
@@ -175,8 +176,8 @@ export const ActionsBar: React.FC = () => {
         },
       ],
       handler: () => {
-        invariant(triggerCreateNewFolderButtonRef.current);
-        triggerCreateNewFolderButtonRef.current.triggerSyntheticClick();
+        invariant(triggerCreateNewFolderButtonHandleRef.current);
+        triggerCreateNewFolderButtonHandleRef.current.triggerSyntheticClick();
       },
     },
     changeSelectionByKeyboardShortcut: {
@@ -250,70 +251,76 @@ export const ActionsBar: React.FC = () => {
       <Divider orientation="vertical" />
 
       <Stack wrap>
-        <ActionButton
-          ref={openButtonRef}
-          onClick={openSelectedResources}
-          disabled={singleResourceActionsDisabled}
-          StartIconComponent={LaunchOutlinedIcon}
+        <Button
+          handleRef={openButtonHandleRef}
+          onPress={openSelectedResources}
+          isDisabled={singleResourceActionsDisabled}
+          startIcon={<Icon Component={LaunchOutlinedIcon} />}
           endIcon={!singleResourceActionsDisabled && registerShortcutsResult.openShortcut?.icon}
+          enableLayoutAnimation
         >
           Open
-        </ActionButton>
-        <ActionButton
-          ref={copyButtonRef}
-          onClick={copySelectedResources}
-          disabled={multipleResourcesActionsDisabled}
-          StartIconComponent={ContentCopyOutlinedIcon}
+        </Button>
+        <Button
+          handleRef={copyButtonHandleRef}
+          onPress={copySelectedResources}
+          isDisabled={multipleResourcesActionsDisabled}
+          startIcon={<Icon Component={ContentCopyOutlinedIcon} />}
           endIcon={!multipleResourcesActionsDisabled && registerShortcutsResult.copyShortcut?.icon}
+          enableLayoutAnimation
         >
           Copy
-        </ActionButton>
-        <ActionButton
-          ref={cutButtonRef}
-          onClick={cutSelectedResources}
-          disabled={multipleResourcesActionsDisabled}
-          StartIconComponent={ContentCutOutlinedIcon}
+        </Button>
+        <Button
+          handleRef={cutButtonHandleRef}
+          onPress={cutSelectedResources}
+          isDisabled={multipleResourcesActionsDisabled}
+          startIcon={<Icon Component={ContentCutOutlinedIcon} />}
           endIcon={!multipleResourcesActionsDisabled && registerShortcutsResult.cutShortcut?.icon}
+          enableLayoutAnimation
         >
           Cut
-        </ActionButton>
-        <ActionButton
-          ref={pasteButtonRef}
+        </Button>
+        <Button
+          handleRef={pasteButtonHandleRef}
           variant={draftPasteState === undefined ? undefined : 'contained'}
-          onClick={pasteResourcesIntoExplorer}
-          disabled={draftPasteState === undefined}
-          StartIconComponent={ContentPasteOutlinedIcon}
+          onPress={pasteResourcesIntoExplorer}
+          isDisabled={draftPasteState === undefined}
+          startIcon={<Icon Component={ContentPasteOutlinedIcon} />}
           endIcon={draftPasteState !== undefined && registerShortcutsResult.pasteShortcut?.icon}
+          enableLayoutAnimation
         >
           Paste
           <PasteInfoBadge />
-        </ActionButton>
-        <ActionButton
-          ref={triggerRenameButtonRef}
-          onClick={triggerRenameForSelectedResources}
-          disabled={singleResourceActionsDisabled}
-          StartIconComponent={EditOutlinedIcon}
+        </Button>
+        <Button
+          handleRef={triggerRenameButtonHandleRef}
+          onPress={triggerRenameForSelectedResources}
+          isDisabled={singleResourceActionsDisabled}
+          startIcon={<Icon Component={EditOutlinedIcon} />}
           endIcon={
             !singleResourceActionsDisabled && registerShortcutsResult.triggerRenameShortcut?.icon
           }
+          enableLayoutAnimation
         >
           Rename
-        </ActionButton>
-        <ActionButton
-          ref={scheduleDeleteButtonRef}
-          onClick={scheduleDeleteSelectedResources}
-          disabled={multipleResourcesActionsDisabled}
-          StartIconComponent={DeleteOutlinedIcon}
+        </Button>
+        <Button
+          handleRef={scheduleDeleteButtonHandleRef}
+          onPress={scheduleDeleteSelectedResources}
+          isDisabled={multipleResourcesActionsDisabled}
+          startIcon={<Icon Component={DeleteOutlinedIcon} />}
           endIcon={
             !multipleResourcesActionsDisabled &&
             registerShortcutsResult.scheduleDeleteShortcut?.icon
           }
+          enableLayoutAnimation
         >
           Delete
-        </ActionButton>
+        </Button>
         <CreateFolder
-          actionButtonRef={triggerCreateNewFolderButtonRef}
-          actionButtonEndIcon={registerShortcutsResult.triggerCreateNewFolderShortcut?.icon}
+          buttonHandleRef={triggerCreateNewFolderButtonHandleRef}
+          buttonEndIcon={registerShortcutsResult.triggerCreateNewFolderShortcut?.icon}
           onSubmit={createFolderInExplorer}
         />
         {config.featureFlags.tags && (

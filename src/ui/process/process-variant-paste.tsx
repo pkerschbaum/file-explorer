@@ -198,7 +198,7 @@ export function computeProcessCardPropsFromPasteProcess(
         )}
 
         {processMeta.allowCancellation && (
-          <Button onClick={() => process.cancellationTokenSource.cancel()}>Cancel</Button>
+          <Button onPress={() => process.cancellationTokenSource.cancel()}>Cancel</Button>
         )}
       </>
     ),

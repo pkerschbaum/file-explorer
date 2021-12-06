@@ -57,6 +57,7 @@ const globalStyle = css`
       font-size to 20px), we use a percentage-based value here.
      */
     font-size: ${(TARGET_MEDIUM_FONTSIZE / 16) * 100}%;
+    line-height: 1.5;
   }
 
   :root,
@@ -78,6 +79,14 @@ const globalStyle = css`
   svg {
     display: block;
     max-width: 100%;
+  }
+
+  /* Remove built-in form typography styles, https://www.joshwcomeau.com/css/custom-css-reset/#digit-inherit-fonts-for-form-controls */
+  input,
+  button,
+  textarea,
+  select {
+    font: inherit;
   }
 
   /* Word wrapping, https://www.joshwcomeau.com/css/custom-css-reset/#digit-word-wrapping, https://twitter.com/sophiebits/status/1462921205359386628 */

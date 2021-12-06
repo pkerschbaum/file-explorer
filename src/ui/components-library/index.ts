@@ -1,4 +1,3 @@
-export * from '@app/ui/components-library/ActionButton';
 export * from '@app/ui/components-library/Autocomplete';
 export * from '@app/ui/components-library/Box';
 export * from '@app/ui/components-library/Button';
@@ -9,6 +8,7 @@ export * from '@app/ui/components-library/CssBaseline';
 export * from '@app/ui/components-library/DesignTokenProvider';
 export * from '@app/ui/components-library/Dialog';
 export * from '@app/ui/components-library/Divider';
+export * from '@app/ui/components-library/Icon';
 export * from '@app/ui/components-library/IconButton';
 export * from '@app/ui/components-library/LinearProgress';
 export * from '@app/ui/components-library/Menu';

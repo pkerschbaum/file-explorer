@@ -14,8 +14,9 @@ import {
   removeExplorerPanel,
 } from '@app/operations/app.operations';
 import {
-  ActionButton,
-  ActionButtonRef,
+  ButtonHandle,
+  Button,
+  Icon,
   IconButton,
   Stack,
   Tab,
@@ -32,9 +33,9 @@ type TabsAreaProps = { explorersToShow: ExplorerPanelEntry[] };
 export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
   const idOfFocusedExplorerPanel = useIdOfFocusedExplorerPanel();
 
-  const addTabButtonRef = React.useRef<ActionButtonRef>(null);
-  const prevTabButtonRef = React.useRef<ActionButtonRef>(null);
-  const nextTabButtonRef = React.useRef<ActionButtonRef>(null);
+  const addTabButtonHandleRef = React.useRef<ButtonHandle>(null);
+  const prevTabButtonHandleRef = React.useRef<ButtonHandle>(null);
+  const nextTabButtonHandleRef = React.useRef<ButtonHandle>(null);
 
   const focusedExplorer = explorersToShow.find(
     (explorer) => explorer.explorerId === idOfFocusedExplorerPanel,
@@ -63,7 +64,7 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
           },
         },
       ],
-      handler: () => prevTabButtonRef.current?.triggerSyntheticClick(),
+      handler: () => prevTabButtonHandleRef.current?.triggerSyntheticClick(),
     },
     changeToNextTabShortcut: {
       keybindings: [
@@ -75,7 +76,7 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
           },
         },
       ],
-      handler: () => nextTabButtonRef.current?.triggerSyntheticClick(),
+      handler: () => nextTabButtonHandleRef.current?.triggerSyntheticClick(),
     },
     addNewTabShortcut: {
       keybindings: [
@@ -117,11 +118,11 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
               label={
                 <ExplorerPanelTab
                   label={uriSlugToRender.formatted}
-                  buttonRef={
+                  buttonHandleRef={
                     isPrevExplorer
-                      ? prevTabButtonRef
+                      ? prevTabButtonHandleRef
                       : isNextExplorer
-                      ? nextTabButtonRef
+                      ? nextTabButtonHandleRef
                       : undefined
                   }
                   buttonEndIcon={
@@ -145,21 +146,22 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
           );
         })}
       </Tabs>
-      <ActionButton
-        ref={addTabButtonRef}
-        onClick={duplicateFocusedExplorerPanel}
-        StartIconComponent={AddCircleOutlineOutlinedIcon}
+      <Button
+        handleRef={addTabButtonHandleRef}
+        onPress={duplicateFocusedExplorerPanel}
+        startIcon={<Icon Component={AddCircleOutlineOutlinedIcon} />}
         endIcon={registerShortcutsResult.addNewTabShortcut.icon}
+        enableLayoutAnimation
       >
         Add tab
-      </ActionButton>
+      </Button>
     </Stack>
   );
 };
 
 type ExplorerPanelTabProps = {
   label: string;
-  buttonRef?: React.Ref<ActionButtonRef>;
+  buttonHandleRef?: React.RefObject<ButtonHandle>;
   buttonEndIcon?: React.ReactNode;
   onRemove: () => void;
   removeExplorerActionDisabled: boolean;
@@ -171,20 +173,9 @@ const ExplorerPanelTab: React.FC<ExplorerPanelTabProps> = (props) => {
 
   return (
     <>
-      <ActionButton
-        ref={props.buttonRef}
-        endIcon={props.buttonEndIcon}
-        disableLayoutAnimation
-        sx={{
-          width: '100%',
-          justifyContent: 'start',
-          textAlign: 'start',
-          // make some space on the right side available for the (absolutely positioned) TabCloseButton
-          paddingRight: (theme) => theme.spacing(4.5),
-        }}
-      >
+      <TabButton handleRef={props.buttonHandleRef} endIcon={props.buttonEndIcon}>
         {props.label}
-      </ActionButton>
+      </TabButton>
       {!props.removeExplorerActionDisabled && (
         <>
           <TabIconButton
@@ -209,6 +200,14 @@ const ExplorerPanelTab: React.FC<ExplorerPanelTabProps> = (props) => {
     </>
   );
 };
+
+const TabButton = styled(Button)`
+  width: 100%;
+  justify-content: start;
+  text-align: start;
+  /* make some space on the right side available for the (absolutely positioned) TabCloseButton */
+  padding-right: ${({ theme }) => theme.spacing(4.5)};
+`;
 
 const TabIconButton = styled(IconButton)`
   position: absolute;
