@@ -2,7 +2,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import * as React from 'react';
 import styled from 'styled-components';
 
-import { Box, IconButton, Tooltip } from '@app/ui/components-library';
+import { Box, IconButton, Tooltip, useTooltip } from '@app/ui/components-library';
 
 export const USER_PREFERENCES_BUTTON_GRID_AREA = 'shell-app-settings-button';
 
@@ -14,22 +14,32 @@ type UserPreferencesButtonProps = {
 export const UserPreferencesButton: React.FC<UserPreferencesButtonProps> = ({
   userPreferencesSidebarOpen,
   setUserPreferencesSidebarOpen,
-}) => (
-  <UserPreferencesButtonContainer>
-    <Tooltip
-      title={!userPreferencesSidebarOpen ? 'Open User Preferences' : 'Hide User Preferences'}
-    >
+}) => {
+  const triggerRef = React.useRef<HTMLButtonElement>(null);
+  const { triggerProps, tooltipProps } = useTooltip({ triggerRef, anchorRef: triggerRef });
+
+  return (
+    <UserPreferencesButtonContainer>
       <IconButton
+        ref={triggerRef}
         size="medium"
-        onClick={() => {
+        {...(triggerProps as any)}
+        onClick={(e) => {
           setUserPreferencesSidebarOpen(!userPreferencesSidebarOpen);
+          if (triggerProps.onClick) {
+            triggerProps.onClick(e);
+          }
         }}
       >
         <SettingsIcon fontSize="inherit" />
       </IconButton>
-    </Tooltip>
-  </UserPreferencesButtonContainer>
-);
+
+      <Tooltip {...tooltipProps}>
+        {!userPreferencesSidebarOpen ? 'Open User Preferences' : 'Hide User Preferences'}
+      </Tooltip>
+    </UserPreferencesButtonContainer>
+  );
+};
 
 const UserPreferencesButtonContainer = styled(Box)`
   grid-area: ${USER_PREFERENCES_BUTTON_GRID_AREA};

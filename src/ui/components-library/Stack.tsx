@@ -17,11 +17,10 @@ type StackProps = {
   stretchContainer?: boolean;
   children: React.ReactNode;
   className?: string;
-  sx?: BoxProps['sx'];
   boxProps?: BoxProps;
 };
 
-export const Stack = React.forwardRef<HTMLElement, StackProps>(function Stack(
+export const Stack = React.forwardRef<HTMLDivElement, StackProps>(function Stack(
   {
     direction = 'row',
     justifyContent,

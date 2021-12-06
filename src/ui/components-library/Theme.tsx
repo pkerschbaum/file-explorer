@@ -4,9 +4,11 @@ import { createTheme as createMuiTheme, Theme as MuiTheme } from '@mui/material/
 import * as React from 'react';
 import { css } from 'styled-components';
 
-import { assertThat } from '@app/base/utils/assert.util';
 import { AvailableTagIds, DELETE_PROCESS_STATUS, PASTE_PROCESS_STATUS } from '@app/domain/types';
-import { useActiveTheme } from '@app/global-state/slices/user.hooks';
+import {
+  ThemeConfiguration,
+  useThemeConfiguration,
+} from '@app/ui/components-library/DesignTokenProvider';
 
 export type Theme = MuiTheme;
 
@@ -86,129 +88,10 @@ export const MUI_BUTTON_SPACING_FACTOR = 1;
 export const MUI_BUTTON_LINE_HEIGHT = 1.5;
 export const TARGET_MEDIUM_FONTSIZE = 14;
 
-// "Nord" theme color palette (https://www.nordtheme.com/docs/colors-and-palettes)
-const NORD_THEME = {
-  // Polar Night
-  nord0: '#2E3440',
-  nord1: '#3B4252',
-  nord2: '#434C5E',
-  nord3: '#4C566A',
-  // Snow Storm
-  nord4: '#D8DEE9',
-  nord5: '#E5E9F0',
-  nord6: '#ECEFF4',
-  // Frost
-  nord7: '#8FBCBB',
-  nord8: '#88C0D0',
-  nord9: '#81A1C1',
-  nord10: '#5E81AC',
-  // Aurora
-  nord11: '#BF616A',
-  nord12: '#D08770',
-  nord13: '#EBCB8B',
-  nord14: '#A3BE8C',
-  nord15: '#B48EAD',
-} as const;
-
-export const THEMES = {
-  nord: {
-    mode: 'dark',
-    background: {
-      0: NORD_THEME.nord0,
-      1: NORD_THEME.nord1,
-      2: NORD_THEME.nord2,
-      3: NORD_THEME.nord3,
-    },
-    foreground: {
-      0: NORD_THEME.nord6,
-    },
-    highlight: {
-      primary: NORD_THEME.nord8,
-      success: NORD_THEME.nord14,
-      error: NORD_THEME.nord11,
-      warning: NORD_THEME.nord13,
-    },
-  },
-  coffee: {
-    mode: 'dark',
-    background: {
-      0: '#231f1a',
-      1: 'hsl(27, 11%, 17%)',
-      2: 'hsl(27, 11%, 22%)',
-      3: 'hsl(27, 11%, 26%)',
-    },
-    foreground: {
-      0: 'hsl(0, 0%, 100%)',
-    },
-    highlight: {
-      primary: '#4dd0e1',
-      success: '#A3BE8C',
-      error: '#BF616A',
-      warning: '#EBCB8B',
-    },
-  },
-  ayu: {
-    mode: 'light',
-    background: {
-      0: 'hsl(0, 0%, 99%)',
-      1: 'hsl(210, 17%, 91%)',
-      2: 'hsl(210, 14%, 80%)',
-      3: 'hsl(210, 14%, 69%)',
-    },
-    foreground: {
-      0: 'rgba(0, 0, 0, 1)',
-    },
-    highlight: {
-      primary: 'hsl(35, 100%, 60%)',
-      success: '#A3BE8C',
-      error: 'hsl(359, 54%, 40%)',
-      warning: '#EBCB8B',
-    },
-  },
-  flow: {
-    // inspired by Windows 11 "Flow" theme
-    mode: 'light',
-    background: {
-      0: 'hsl(0, 0%, 100%)',
-      1: 'hsl(202, 48%, 95%)',
-      2: 'hsl(202, 48%, 84%)',
-      3: 'hsl(202, 48%, 73%)',
-    },
-    foreground: {
-      0: 'hsl(0, 0%, 11%)',
-    },
-    highlight: {
-      primary: 'hsl(203, 17%, 36%)',
-      success: '#A3BE8C',
-      error: '#BF616A',
-      warning: '#EBCB8B',
-    },
-  },
-} as const;
-export type AvailableTheme = keyof typeof THEMES;
-export const availableThemes = Object.keys(THEMES) as AvailableTheme[];
-export const defaultTheme: AvailableTheme = 'nord';
-
-// border colors are taken from material-ui OutlinedInput <fieldset> border color
-const BORDER_COLOR_LIGHT = 'rgba(0, 0, 0, 0.23)';
-const BORDER_COLOR_DARK = 'rgba(255, 255, 255, 0.23)';
-const OUTLINE_COLOR_LIGHT = 'rgba(0, 0, 0, 0.8)';
-const OUTLINE_COLOR_DARK = 'rgba(255, 255, 255, 0.8)';
-
-const createAppTheme = (locale: Localization, activeTheme: AvailableTheme) => {
-  const themeConfiguration = THEMES[activeTheme];
-  let borderColorToUse;
-  let outlineColorToUse;
-  if (themeConfiguration.mode === 'dark') {
-    borderColorToUse = BORDER_COLOR_DARK;
-    outlineColorToUse = OUTLINE_COLOR_DARK;
-  } else if (themeConfiguration.mode === 'light') {
-    borderColorToUse = BORDER_COLOR_LIGHT;
-    outlineColorToUse = OUTLINE_COLOR_LIGHT;
-  } else {
-    assertThat.isUnreachable(themeConfiguration);
-  }
-
+const createAppTheme = (
+  locale: Localization,
+  { theme: themeConfiguration, borderColorToUse }: ThemeConfiguration,
+) => {
   /* the theme changes the appearance of some material-ui components to better align with the Windows 11 design language */
   const theme: Parameters<typeof createTheme>[0] = {
     components: {
@@ -236,7 +119,7 @@ const createAppTheme = (locale: Localization, activeTheme: AvailableTheme) => {
             gap: ${({ theme }) => theme.spacing(MUI_BUTTON_SPACING_FACTOR)};
 
             &.Mui-focusVisible {
-              outline: 2px solid ${outlineColorToUse};
+              outline: 2px solid var(--color-outline);
             }
 
             &:active {
@@ -247,23 +130,23 @@ const createAppTheme = (locale: Localization, activeTheme: AvailableTheme) => {
             font-weight: ${({ theme }) => theme.font.weights.bold};
           ` as any,
           outlined: css`
-            color: ${themeConfiguration.foreground[0]};
-            background-color: ${themeConfiguration.background[1]};
-            border-color: ${themeConfiguration.background[1]};
+            color: var(--color-fg-0);
+            background-color: var(--color-bg-1);
+            border-color: var(--color-bg-1);
 
             &:hover {
-              border-color: ${themeConfiguration.background[2]};
-              background-color: ${themeConfiguration.background[2]};
+              border-color: var(--color-bg-2);
+              background-color: var(--color-bg-2);
             }
 
             .MuiPaper-elevation &.MuiButton-outlined {
-              background-color: ${themeConfiguration.background[2]};
-              border-color: ${themeConfiguration.background[2]};
+              background-color: var(--color-bg-2);
+              border-color: var(--color-bg-2);
             }
 
             .MuiPaper-elevation &.MuiButton-outlined:hover {
-              border-color: ${themeConfiguration.background[3]};
-              background-color: ${themeConfiguration.background[3]};
+              border-color: var(--color-bg-3);
+              background-color: var(--color-bg-3);
             }
           ` as any,
           startIcon: css`
@@ -379,7 +262,7 @@ const createAppTheme = (locale: Localization, activeTheme: AvailableTheme) => {
             & .${tabIndicatorSpanClassName} {
               max-height: 16px;
               height: 100%;
-              background-color: ${themeConfiguration.highlight.primary};
+              background-color: var(--color-primary);
               border-radius: 4px;
             }
           `,
@@ -482,7 +365,9 @@ const createAppTheme = (locale: Localization, activeTheme: AvailableTheme) => {
 };
 
 export const ThemeProvider: React.FC = ({ children }) => {
-  const activeTheme = useActiveTheme();
+  const themeConfiguration = useThemeConfiguration();
 
-  return <MuiThemeProvider theme={createAppTheme(enUS, activeTheme)}>{children}</MuiThemeProvider>;
+  return (
+    <MuiThemeProvider theme={createAppTheme(enUS, themeConfiguration)}>{children}</MuiThemeProvider>
+  );
 };

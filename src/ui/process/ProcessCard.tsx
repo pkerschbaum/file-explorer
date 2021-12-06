@@ -4,7 +4,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 import { commonStyles } from '@app/ui/Common.styles';
-import { Box, IconButton, Paper, Tooltip } from '@app/ui/components-library';
+import { Box, IconButton, Paper, Tooltip, useTooltip } from '@app/ui/components-library';
 import { rotate } from '@app/ui/utils/animations';
 
 export type ProcessCardProps = {
@@ -27,28 +27,44 @@ export const ProcessCard: React.FC<ProcessCardProps> = ({
   onRemove,
   labels,
   className,
-}) => (
-  <ProcessCardContainer aria-label={labels.container} className={className}>
-    <SummarySection>
-      <ProcessIconAndText>
-        <ProcessIconWrapper>{summaryIcon}</ProcessIconWrapper>
-        <SummaryText>{summaryText}</SummaryText>
-      </ProcessIconAndText>
+}) => {
+  const triggerRef = React.useRef<HTMLButtonElement>(null);
+  const { triggerProps, tooltipProps } = useTooltip({ triggerRef, anchorRef: triggerRef });
 
-      {isBusy && <RotatingAutorenewOutlinedIcon fontSize="inherit" />}
+  return (
+    <ProcessCardContainer aria-label={labels.container} className={className}>
+      <SummarySection>
+        <ProcessIconAndText>
+          <ProcessIconWrapper>{summaryIcon}</ProcessIconWrapper>
+          <SummaryText>{summaryText}</SummaryText>
+        </ProcessIconAndText>
 
-      {isRemovable && (
-        <Tooltip title="Discard card">
-          <DiscardIconButton onClick={onRemove}>
-            <ClearAllIcon fontSize="inherit" />
-          </DiscardIconButton>
-        </Tooltip>
-      )}
-    </SummarySection>
+        {isBusy && <RotatingAutorenewOutlinedIcon fontSize="inherit" />}
 
-    <DetailsSection>{details}</DetailsSection>
-  </ProcessCardContainer>
-);
+        {isRemovable && (
+          <>
+            <DiscardIconButton
+              ref={triggerRef}
+              {...(triggerProps as any)}
+              onClick={(e) => {
+                void onRemove();
+                if (triggerProps.onClick) {
+                  triggerProps.onClick(e);
+                }
+              }}
+            >
+              <ClearAllIcon fontSize="inherit" />
+            </DiscardIconButton>
+
+            <Tooltip {...tooltipProps}>Discard card</Tooltip>
+          </>
+        )}
+      </SummarySection>
+
+      <DetailsSection>{details}</DetailsSection>
+    </ProcessCardContainer>
+  );
+};
 
 const ProcessCardContainer = styled(Paper)`
   padding: ${({ theme }) => theme.spacing(2)};

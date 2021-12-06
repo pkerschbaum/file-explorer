@@ -22,6 +22,7 @@ import {
   tabIndicatorSpanClassName,
   Tabs,
   Tooltip,
+  useTooltip,
 } from '@app/ui/components-library';
 import { KEY } from '@app/ui/constants';
 import { useRegisterGlobalShortcuts } from '@app/ui/GlobalShortcutsContext';
@@ -165,6 +166,9 @@ type ExplorerPanelTabProps = {
 };
 
 const ExplorerPanelTab: React.FC<ExplorerPanelTabProps> = (props) => {
+  const triggerRef = React.useRef<HTMLButtonElement>(null);
+  const { triggerProps, tooltipProps } = useTooltip({ triggerRef, anchorRef: triggerRef });
+
   return (
     <>
       <ActionButton
@@ -182,18 +186,25 @@ const ExplorerPanelTab: React.FC<ExplorerPanelTabProps> = (props) => {
         {props.label}
       </ActionButton>
       {!props.removeExplorerActionDisabled && (
-        <Tooltip title="Close Tab">
+        <>
           <TabIconButton
+            ref={triggerRef}
             size="small"
+            {...(triggerProps as any)}
             onClick={(e) => {
               // stop propagation so that the click on the close button does not get through to the button of the Tab
               e.stopPropagation();
               props.onRemove();
+              if (triggerProps.onClick) {
+                triggerProps.onClick(e);
+              }
             }}
           >
             <CloseOutlinedIcon />
           </TabIconButton>
-        </Tooltip>
+
+          <Tooltip {...tooltipProps}>Close Tab</Tooltip>
+        </>
       )}
     </>
   );

@@ -4,6 +4,7 @@ import * as React from 'react';
 import { check } from '@app/base/utils/assert.util';
 import {
   Button,
+  Card,
   ListItemIcon,
   ListItemText,
   MenuItem,
@@ -68,11 +69,7 @@ export const ChangeCwd: React.FC<ChangeCwdProps> = ({ initialCwdValue, onSubmit 
             void handleSubmit();
           }}
         >
-          <Stack
-            direction="column"
-            alignItems="stretch"
-            sx={{ padding: 1.5, width: (theme) => theme.sizes.card.md }}
-          >
+          <Card>
             <TextField
               autoFocus
               label="Directory"
@@ -88,7 +85,7 @@ export const ChangeCwd: React.FC<ChangeCwdProps> = ({ initialCwdValue, onSubmit 
                 Change Directory
               </Button>
             </Stack>
-          </Stack>
+          </Card>
         </form>
       </Popover>
     </>

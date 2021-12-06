@@ -113,7 +113,12 @@ module.exports = {
           },
           {
             target: /\/src\/ui\/components-library\/.+/,
-            allowedPatterns: [/^@mui\/material/],
+            allowedPatterns: [
+              /^@mui\/material/,
+              /^@react-aria/,
+              /^@react-stately/,
+              /^@react-types/,
+            ],
             forbiddenPatterns: [
               {
                 pattern: /^@app\/ui\/components-library$/,
@@ -128,7 +133,12 @@ module.exports = {
               {
                 pattern: /^@mui\/material/,
                 errorMessage:
-                  "Don't import from @mui/material directly. Import from @app/ui/component-library instead.",
+                  "Don't import from @mui/material directly. Implement reusable components in the component library (@app/ui/component-library).",
+              },
+              {
+                pattern: /^(?:@react-aria|@react-stately|@react-types)/,
+                errorMessage:
+                  "Don't import from @react-aria, @react-stately or @react-types directly. Implement reusable components in the component library (@app/ui/component-library).",
               },
               {
                 pattern: /^@app\/ui\/components-library\/[A-Z].+/,
@@ -149,8 +159,11 @@ module.exports = {
             target: /\/src\/ui\/.+/,
             allowedPatterns: [
               'csstype',
+              'd3-color',
               'framer-motion',
               'react',
+              'react-dom',
+              'react-popper',
               'react-virtual',
               'styled-components',
               'tiny-invariant',

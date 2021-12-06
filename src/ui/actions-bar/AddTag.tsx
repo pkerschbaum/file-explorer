@@ -8,6 +8,7 @@ import { AvailableTagIds, Tag } from '@app/domain/types';
 import { commonStyles } from '@app/ui/Common.styles';
 import {
   Autocomplete,
+  Box,
   Button,
   createFilterOptions,
   Dialog,
@@ -119,7 +120,7 @@ export const AddTag: React.FC<AddTagProps> = ({
         handleHomeEndKeys
         renderOption={(props, option) => (
           <li {...props}>
-            <Stack sx={{ width: '100%' }}>
+            <TagAutocompleteEntry>
               {check.isNullishOrEmptyString(option.inputValue) && (
                 <ColorButton
                   disableElevation
@@ -136,7 +137,7 @@ export const AddTag: React.FC<AddTagProps> = ({
               >
                 <CancelIcon />
               </IconButton>
-            </Stack>
+            </TagAutocompleteEntry>
           </li>
         )}
         renderInput={(params) => <TextField {...params} label="Add tag" />}
@@ -212,7 +213,15 @@ const TagAutocomplete: typeof Autocomplete = styled(Autocomplete)`
   min-width: 150px;
 `;
 
-const OptionLabel = styled('span')`
+const TagAutocompleteEntry = styled(Box)`
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing()};
+`;
+
+const OptionLabel = styled(Box)`
   ${commonStyles.layout.flex.shrinkAndFitHorizontal}
 `;
 

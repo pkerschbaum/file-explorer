@@ -17,6 +17,7 @@ import {
 } from '@app/operations/global-modules';
 import {
   CssBaseline,
+  DesignTokenProvider,
   TARGET_MEDIUM_FONTSIZE,
   ThemeProvider,
   uiUtils,
@@ -137,16 +138,18 @@ export const Globals: React.FC<GlobalsProps> = ({ queryClient, store, children }
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
         <ReactReduxProvider store={store}>
-          <ThemeProvider>
-            <GlobalShortcutsContextProvider>
-              <CssBaseline />
-              <GlobalStyle />
-              {/* class "show-file-icons" will enable file icon theme of code-oss project */}
-              <FileIconThemeLoader>
-                <RootContainer className="show-file-icons">{children}</RootContainer>
-              </FileIconThemeLoader>
-            </GlobalShortcutsContextProvider>
-          </ThemeProvider>
+          <DesignTokenProvider>
+            <ThemeProvider>
+              <GlobalShortcutsContextProvider>
+                <CssBaseline />
+                <GlobalStyle />
+                {/* class "show-file-icons" will enable file icon theme of code-oss project */}
+                <FileIconThemeLoader>
+                  <RootContainer className="show-file-icons">{children}</RootContainer>
+                </FileIconThemeLoader>
+              </GlobalShortcutsContextProvider>
+            </ThemeProvider>
+          </DesignTokenProvider>
         </ReactReduxProvider>
 
         {config.showReactQueryDevtools && <ReactQueryDevtools />}

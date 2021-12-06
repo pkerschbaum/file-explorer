@@ -6,6 +6,7 @@ import {
   ActionButton,
   ActionButtonRef,
   Button,
+  Card,
   Popover,
   Stack,
   TextField,
@@ -76,7 +77,7 @@ export const CreateFolder: React.FC<CreateFolderProps> = ({
             void handleSubmit();
           }}
         >
-          <Stack direction="column" alignItems="stretch" sx={{ padding: 1.5 }}>
+          <Card>
             <TextField
               autoFocus
               label="Name of folder"
@@ -92,7 +93,7 @@ export const CreateFolder: React.FC<CreateFolderProps> = ({
                 Create
               </Button>
             </Stack>
-          </Stack>
+          </Card>
         </form>
       </Popover>
     </>

@@ -26,6 +26,7 @@ import {
   Stack,
   TextField,
   Tooltip,
+  useTooltip,
 } from '@app/ui/components-library';
 import { KEY } from '@app/ui/constants';
 import {
@@ -246,7 +247,7 @@ export const ActionsBar: React.FC = () => {
         <FilterInput filterInputRef={filterInputRef} />
       </Stack>
 
-      <Divider orientation="vertical" flexItem />
+      <Divider orientation="vertical" />
 
       <Stack wrap>
         <ActionButton
@@ -369,30 +370,31 @@ const PasteInfoBadge: React.FC = () => {
   const clipboardResources = useClipboardResources();
   const draftPasteState = useDraftPasteState();
 
+  const triggerRef = React.useRef<HTMLDivElement>(null);
+  const { triggerProps, tooltipProps } = useTooltip({ triggerRef, anchorRef: triggerRef });
+
   if (draftPasteState === undefined || clipboardResources.length === 0) {
     return null;
   }
 
   return (
-    <Tooltip
-      title={
-        <ClipboardResourcesList>
-          {clipboardResources.map((resource) => (
-            <Box key={uriHelper.getComparisonKey(resource)}>{formatter.resourcePath(resource)}</Box>
-          ))}
-        </ClipboardResourcesList>
-      }
-      arrow
-      disableInteractive={false}
-    >
-      <StyledBadge>
+    <>
+      <StyledBadge ref={triggerRef} {...triggerProps}>
         {draftPasteState.pasteShouldMove ? (
           <ContentCutOutlinedIcon fontSize="inherit" />
         ) : (
           <ContentCopyOutlinedIcon fontSize="inherit" />
         )}
       </StyledBadge>
-    </Tooltip>
+
+      <Tooltip {...tooltipProps}>
+        <ClipboardResourcesList>
+          {clipboardResources.map((resource) => (
+            <Box key={uriHelper.getComparisonKey(resource)}>{formatter.resourcePath(resource)}</Box>
+          ))}
+        </ClipboardResourcesList>
+      </Tooltip>
+    </>
   );
 };
 

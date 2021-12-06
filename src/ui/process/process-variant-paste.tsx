@@ -2,6 +2,7 @@ import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
 import ContentCutOutlinedIcon from '@mui/icons-material/ContentCutOutlined';
 import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
 import * as React from 'react';
+import styled from 'styled-components';
 
 import { assertThat } from '@app/base/utils/assert.util';
 import { byteSize } from '@app/base/utils/byte-size.util';
@@ -151,9 +152,7 @@ export function computeProcessCardPropsFromPasteProcess(
       <>
         <Stack direction="column" alignItems="stretch" spacing={0.5}>
           <Box>Destination:</Box>
-          <Box sx={{ fontWeight: (theme) => theme.font.weights.bold, wordBreak: 'break-all' }}>
-            {destinationFolderLabel}
-          </Box>
+          <ResourcesListBox>{destinationFolderLabel}</ResourcesListBox>
         </Stack>
 
         <Stack direction="column" alignItems="stretch" spacing={0.5}>
@@ -165,34 +164,20 @@ export function computeProcessCardPropsFromPasteProcess(
               extension,
             });
             return (
-              <Box
-                key={uriHelper.getComparisonKey(uri)}
-                sx={{ fontWeight: (theme) => theme.font.weights.bold, wordBreak: 'break-all' }}
-              >
+              <ResourcesListBox key={uriHelper.getComparisonKey(uri)}>
                 {sourceResourceLabel}
-              </Box>
+              </ResourcesListBox>
             );
           })}
           {process.sourceUris.length > 2 && (
-            <Box sx={{ fontWeight: (theme) => theme.font.weights.bold }}>
-              + {process.sourceUris.length - 2} files/folders
-            </Box>
+            <ResourcesListBox>+ {process.sourceUris.length - 2} files/folders</ResourcesListBox>
           )}
         </Stack>
 
         {content}
 
         {processMeta.showProgress && (
-          <Stack
-            direction="column"
-            alignItems="stretch"
-            sx={{
-              color: (theme) =>
-                process.status === PASTE_PROCESS_STATUS.FAILURE
-                  ? theme.palette.action.disabled
-                  : undefined,
-            }}
-          >
+          <ProgressArea status={process.status}>
             <LinearProgress
               // disable animation from indeterminate to determinate variant by resetting component on variant change (via key prop)
               key={progressIndicatorVariant}
@@ -209,7 +194,7 @@ export function computeProcessCardPropsFromPasteProcess(
                 <Box>{formatter.bytes(process.totalSize, { unit: smallestUnitOfTotalSize })}</Box>
               </Stack>
             )}
-          </Stack>
+          </ProgressArea>
         )}
 
         {processMeta.allowCancellation && (
@@ -221,3 +206,17 @@ export function computeProcessCardPropsFromPasteProcess(
     isRemovable: processMeta.isRemovable,
   };
 }
+
+const ResourcesListBox = styled(Box)`
+  font-weight: ${({ theme }) => theme.font.weights.bold};
+  word-break: break-all;
+`;
+
+const ProgressArea = styled(Box)<{ status: PASTE_PROCESS_STATUS }>`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing()};
+
+  color: ${(props) =>
+    props.status === PASTE_PROCESS_STATUS.FAILURE && props.theme.palette.action.disabled};
+`;

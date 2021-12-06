@@ -108,12 +108,9 @@ export function computeProcessCardPropsFromDeleteProcess(
             const { resourceName, extension } = uriHelper.extractNameAndExtension(uri);
             const resourceLabel = formatter.resourceBasename({ name: resourceName, extension });
             return (
-              <Box
-                key={uriHelper.getComparisonKey(uri)}
-                sx={{ fontWeight: (theme) => theme.font.weights.bold, wordBreak: 'break-all' }}
-              >
+              <ResourcesListBox key={uriHelper.getComparisonKey(uri)}>
                 {resourceLabel}
-              </Box>
+              </ResourcesListBox>
             );
           })}
         </ResourcesList>
@@ -130,6 +127,11 @@ const ResourcesList = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing(0.5)};
+`;
+
+const ResourcesListBox = styled(Box)`
+  font-weight: ${({ theme }) => theme.font.weights.bold};
+  word-break: break-all;
 `;
 
 const ContentList = styled.div`
