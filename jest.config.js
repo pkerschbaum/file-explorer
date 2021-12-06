@@ -1,6 +1,6 @@
 const fs = require('fs');
 const stripJsonComments = require('strip-json-comments');
-const { pathsToModuleNameMapper } = require('ts-jest/utils');
+const { pathsToModuleNameMapper } = require('ts-jest');
 
 const { compilerOptions } = JSON.parse(
   stripJsonComments(fs.readFileSync('./tsconfig.json', 'utf8')),

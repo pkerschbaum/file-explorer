@@ -2078,6 +2078,11 @@
     pkg-dir "^5.0.0"
     term-img "^6.0.0"
 
+"@pkerschbaum/eslint-plugin-code-import-patterns@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@pkerschbaum/eslint-plugin-code-import-patterns/-/eslint-plugin-code-import-patterns-1.0.0.tgz#e975cad3ad8b0a8df7557f85921a39899b78813b"
+  integrity sha512-Ft2kewpgMBWN8Kcwlbx0Aicj7BTrgK0M5qS1a4GGu4JIsWR3Qjbu5jYm9An1dvGauh6zD7q8H4fVJJC+evXIJw==
+
 "@pmmmwh/react-refresh-webpack-plugin@^0.5.1":
   version "0.5.3"
   resolved "https://registry.yarnpkg.com/@pmmmwh/react-refresh-webpack-plugin/-/react-refresh-webpack-plugin-0.5.3.tgz#b8f0e035f6df71b5c4126cb98de29f65188b9e7b"

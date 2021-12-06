@@ -3,13 +3,12 @@ import * as React from 'react';
 import { arrays } from '@app/base/utils/arrays.util';
 import { check } from '@app/base/utils/assert.util';
 import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
-import { useEnrichResourcesWithTags } from '@app/global-state/slices/tags.hooks';
 import type {
   ExplorerContextProviderProps,
   ExplorerState,
   ExplorerStateUpdateFunctions,
 } from '@app/ui/explorer-context/ExplorerState.context';
-import { useResourcesForUI } from '@app/ui/hooks/resources.hooks';
+import { useEnrichResourcesWithTags, useResourcesForUI } from '@app/ui/hooks/resources.hooks';
 import { createSelectableContext, usePrevious } from '@app/ui/utils/react.util';
 
 type ExplorerDerivedValuesContext = {

@@ -24,7 +24,16 @@ module.exports = {
    * allows to distinguish ESLint warnings from other errors (e.g. TypeScript compile errors) in the
    * code editor (e.g. VS Code).
    */
-  plugins: ['only-warn', 'node', 'import', 'jsx-a11y', 'cypress', 'jest-dom', 'testing-library'],
+  plugins: [
+    'only-warn',
+    'node',
+    'import',
+    'jsx-a11y',
+    'cypress',
+    'jest-dom',
+    'testing-library',
+    '@pkerschbaum/code-import-patterns',
+  ],
   ignorePatterns: ['**/*.js'],
   rules: {
     curly: 'error',
@@ -82,6 +91,117 @@ module.exports = {
     'prefer-template': 'error',
     'react/prop-types': 'off',
     'react/react-in-jsx-scope': 'off',
+    '@pkerschbaum/code-import-patterns/code-import-patterns': [
+      'error',
+      {
+        zones: [
+          {
+            target: /\/src\/base\/utils\/arrays\.util\.ts$/,
+            allowedPatterns: ['match-sorter'],
+          },
+          {
+            target: /\/src\/global-cache\/.+/,
+            allowedPatterns: ['react'],
+          },
+          {
+            target: /\/src\/operations\/file-icon-theme\.operations\.ts$/,
+            allowedPatterns: ['axios'],
+          },
+          {
+            target: /\/src\/operations\/global-cache-subscriptions\/.+/,
+            allowedPatterns: ['react'],
+          },
+          {
+            target: /\/src\/ui\/components-library\/.+/,
+            allowedPatterns: [/^@mui\/material/],
+          },
+          {
+            target: /\/src\/ui\/(?!components-library)/,
+            forbiddenPatterns: [
+              {
+                pattern: /^@mui\/material/,
+                errorMessage:
+                  "Don't import from @mui/material directly. Import from @app/ui/component-library instead.",
+              },
+            ],
+          },
+          {
+            target: /\/src\/ui\/.+\.stories\.tsx$/,
+            allowedPatterns: ['@storybook/react'],
+          },
+          {
+            target: /\/src\/ui\/.+\.visual\.spec\.ts$/,
+            allowedPatterns: ['local-cypress'],
+          },
+          {
+            target: /\/src\/ui\/.+/,
+            allowedPatterns: [
+              'csstype',
+              'framer-motion',
+              'react',
+              'react-virtual',
+              'styled-components',
+              'tiny-invariant',
+              'use-context-selector',
+              'use-immer',
+              /^@mui\/icons-material/,
+            ],
+          },
+          {
+            target: /\/src\/.+\.logic\.spec\.ts$/,
+            allowedPatterns: ['@testing-library/react'],
+          },
+          {
+            target: /\/src\/platform\/.+/,
+            allowedPatterns: ['electron', 'electron-store'],
+          },
+          {
+            target: /\/src\/index\.ts$/,
+            allowedPatterns: ['electron', 'electron-store'],
+          },
+          {
+            target: /\/src\/renderer\.tsx$/,
+            allowedPatterns: ['react-dom'],
+          },
+          {
+            target: /\/src\/.+/,
+            allowedPatterns: ['react-redux', /^react-query/, /^@reduxjs\/toolkit/],
+          },
+          {
+            target: /\/cypress\/.+/,
+            allowedPatterns: [
+              '@storybook/csf',
+              'local-cypress',
+              'path',
+              /^@pkerschbaum\/cypress-image-snapshot/,
+              /^@testing-library\/cypress/,
+            ],
+          },
+          {
+            target: /\/scripts\/.+/,
+            allowedPatterns: [/.+/],
+          },
+          {
+            target: /\/storybook\/.+/,
+            allowedPatterns: [/.+/],
+          },
+          {
+            target: /\/test\/.+/,
+            allowedPatterns: [/.+/],
+          },
+          {
+            target: /.+/,
+            allowedPatterns: [
+              'dayjs',
+              'tiny-invariant',
+              /^@app.+/,
+              /^@pkerschbaum\/code-oss-file-service/,
+              /^@pkerschbaum\/code-oss-file-icon-theme/,
+            ],
+          },
+        ],
+      },
+    ],
     '@typescript-eslint/ban-types': [
       'error',
       {
@@ -104,17 +224,6 @@ module.exports = {
       {
         // namespace can be useful to group related typings
         allowDeclarations: true,
-      },
-    ],
-    '@typescript-eslint/no-restricted-imports': [
-      'error',
-      {
-        patterns: [
-          {
-            group: ['@mui/material'],
-            message: 'Import from the component-library instead (@app/ui/component-library).',
-          },
-        ],
       },
     ],
     '@typescript-eslint/no-unsafe-assignment': 'off',
@@ -148,17 +257,10 @@ module.exports = {
       extends: ['plugin:testing-library/react'],
     },
     {
-      // allow default export for Storybook stories and Cypress plugins index file
+      // allow default export for Storybook stories and for the Cypress plugins index file
       files: ['**/*.stories.@(js|jsx|ts|tsx)', 'cypress/plugins/index.@(js|ts)'],
       rules: {
         'import/no-default-export': 'off',
-      },
-    },
-    {
-      /* allow component-library to import from @mui/material */
-      files: ['src/ui/components-library/**/*'],
-      rules: {
-        '@typescript-eslint/no-restricted-imports': ['off'],
       },
     },
   ],

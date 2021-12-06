@@ -64,6 +64,7 @@
     "@electron-forge/maker-zip": "^6.0.0-beta.61",
     "@electron-forge/plugin-webpack": "^6.0.0-beta.61",
     "@pkerschbaum/cypress-image-snapshot": "^1.0.1",
+    "@pkerschbaum/eslint-plugin-code-import-patterns": "^1.0.0",
     "@shopify/polyfills": "^3.1.5",
     "@storybook/addon-actions": "^6.4.3",
     "@storybook/addon-essentials": "^6.4.3",

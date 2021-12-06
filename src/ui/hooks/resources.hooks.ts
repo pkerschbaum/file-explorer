@@ -8,7 +8,9 @@ import { Resource, ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
 import { useResourceIconClasses } from '@app/global-cache/resource-icons';
 import { useResources } from '@app/global-cache/resources';
 import { useCwd } from '@app/global-state/slices/explorers.hooks';
+import { useResourcesToTags } from '@app/global-state/slices/tags.hooks';
 import { createLogger } from '@app/operations/create-logger';
+import { getTagsOfResource } from '@app/operations/resource.operations';
 
 const logger = createLogger('resources.hooks');
 
@@ -64,6 +66,23 @@ export const useResourcesForUI = (explorerId: string): ResourcesLoadingResult =>
 
   return { dataAvailable, resources: resourcesForUI };
 };
+
+export function useEnrichResourcesWithTags(resources: ResourceForUI[]) {
+  const resourcesToTags = useResourcesToTags();
+  const enrichedResources = React.useMemo(
+    () =>
+      resources.map((resource) => ({
+        ...resource,
+        tags:
+          resource.ctime === undefined
+            ? []
+            : getTagsOfResource(resourcesToTags, { uri: resource.uri, ctime: resource.ctime }),
+      })),
+    [resources, resourcesToTags],
+  );
+
+  return enrichedResources;
+}
 
 export function useThemeResourceIconClasses(resource: ResourceForUI) {
   let uri: UriComponents | undefined = resource.uri;
