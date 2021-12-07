@@ -15,7 +15,6 @@ export * from '@app/ui/components-library/Menu';
 export * from '@app/ui/components-library/Paper';
 export * from '@app/ui/components-library/Popover';
 export * from '@app/ui/components-library/Skeleton';
-export * from '@app/ui/components-library/Stack';
 export * from '@app/ui/components-library/Tabs';
 export * from '@app/ui/components-library/TextField';
 export * from '@app/ui/components-library/Theme';

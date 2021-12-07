@@ -17,7 +17,6 @@ import {
   DialogTitle,
   IconButton,
   Paper,
-  Stack,
   TextField,
   useTheme,
 } from '@app/ui/components-library';
@@ -145,8 +144,8 @@ export const AddTag: React.FC<AddTagProps> = ({
         <form onSubmit={handleSubmit}>
           <DialogTitle>Add a new tag</DialogTitle>
           <DialogContent sx={{ overflowY: 'initial' }}>
-            <Stack direction="column" alignItems="start">
-              <Stack>
+            <NewTagDialogContent>
+              <ColorButtonAndTagName>
                 <ColorButton
                   variant="contained"
                   style={{ backgroundColor: availableTagColors[dialogValue.colorId] }}
@@ -162,34 +161,33 @@ export const AddTag: React.FC<AddTagProps> = ({
                     })
                   }
                 />
-              </Stack>
-              <Paper variant="outlined" sx={{ padding: 1 }}>
-                <Stack direction="column" alignItems="start">
-                  {arrays
-                    .partitionArray(Object.entries(availableTagColors), { itemsPerPartition: 5 })
-                    .map((partition, idx) => (
-                      <Stack key={idx}>
-                        {partition.map((color) => {
-                          const [colorId, colorHex] = color as [AvailableTagIds, string];
-                          const isSelected = dialogValue.colorId === colorId;
+              </ColorButtonAndTagName>
 
-                          return (
-                            <ColorButton
-                              key={colorId}
-                              style={{
-                                backgroundColor: colorHex,
-                                opacity: isSelected ? '0.35' : undefined,
-                              }}
-                              variant={isSelected ? 'outlined' : 'contained'}
-                              onPress={() => setDialogValue({ ...dialogValue, colorId })}
-                            />
-                          );
-                        })}
-                      </Stack>
-                    ))}
-                </Stack>
-              </Paper>
-            </Stack>
+              <AvailableColorsContainer variant="outlined">
+                {arrays
+                  .partitionArray(Object.entries(availableTagColors), { itemsPerPartition: 5 })
+                  .map((partition, idx) => (
+                    <AvailableColorsRow key={idx}>
+                      {partition.map((color) => {
+                        const [colorId, colorHex] = color as [AvailableTagIds, string];
+                        const isSelected = dialogValue.colorId === colorId;
+
+                        return (
+                          <ColorButton
+                            key={colorId}
+                            style={{
+                              backgroundColor: colorHex,
+                              opacity: isSelected ? '0.35' : undefined,
+                            }}
+                            variant={isSelected ? 'outlined' : 'contained'}
+                            onPress={() => setDialogValue({ ...dialogValue, colorId })}
+                          />
+                        );
+                      })}
+                    </AvailableColorsRow>
+                  ))}
+              </AvailableColorsContainer>
+            </NewTagDialogContent>
           </DialogContent>
           <DialogActions>
             <Button variant="text" onPress={handleClose}>
@@ -219,6 +217,33 @@ const TagAutocompleteEntry = styled(Box)`
 
 const OptionLabel = styled(Box)`
   ${commonStyles.layout.flex.shrinkAndFitHorizontal}
+`;
+
+const NewTagDialogContent = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: var(--spacing-2);
+`;
+
+const ColorButtonAndTagName = styled(Box)`
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+`;
+
+const AvailableColorsContainer = styled(Paper)`
+  padding: var(--spacing-2);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-2);
+`;
+
+const AvailableColorsRow = styled(Box)`
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
 `;
 
 const ColorButton = styled(Button)`

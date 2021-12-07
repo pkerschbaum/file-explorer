@@ -2,15 +2,7 @@ import CreateNewFolderOutlinedIcon from '@mui/icons-material/CreateNewFolderOutl
 import * as React from 'react';
 
 import { check } from '@app/base/utils/assert.util';
-import {
-  ButtonHandle,
-  Button,
-  Card,
-  Icon,
-  Popover,
-  Stack,
-  TextField,
-} from '@app/ui/components-library';
+import { ButtonHandle, Button, Card, Icon, Popover, TextField } from '@app/ui/components-library';
 
 type CreateFolderProps = {
   buttonHandleRef?: React.RefObject<ButtonHandle>;
@@ -76,14 +68,16 @@ export const CreateFolder: React.FC<CreateFolderProps> = ({
             void handleSubmit();
           }}
         >
-          <Card>
-            <TextField
-              autoFocus
-              label="Name of folder"
-              value={createFolderValue}
-              onChange={(event) => setCreateFolderValue(event.target.value)}
-            />
-            <Stack justifyContent="end">
+          <Card
+            content={
+              <TextField
+                autoFocus
+                label="Name of folder"
+                value={createFolderValue}
+                onChange={(event) => setCreateFolderValue(event.target.value)}
+              />
+            }
+            actions={
               <Button
                 variant={check.isEmptyString(createFolderValue) ? undefined : 'contained'}
                 type="submit"
@@ -91,8 +85,8 @@ export const CreateFolder: React.FC<CreateFolderProps> = ({
               >
                 Create
               </Button>
-            </Stack>
-          </Card>
+            }
+          />
         </form>
       </Popover>
     </>

@@ -40,7 +40,7 @@ export const LinearProgress: React.FC<LinearProgressProps> = ({
   );
 };
 
-const LinearProgressContainer = styled.div`
+const LinearProgressContainer = styled(Box)`
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing(1.5)};

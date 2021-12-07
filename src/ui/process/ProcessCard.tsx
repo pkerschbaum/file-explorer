@@ -123,7 +123,7 @@ const DiscardIconButton = styled(IconButton)`
   font-size: ${({ theme }) => theme.font.sizes.xl};
 `;
 
-const DetailsSection = styled.div`
+const DetailsSection = styled(Box)`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing(2)};

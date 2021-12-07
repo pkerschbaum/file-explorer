@@ -14,11 +14,11 @@ import {
   removeExplorerPanel,
 } from '@app/operations/app.operations';
 import {
+  Box,
   ButtonHandle,
   Button,
   Icon,
   IconButton,
-  Stack,
   Tab,
   tabIndicatorSpanClassName,
   Tabs,
@@ -95,7 +95,7 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
   const removeExplorerActionDisabled = explorersToShow.length < 2;
 
   return (
-    <Stack direction="column" alignItems="stretch">
+    <TabsAreaContainer>
       <Tabs
         orientation="vertical"
         value={idOfFocusedExplorerPanel}
@@ -155,9 +155,15 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
       >
         Add tab
       </Button>
-    </Stack>
+    </TabsAreaContainer>
   );
 };
+
+const TabsAreaContainer = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+`;
 
 type ExplorerPanelTabProps = {
   label: string;

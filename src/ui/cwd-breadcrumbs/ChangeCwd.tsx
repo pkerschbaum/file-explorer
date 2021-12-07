@@ -9,7 +9,6 @@ import {
   ListItemText,
   MenuItem,
   Popover,
-  Stack,
   TextField,
 } from '@app/ui/components-library';
 
@@ -69,14 +68,16 @@ export const ChangeCwd: React.FC<ChangeCwdProps> = ({ initialCwdValue, onSubmit 
             void handleSubmit();
           }}
         >
-          <Card>
-            <TextField
-              autoFocus
-              label="Directory"
-              value={cwdValue}
-              onChange={(event) => setCwdValue(event.target.value)}
-            />
-            <Stack justifyContent="end">
+          <Card
+            content={
+              <TextField
+                autoFocus
+                label="Directory"
+                value={cwdValue}
+                onChange={(event) => setCwdValue(event.target.value)}
+              />
+            }
+            actions={
               <Button
                 variant={check.isEmptyString(cwdValue) ? undefined : 'contained'}
                 type="submit"
@@ -84,8 +85,8 @@ export const ChangeCwd: React.FC<ChangeCwdProps> = ({ initialCwdValue, onSubmit 
               >
                 Change Directory
               </Button>
-            </Stack>
-          </Card>
+            }
+          />
         </form>
       </Popover>
     </>

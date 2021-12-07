@@ -3,7 +3,7 @@ import * as React from 'react';
 import styled, { css } from 'styled-components';
 
 import { useExplorerPanels } from '@app/global-state/slices/explorers.hooks';
-import { Box, Stack } from '@app/ui/components-library';
+import { Box } from '@app/ui/components-library';
 import {
   ExplorerPanel,
   EXPLORER_ACTIONSBAR_GRID_AREA,
@@ -36,12 +36,7 @@ export const Shell: React.FC = () => {
     <RootContainer userPreferencesSidebarOpen={userPreferencesSidebarOpen}>
       {isWindows && <TitleBar />}
 
-      <TabsAndProcesses
-        direction="column"
-        justifyContent="space-between"
-        alignItems="stretch"
-        spacing={2}
-      >
+      <TabsAndProcesses>
         <TabsArea explorersToShow={explorersToShow} />
         <ProcessesArea />
       </TabsAndProcesses>
@@ -101,7 +96,12 @@ const RootContainer = styled(Box)<{ userPreferencesSidebarOpen: boolean }>`
   padding-bottom: ${(props) => props.theme.spacing(ROOTCONTAINER_PADDING_BOTTOM_FACTOR)};
 `;
 
-const TabsAndProcesses = styled(Stack)`
+const TabsAndProcesses = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--spacing-4);
+
   grid-area: shell-tabs-and-processes;
   overflow-y: auto;
 

@@ -6,7 +6,7 @@ import styled from 'styled-components';
 
 import { assertThat } from '@app/base/utils/assert.util';
 import { windowClose, windowMinimize, windowToggleMaximized } from '@app/operations/app.operations';
-import { Button, Stack } from '@app/ui/components-library';
+import { Box, Button } from '@app/ui/components-library';
 import {
   ROOTCONTAINER_PADDING_LEFT_FACTOR,
   ROOTCONTAINER_PADDING_RIGHT_FACTOR,
@@ -16,8 +16,8 @@ export const TITLE_BAR_GRID_AREA = 'shell-title-bar';
 
 export const TitleBar: React.FC = () => {
   return (
-    <WindowDragRegion justifyContent="end">
-      <TitleBarWindowControls spacing={0} alignItems="stretch">
+    <WindowDragRegion>
+      <TitleBarWindowControls>
         <TitleBarButton tabIndex={-1} onPress={windowMinimize}>
           <MinimizeOutlinedIcon />
         </TitleBarButton>
@@ -32,7 +32,12 @@ export const TitleBar: React.FC = () => {
   );
 };
 
-const WindowDragRegion = styled(Stack)`
+const WindowDragRegion = styled(Box)`
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  gap: var(--spacing-2);
+
   grid-area: ${TITLE_BAR_GRID_AREA};
 
   /* revert padding on left and right side introduced by the Shell RootContainer */
@@ -43,9 +48,11 @@ const WindowDragRegion = styled(Stack)`
   -webkit-app-region: drag;
 `;
 
-const TitleBarWindowControls = styled(Stack)`
+const TitleBarWindowControls = styled(Box)`
   height: 100%;
   justify-self: end;
+
+  display: flex;
 
   /* hide overflow because of the -1px margin trick applied on the last TitleBarButton to eliminate dead click space */
   overflow: hidden;

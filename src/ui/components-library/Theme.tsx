@@ -27,6 +27,7 @@ declare module '@mui/material/styles' {
     };
     sizes: {
       card: {
+        sm: { width: number };
         md: { width: number };
       };
     };
@@ -57,6 +58,7 @@ declare module '@mui/material/styles' {
     };
     sizes: {
       card: {
+        sm: { width: number };
         md: { width: number };
       };
     };
@@ -344,6 +346,7 @@ const createAppTheme = (
 
     sizes: {
       card: {
+        sm: { width: 220 },
         md: { width: 280 },
       },
     },

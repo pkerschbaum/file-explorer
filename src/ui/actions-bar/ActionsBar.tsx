@@ -24,7 +24,6 @@ import {
   ButtonHandle,
   Divider,
   Icon,
-  Stack,
   TextField,
   Tooltip,
   useTooltip,
@@ -243,14 +242,14 @@ export const ActionsBar: React.FC = () => {
     selectedShownResources.some((resource) => resource.resourceType !== RESOURCE_TYPE.DIRECTORY);
 
   return (
-    <Stack alignItems="stretch">
-      <Stack alignItems="flex-end">
+    <ActionBarContainer>
+      <Box style={{ alignSelf: 'flex-end' }}>
         <FilterInput filterInputRef={filterInputRef} />
-      </Stack>
+      </Box>
 
       <Divider orientation="vertical" />
 
-      <Stack wrap>
+      <ActionBarButtons>
         <Button
           handleRef={openButtonHandleRef}
           onPress={openSelectedResources}
@@ -340,8 +339,8 @@ export const ActionsBar: React.FC = () => {
             disabled={multipleDirectoriesActionsDisabled}
           />
         )}
-      </Stack>
-    </Stack>
+      </ActionBarButtons>
+    </ActionBarContainer>
   );
 };
 
@@ -372,6 +371,18 @@ const FilterInput: React.FC<FilterInputProps> = ({ filterInputRef }) => {
     />
   );
 };
+
+const ActionBarContainer = styled(Box)`
+  display: flex;
+  gap: var(--spacing-2);
+`;
+
+const ActionBarButtons = styled(Box)`
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  flex-wrap: wrap;
+`;
 
 const PasteInfoBadge: React.FC = () => {
   const clipboardResources = useClipboardResources();
@@ -405,16 +416,6 @@ const PasteInfoBadge: React.FC = () => {
   );
 };
 
-const ClipboardResourcesList = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: ${({ theme }) => theme.spacing()};
-
-  word-break: break-all;
-  white-space: pre-wrap;
-`;
-
 const StyledBadge = styled(Box)`
   display: flex;
   justify-content: center;
@@ -425,4 +426,14 @@ const StyledBadge = styled(Box)`
   border: 2px solid ${(props) => props.theme.palette.background.default};
   padding: 3px;
   border-radius: 50%;
+`;
+
+const ClipboardResourcesList = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: ${({ theme }) => theme.spacing()};
+
+  word-break: break-all;
+  white-space: pre-wrap;
 `;

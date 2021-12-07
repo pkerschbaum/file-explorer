@@ -281,7 +281,7 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
   );
 });
 
-const ResourceNameFormatted = styled.div`
+const ResourceNameFormatted = styled(Box)`
   padding-left: ${(props) => props.theme.spacing(ResourceNameFormattedSpacingFactor * 2)};
   display: flex;
   align-items: center;

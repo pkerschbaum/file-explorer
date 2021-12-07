@@ -8,7 +8,7 @@ import { formatter } from '@app/base/utils/formatter.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { DeleteProcess as DeleteProcessType, DELETE_PROCESS_STATUS } from '@app/domain/types';
 import { removeProcess, runDeleteProcess } from '@app/operations/resource.operations';
-import { Box, Button, LinearProgress, Stack } from '@app/ui/components-library';
+import { Box, Button, LinearProgress } from '@app/ui/components-library';
 import type { ProcessVariantProps } from '@app/ui/process/Process';
 
 type StatusMetaInfos = {
@@ -76,10 +76,10 @@ export function computeProcessCardPropsFromDeleteProcess(
     }
     case DELETE_PROCESS_STATUS.FAILURE: {
       contentToRender = (
-        <Stack direction="column" alignItems="flex-start">
+        <ErrorBox>
           <Box>Error occured during deletion of the files/folders:</Box>
           <Box>{process.error}</Box>
-        </Stack>
+        </ErrorBox>
       );
       break;
     }
@@ -107,11 +107,7 @@ export function computeProcessCardPropsFromDeleteProcess(
           {process.uris.map((uri) => {
             const { resourceName, extension } = uriHelper.extractNameAndExtension(uri);
             const resourceLabel = formatter.resourceBasename({ name: resourceName, extension });
-            return (
-              <ResourcesListBox key={uriHelper.getComparisonKey(uri)}>
-                {resourceLabel}
-              </ResourcesListBox>
-            );
+            return <ResourceBox key={uriHelper.getComparisonKey(uri)}>{resourceLabel}</ResourceBox>;
           })}
         </ResourcesList>
 
@@ -123,19 +119,26 @@ export function computeProcessCardPropsFromDeleteProcess(
   };
 }
 
-const ResourcesList = styled.div`
+const ErrorBox = styled(Box)`
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => theme.spacing(0.5)};
+  align-items: flex-start;
+  gap: var(--spacing-2);
 `;
 
-const ResourcesListBox = styled(Box)`
+const ResourcesList = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+`;
+
+const ResourceBox = styled(Box)`
   font-weight: ${({ theme }) => theme.font.weights.bold};
   word-break: break-all;
 `;
 
-const ContentList = styled.div`
+const ContentList = styled(Box)`
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => theme.spacing()};
+  gap: var(--spacing-2);
 `;
