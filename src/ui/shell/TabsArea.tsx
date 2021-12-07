@@ -19,11 +19,11 @@ import {
   Button,
   Icon,
   IconButton,
-  Tab,
-  tabIndicatorSpanClassName,
-  Tabs,
   Tooltip,
   useTooltip,
+  Tabs,
+  Tab,
+  useTab,
 } from '@app/ui/components-library';
 import { KEY } from '@app/ui/constants';
 import { useRegisterGlobalShortcuts } from '@app/ui/GlobalShortcutsContext';
@@ -96,12 +96,7 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
 
   return (
     <TabsAreaContainer>
-      <Tabs
-        orientation="vertical"
-        value={idOfFocusedExplorerPanel}
-        onChange={(_, newValue: string) => changeFocusedExplorer(newValue)}
-        TabIndicatorProps={{ children: <span className={tabIndicatorSpanClassName} /> }}
-      >
+      <Tabs selectedValue={idOfFocusedExplorerPanel} setSelectedValue={changeFocusedExplorer}>
         {explorersToShow.map((explorer, explorerIdx) => {
           const isFocusedExplorer = explorerIdx === focusedExplorerIdx;
           const isPrevExplorer = explorerIdx === explorerIdxPrevious;
@@ -111,38 +106,33 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
           const uriSlugToRender = uriSlugs[uriSlugs.length - 1];
 
           return (
-            <Tab
-              key={explorer.explorerId}
-              component="div"
-              disableRipple
-              label={
-                <ExplorerPanelTab
-                  label={uriSlugToRender.formatted}
-                  buttonHandleRef={
-                    isPrevExplorer
-                      ? prevTabButtonHandleRef
-                      : isNextExplorer
-                      ? nextTabButtonHandleRef
-                      : undefined
-                  }
-                  buttonEndIcon={
-                    isPrevExplorer
-                      ? registerShortcutsResult.changeToPrevTabShortcut.icon
-                      : isNextExplorer
-                      ? registerShortcutsResult.changeToNextTabShortcut.icon
-                      : undefined
-                  }
-                  onRemove={() =>
-                    removeExplorerPanel(
-                      explorer.explorerId,
-                      !isFocusedExplorer ? undefined : previousExplorer?.explorerId,
-                    )
-                  }
-                  removeExplorerActionDisabled={removeExplorerActionDisabled}
-                />
-              }
-              value={explorer.explorerId}
-            />
+            <Tab key={explorer.explorerId} value={explorer.explorerId}>
+              <ExplorerTabContent
+                value={explorer.explorerId}
+                label={uriSlugToRender.formatted}
+                buttonHandleRef={
+                  isPrevExplorer
+                    ? prevTabButtonHandleRef
+                    : isNextExplorer
+                    ? nextTabButtonHandleRef
+                    : undefined
+                }
+                buttonEndIcon={
+                  isPrevExplorer
+                    ? registerShortcutsResult.changeToPrevTabShortcut.icon
+                    : isNextExplorer
+                    ? registerShortcutsResult.changeToNextTabShortcut.icon
+                    : undefined
+                }
+                onRemove={() =>
+                  removeExplorerPanel(
+                    explorer.explorerId,
+                    !isFocusedExplorer ? undefined : previousExplorer?.explorerId,
+                  )
+                }
+                removeExplorerActionDisabled={removeExplorerActionDisabled}
+              />
+            </Tab>
           );
         })}
       </Tabs>
@@ -165,7 +155,8 @@ const TabsAreaContainer = styled(Box)`
   gap: var(--spacing-2);
 `;
 
-type ExplorerPanelTabProps = {
+type ExplorerTabContentProps = {
+  value: string;
   label: string;
   buttonHandleRef?: React.RefObject<ButtonHandle>;
   buttonEndIcon?: React.ReactNode;
@@ -173,13 +164,14 @@ type ExplorerPanelTabProps = {
   removeExplorerActionDisabled: boolean;
 };
 
-const ExplorerPanelTab: React.FC<ExplorerPanelTabProps> = (props) => {
+const ExplorerTabContent: React.FC<ExplorerTabContentProps> = (props) => {
   const triggerRef = React.useRef<HTMLButtonElement>(null);
   const { triggerProps, tooltipProps } = useTooltip({ triggerRef, anchorRef: triggerRef });
+  const { onSelect } = useTab({ value: props.value });
 
   return (
     <>
-      <TabButton handleRef={props.buttonHandleRef} endIcon={props.buttonEndIcon}>
+      <TabButton onPress={onSelect} handleRef={props.buttonHandleRef} endIcon={props.buttonEndIcon}>
         {props.label}
       </TabButton>
       {!props.removeExplorerActionDisabled && (
@@ -217,7 +209,12 @@ const TabButton = styled(Button)`
 
 const TabIconButton = styled(IconButton)`
   position: absolute;
+  top: 0;
+  bottom: 0;
   right: ${(props) => props.theme.spacing(1.5)};
-  border-radius: 0;
+  margin-block: auto;
+  height: fit-content;
+
   padding: 0;
+  border-radius: 0;
 `;

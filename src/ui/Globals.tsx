@@ -91,7 +91,7 @@ const globalStyle = css`
 
   /* Word wrapping, https://www.joshwcomeau.com/css/custom-css-reset/#digit-word-wrapping, https://twitter.com/sophiebits/status/1462921205359386628 */
   * {
-    overflow-wrap: break-word;
+    overflow-wrap: anywhere;
   }
 
   /* change scrollbar to a thin variant which lightens up on hover */

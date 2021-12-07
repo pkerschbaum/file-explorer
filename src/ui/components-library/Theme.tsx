@@ -85,7 +85,6 @@ declare module 'styled-components' {
 export const createTheme = createMuiTheme;
 export const useTheme = useMuiTheme;
 
-export const tabIndicatorSpanClassName = 'MuiTabs-indicatorSpan';
 export const MUI_BUTTON_SPACING_FACTOR = 1;
 export const MUI_BUTTON_LINE_HEIGHT = 1.5;
 export const TARGET_MEDIUM_FONTSIZE = 14;
@@ -233,41 +232,6 @@ const createAppTheme = (
           root: css`
             /* disable change of background color via linear-gradient */
             background-image: none;
-          `,
-        },
-      },
-
-      MuiTab: {
-        styleOverrides: {
-          root: css`
-            line-height: ${MUI_BUTTON_LINE_HEIGHT};
-            text-transform: none;
-            padding: 0;
-            min-height: 0;
-          `,
-        },
-      },
-
-      MuiTabs: {
-        styleOverrides: {
-          flexContainer: css`
-            gap: 8px;
-          `,
-
-          indicator: css`
-            right: initial;
-            width: 3px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            background-color: transparent;
-
-            & .${tabIndicatorSpanClassName} {
-              max-height: 16px;
-              height: 100%;
-              background-color: var(--color-primary-main);
-              border-radius: 4px;
-            }
           `,
         },
       },
