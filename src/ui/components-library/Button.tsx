@@ -9,15 +9,20 @@ import * as React from 'react';
 import styled, { css } from 'styled-components';
 import invariant from 'tiny-invariant';
 
-type ButtonProps = AriaButtonProps<'button'> &
-  Pick<React.HTMLProps<HTMLButtonElement>, 'tabIndex' | 'style'> & {
-    variant?: 'outlined' | 'contained' | 'text';
-    buttonSize?: 'md' | 'sm';
-    startIcon?: React.ReactNode;
-    endIcon?: React.ReactNode;
-    handleRef?: React.RefObject<ButtonHandle>;
-    enableLayoutAnimation?: boolean;
-  };
+import { Box } from '@app/ui/components-library/Box';
+
+type ButtonProps = Pick<AriaButtonProps<'button'>, 'children' | 'onPress' | 'isDisabled' | 'type'> &
+  Pick<React.HTMLProps<HTMLButtonElement>, 'tabIndex' | 'style'> &
+  ButtonComponentProps;
+
+type ButtonComponentProps = {
+  variant?: 'outlined' | 'contained' | 'text';
+  buttonSize?: 'md' | 'sm';
+  startIcon?: React.ReactNode;
+  endIcon?: React.ReactNode;
+  handleRef?: React.RefObject<ButtonHandle>;
+  enableLayoutAnimation?: boolean;
+};
 
 export type ButtonHandle = {
   triggerSyntheticClick: () => void;
@@ -32,10 +37,41 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(function 
   props,
   ref,
 ) {
-  const { children, startIcon, endIcon, handleRef, enableLayoutAnimation } = props;
+  const {
+    /* react-aria props */
+    children,
+    onPress,
+    isDisabled,
+    type,
+
+    /* component props */
+    variant,
+    buttonSize,
+    startIcon,
+    endIcon,
+    handleRef,
+    enableLayoutAnimation,
+
+    /* html props */
+    ...htmlProps
+  } = props;
+  const reactAriaProps = {
+    children,
+    onPress,
+    isDisabled,
+    type,
+  };
+  const componentProps = {
+    variant,
+    buttonSize,
+    startIcon,
+    endIcon,
+    handleRef,
+    enableLayoutAnimation,
+  };
 
   const buttonRef = useObjectRef(ref);
-  const { buttonProps } = useButton(props, buttonRef);
+  const { buttonProps } = useButton(reactAriaProps, buttonRef);
 
   const touchRippleRef = React.useRef<TouchRippleRef>(null);
 
@@ -72,27 +108,30 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(function 
   return (
     <StyledButton
       ref={buttonRef}
-      {...mergeProps(props, buttonProps)}
-      componentProps={props}
+      {...mergeProps(htmlProps, buttonProps)}
+      componentProps={componentProps}
       layout={layoutAnimation}
     >
-      <ButtonIcon layout={layoutAnimation}>{startIcon}</ButtonIcon>
+      <ButtonIcon layout={layoutAnimation} startIconIsPresent={!!startIcon}>
+        {startIcon}
+      </ButtonIcon>
 
       {children && <ButtonContent layout={layoutAnimation}>{children}</ButtonContent>}
 
-      <ButtonIcon layout={layoutAnimation}>{endIcon}</ButtonIcon>
+      <ButtonIcon layout={layoutAnimation} endIconIsPresent={!!endIcon}>
+        {endIcon}
+      </ButtonIcon>
       <TouchRipple ref={touchRippleRef} center={false} />
     </StyledButton>
   );
 });
 
-const StyledButton = styled(motion.button)<{ componentProps: ButtonProps }>`
+const StyledButton = styled(motion.button)<{ componentProps: ButtonComponentProps }>`
   /* set position to relative so that the button is a container for the absolutely positioned TouchRipple */
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: var(--spacing-2);
 
   border-radius: var(--border-radius-2);
   border-style: solid;
@@ -180,13 +219,15 @@ const StyledButton = styled(motion.button)<{ componentProps: ButtonProps }>`
     color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 `;
 
-const ButtonContent = styled(motion.div)`
+const ButtonContent = styled(Box)`
   display: flex;
   align-items: center;
   gap: var(--spacing-2);
 `;
 
-const ButtonIcon = styled(motion.div)`
+const ButtonIcon = styled(Box)<{ startIconIsPresent?: boolean; endIconIsPresent?: boolean }>`
+  padding-right: ${({ startIconIsPresent }) => !!startIconIsPresent && 'var(--spacing-2)'};
+  padding-left: ${({ endIconIsPresent }) => !!endIconIsPresent && 'var(--spacing-2)'};
   display: flex;
   align-items: center;
 `;
