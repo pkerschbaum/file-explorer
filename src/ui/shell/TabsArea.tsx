@@ -19,8 +19,6 @@ import {
   Button,
   Icon,
   IconButton,
-  Tooltip,
-  useTooltip,
   Tabs,
   Tab,
   useTab,
@@ -165,8 +163,6 @@ type ExplorerTabContentProps = {
 };
 
 const ExplorerTabContent: React.FC<ExplorerTabContentProps> = (props) => {
-  const triggerRef = React.useRef<HTMLButtonElement>(null);
-  const { triggerProps, tooltipProps } = useTooltip({ triggerRef, anchorRef: triggerRef });
   const { onSelect } = useTab({ value: props.value });
 
   return (
@@ -175,25 +171,9 @@ const ExplorerTabContent: React.FC<ExplorerTabContentProps> = (props) => {
         {props.label}
       </TabButton>
       {!props.removeExplorerActionDisabled && (
-        <>
-          <TabIconButton
-            ref={triggerRef}
-            size="small"
-            {...(triggerProps as any)}
-            onClick={(e) => {
-              // stop propagation so that the click on the close button does not get through to the button of the Tab
-              e.stopPropagation();
-              props.onRemove();
-              if (triggerProps.onClick) {
-                triggerProps.onClick(e);
-              }
-            }}
-          >
-            <CloseOutlinedIcon />
-          </TabIconButton>
-
-          <Tooltip {...tooltipProps}>Close Tab</Tooltip>
-        </>
+        <TabIconButton tooltipContent="Close Tab" size="small" onPress={props.onRemove}>
+          <CloseOutlinedIcon />
+        </TabIconButton>
       )}
     </>
   );

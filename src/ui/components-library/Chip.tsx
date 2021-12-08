@@ -5,12 +5,11 @@ import styled from 'styled-components';
 import { Box } from '@app/ui/components-library/Box';
 import { Icon } from '@app/ui/components-library/Icon';
 import { IconButton } from '@app/ui/components-library/IconButton';
-import { Tooltip, useTooltip } from '@app/ui/components-library/Tooltip';
 
 type ChipProps = Pick<React.HTMLProps<HTMLDivElement>, 'style'> & {
   label: React.ReactNode;
   onDelete: () => void;
-  deleteTooltipContent?: React.ReactNode;
+  deleteTooltipContent: React.ReactChild;
 };
 
 export const Chip: React.FC<ChipProps> = ({
@@ -19,17 +18,12 @@ export const Chip: React.FC<ChipProps> = ({
   deleteTooltipContent,
   ...htmlProps
 }) => {
-  const triggerRef = React.useRef<HTMLButtonElement>(null);
-  const { triggerProps, tooltipProps } = useTooltip({ triggerRef, anchorRef: triggerRef });
-
   return (
     <ChipContainer {...htmlProps}>
       <ChipLabel>{label}</ChipLabel>
-      <ChipDeleteButton ref={triggerRef} {...(triggerProps as any)} onClick={onDelete}>
+      <ChipDeleteButton tooltipContent={deleteTooltipContent} onPress={onDelete}>
         <Icon Component={CancelIcon} />
       </ChipDeleteButton>
-
-      {deleteTooltipContent && <Tooltip {...tooltipProps}>{deleteTooltipContent}</Tooltip>}
     </ChipContainer>
   );
 };

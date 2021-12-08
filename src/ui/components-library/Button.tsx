@@ -12,7 +12,7 @@ import invariant from 'tiny-invariant';
 import { Box } from '@app/ui/components-library/Box';
 
 type ButtonProps = Pick<AriaButtonProps<'button'>, 'children' | 'onPress' | 'isDisabled' | 'type'> &
-  Pick<React.HTMLProps<HTMLButtonElement>, 'tabIndex' | 'style'> &
+  Pick<React.HTMLProps<HTMLButtonElement>, 'className' | 'tabIndex' | 'style'> &
   ButtonComponentProps;
 
 type ButtonComponentProps = {
@@ -33,7 +33,7 @@ type TouchRippleRef = {
   stop: (e: MouseEvent) => void;
 };
 
-export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(function ButtonWithRef(
+const ButtonBase = React.forwardRef<HTMLButtonElement, ButtonProps>(function ButtonWithRef(
   props,
   ref,
 ) {
@@ -45,8 +45,8 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(function 
     type,
 
     /* component props */
-    variant,
-    buttonSize,
+    variant: _ignored1,
+    buttonSize: _ignored2,
     startIcon,
     endIcon,
     handleRef,
@@ -60,14 +60,6 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(function 
     onPress,
     isDisabled,
     type,
-  };
-  const componentProps = {
-    variant,
-    buttonSize,
-    startIcon,
-    endIcon,
-    handleRef,
-    enableLayoutAnimation,
   };
 
   const buttonRef = useObjectRef(ref);
@@ -103,30 +95,25 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(function 
     [buttonRef],
   );
 
-  const layoutAnimation = enableLayoutAnimation && !prefersReducedMotion;
+  const animateLayout = enableLayoutAnimation && !prefersReducedMotion;
 
   return (
-    <StyledButton
-      ref={buttonRef}
-      {...mergeProps(htmlProps, buttonProps)}
-      componentProps={componentProps}
-      layout={layoutAnimation}
-    >
-      <ButtonIcon layout={layoutAnimation} startIconIsPresent={!!startIcon}>
+    <motion.button ref={buttonRef} {...mergeProps(htmlProps, buttonProps)} layout={animateLayout}>
+      <ButtonIcon layout={animateLayout} startIconIsPresent={!!startIcon}>
         {startIcon}
       </ButtonIcon>
 
-      {children && <ButtonContent layout={layoutAnimation}>{children}</ButtonContent>}
+      {children && <ButtonContent layout={animateLayout}>{children}</ButtonContent>}
 
-      <ButtonIcon layout={layoutAnimation} endIconIsPresent={!!endIcon}>
+      <ButtonIcon layout={animateLayout} endIconIsPresent={!!endIcon}>
         {endIcon}
       </ButtonIcon>
       <TouchRipple ref={touchRippleRef} center={false} />
-    </StyledButton>
+    </motion.button>
   );
 });
 
-const StyledButton = styled(motion.button)<{ componentProps: ButtonComponentProps }>`
+export const Button = styled(ButtonBase)`
   /* set position to relative so that the button is a container for the absolutely positioned TouchRipple */
   position: relative;
   display: flex;
@@ -136,8 +123,8 @@ const StyledButton = styled(motion.button)<{ componentProps: ButtonComponentProp
   border-radius: var(--border-radius-2);
   border-style: solid;
 
-  ${({ componentProps }) => {
-    if (componentProps === 'sm') {
+  ${({ buttonSize }) => {
+    if (buttonSize === 'sm') {
       return css`
         padding-block: 0;
         padding-inline: 6px;
@@ -151,8 +138,8 @@ const StyledButton = styled(motion.button)<{ componentProps: ButtonComponentProp
     }
   }}
 
-  ${({ componentProps }) => {
-    if (componentProps.variant === 'contained') {
+  ${({ variant }) => {
+    if (variant === 'contained') {
       return css`
         color: var(--color-primary-contrast);
         background-color: var(--color-primary-main);
@@ -162,7 +149,7 @@ const StyledButton = styled(motion.button)<{ componentProps: ButtonComponentProp
 
         font-weight: var(--font-weight-bold);
       `;
-    } else if (componentProps.variant === 'text') {
+    } else if (variant === 'text') {
       return css`
         color: var(--color-fg-0);
         background-color: transparent;
@@ -180,13 +167,13 @@ const StyledButton = styled(motion.button)<{ componentProps: ButtonComponentProp
     }
   }}
 
-  &:not(:disabled) {
+&:not(:disabled) {
     cursor: pointer;
   }
 
   &:not(:disabled):hover {
-    ${({ componentProps }) => {
-      if (componentProps.variant === 'contained') {
+    ${({ variant }) => {
+      if (variant === 'contained') {
         return css`
           border-color: var(--color-primary-dark);
           background-color: var(--color-primary-dark);
@@ -201,8 +188,8 @@ const StyledButton = styled(motion.button)<{ componentProps: ButtonComponentProp
   }
 
   &:not(:disabled):active {
-    ${({ componentProps }) => {
-      if (componentProps.variant === 'text') {
+    ${({ variant }) => {
+      if (variant === 'text') {
         return css`
           background-color: var(--color-bg-3);
         `;
@@ -217,10 +204,6 @@ const StyledButton = styled(motion.button)<{ componentProps: ButtonComponentProp
   &:disabled {
     color: rgba(255, 255, 255, 0.3);
     border-color: rgba(255, 255, 255, 0.12);
-  }
-
-  &:focus-visible {
-    outline: 2px solid var(--color-outline);
   }
 
   /* transition taken from @mui/material <Button> component, with duration reduced from 250ms to 150ms */

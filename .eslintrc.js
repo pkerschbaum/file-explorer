@@ -255,7 +255,10 @@ module.exports = {
     '@typescript-eslint/no-unsafe-call': 'off',
     '@typescript-eslint/no-unsafe-member-access': 'off',
     '@typescript-eslint/no-unsafe-return': 'off',
-    '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_\\d+' }],
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      { varsIgnorePattern: '^_ignored\\d*', argsIgnorePattern: '^_\\d+' },
+    ],
     '@typescript-eslint/non-nullable-type-assertion-style': 'error',
     '@typescript-eslint/prefer-enum-initializers': 'error',
     '@typescript-eslint/prefer-for-of': 'error',

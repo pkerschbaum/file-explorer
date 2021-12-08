@@ -15,7 +15,7 @@ import { RESOURCE_TYPE } from '@app/domain/types';
 import { useDraftPasteState } from '@app/global-state/slices/processes.hooks';
 import { useTags } from '@app/global-state/slices/tags.hooks';
 import { addTagsToResources } from '@app/operations/resource.operations';
-import { addTag, removeTags } from '@app/operations/tag.operations';
+import { addTag } from '@app/operations/tag.operations';
 import { AddTag } from '@app/ui/actions-bar/AddTag';
 import { CreateFolder } from '@app/ui/actions-bar/CreateFolder';
 import {
@@ -335,7 +335,6 @@ export const ActionsBar: React.FC = () => {
                 [chosenTag.id],
               );
             }}
-            onValueDeleted={(tag) => removeTags([tag.id])}
             disabled={multipleDirectoriesActionsDisabled}
           />
         )}

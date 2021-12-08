@@ -2,7 +2,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import * as React from 'react';
 import styled from 'styled-components';
 
-import { Box, IconButton, Tooltip, useTooltip } from '@app/ui/components-library';
+import { Box, IconButton } from '@app/ui/components-library';
 
 export const USER_PREFERENCES_BUTTON_GRID_AREA = 'shell-app-settings-button';
 
@@ -15,28 +15,18 @@ export const UserPreferencesButton: React.FC<UserPreferencesButtonProps> = ({
   userPreferencesSidebarOpen,
   setUserPreferencesSidebarOpen,
 }) => {
-  const triggerRef = React.useRef<HTMLButtonElement>(null);
-  const { triggerProps, tooltipProps } = useTooltip({ triggerRef, anchorRef: triggerRef });
-
   return (
     <UserPreferencesButtonContainer>
       <IconButton
-        ref={triggerRef}
-        size="medium"
-        {...(triggerProps as any)}
-        onClick={(e) => {
+        tooltipContent={
+          !userPreferencesSidebarOpen ? 'Open User Preferences' : 'Hide User Preferences'
+        }
+        onPress={() => {
           setUserPreferencesSidebarOpen(!userPreferencesSidebarOpen);
-          if (triggerProps.onClick) {
-            triggerProps.onClick(e);
-          }
         }}
       >
         <SettingsIcon fontSize="inherit" />
       </IconButton>
-
-      <Tooltip {...tooltipProps}>
-        {!userPreferencesSidebarOpen ? 'Open User Preferences' : 'Hide User Preferences'}
-      </Tooltip>
     </UserPreferencesButtonContainer>
   );
 };

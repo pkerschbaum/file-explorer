@@ -7,6 +7,11 @@ type IconProps = {
   fontSize?: 'inherit' | 'small';
 };
 
-export const Icon: React.FC<IconProps> = ({ Component, fontSize = 'inherit' }) => {
-  return <Component component={motion.svg} fontSize={fontSize} />;
+export const Icon: React.FC<IconProps> = ({ Component, fontSize }) => {
+  return (
+    <Component
+      component={motion.svg}
+      style={{ fontSize: fontSize === 'small' ? 'var(--icon-size-small)' : 'inherit' }}
+    />
+  );
 };

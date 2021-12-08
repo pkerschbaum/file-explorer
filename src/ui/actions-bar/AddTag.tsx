@@ -1,4 +1,3 @@
-import CancelIcon from '@mui/icons-material/Cancel';
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -15,7 +14,6 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  IconButton,
   Paper,
   TextField,
   useTheme,
@@ -32,7 +30,6 @@ type AddTagProps = {
   options: Tag[];
   onValueCreated: (value: Omit<Tag, 'id'>) => Tag;
   onValueChosen: (value: Tag) => void;
-  onValueDeleted: (value: Tag) => void;
   disabled?: boolean;
 };
 
@@ -40,7 +37,6 @@ export const AddTag: React.FC<AddTagProps> = ({
   options,
   onValueCreated,
   onValueChosen,
-  onValueDeleted,
   disabled,
 }) => {
   const { availableTagColors } = useTheme();
@@ -118,25 +114,15 @@ export const AddTag: React.FC<AddTagProps> = ({
         clearOnBlur
         handleHomeEndKeys
         renderOption={(props, option) => (
-          <li {...props}>
-            <TagAutocompleteEntry>
-              {check.isNullishOrEmptyString(option.inputValue) && (
-                <ColorButton
-                  variant="contained"
-                  style={{ backgroundColor: availableTagColors[option.colorId] }}
-                />
-              )}
-              <OptionLabel>{option.name}</OptionLabel>
-              <IconButton
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onValueDeleted(option);
-                }}
-              >
-                <CancelIcon />
-              </IconButton>
-            </TagAutocompleteEntry>
-          </li>
+          <TagAutocompleteEntry {...props}>
+            {check.isNullishOrEmptyString(option.inputValue) && (
+              <ColorButton
+                variant="contained"
+                style={{ backgroundColor: availableTagColors[option.colorId] }}
+              />
+            )}
+            <OptionLabel>{option.name}</OptionLabel>
+          </TagAutocompleteEntry>
         )}
         renderInput={(params) => <TextField {...params} label="Add tag" />}
       />
@@ -207,9 +193,7 @@ const TagAutocomplete: typeof Autocomplete = styled(Autocomplete)`
   min-width: 150px;
 `;
 
-const TagAutocompleteEntry = styled(Box)`
-  width: 100%;
-
+const TagAutocompleteEntry = styled.li`
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing()};

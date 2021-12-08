@@ -4,7 +4,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 import { commonStyles } from '@app/ui/Common.styles';
-import { Box, IconButton, Paper, Tooltip, useTooltip } from '@app/ui/components-library';
+import { Box, Icon, IconButton, Paper } from '@app/ui/components-library';
 import { rotate } from '@app/ui/utils/animations';
 
 export type ProcessCardProps = {
@@ -28,9 +28,6 @@ export const ProcessCard: React.FC<ProcessCardProps> = ({
   labels,
   className,
 }) => {
-  const triggerRef = React.useRef<HTMLButtonElement>(null);
-  const { triggerProps, tooltipProps } = useTooltip({ triggerRef, anchorRef: triggerRef });
-
   return (
     <ProcessCardContainer aria-label={labels.container} className={className}>
       <SummarySection>
@@ -42,22 +39,9 @@ export const ProcessCard: React.FC<ProcessCardProps> = ({
         {isBusy && <RotatingAutorenewOutlinedIcon fontSize="inherit" />}
 
         {isRemovable && (
-          <>
-            <DiscardIconButton
-              ref={triggerRef}
-              {...(triggerProps as any)}
-              onClick={(e) => {
-                void onRemove();
-                if (triggerProps.onClick) {
-                  triggerProps.onClick(e);
-                }
-              }}
-            >
-              <ClearAllIcon fontSize="inherit" />
-            </DiscardIconButton>
-
-            <Tooltip {...tooltipProps}>Discard card</Tooltip>
-          </>
+          <DiscardIconButton tooltipContent="Discard card" onPress={onRemove}>
+            <Icon Component={ClearAllIcon} />
+          </DiscardIconButton>
         )}
       </SummarySection>
 

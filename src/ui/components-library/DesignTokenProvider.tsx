@@ -194,11 +194,16 @@ export const DesignTokenProvider: React.FC<DesignTokenProviderProps> = ({ childr
         --spacing-4: calc(var(--spacing-1) * 4);
 
         --font-size-sm: ${`${(TARGET_MEDIUM_FONTSIZE - 2) / TARGET_MEDIUM_FONTSIZE}rem`};
+        --font-size-md: 1rem;
+        --font-size-lg: ${`${(TARGET_MEDIUM_FONTSIZE + 2) / TARGET_MEDIUM_FONTSIZE}rem`};
         --font-weight-bold: 700;
 
         --border-radius-1: 2px;
         --border-radius-2: calc(var(--border-radius-1) * 2);
         --border-radius-8: calc(var(--border-radius-1) * 8);
+
+        --icon-size-small: ${`${20 / TARGET_MEDIUM_FONTSIZE}rem`};
+        --icon-size-medium: ${`${24 / TARGET_MEDIUM_FONTSIZE}rem`};
       }
     `;
 
