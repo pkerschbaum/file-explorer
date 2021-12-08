@@ -4,9 +4,11 @@
 const path = require('path');
 const fs = require('fs');
 
+const relativeScriptPath = path.relative(process.cwd(), __filename);
+
 const debug = (...args) => {
   const [message, ...otherArgs] = args;
-  console.debug(`[remove-cypress-globals.js] ${message}`, ...otherArgs);
+  console.debug(`[${relativeScriptPath}] ${message}`, ...otherArgs);
 };
 
 // returns the types folder

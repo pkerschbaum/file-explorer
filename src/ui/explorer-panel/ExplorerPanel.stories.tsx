@@ -43,11 +43,6 @@ const Template: ComponentStory<typeof ExplorerPanel> = (args, { loaded }) => (
   </ExplorerPanelGrid>
 );
 
-export const DefaultCase = Template.bind({});
-DefaultCase.args = {
-  explorerId: 'test-explorerid',
-};
-
 const ExplorerPanelGrid = styled(Box)`
   height: 100%;
   display: grid;
@@ -57,3 +52,8 @@ const ExplorerPanelGrid = styled(Box)`
     '${EXPLORER_ACTIONSBAR_GRID_AREA}'
     '${EXPLORER_RESOURCESTABLE_GRID_AREA}';
 `;
+
+export const DefaultCase = Template.bind({});
+DefaultCase.args = {
+  explorerId: 'test-explorerid',
+};

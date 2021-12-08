@@ -329,8 +329,16 @@ type SkeletonRowProps = {
 const SkeletonRow: React.FC<SkeletonRowProps> = ({ opacity }) => (
   <Row sx={{ opacity }}>
     <ResourceRowContent
-      iconSlot={<IconWrapper />}
-      resourceNameSlot={<Skeleton variant="text" width={160} />}
+      iconSlot={
+        <IconWrapper>
+          <Skeleton variant="rectangular" />
+        </IconWrapper>
+      }
+      resourceNameSlot={
+        <ResourceNameFormatted>
+          <Skeleton variant="text" width={160} />
+        </ResourceNameFormatted>
+      }
       sizeSlot={<Skeleton variant="text" width={50} />}
       mtimeSlot={<Skeleton variant="text" width={110} />}
     />

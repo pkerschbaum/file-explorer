@@ -45,3 +45,18 @@ export const MoveLeftToRight2 = keyframes`
     right: -8%;
   }
 `;
+
+// taken from https://mui.com/components/skeleton/#pulsate-example
+export const Pulsate = keyframes`
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
+
+  100% {
+    opacity: 1;
+  }
+`;
