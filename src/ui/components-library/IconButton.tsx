@@ -17,7 +17,7 @@ type IconButtonComponentProps = {
 };
 
 const IconButtonBase = React.forwardRef<HTMLButtonElement, IconButtonProps>(
-  function IconButtonWithRef(props, ref) {
+  function IconButtonBaseWithRef(props, ref) {
     const {
       /* react-aria props */
       children,

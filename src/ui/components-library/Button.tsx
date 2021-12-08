@@ -33,7 +33,7 @@ type TouchRippleRef = {
   stop: (e: MouseEvent) => void;
 };
 
-const ButtonBase = React.forwardRef<HTMLButtonElement, ButtonProps>(function ButtonWithRef(
+const ButtonBase = React.forwardRef<HTMLButtonElement, ButtonProps>(function ButtonBaseWithRef(
   props,
   ref,
 ) {
@@ -175,8 +175,8 @@ export const Button = styled(ButtonBase)`
     ${({ variant }) => {
       if (variant === 'contained') {
         return css`
-          border-color: var(--color-primary-dark);
-          background-color: var(--color-primary-dark);
+          border-color: var(--color-primary-dark-1);
+          background-color: var(--color-primary-dark-1);
         `;
       } else {
         return css`

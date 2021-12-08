@@ -65,7 +65,7 @@ export function computeProcessCardPropsFromDeleteProcess(
       contentToRender = (
         <>
           <Box>Deletion is in progress...</Box>
-          <LinearProgress variant="indeterminate" />
+          <LinearProgress isIndeterminate />
         </>
       );
       break;

@@ -1,11 +1,16 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 
+import { PASTE_PROCESS_STATUS } from '@app/domain/types';
 import { createStoreInstance } from '@app/global-state/store';
 import { getDefaultExplorerCwd } from '@app/operations/app.operations';
 import { createQueryClient, Globals } from '@app/ui/Globals';
 import { Shell } from '@app/ui/shell';
 
-import { fakeDeleteProcess, fakePasteProcess } from '@app-test/utils/fake-data';
+import {
+  fakeDeleteProcess,
+  fakePasteProcess,
+  fakePasteProcessBase,
+} from '@app-test/utils/fake-data';
 
 import { initializeStorybookPlatformModules } from '@app-storybook/storybook-utils';
 
@@ -43,7 +48,14 @@ export const WithProcesses = Template.bind({});
     const store = await createStoreInstance({
       preloadedState: {
         processesSlice: {
-          processes: [fakePasteProcess, fakeDeleteProcess],
+          processes: [
+            {
+              ...fakePasteProcessBase,
+              status: PASTE_PROCESS_STATUS.RUNNING_PERFORMING_PASTE,
+            },
+            fakePasteProcess,
+            fakeDeleteProcess,
+          ],
         },
       },
     });

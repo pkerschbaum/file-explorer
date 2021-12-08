@@ -125,13 +125,11 @@ export function computeProcessCardPropsFromPasteProcess(
     process.status === PASTE_PROCESS_STATUS.SUCCESS
       ? 100
       : numbers.roundToDecimals((process.bytesProcessed / process.totalSize) * 100, 0);
-  const progressIndicatorVariant =
+  const progressIsIndeterminate =
     process.status === PASTE_PROCESS_STATUS.RUNNING_DETERMINING_TOTALSIZE ||
     process.status === PASTE_PROCESS_STATUS.ABORT_REQUESTED ||
     (process.progressOfAtLeastOneSourceIsIndeterminate &&
-      process.status === PASTE_PROCESS_STATUS.RUNNING_PERFORMING_PASTE)
-      ? 'indeterminate'
-      : 'determinate';
+      process.status === PASTE_PROCESS_STATUS.RUNNING_PERFORMING_PASTE);
 
   return {
     labels: { container: 'Paste Process' },
@@ -177,9 +175,7 @@ export function computeProcessCardPropsFromPasteProcess(
         {processMeta.showProgress && (
           <ProgressArea status={process.status}>
             <LinearProgress
-              // disable animation from indeterminate to determinate variant by resetting component on variant change (via key prop)
-              key={progressIndicatorVariant}
-              variant={progressIndicatorVariant}
+              isIndeterminate={progressIsIndeterminate}
               value={percentageBytesProcessed}
             />
 

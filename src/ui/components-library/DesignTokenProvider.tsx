@@ -148,8 +148,10 @@ export const DesignTokenProvider: React.FC<DesignTokenProviderProps> = ({ childr
   const DesignTokensGlobalStyle = React.useMemo(() => {
     const hsl = d3.hsl(themeConfiguration.background[0]);
     const bg0HSLString = `${hsl.h}deg ${hsl.s}% ${hsl.l}%`;
-    const primaryDarkened = d3.color(themeConfiguration.highlight.primary)?.darker(0.7);
-    invariant(primaryDarkened);
+    const primaryDarkened0 = d3.color(themeConfiguration.highlight.primary)?.darker(1.5);
+    const primaryDarkened1 = d3.color(themeConfiguration.highlight.primary)?.darker(0.75);
+    invariant(primaryDarkened0);
+    invariant(primaryDarkened1);
 
     const designTokensCss = css`
       :root {
@@ -159,7 +161,8 @@ export const DesignTokenProvider: React.FC<DesignTokenProviderProps> = ({ childr
         --color-bg-2: ${themeConfiguration.background[2]};
         --color-bg-3: ${themeConfiguration.background[3]};
         --color-primary-main: ${themeConfiguration.highlight.primary};
-        --color-primary-dark: ${primaryDarkened.formatHsl()};
+        --color-primary-dark-0: ${primaryDarkened0.formatHsl()};
+        --color-primary-dark-1: ${primaryDarkened1.formatHsl()};
         --color-primary-contrast: ${themeConfiguration.background[0]};
         --color-success: ${themeConfiguration.highlight.success};
         --color-error: ${themeConfiguration.highlight.error};
