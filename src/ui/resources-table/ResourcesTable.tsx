@@ -9,7 +9,7 @@ import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
 import { getNativeIconURLForResource, startNativeFileDnD } from '@app/operations/app.operations';
 import { changeDirectory } from '@app/operations/explorer.operations';
 import { openFiles, removeTagsFromResources } from '@app/operations/resource.operations';
-import { Box, Button, Chip, Skeleton, TextField } from '@app/ui/components-library';
+import { Box, Button, Chip, Skeleton, TextField, useTheme } from '@app/ui/components-library';
 import {
   Cell,
   DataTable,
@@ -180,6 +180,8 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
   const keyOfResourceToRename = useKeyOfResourceToRename();
   const setKeyOfResourceToRename = useSetKeyOfResourceToRename();
 
+  const { availableTagColors } = useTheme();
+
   const themeResourceIconClasses = useThemeResourceIconClasses(resourceForRow);
 
   const [nativeIconLoadStatus, setNativeIconLoadStatus] = React.useState<
@@ -260,16 +262,19 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
             </ResourceNameFormatted>
           )
         }
-        tagsSlot={resourceForRow.tags.map((tag) => (
-          <Chip
-            key={tag.id}
-            sx={{ backgroundColor: (theme) => theme.availableTagColors[tag.colorId] }}
-            variant="outlined"
-            size="small"
-            label={tag.name}
-            onDelete={() => removeTagsFromResources([resourceForRow.uri], [tag.id])}
-          />
-        ))}
+        tagsSlot={
+          renameForResourceIsActive
+            ? undefined
+            : resourceForRow.tags.map((tag) => (
+                <Chip
+                  key={tag.id}
+                  style={{ backgroundColor: availableTagColors[tag.colorId] }}
+                  label={tag.name}
+                  onDelete={() => removeTagsFromResources([resourceForRow.uri], [tag.id])}
+                  deleteTooltipContent="Remove tag"
+                />
+              ))
+        }
         sizeSlot={
           resourceForRow.resourceType === RESOURCE_TYPE.FILE &&
           resourceForRow.size !== undefined &&
@@ -350,7 +355,7 @@ const ResourceRowContent: React.FC<ResourceRowContentProps> = ({
   <>
     <StyledCell>
       <ResourceIconAndNameAndTags>
-        <ResourceIconAndName>
+        <ResourceIconAndName fullWidth={!tagsSlot}>
           {iconSlot}
           {resourceNameSlot}
         </ResourceIconAndName>
@@ -374,8 +379,8 @@ const ResourceIconAndNameAndTags = styled(Box)`
   gap: ${({ theme }) => theme.spacing()};
 `;
 
-const ResourceIconAndName = styled(Box)`
-  width: 100%;
+const ResourceIconAndName = styled(Box)<{ fullWidth: boolean }>`
+  width: ${({ fullWidth }) => fullWidth && '100%'};
 
   display: flex;
 `;

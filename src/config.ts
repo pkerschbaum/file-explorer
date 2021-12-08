@@ -10,7 +10,7 @@ export const config = {
   productName: 'file-explorer',
   featureFlags: {
     specificIconsForDirectories: false,
-    tags: false,
+    tags: true,
   },
   showReactQueryDevtools:
     processEnvToUse.ELECTRONAPP_RQDEVTOOLS_ENABLED === 'true' ||

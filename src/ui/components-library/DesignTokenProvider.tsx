@@ -198,6 +198,7 @@ export const DesignTokenProvider: React.FC<DesignTokenProviderProps> = ({ childr
 
         --border-radius-1: 2px;
         --border-radius-2: calc(var(--border-radius-1) * 2);
+        --border-radius-8: calc(var(--border-radius-1) * 8);
       }
     `;
 

@@ -165,6 +165,7 @@ const StyledButton = styled(motion.button)<{ componentProps: ButtonComponentProp
     } else if (componentProps.variant === 'text') {
       return css`
         color: var(--color-fg-0);
+        background-color: transparent;
 
         border-width: 0;
       `;
@@ -200,7 +201,17 @@ const StyledButton = styled(motion.button)<{ componentProps: ButtonComponentProp
   }
 
   &:not(:disabled):active {
-    filter: brightness(70%);
+    ${({ componentProps }) => {
+      if (componentProps.variant === 'text') {
+        return css`
+          background-color: var(--color-bg-3);
+        `;
+      } else {
+        return css`
+          filter: brightness(70%);
+        `;
+      }
+    }}
   }
 
   &:disabled {
