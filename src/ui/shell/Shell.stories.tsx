@@ -51,6 +51,7 @@ export const WithProcesses = Template.bind({});
           processes: [
             {
               ...fakePasteProcessBase,
+              id: 'fake-paste-process-id-2',
               status: PASTE_PROCESS_STATUS.RUNNING_PERFORMING_PASTE,
             },
             fakePasteProcess,

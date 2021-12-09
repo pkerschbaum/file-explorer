@@ -51,17 +51,17 @@ export const ProcessCard: React.FC<ProcessCardProps> = ({
 };
 
 const ProcessCardContainer = styled(Paper)`
-  padding: ${({ theme }) => theme.spacing(2)};
+  padding: var(--spacing-4);
 
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => theme.spacing(2)};
+  gap: var(--spacing-4);
 `;
 
 const SummarySection = styled(Box)`
   display: flex;
   align-items: center;
-  gap: ${({ theme }) => theme.spacing()};
+  gap: var(--spacing-2);
 `;
 
 const ProcessIconAndText = styled(Box)`
@@ -69,7 +69,7 @@ const ProcessIconAndText = styled(Box)`
 
   display: flex;
   align-items: center;
-  gap: ${({ theme }) => theme.spacing()};
+  gap: var(--spacing-2);
 `;
 
 const ProcessIconWrapper = styled(Box)`
@@ -78,7 +78,7 @@ const ProcessIconWrapper = styled(Box)`
   display: flex;
   align-items: center;
   justify-items: center;
-  gap: ${({ theme }) => theme.spacing()};
+  gap: var(--spacing-2);
 
   font-size: ${({ theme }) => theme.font.sizes.lg};
 `;
@@ -110,5 +110,5 @@ const DiscardIconButton = styled(IconButton)`
 const DetailsSection = styled(Box)`
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => theme.spacing(2)};
+  gap: var(--spacing-4);
 `;

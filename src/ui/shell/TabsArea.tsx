@@ -184,14 +184,14 @@ const TabButton = styled(Button)`
   justify-content: start;
   text-align: start;
   /* make some space on the right side available for the (absolutely positioned) TabCloseButton */
-  padding-right: ${({ theme }) => theme.spacing(4.5)};
+  padding-right: ${({ theme }) => theme.spacing(4)};
 `;
 
 const TabIconButton = styled(IconButton)`
   position: absolute;
   top: 0;
   bottom: 0;
-  right: ${(props) => props.theme.spacing(1.5)};
+  right: ${(props) => props.theme.spacing(1)};
   margin-block: auto;
   height: fit-content;
 

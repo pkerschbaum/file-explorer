@@ -29,7 +29,7 @@ export const UserPreferencesSidebar: React.FC<UserPreferencesSidebarProps> = ({
   const activeFileIconTheme = useActiveFileIconTheme();
 
   return (
-    <Container variant="outlined" userPreferencesSidebarOpen={userPreferencesSidebarOpen}>
+    <Container userPreferencesSidebarOpen={userPreferencesSidebarOpen}>
       <RadioGroup
         label="Theme"
         value={activeTheme}
@@ -71,12 +71,11 @@ export const UserPreferencesSidebar: React.FC<UserPreferencesSidebarProps> = ({
 
 const Container = styled(Paper)<{ userPreferencesSidebarOpen: boolean }>`
   grid-area: ${USER_PREFERENCES_SIDEBAR_GRID_AREA};
-  padding-inline: ${({ theme }) => theme.spacing()};
-  padding-block: ${({ theme }) => theme.spacing(1.5)};
+  padding: var(--spacing-4);
 
   display: ${({ userPreferencesSidebarOpen }) => (userPreferencesSidebarOpen ? 'flex' : 'none')};
   flex-direction: column;
-  gap: ${({ theme }) => theme.spacing(2)};
+  gap: var(--spacing-4);
 `;
 
 const StyledRadio = styled(Radio)`

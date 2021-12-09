@@ -151,7 +151,7 @@ export const AddTag: React.FC<AddTagProps> = ({
                 />
               </ColorButtonAndTagName>
 
-              <AvailableColorsContainer variant="outlined">
+              <AvailableColorsContainer>
                 {arrays
                   .partitionArray(Object.entries(availableTagColors), { itemsPerPartition: 5 })
                   .map((partition, idx) => (

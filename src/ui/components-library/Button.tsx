@@ -10,6 +10,7 @@ import styled, { css } from 'styled-components';
 import invariant from 'tiny-invariant';
 
 import { Box } from '@app/ui/components-library/Box';
+import { Paper } from '@app/ui/components-library/Paper';
 
 type ButtonProps = Pick<AriaButtonProps<'button'>, 'children' | 'onPress' | 'isDisabled' | 'type'> &
   Pick<React.HTMLProps<HTMLButtonElement>, 'className' | 'tabIndex' | 'style'> &
@@ -131,6 +132,11 @@ export const Button = styled(ButtonBase)`
 
   border-radius: var(--border-radius-2);
   border-style: solid;
+  /* transition taken from @mui/material <Button> component, with duration reduced from 250ms to 150ms */
+  transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+    box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+    border-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+    color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 
   ${({ buttonSize }) => {
     if (buttonSize === 'sm') {
@@ -152,24 +158,20 @@ export const Button = styled(ButtonBase)`
       return css`
         color: var(--color-primary-contrast);
         background-color: var(--color-primary-main);
-
         border-width: 1px;
         border-color: var(--color-primary-contrast);
-
         font-weight: var(--font-weight-bold);
       `;
     } else if (variant === 'text') {
       return css`
         color: var(--color-fg-0);
         background-color: transparent;
-
         border-width: 0;
       `;
     } else {
       return css`
         color: var(--color-fg-0);
         background-color: var(--color-bg-1);
-
         border-width: 1px;
         border-color: var(--color-bg-1);
       `;
@@ -219,11 +221,20 @@ export const Button = styled(ButtonBase)`
     border-color: rgba(255, 255, 255, 0.12);
   }
 
-  /* transition taken from @mui/material <Button> component, with duration reduced from 250ms to 150ms */
-  transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
-    box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
-    border-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
-    color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  /* if the Button is inside of a Paper, we have to bump the background color up for 1 level for standard ("outlined") buttons. */
+  ${Paper} & {
+    ${({ variant }) => {
+      if (variant !== 'contained' && variant !== 'text') {
+        return css`
+          background-color: var(--color-bg-2);
+
+          &:not(:disabled):hover {
+            background-color: var(--color-bg-3);
+          }
+        `;
+      }
+    }}
+  }
 `;
 
 const ButtonContent = styled(Box)`
