@@ -119,6 +119,8 @@ module.exports = {
               /^@react-aria/,
               /^@react-stately/,
               /^@react-types/,
+              '@popperjs/core',
+              'react-popper',
             ],
             forbiddenPatterns: [
               {
@@ -164,7 +166,6 @@ module.exports = {
               'framer-motion',
               'react',
               'react-dom',
-              'react-popper',
               'react-virtual',
               'styled-components',
               'tiny-invariant',

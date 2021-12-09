@@ -209,6 +209,7 @@ export const DesignTokenProvider: React.FC<DesignTokenProviderProps> = ({ childr
 
         --border-radius-1: 2px;
         --border-radius-2: calc(var(--border-radius-1) * 2);
+        --border-radius-4: calc(var(--border-radius-1) * 4);
         --border-radius-8: calc(var(--border-radius-1) * 8);
 
         --icon-size-small: ${`${20 / TARGET_MEDIUM_FONTSIZE}rem`};

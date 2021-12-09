@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import * as React from 'react';
 import styled from 'styled-components';
 
-import { Tooltip, useTooltip } from '@app/ui/components-library/Tooltip';
+import { Tooltip, TooltipProps, useTooltip } from '@app/ui/components-library/Tooltip';
 
 type IconButtonProps = Pick<AriaButtonProps<'button'>, 'children' | 'onPress' | 'isDisabled'> &
   Pick<React.HTMLProps<HTMLButtonElement>, 'className' | 'onClick'> &
@@ -13,6 +13,7 @@ type IconButtonProps = Pick<AriaButtonProps<'button'>, 'children' | 'onPress' | 
 
 type IconButtonComponentProps = {
   tooltipContent: React.ReactChild;
+  tooltipPlacement?: TooltipProps['placement'];
   size?: 'medium' | 'small';
 };
 
@@ -26,6 +27,7 @@ const IconButtonBase = React.forwardRef<HTMLButtonElement, IconButtonProps>(
 
       /* component props */
       tooltipContent,
+      tooltipPlacement,
       size: _ignored,
 
       /* html props */
@@ -50,7 +52,9 @@ const IconButtonBase = React.forwardRef<HTMLButtonElement, IconButtonProps>(
           {children}
         </motion.button>
 
-        <Tooltip {...tooltipProps}>{tooltipContent}</Tooltip>
+        <Tooltip {...mergeProps({ placement: tooltipPlacement }, tooltipProps)}>
+          {tooltipContent}
+        </Tooltip>
       </>
     );
   },
