@@ -62,7 +62,7 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
           },
         },
       ],
-      handler: () => prevTabButtonHandleRef.current?.triggerSyntheticClick(),
+      handler: () => prevTabButtonHandleRef.current?.triggerSyntheticPress(),
     },
     changeToNextTabShortcut: {
       keybindings: [
@@ -74,7 +74,7 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
           },
         },
       ],
-      handler: () => nextTabButtonHandleRef.current?.triggerSyntheticClick(),
+      handler: () => nextTabButtonHandleRef.current?.triggerSyntheticPress(),
     },
     addNewTabShortcut: {
       keybindings: [

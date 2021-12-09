@@ -25,7 +25,7 @@ type ButtonComponentProps = {
 };
 
 export type ButtonHandle = {
-  triggerSyntheticClick: () => void;
+  triggerSyntheticPress: () => void;
 };
 
 type TouchRippleRef = {
@@ -63,7 +63,14 @@ const ButtonBase = React.forwardRef<HTMLButtonElement, ButtonProps>(function But
   };
 
   const buttonRef = useObjectRef(ref);
-  const { buttonProps } = useButton(reactAriaProps, buttonRef);
+  const { buttonProps } = useButton(
+    {
+      ...reactAriaProps,
+      // @ts-expect-error -- when using the "triggerSyntheticPress" function, react-aria useButton does sometimes set the focus on the synthetically pressed button. This is not the intended behavior - the button should just get triggered without changing the focus. The undocumented prop "preventFocusOnPress" does disable the focus behavior of react-aria.
+      preventFocusOnPress: true,
+    },
+    buttonRef,
+  );
 
   const touchRippleRef = React.useRef<TouchRippleRef>(null);
 
@@ -72,7 +79,7 @@ const ButtonBase = React.forwardRef<HTMLButtonElement, ButtonProps>(function But
   React.useImperativeHandle(
     handleRef,
     () => ({
-      triggerSyntheticClick: () => {
+      triggerSyntheticPress: () => {
         invariant(buttonRef.current);
 
         if (buttonRef.current.disabled || buttonRef.current.ariaDisabled === 'true') {

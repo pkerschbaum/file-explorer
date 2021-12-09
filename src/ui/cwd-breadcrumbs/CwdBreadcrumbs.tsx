@@ -83,7 +83,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
         : [],
       handler: () => {
         invariant(buttonHandleRef.current);
-        buttonHandleRef.current.triggerSyntheticClick();
+        buttonHandleRef.current.triggerSyntheticPress();
       },
     },
     openCwdMenuShortcut: {
@@ -100,7 +100,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
         : [],
       handler: () => {
         invariant(buttonHandleRef.current);
-        buttonHandleRef.current.triggerSyntheticClick();
+        buttonHandleRef.current.triggerSyntheticPress();
       },
     },
   });

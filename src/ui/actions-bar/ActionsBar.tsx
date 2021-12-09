@@ -84,7 +84,7 @@ export const ActionsBar: React.FC = () => {
       ],
       handler: () => {
         invariant(openButtonHandleRef.current);
-        openButtonHandleRef.current.triggerSyntheticClick();
+        openButtonHandleRef.current.triggerSyntheticPress();
       },
     },
     copyShortcut: {
@@ -99,7 +99,7 @@ export const ActionsBar: React.FC = () => {
       ],
       handler: () => {
         invariant(copyButtonHandleRef.current);
-        copyButtonHandleRef.current.triggerSyntheticClick();
+        copyButtonHandleRef.current.triggerSyntheticPress();
       },
     },
     cutShortcut: {
@@ -114,7 +114,7 @@ export const ActionsBar: React.FC = () => {
       ],
       handler: () => {
         invariant(cutButtonHandleRef.current);
-        cutButtonHandleRef.current.triggerSyntheticClick();
+        cutButtonHandleRef.current.triggerSyntheticPress();
       },
     },
     pasteShortcut: {
@@ -129,7 +129,7 @@ export const ActionsBar: React.FC = () => {
       ],
       handler: () => {
         invariant(pasteButtonHandleRef.current);
-        pasteButtonHandleRef.current.triggerSyntheticClick();
+        pasteButtonHandleRef.current.triggerSyntheticPress();
       },
     },
     triggerRenameShortcut: {
@@ -144,7 +144,7 @@ export const ActionsBar: React.FC = () => {
       ],
       handler: (e) => {
         invariant(triggerRenameButtonHandleRef.current);
-        triggerRenameButtonHandleRef.current.triggerSyntheticClick();
+        triggerRenameButtonHandleRef.current.triggerSyntheticPress();
         // avoid reload of window (default browser action for CTRL+R)
         e.preventDefault();
       },
@@ -161,7 +161,7 @@ export const ActionsBar: React.FC = () => {
       ],
       handler: () => {
         invariant(scheduleDeleteButtonHandleRef.current);
-        scheduleDeleteButtonHandleRef.current.triggerSyntheticClick();
+        scheduleDeleteButtonHandleRef.current.triggerSyntheticPress();
       },
     },
     triggerCreateNewFolderShortcut: {
@@ -176,7 +176,7 @@ export const ActionsBar: React.FC = () => {
       ],
       handler: () => {
         invariant(triggerCreateNewFolderButtonHandleRef.current);
-        triggerCreateNewFolderButtonHandleRef.current.triggerSyntheticClick();
+        triggerCreateNewFolderButtonHandleRef.current.triggerSyntheticPress();
       },
     },
     changeSelectionByKeyboardShortcut: {
