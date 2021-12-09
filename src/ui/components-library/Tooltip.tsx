@@ -42,14 +42,29 @@ export function useTooltip<
   };
 }
 
-type TooltipProps = AriaTooltipProps & {
-  state: TooltipTriggerState;
-  anchorRef: React.RefObject<HTMLElement>;
-  children: React.ReactNode;
-};
+type TooltipProps = AriaTooltipProps &
+  Pick<React.HTMLProps<HTMLDivElement>, 'className'> & {
+    state: TooltipTriggerState;
+    anchorRef: React.RefObject<HTMLElement>;
+    children: React.ReactNode;
+  };
 
-export const Tooltip: React.FC<TooltipProps> = ({ state, anchorRef, children, ...props }) => {
-  const { tooltipProps } = useReactAriaTooltip(props, state);
+const TooltipBase: React.FC<TooltipProps> = (props) => {
+  const {
+    /* component props */
+    anchorRef,
+    children,
+
+    /* html props */
+    className,
+
+    /* react-aria props */
+    state,
+    ...ariaTooltipProps
+  } = props;
+  const htmlProps = { className };
+
+  const { tooltipProps } = useReactAriaTooltip(ariaTooltipProps, state);
 
   const [popperElement, setPopperElement] = React.useState<HTMLElement | null>(null);
   const [arrowElement, setArrowElement] = React.useState<HTMLElement | null>(null);
@@ -72,32 +87,23 @@ export const Tooltip: React.FC<TooltipProps> = ({ state, anchorRef, children, ..
   invariant(bodyElement);
 
   return ReactDOM.createPortal(
-    <TooltipContainer
+    <Box
       ref={setPopperElement}
       style={styles.popper}
       {...attributes.popper}
-      {...mergeProps(props, tooltipProps)}
+      {...mergeProps(htmlProps, ariaTooltipProps, tooltipProps)}
     >
       <TooltipArrow ref={setArrowElement} style={styles.arrow} />
       <TooltipContent>{children}</TooltipContent>
-    </TooltipContainer>,
+    </Box>,
     bodyElement,
   );
 };
 
-const TooltipContainer = styled(Box)`
+export const Tooltip = styled(TooltipBase)`
   isolation: isolate;
 
   --padding-block: var(--spacing-1);
-`;
-
-const TooltipContent = styled(Box)`
-  padding: var(--padding-block) var(--spacing-2);
-
-  color: var(--color-fg-contrast);
-  background-color: var(--color-bg-contrast);
-  border-radius: var(--border-radius-2);
-  box-shadow: var(--shadow-elevation-16);
 `;
 
 const TooltipArrow = styled(Box)`
@@ -115,4 +121,13 @@ const TooltipArrow = styled(Box)`
     height: var(--size);
     background-color: var(--color-bg-contrast);
   }
+`;
+
+const TooltipContent = styled(Box)`
+  padding: var(--padding-block) var(--spacing-2);
+
+  color: var(--color-fg-contrast);
+  background-color: var(--color-bg-contrast);
+  border-radius: var(--border-radius-2);
+  box-shadow: var(--shadow-elevation-16);
 `;

@@ -1,28 +1,44 @@
 import { useBreadcrumbItem, useBreadcrumbs } from '@react-aria/breadcrumbs';
+import { mergeProps } from '@react-aria/utils';
 import { AriaBreadcrumbItemProps, AriaBreadcrumbsProps } from '@react-types/breadcrumbs';
 import * as React from 'react';
 import styled from 'styled-components';
 
 import { Box } from '@app/ui/components-library/Box';
 
-type BreadcrumbsProps = Pick<AriaBreadcrumbsProps<unknown>, 'children'>;
+type BreadcrumbsProps = Pick<AriaBreadcrumbsProps<unknown>, 'children'> &
+  Pick<React.HTMLProps<HTMLElement>, 'className'>;
 
-export const Breadcrumbs: React.FC<BreadcrumbsProps> = (props) => {
-  const { navProps } = useBreadcrumbs(props);
-  const children = React.Children.toArray(props.children);
+const BreadcrumbsBase: React.FC<BreadcrumbsProps> = (props) => {
+  const {
+    /* react-aria props */
+    children,
+
+    /* html props */
+    ...htmlProps
+  } = props;
+  const reactAriaProps = {
+    children,
+  };
+
+  const { navProps } = useBreadcrumbs(reactAriaProps);
+  const childrenArray = React.Children.toArray(children);
 
   return (
-    <BreadcrumbsNav {...navProps}>
+    <nav {...mergeProps(htmlProps, navProps)}>
       <BreadcrumbsList>
-        {children.map((child, i) =>
-          React.cloneElement(child as React.ReactElement, { isCurrent: i === children.length - 1 }),
+        {childrenArray.map((child, i) =>
+          React.cloneElement(child as React.ReactElement, {
+            isCurrent: i === childrenArray.length - 1,
+          }),
         )}
       </BreadcrumbsList>
-    </BreadcrumbsNav>
+    </nav>
   );
 };
 
-const BreadcrumbsNav = styled.nav``;
+export const Breadcrumbs = styled(BreadcrumbsBase)``;
+
 const BreadcrumbsList = styled.ol`
   display: flex;
   align-items: center;
@@ -34,25 +50,40 @@ const BreadcrumbsList = styled.ol`
   padding: 0;
 `;
 
-type BreadcrumbItemProps = Pick<AriaBreadcrumbItemProps, 'children' | 'isCurrent'>;
+type BreadcrumbItemProps = Pick<AriaBreadcrumbItemProps, 'children' | 'isCurrent'> &
+  Pick<React.HTMLProps<HTMLLIElement>, 'className'>;
 
-export const BreadcrumbItem: React.FC<BreadcrumbItemProps> = (props) => {
+const BreadcrumbItemBase: React.FC<BreadcrumbItemProps> = (props) => {
+  const {
+    /* react-aria props */
+    children,
+    isCurrent,
+
+    /* html props */
+    ...htmlProps
+  } = props;
+  const reactAriaProps = {
+    children,
+    isCurrent,
+  };
+
   const ref = React.useRef<HTMLDivElement>(null);
-  const { itemProps } = useBreadcrumbItem({ ...props, elementType: 'div' }, ref);
+  const { itemProps } = useBreadcrumbItem({ ...reactAriaProps, elementType: 'div' }, ref);
 
   return (
     <>
-      <BreadcrumbListItem>
+      <li {...htmlProps}>
         <BreadcrumbElem {...itemProps} ref={ref}>
           {props.children}
         </BreadcrumbElem>
-      </BreadcrumbListItem>
+      </li>
 
       {!props.isCurrent && <BreadcrumbSeparator aria-hidden="true">/</BreadcrumbSeparator>}
     </>
   );
 };
 
-const BreadcrumbListItem = styled.li``;
+export const BreadcrumbItem = styled(BreadcrumbItemBase)``;
+
 const BreadcrumbElem = styled(Box)``;
 const BreadcrumbSeparator = styled(Box)``;

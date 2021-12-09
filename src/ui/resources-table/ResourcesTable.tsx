@@ -286,8 +286,10 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
   );
 });
 
+const ResourceNameFormattedSpacingFactor = 1;
+
 const ResourceNameFormatted = styled(Box)`
-  padding-left: ${(props) => props.theme.spacing(ResourceNameFormattedSpacingFactor * 2)};
+  padding-left: calc(2 * ${ResourceNameFormattedSpacingFactor} * var(--spacing-1));
   display: flex;
   align-items: center;
 `;
@@ -437,8 +439,15 @@ const RenameInputForm = styled.form`
   gap: ${(props) => props.theme.spacing(2)};
 `;
 
-const ResourceNameFormattedSpacingFactor = 0.5;
-
 const ResourceNameTextField = styled(TextField)`
   width: 100%;
+
+  /* ajust spacing of the rename textfield so that it renders into a resource row without any layout shifts */
+  padding-left: calc(${ResourceNameFormattedSpacingFactor} * var(--spacing-1) - 1px);
+
+  & > input {
+    margin-block: -1px;
+    padding-block: 1px;
+    padding-left: calc(${ResourceNameFormattedSpacingFactor} * var(--spacing-1));
+  }
 `;

@@ -1,26 +1,50 @@
 import { SeparatorProps, useSeparator } from '@react-aria/separator';
+import { mergeProps } from '@react-aria/utils';
 import * as React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-import { Box, BoxProps } from '@app/ui/components-library/Box';
+import { Box } from '@app/ui/components-library/Box';
 
-type DividerProps = SeparatorProps;
+type DividerProps = Pick<SeparatorProps, 'orientation'> &
+  Pick<React.HTMLProps<HTMLDivElement>, 'className'>;
 
-export const Divider = React.forwardRef<HTMLDivElement, DividerProps>(function DividerForwardRef(
+const DividerBase = React.forwardRef<HTMLDivElement, DividerProps>(function DividerForwardRef(
   props,
   ref,
 ) {
-  const { separatorProps } = useSeparator(props);
-  return <DividerContainer ref={ref} componentProps={props} {...(separatorProps as BoxProps)} />;
+  const {
+    /* react-aria props */
+    orientation,
+
+    /* html props */
+    ...htmlProps
+  } = props;
+  const reactAriaProps = {
+    orientation,
+  };
+
+  const { separatorProps } = useSeparator(reactAriaProps);
+  return <Box ref={ref} {...mergeProps(htmlProps, separatorProps)} />;
 });
 
-const DividerContainer = styled(Box)<{ componentProps: DividerProps }>`
-  border-top: 0;
-  border-left: 0;
-  border-right: ${({ componentProps }) => componentProps.orientation === 'vertical' && 'thin'};
-  border-bottom: ${({ componentProps }) => componentProps.orientation !== 'vertical' && 'thin'};
+export const Divider = styled(DividerBase)`
+  border-top-width: 0;
+  border-left-width: 0;
   border-color: rgba(255, 255, 255, 0.23);
   border-style: solid;
-  width: ${({ componentProps }) => componentProps.orientation !== 'vertical' && 'auto'};
-  height: ${({ componentProps }) => componentProps.orientation === 'vertical' && 'auto'};
+  ${({ orientation }) => {
+    if (orientation === 'vertical') {
+      return css`
+        border-bottom-width: 0;
+        border-right-width: 1px;
+        height: auto;
+      `;
+    } else {
+      return css`
+        border-bottom-width: 1px;
+        border-right-width: 0;
+        width: auto;
+      `;
+    }
+  }};
 `;

@@ -1,3 +1,4 @@
+import { mergeProps } from '@react-aria/utils';
 import styled from 'styled-components';
 
 import { Box } from '@app/ui/components-library/Box';
@@ -15,21 +16,33 @@ const tabsContext = createContext<TabsContext>('TabsContext');
 const useTabsContext = tabsContext.useContextValue;
 const TabsContextProvider = tabsContext.Provider;
 
-type TabsProps = {
+type TabsProps = Pick<React.HTMLProps<HTMLDivElement>, 'className'> & {
   selectedValue?: string;
   setSelectedValue: (newValue: string) => void;
   children: React.ReactNode;
 };
 
-export const Tabs: React.FC<TabsProps> = ({ selectedValue, setSelectedValue, children }) => {
+const TabsBase: React.FC<TabsProps> = (props) => {
+  const {
+    /* component props */
+    selectedValue,
+    setSelectedValue,
+    children,
+
+    /* html props */
+    ...htmlProps
+  } = props;
+
   return (
     <TabsContextProvider value={{ selectedValue, setSelectedValue }}>
-      <TabsListContainer role="tablist">{children}</TabsListContainer>
+      <Box role="tablist" {...htmlProps}>
+        {children}
+      </Box>
     </TabsContextProvider>
   );
 };
 
-const TabsListContainer = styled(Box)`
+export const Tabs = styled(TabsBase)`
   isolation: isolate;
 
   display: flex;
@@ -42,18 +55,27 @@ type TabProps = {
   children: React.ReactNode;
 };
 
-export const Tab: React.FC<TabProps> = ({ value, children }) => {
+const TabBase: React.FC<TabProps> = (props) => {
+  const {
+    /* component props */
+    value,
+    children,
+
+    /* html props */
+    ...htmlProps
+  } = props;
+
   const { tabProps } = useTab({ value });
 
   return (
-    <TabContainer {...tabProps}>
+    <Box {...mergeProps(htmlProps, tabProps)}>
       {children}
       {tabProps['aria-selected'] && <TabIsActiveIndicator layoutId={INDICATOR_MOTION_LAYOUT_ID} />}
-    </TabContainer>
+    </Box>
   );
 };
 
-const TabContainer = styled(Box)`
+export const Tab = styled(TabBase)`
   position: relative;
 `;
 

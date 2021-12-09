@@ -48,7 +48,10 @@ const TextFieldBase = React.forwardRef<HTMLDivElement, TextFieldProps>(
     return (
       <Box ref={ref} {...htmlProps}>
         {label && <TextFieldLabel {...labelProps}>{label}</TextFieldLabel>}
-        <TextFieldInput {...mergeProps(componentInputProps, inputProps)} ref={inputRef} />
+        <TextFieldInput
+          {...mergeProps({ spellCheck: false }, componentInputProps, inputProps)}
+          ref={inputRef}
+        />
       </Box>
     );
   },
