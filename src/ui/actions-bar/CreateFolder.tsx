@@ -73,6 +73,7 @@ export const CreateFolder: React.FC<CreateFolderProps> = ({
               <TextField
                 autoFocus
                 placeholder="Name of folder"
+                aria-label="Name of folder"
                 value={createFolderValue}
                 onChange={setCreateFolderValue}
               />

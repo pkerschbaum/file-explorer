@@ -1,6 +1,6 @@
 import * as d3 from 'd3-color';
 import * as React from 'react';
-import { createGlobalStyle, css } from 'styled-components';
+import { createGlobalStyle, css, FlattenSimpleInterpolation } from 'styled-components';
 import invariant from 'tiny-invariant';
 
 import { assertIsUnreachable } from '@app/base/utils/assert.util';
@@ -145,7 +145,7 @@ export const DesignTokenProvider: React.FC<DesignTokenProviderProps> = ({ childr
     assertIsUnreachable(themeConfiguration);
   }
 
-  const DesignTokensGlobalStyle = React.useMemo(() => {
+  const designTokensCss = React.useMemo(() => {
     const hsl = d3.hsl(themeConfiguration.background[0]);
     const bg0HSLString = `${hsl.h}deg ${hsl.s}% ${hsl.l}%`;
     const fg0Darkened = d3.color(themeConfiguration.foreground[0])?.darker(0.75);
@@ -157,7 +157,7 @@ export const DesignTokenProvider: React.FC<DesignTokenProviderProps> = ({ childr
     invariant(primaryDarkened0);
     invariant(primaryDarkened1);
 
-    const designTokensCss = css`
+    return css`
       :root {
         --color-fg-0: ${themeConfiguration.foreground[0]};
         --color-fg-dark: ${fg0Darkened.formatHsl()};
@@ -215,15 +215,11 @@ export const DesignTokenProvider: React.FC<DesignTokenProviderProps> = ({ childr
         --icon-size-medium: ${`${24 / TARGET_MEDIUM_FONTSIZE}rem`};
       }
     `;
-
-    return createGlobalStyle`
-      ${designTokensCss}
-    `;
   }, [borderColorToUse, outlineColorToUse, themeConfiguration]);
 
   return (
     <>
-      <DesignTokensGlobalStyle />
+      <DesignTokensGlobalStyle designTokensCss={designTokensCss} />
       <ThemeConfigurationContextProvider
         value={{
           theme: themeConfiguration,
@@ -235,3 +231,7 @@ export const DesignTokenProvider: React.FC<DesignTokenProviderProps> = ({ childr
     </>
   );
 };
+
+const DesignTokensGlobalStyle = createGlobalStyle<{ designTokensCss: FlattenSimpleInterpolation }>`
+  ${({ designTokensCss }) => designTokensCss}
+`;

@@ -121,6 +121,8 @@ const ButtonBase = React.forwardRef<HTMLButtonElement, ButtonProps>(function But
 });
 
 export const Button = styled(ButtonBase)`
+  min-width: 45px;
+
   /* set position to relative so that the button is a container for the absolutely positioned TouchRipple */
   position: relative;
   display: flex;

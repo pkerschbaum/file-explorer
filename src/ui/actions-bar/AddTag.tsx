@@ -124,7 +124,9 @@ export const AddTag: React.FC<AddTagProps> = ({
             <OptionLabel>{option.name}</OptionLabel>
           </TagAutocompleteEntry>
         )}
-        renderInput={(params) => <TextField {...(params as any)} placeholder="Add tag" />}
+        renderInput={(params) => (
+          <TextField {...(params as any)} placeholder="Add tag" aria-label="Add tag" />
+        )}
       />
       <Dialog open={open} onClose={handleClose}>
         <form onSubmit={handleSubmit}>

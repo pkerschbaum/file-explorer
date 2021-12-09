@@ -356,6 +356,7 @@ const FilterInput: React.FC<FilterInputProps> = ({ filterInputRef }) => {
       inputRef={filterInputRef}
       inputProps={DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED.datasetAttr}
       placeholder="Filter"
+      aria-label="Filter"
       value={filterInput}
       onChange={(newValue) => {
         const trimmedValue = newValue.trimStart();

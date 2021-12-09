@@ -80,8 +80,10 @@ export const ExplorerDerivedValuesContextProvider: React.FC<
     return result;
   }, [explorerState.filterInput, resourcesWithTags]);
 
-  const selectedShownResources = React.useMemo(() => {
+  const { selectedShownResources, didApplySelectionFallback } = React.useMemo(() => {
     const result: ResourceForUI[] = [];
+    let didApplySelectionFallback = false;
+
     for (const renameHistoryKeys of explorerState.selection.keysOfSelectedResources) {
       for (const key of arrays.reverse(renameHistoryKeys)) {
         const resource = resourcesToShow.find((r) => r.key === key);
@@ -92,18 +94,25 @@ export const ExplorerDerivedValuesContextProvider: React.FC<
       }
     }
 
-    // if no resource is selected, but at least one resource will be shown, just select the first resource
+    // if no resource is selected, but at least one resource will be shown, fallback to just selecting the first resource
     if (result.length === 0 && resourcesToShow.length > 0) {
       result.push(resourcesToShow[0]);
-      setKeysOfSelectedResources([[resourcesToShow[0].key]]);
+      didApplySelectionFallback = true;
     }
 
-    return result;
-  }, [
-    explorerState.selection.keysOfSelectedResources,
-    resourcesToShow,
-    setKeysOfSelectedResources,
-  ]);
+    return { selectedShownResources: result, didApplySelectionFallback };
+  }, [explorerState.selection.keysOfSelectedResources, resourcesToShow]);
+
+  /*
+   * If selection fallback was applied  (i.e. "keysOfSelectedResources" did not match any currently
+   * shown files but there was at least one file which could be selected), we need to update the
+   * "keysOfSelectedResources" state accordingly.
+   */
+  React.useEffect(() => {
+    if (didApplySelectionFallback) {
+      setKeysOfSelectedResources(selectedShownResources.map((resource) => [resource.key]));
+    }
+  }, [selectedShownResources, didApplySelectionFallback, setKeysOfSelectedResources]);
 
   // every time the filter input changes, reset selection
   const prevFilterInput = usePrevious(explorerState.filterInput);

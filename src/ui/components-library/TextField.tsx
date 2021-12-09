@@ -8,7 +8,7 @@ import type { DataAttributes } from '@app/ui/components-library/utils';
 
 type TextFieldProps = Pick<
   AriaTextFieldOptions<'input'>,
-  'label' | 'placeholder' | 'value' | 'onChange' | 'autoFocus' | 'onKeyDown'
+  'label' | 'aria-label' | 'placeholder' | 'value' | 'onChange' | 'autoFocus' | 'onKeyDown'
 > &
   Pick<React.HTMLProps<HTMLDivElement>, 'className'> & {
     inputRef?: React.RefObject<HTMLInputElement>;
@@ -20,6 +20,7 @@ const TextFieldBase = React.forwardRef<HTMLDivElement, TextFieldProps>(
     const {
       /* react-aria props */
       label,
+      'aria-label': ariaLabel,
       placeholder,
       value,
       onChange,
@@ -35,6 +36,7 @@ const TextFieldBase = React.forwardRef<HTMLDivElement, TextFieldProps>(
     } = props;
     const reactAriaProps: AriaTextFieldOptions<'input'> = {
       label,
+      'aria-label': ariaLabel,
       placeholder,
       value,
       onChange,
