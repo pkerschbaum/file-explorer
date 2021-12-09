@@ -10,3 +10,7 @@ function generateMotionLayoutId() {
   lastId++;
   return `${MOTION_LAYOUTID_PREFIX}-${lastId}`;
 }
+
+export type DataAttributes = Partial<{
+  [attribute: `data-${string}`]: string;
+}>;

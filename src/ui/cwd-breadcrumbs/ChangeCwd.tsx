@@ -72,9 +72,9 @@ export const ChangeCwd: React.FC<ChangeCwdProps> = ({ initialCwdValue, onSubmit 
             content={
               <TextField
                 autoFocus
-                label="Directory"
+                placeholder="Directory"
                 value={cwdValue}
-                onChange={(event) => setCwdValue(event.target.value)}
+                onChange={setCwdValue}
               />
             }
             actions={

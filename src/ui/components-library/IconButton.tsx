@@ -67,6 +67,10 @@ export const IconButton = styled(IconButtonBase)`
   font-size: ${({ size }) =>
     size === 'small' ? 'var(--icon-size-small)' : 'var(--icon-size-medium)'};
 
+  &:focus-visible {
+    outline: 2px solid var(--color-outline);
+  }
+
   &:not(:disabled) {
     cursor: pointer;
   }

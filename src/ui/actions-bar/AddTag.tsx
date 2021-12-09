@@ -124,7 +124,7 @@ export const AddTag: React.FC<AddTagProps> = ({
             <OptionLabel>{option.name}</OptionLabel>
           </TagAutocompleteEntry>
         )}
-        renderInput={(params) => <TextField {...params} label="Add tag" />}
+        renderInput={(params) => <TextField {...(params as any)} placeholder="Add tag" />}
       />
       <Dialog open={open} onClose={handleClose}>
         <form onSubmit={handleSubmit}>
@@ -140,10 +140,10 @@ export const AddTag: React.FC<AddTagProps> = ({
                   autoFocus
                   label="Name of tag"
                   value={dialogValue.name}
-                  onChange={(event) =>
+                  onChange={(newValue) =>
                     setDialogValue({
                       ...dialogValue,
-                      name: event.target.value.trim(),
+                      name: newValue.trim(),
                     })
                   }
                 />

@@ -15,6 +15,7 @@ module.exports = {
     'plugin:react/recommended',
     'plugin:react-hooks/recommended',
     'plugin:jsx-a11y/recommended',
+    'plugin:storybook/recommended',
     'plugin:cypress/recommended',
     'plugin:jest-dom/recommended',
   ],
@@ -149,7 +150,7 @@ module.exports = {
           },
           {
             target: /\/src\/ui\/.+\.stories\.tsx$/,
-            allowedPatterns: ['@storybook/react'],
+            allowedPatterns: ['@storybook/react', '@storybook/testing-library'],
           },
           {
             target: /\/src\/ui\/.+\.visual\.spec\.ts$/,

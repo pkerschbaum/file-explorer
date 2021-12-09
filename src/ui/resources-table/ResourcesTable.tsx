@@ -410,11 +410,10 @@ const RenameInput: React.FC<RenameInputProps> = ({ resource, onSubmit, abortRena
       }}
     >
       <ResourceNameTextField
-        fullWidth
         inputProps={{ 'aria-label': 'new name for resource' }}
         autoFocus
         value={value}
-        onChange={(e) => setValue(e.target.value)}
+        onChange={setValue}
         onKeyDown={(e) => {
           if (e.key === KEY.ESC) {
             abortRename();
@@ -441,13 +440,5 @@ const RenameInputForm = styled.form`
 const ResourceNameFormattedSpacingFactor = 0.5;
 
 const ResourceNameTextField = styled(TextField)`
-  & .MuiInputBase-root {
-    height: 100%;
-    margin-left: ${(props) => props.theme.spacing(ResourceNameFormattedSpacingFactor)};
-  }
-
-  & .MuiInputBase-input {
-    padding-left: ${(props) => props.theme.spacing(ResourceNameFormattedSpacingFactor)};
-    padding-block: 0;
-  }
+  width: 100%;
 `;

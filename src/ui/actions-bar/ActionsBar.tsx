@@ -69,7 +69,7 @@ export const ActionsBar: React.FC = () => {
   const scheduleDeleteButtonHandleRef = React.useRef<ButtonHandle>(null);
   const triggerCreateNewFolderButtonHandleRef = React.useRef<ButtonHandle>(null);
 
-  const filterInputRef = React.useRef<HTMLDivElement>(null);
+  const filterInputRef = React.useRef<HTMLInputElement>(null);
 
   const registerShortcutsResult = useRegisterExplorerShortcuts({
     openShortcut: {
@@ -344,7 +344,7 @@ export const ActionsBar: React.FC = () => {
 };
 
 type FilterInputProps = {
-  filterInputRef: React.RefObject<HTMLDivElement>;
+  filterInputRef: React.RefObject<HTMLInputElement>;
 };
 
 const FilterInput: React.FC<FilterInputProps> = ({ filterInputRef }) => {
@@ -355,15 +355,14 @@ const FilterInput: React.FC<FilterInputProps> = ({ filterInputRef }) => {
     <TextField
       inputRef={filterInputRef}
       inputProps={DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED.datasetAttr}
-      InputLabelProps={{ shrink: true, sx: { userSelect: 'none' } }}
-      label="Filter"
+      placeholder="Filter"
       value={filterInput}
-      onChange={(e) => {
-        const newVal = e.target.value.trimStart();
-        setFilterInput(newVal);
+      onChange={(newValue) => {
+        const trimmedValue = newValue.trimStart();
+        setFilterInput(trimmedValue);
 
         // if input is empty now, blur the input field
-        if (newVal === '' && filterInputRef.current !== null) {
+        if (trimmedValue === '' && filterInputRef.current !== null) {
           filterInputRef.current.blur();
         }
       }}

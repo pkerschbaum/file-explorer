@@ -71,10 +71,6 @@ const globalStyle = css`
     isolation: isolate;
   }
 
-  &:focus-visible {
-    outline: 2px solid var(--color-outline);
-  }
-
   /* Sensible media defaults, https://www.joshwcomeau.com/css/custom-css-reset/#digit-sensible-media-defaults */
   img,
   picture,

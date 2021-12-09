@@ -167,7 +167,11 @@ export const Button = styled(ButtonBase)`
     }
   }}
 
-&:not(:disabled) {
+  &:focus-visible {
+    outline: 2px solid var(--color-outline);
+  }
+
+  &:not(:disabled) {
     cursor: pointer;
   }
 

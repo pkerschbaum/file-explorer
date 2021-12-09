@@ -32,7 +32,6 @@ const Template: ComponentStory<typeof ResourcesTable> = (args, { loaded }) => (
 );
 
 export const DefaultCase = Template.bind({});
-DefaultCase.args = {};
 DefaultCase.loaders = [
   async () => {
     await initializeStorybookPlatformModules();
@@ -43,7 +42,6 @@ DefaultCase.loaders = [
 ];
 
 export const ResourcesDataNotAvailable = Template.bind({});
-ResourcesDataNotAvailable.args = {};
 ResourcesDataNotAvailable.loaders = [
   async () => {
     await initializeStorybookPlatformModules();

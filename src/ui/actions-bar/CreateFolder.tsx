@@ -72,9 +72,9 @@ export const CreateFolder: React.FC<CreateFolderProps> = ({
             content={
               <TextField
                 autoFocus
-                label="Name of folder"
+                placeholder="Name of folder"
                 value={createFolderValue}
-                onChange={(event) => setCreateFolderValue(event.target.value)}
+                onChange={setCreateFolderValue}
               />
             }
             actions={
