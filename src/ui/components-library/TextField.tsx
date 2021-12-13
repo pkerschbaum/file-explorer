@@ -10,10 +10,13 @@ type TextFieldProps = Pick<
   AriaTextFieldOptions<'input'>,
   'label' | 'aria-label' | 'placeholder' | 'value' | 'onChange' | 'autoFocus' | 'onKeyDown'
 > &
-  Pick<React.HTMLProps<HTMLDivElement>, 'className'> & {
-    inputRef?: React.RefObject<HTMLInputElement>;
-    inputProps?: React.InputHTMLAttributes<HTMLInputElement> & DataAttributes;
-  };
+  Pick<React.HTMLProps<HTMLDivElement>, 'className'> &
+  TextFieldComponentProps;
+
+type TextFieldComponentProps = {
+  inputRef?: React.RefObject<HTMLInputElement>;
+  inputProps?: React.InputHTMLAttributes<HTMLInputElement> & DataAttributes;
+};
 
 const TextFieldBase = React.forwardRef<HTMLDivElement, TextFieldProps>(
   function TextFieldBaseWithRef(props, ref) {
@@ -71,13 +74,12 @@ const TextFieldLabel = styled.label`
 const TextFieldInput = styled.input`
   --border-bottom-width-default: 1px;
   --border-bottom-width-focus: 3px;
+  --border-bottom-width-difference: calc(
+    var(--border-bottom-width-focus) - var(--border-bottom-width-default)
+  );
   --bg-color-default: var(--color-bg-1);
-  padding: 5px 12px;
-  /* 
-    When the input is focused, the border-bottom will gain some width.
-    To avoid a layout shift when that happens, add some margin-bottom when the input is not focused.
-  */
-  margin-bottom: calc(var(--border-bottom-width-focus) - var(--border-bottom-width-default));
+  padding: var(--padding-button-md-block) var(--padding-button-md-inline);
+  margin-block: auto;
 
   color: var(--color-fg-0);
   background-color: var(--bg-color-default);
@@ -87,9 +89,13 @@ const TextFieldInput = styled.input`
   outline: none;
 
   &:focus {
-    background-color: var(--color-bg-0-dark);
+    /* 
+      When the input is focused, border-bottom of the input will gain some width.
+      To avoid a layout shift when that happens, reduce the padding-bottom by the same amount.
+    */
+    padding-bottom: calc(var(--padding-button-md-block) - var(--border-bottom-width-difference));
     border-bottom: var(--border-bottom-width-focus) solid var(--color-primary-main);
-    margin-bottom: 0;
+    background-color: var(--color-bg-0-dark);
   }
 
   &::placeholder {

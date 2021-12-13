@@ -225,14 +225,12 @@ export const Button = styled(ButtonBase)`
   ${({ buttonSize }) => {
     if (buttonSize === 'sm') {
       return css`
-        padding-block: 0;
-        padding-inline: 6px;
+        padding: 0 6px;
         font-size: var(--font-size-sm);
       `;
     } else {
       return css`
-        padding-block: var(--padding-button-md-block);
-        padding-inline: var(--padding-button-md-inline);
+        padding: var(--padding-button-md-block) var(--padding-button-md-inline);
       `;
     }
   }}

@@ -117,7 +117,7 @@ export const defaultTheme: AvailableTheme = 'nord';
 
 // border colors are taken from material-ui OutlinedInput <fieldset> border color
 const BORDER_COLOR_LIGHT = 'rgba(0, 0, 0, 0.23)';
-const BORDER_COLOR_DARK = 'rgba(255, 255, 255, 0.23)';
+const BORDER_COLOR_DARK = 'var(--color-darken-1)';
 const OUTLINE_COLOR_LIGHT = 'rgba(0, 0, 0, 0.8)';
 const OUTLINE_COLOR_DARK = 'rgba(255, 255, 255, 0.8)';
 
@@ -175,6 +175,7 @@ export const DesignTokenProvider: React.FC<DesignTokenProviderProps> = ({ childr
         --color-warning: ${themeConfiguration.highlight.warning};
         --color-border: ${borderColorToUse};
         --color-outline: ${outlineColorToUse};
+        --color-darken-1: rgba(255, 255, 255, 0.23);
 
         --color-bg-contrast: var(--color-fg-0);
         --color-fg-contrast: var(--color-bg-0);
@@ -209,6 +210,7 @@ export const DesignTokenProvider: React.FC<DesignTokenProviderProps> = ({ childr
         --font-size-lg: ${`${(TARGET_MEDIUM_FONTSIZE + 2) / TARGET_MEDIUM_FONTSIZE}rem`};
         --font-weight-bold: 700;
 
+        --border-width-1: 1px;
         --border-radius-1: 2px;
         --border-radius-2: calc(var(--border-radius-1) * 2);
         --border-radius-4: calc(var(--border-radius-1) * 4);

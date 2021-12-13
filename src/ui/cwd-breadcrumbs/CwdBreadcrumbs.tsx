@@ -136,7 +136,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
 
   return (
     <>
-      <Button
+      <BreadcrumbButton
         ref={buttonRef}
         handleRef={buttonHandleRef}
         onPress={handleClick}
@@ -156,12 +156,16 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
         ariaButtonProps={menuTriggerProps}
       >
         {slugFormatted}
-      </Button>
+      </BreadcrumbButton>
 
       {isLastSlug && <CwdActionsMenu explorerId={explorerId} menuInstance={menuInstance} />}
     </>
   );
 };
+
+const BreadcrumbButton = styled(Button)`
+  min-width: 0;
+`;
 
 const CwdActionsMenuTrigger = styled(Box)`
   display: flex;

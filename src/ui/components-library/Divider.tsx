@@ -30,18 +30,18 @@ const DividerBase = React.forwardRef<HTMLDivElement, DividerProps>(function Divi
 export const Divider = styled(DividerBase)`
   border-top-width: 0;
   border-left-width: 0;
-  border-color: rgba(255, 255, 255, 0.23);
+  border-color: var(--color-darken-1);
   border-style: solid;
   ${({ orientation }) => {
     if (orientation === 'vertical') {
       return css`
         border-bottom-width: 0;
-        border-right-width: 1px;
+        border-right-width: var(--border-width-1);
         height: auto;
       `;
     } else {
       return css`
-        border-bottom-width: 1px;
+        border-bottom-width: var(--border-width-1);
         border-right-width: 0;
         width: auto;
       `;

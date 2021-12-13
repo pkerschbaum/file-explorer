@@ -15,6 +15,7 @@ import {
   DataTable,
   DataTableProps,
   HeadCell,
+  HeadRow,
   Row,
   RowProps,
   TableBody,
@@ -45,11 +46,11 @@ export const ResourcesTable: React.FC = () => {
       refs={{ tableContainer: tableContainerRef }}
     >
       <StyledTableHead>
-        <Row>
+        <HeadRow>
           <StyledHeadCell>Name</StyledHeadCell>
           <SizeHeadCell>Size</SizeHeadCell>
           <MtimeHeadCell>Last Modified</MtimeHeadCell>
-        </Row>
+        </HeadRow>
       </StyledTableHead>
 
       <ResourcesTableBody tableContainerRef={tableContainerRef} />
@@ -63,6 +64,10 @@ const StyledTableHead = styled(TableHead)`
 
 const StyledHeadCell = styled(HeadCell)`
   height: ${ROW_HEIGHT}px;
+
+  padding-inline: var(--padding-button-md-inline);
+
+  text-align: start;
   font-weight: ${({ theme }) => theme.font.weights.bold};
 `;
 
@@ -74,12 +79,19 @@ const MtimeHeadCell = styled(StyledHeadCell)`
   min-width: 150px;
 `;
 
-const ForwardClassNameTable: React.FC<DataTableProps & { className?: string }> = ({
-  className,
-  ...delegated
-}) => <DataTable {...delegated} classes={{ ...delegated.classes, table: className }} />;
+const ForwardClassNameTable = React.forwardRef<
+  HTMLDivElement,
+  DataTableProps & { className?: string }
+>(function ForwardClassNameTableWithRef({ className, ...delegated }, ref) {
+  return (
+    <DataTable {...delegated} ref={ref} classes={{ ...delegated.classes, table: className }} />
+  );
+});
 
 const StyledDataTable = styled(ForwardClassNameTable)`
+  border: var(--border-width-1) solid var(--color-darken-1);
+  border-radius: var(--border-radius-2);
+
   & thead th:nth-of-type(1),
   & tbody td:nth-of-type(1) {
     width: 100%;
@@ -225,7 +237,8 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
       }}
       onClick={(e) => changeSelectionByClick(e, resourceForRow, idxOfResourceForRow)}
       onDoubleClick={() => openResource(resourceForRow)}
-      selected={resourceIsSelected}
+      isSelectable
+      isSelected={resourceIsSelected}
       style={rowStyleForVirtualization}
     >
       <ResourceRowContent
@@ -305,6 +318,8 @@ const iconStyles = css`
 `;
 
 const IconWrapper = styled(Box)`
+  padding-block: var(--padding-button-md-block);
+
   ${iconStyles}
 
   ::before {
@@ -329,7 +344,7 @@ type SkeletonRowProps = {
 };
 
 const SkeletonRow: React.FC<SkeletonRowProps> = ({ opacity }) => (
-  <Row sx={{ opacity }}>
+  <Row style={{ opacity }}>
     <ResourceRowContent
       iconSlot={
         <IconWrapper>
@@ -380,6 +395,8 @@ const ResourceRowContent: React.FC<ResourceRowContentProps> = ({
 
 const StyledCell = styled(Cell)`
   height: ${ROW_HEIGHT}px;
+
+  padding-inline: var(--padding-button-md-inline);
 `;
 
 const ResourceIconAndNameAndTags = styled(Box)`
@@ -411,7 +428,7 @@ const RenameInput: React.FC<RenameInputProps> = ({ resource, onSubmit, abortRena
         onSubmit(value);
       }}
     >
-      <ResourceNameTextField
+      <TextField
         aria-label="new name for resource"
         autoFocus
         value={value}
@@ -434,20 +451,35 @@ const RenameInput: React.FC<RenameInputProps> = ({ resource, onSubmit, abortRena
 
 const RenameInputForm = styled.form`
   width: 100%;
+
   display: flex;
   align-items: stretch;
   gap: ${(props) => props.theme.spacing(2)};
-`;
 
-const ResourceNameTextField = styled(TextField)`
-  width: 100%;
+  & > ${Button} {
+    margin-block: var(--padding-button-md-block);
+  }
 
-  /* ajust spacing of the rename textfield so that it renders into a resource row without any layout shifts */
-  padding-left: calc(${ResourceNameFormattedSpacingFactor} * var(--spacing-1) - 1px);
+  /* 
+     The spacing between the TextField and the resource icon is evenly distributed across the 
+     TextField container and the TextField input.
+     Also, width is set to 100% so that it takes up the full width of the row.
+   */
+  --padding-block-for-rename-textfield: 3px;
+  & > ${TextField} {
+    padding-left: calc(${ResourceNameFormattedSpacingFactor} * var(--spacing-1) - 1px);
 
-  & > input {
-    margin-block: -1px;
-    padding-block: 1px;
-    padding-left: calc(${ResourceNameFormattedSpacingFactor} * var(--spacing-1));
+    width: 100%;
+  }
+
+  & > ${TextField} > input {
+    padding-inline: calc(${ResourceNameFormattedSpacingFactor} * var(--spacing-1));
+    padding-block: var(--padding-block-for-rename-textfield);
+  }
+
+  & > ${TextField} > input:focus {
+    padding-bottom: calc(
+      var(--padding-block-for-rename-textfield) - var(--border-bottom-width-difference)
+    );
   }
 `;

@@ -172,6 +172,7 @@ module.exports = {
               'use-context-selector',
               'use-immer',
               /^@mui\/icons-material/,
+              /^@mui\/utils/,
             ],
           },
           {

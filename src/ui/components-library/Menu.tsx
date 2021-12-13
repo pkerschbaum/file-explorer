@@ -182,8 +182,7 @@ function MenuItem<T extends object>(props: MenuItemProps<T>) {
 }
 
 const ItemContainer = styled.li<{ isFocused: boolean }>`
-  padding-block: var(--padding-button-md-block);
-  padding-inline: var(--padding-button-md-inline);
+  padding: var(--padding-button-md-block) var(--padding-button-md-inline);
   display: flex;
   align-items: center;
   gap: var(--spacing-2);

@@ -1,21 +1,52 @@
-import { TableRow, TableRowProps } from '@mui/material';
+import * as React from 'react';
+import styled, { css } from 'styled-components';
 
-export type RowProps = TableRowProps;
+export type RowProps = React.ComponentProps<'tr'> & RowComponentProps;
 
-export function Row(props: RowProps) {
-  const { onClick, onDoubleClick, children, ...rest } = props;
+type RowComponentProps = {
+  isSelectable?: boolean;
+  isSelected?: boolean;
+};
 
-  const rowIsClickable = !!onClick || !!onDoubleClick;
+const RowBase = React.forwardRef<HTMLTableRowElement, RowProps>(function RowBaseWithRef(
+  props,
+  ref,
+) {
+  const {
+    /* component props */
+    children,
+    isSelectable: _ignored2,
+    isSelected: _ignored1,
+
+    /* html props */
+    ...htmlProps
+  } = props;
 
   return (
-    <TableRow
-      hover={rowIsClickable}
-      onClick={onClick}
-      onDoubleClick={onDoubleClick}
-      tabIndex={-1}
-      {...rest}
-    >
+    <tr {...htmlProps} ref={ref}>
       {children}
-    </TableRow>
+    </tr>
   );
-}
+});
+
+export const Row = styled(RowBase)`
+  ${({ isSelected }) =>
+    isSelected
+      ? css`
+          background-color: var(--color-bg-2);
+          &&:hover {
+            background-color: var(--color-bg-2);
+          }
+        `
+      : css`
+          background-color: var(--color-bg-0);
+        `};
+
+  ${({ isSelectable }) =>
+    isSelectable &&
+    css`
+      &:hover {
+        background-color: var(--color-bg-1);
+      }
+    `}
+`;
