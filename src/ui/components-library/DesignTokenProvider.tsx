@@ -201,6 +201,8 @@ export const DesignTokenProvider: React.FC<DesignTokenProviderProps> = ({ childr
         --spacing-2: calc(var(--spacing-1) * 2);
         --spacing-3: calc(var(--spacing-1) * 3);
         --spacing-4: calc(var(--spacing-1) * 4);
+        --padding-button-md-block: 5px;
+        --padding-button-md-inline: 10px;
 
         --font-size-sm: ${`${(TARGET_MEDIUM_FONTSIZE - 2) / TARGET_MEDIUM_FONTSIZE}rem`};
         --font-size-md: 1rem;

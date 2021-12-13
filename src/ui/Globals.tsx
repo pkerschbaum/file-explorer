@@ -18,6 +18,7 @@ import {
 import {
   CssBaseline,
   DesignTokenProvider,
+  OverlayProvider,
   TARGET_MEDIUM_FONTSIZE,
   ThemeProvider,
   uiUtils,
@@ -94,6 +95,11 @@ const globalStyle = css`
     overflow-wrap: anywhere;
   }
 
+  /* Components of the components library define der own focus styles */
+  *:focus-visible {
+    outline: 0;
+  }
+
   /* change scrollbar to a thin variant which lightens up on hover */
   *::-webkit-scrollbar {
     width: 10px;
@@ -154,7 +160,9 @@ export const Globals: React.FC<GlobalsProps> = ({ queryClient, store, children }
                 <GlobalStyle />
                 {/* class "show-file-icons" will enable file icon theme of code-oss project */}
                 <FileIconThemeLoader>
-                  <RootContainer className="show-file-icons">{children}</RootContainer>
+                  <OverlayProvider style={{ height: '100%' }}>
+                    <RootContainer className="show-file-icons">{children}</RootContainer>
+                  </OverlayProvider>
                 </FileIconThemeLoader>
               </GlobalShortcutsContextProvider>
             </ThemeProvider>

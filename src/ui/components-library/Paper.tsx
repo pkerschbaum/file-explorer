@@ -7,7 +7,10 @@ type PaperProps = Pick<React.HTMLProps<HTMLDivElement>, 'className' | 'aria-labe
   children: React.ReactNode;
 };
 
-const PaperBase: React.FC<PaperProps> = (props) => {
+const PaperBase = React.forwardRef<HTMLDivElement, PaperProps>(function PaperBaseWithRef(
+  props,
+  ref,
+) {
   const {
     /* component props */
     children,
@@ -16,8 +19,12 @@ const PaperBase: React.FC<PaperProps> = (props) => {
     ...htmlProps
   } = props;
 
-  return <Box {...htmlProps}>{children}</Box>;
-};
+  return (
+    <Box {...htmlProps} ref={ref}>
+      {children}
+    </Box>
+  );
+});
 
 export const Paper = styled(PaperBase)`
   border-radius: var(--border-radius-2);

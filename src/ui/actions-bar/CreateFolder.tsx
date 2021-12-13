@@ -2,7 +2,16 @@ import CreateNewFolderOutlinedIcon from '@mui/icons-material/CreateNewFolderOutl
 import * as React from 'react';
 
 import { check } from '@app/base/utils/assert.util';
-import { ButtonHandle, Button, Card, Icon, Popover, TextField } from '@app/ui/components-library';
+import {
+  ButtonHandle,
+  Button,
+  Card,
+  Icon,
+  Popover,
+  TextField,
+  usePopover,
+  Paper,
+} from '@app/ui/components-library';
 
 type CreateFolderProps = {
   buttonHandleRef?: React.RefObject<ButtonHandle>;
@@ -15,16 +24,20 @@ export const CreateFolder: React.FC<CreateFolderProps> = ({
   buttonEndIcon,
   onSubmit,
 }) => {
+  const buttonRef = React.useRef<HTMLButtonElement>(null);
   const [createFolderValue, setCreateFolderValue] = React.useState('');
-  const [createFolderAnchorEl, setCreateFolderAnchorEl] = React.useState<HTMLElement | null>(null);
+
+  const { triggerProps, popoverInstance } = usePopover({
+    triggerRef: buttonRef,
+  });
 
   React.useEffect(
     function resetValueOnPopoverClose() {
-      if (createFolderAnchorEl === null) {
+      if (!popoverInstance.state.isOpen) {
         setCreateFolderValue('');
       }
     },
-    [createFolderAnchorEl],
+    [popoverInstance.state.isOpen],
   );
 
   async function handleSubmit() {
@@ -33,63 +46,56 @@ export const CreateFolder: React.FC<CreateFolderProps> = ({
     }
 
     await onSubmit(createFolderValue);
-    setCreateFolderAnchorEl(null);
+    popoverInstance.state.close();
   }
 
   return (
     <>
       <Button
+        ref={buttonRef}
         handleRef={buttonHandleRef}
-        onPress={(e) => setCreateFolderAnchorEl(e.target)}
         startIcon={<Icon Component={CreateNewFolderOutlinedIcon} />}
         endIcon={buttonEndIcon}
         enableLayoutAnimation
+        onPress={() => popoverInstance.state.open()}
+        ariaButtonProps={triggerProps}
       >
         New Folder
       </Button>
 
-      <Popover
-        open={createFolderAnchorEl !== null}
-        anchorEl={createFolderAnchorEl}
-        onClose={() => setCreateFolderAnchorEl(null)}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}
-        BackdropProps={{ invisible: false }}
-      >
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            void handleSubmit();
-          }}
-        >
-          <Card
-            content={
-              <TextField
-                autoFocus
-                placeholder="Name of folder"
-                aria-label="Name of folder"
-                value={createFolderValue}
-                onChange={setCreateFolderValue}
+      {popoverInstance.state.isOpen && (
+        <Popover popoverInstance={popoverInstance}>
+          <Paper>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                void handleSubmit();
+              }}
+            >
+              <Card
+                content={
+                  <TextField
+                    autoFocus
+                    placeholder="Name of folder"
+                    aria-label="Name of folder"
+                    value={createFolderValue}
+                    onChange={setCreateFolderValue}
+                  />
+                }
+                actions={
+                  <Button
+                    variant={check.isEmptyString(createFolderValue) ? undefined : 'contained'}
+                    type="submit"
+                    isDisabled={check.isEmptyString(createFolderValue)}
+                  >
+                    Create
+                  </Button>
+                }
               />
-            }
-            actions={
-              <Button
-                variant={check.isEmptyString(createFolderValue) ? undefined : 'contained'}
-                type="submit"
-                isDisabled={check.isEmptyString(createFolderValue)}
-              >
-                Create
-              </Button>
-            }
-          />
-        </form>
-      </Popover>
+            </form>
+          </Paper>
+        </Popover>
+      )}
     </>
   );
 };

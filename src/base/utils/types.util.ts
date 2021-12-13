@@ -161,3 +161,13 @@ export type FunctionType<Args extends unknown[], ReturnType> = (...args: Args) =
  * https://stackoverflow.com/a/43001581/1700319
  */
 export type Writeable<T> = { -readonly [P in keyof T]: T[P] };
+
+/**
+ * Expands object types one level deep
+ * https://stackoverflow.com/a/57683652/1700319
+ */
+export type ExpandProps<T> = T extends object
+  ? T extends infer O
+    ? { [K in keyof O]: O[K] }
+    : never
+  : T;

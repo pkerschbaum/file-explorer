@@ -118,7 +118,6 @@ module.exports = {
               /^@mui\/material/,
               /^@react-aria/,
               /^@react-stately/,
-              /^@react-types/,
               '@popperjs/core',
               'react-popper',
             ],
@@ -139,9 +138,9 @@ module.exports = {
                   "Don't import from @mui/material directly. Implement reusable components in the component library (@app/ui/component-library).",
               },
               {
-                pattern: /^(?:@react-aria|@react-stately|@react-types)/,
+                pattern: /^(?:@react-aria|@react-stately)/,
                 errorMessage:
-                  "Don't import from @react-aria, @react-stately or @react-types directly. Implement reusable components in the component library (@app/ui/component-library).",
+                  "Don't import from @react-aria or @react-stately directly. Implement reusable components in the component library (@app/ui/component-library).",
               },
               {
                 pattern: /^@app\/ui\/components-library\/[A-Z].+/,
@@ -166,6 +165,7 @@ module.exports = {
               'framer-motion',
               'react',
               'react-dom',
+              /^@react-types/,
               'react-virtual',
               'styled-components',
               'tiny-invariant',

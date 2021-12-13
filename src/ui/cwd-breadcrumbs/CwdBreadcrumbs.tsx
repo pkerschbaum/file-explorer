@@ -1,4 +1,5 @@
-import ArrowDropDownOutlinedIcon from '@mui/icons-material/ArrowDropDownOutlined';
+import KeyboardArrowDownOutlinedIcon from '@mui/icons-material/KeyboardArrowDownOutlined';
+import { PressEvent } from '@react-types/shared';
 import * as React from 'react';
 import styled from 'styled-components';
 import invariant from 'tiny-invariant';
@@ -13,6 +14,7 @@ import {
   Button,
   BreadcrumbItem,
   Icon,
+  useMenu,
 } from '@app/ui/components-library';
 import { KEY, MOUSE_BUTTONS } from '@app/ui/constants';
 import { CwdActionsMenu } from '@app/ui/cwd-breadcrumbs/CwdActionsMenu';
@@ -65,8 +67,18 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
   isSecondToLastSlug,
   changeDirectory,
 }) => {
+  const buttonRef = React.useRef<HTMLButtonElement>(null);
   const buttonHandleRef = React.useRef<ButtonHandle>(null);
-  const [menuAnchorEl, setMenuAnchorEl] = React.useState<HTMLElement | null>(null);
+
+  const { triggerProps: menuTriggerProps, menuInstance } = useMenu({
+    triggerRef: buttonRef,
+    menu: {
+      triggerProps: {
+        direction: 'bottom',
+        align: 'start',
+      },
+    },
+  });
 
   const registerShortcutsResult = useRegisterExplorerShortcuts({
     changeDirectoryShortcut: {
@@ -114,9 +126,9 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
       : [{ condition: (e) => e.button === MOUSE_BUTTONS.BACK, handler: changeDirectory }],
   );
 
-  async function handleClick(e: { target: HTMLElement }) {
+  async function handleClick(e: PressEvent) {
     if (isLastSlug) {
-      setMenuAnchorEl(e.target);
+      menuTriggerProps.onPress?.(e);
     } else {
       await changeDirectory();
     }
@@ -125,12 +137,13 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
   return (
     <>
       <Button
+        ref={buttonRef}
         handleRef={buttonHandleRef}
         onPress={handleClick}
         endIcon={
           isLastSlug ? (
             <CwdActionsMenuTrigger>
-              <Icon Component={ArrowDropDownOutlinedIcon} fontSize="small" />
+              <Icon Component={KeyboardArrowDownOutlinedIcon} fontSize="small" />
               {registerShortcutsResult.changeDirectoryShortcut?.icon ??
                 registerShortcutsResult.openCwdMenuShortcut?.icon}
             </CwdActionsMenuTrigger>
@@ -140,17 +153,12 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
           )
         }
         enableLayoutAnimation
+        ariaButtonProps={menuTriggerProps}
       >
         {slugFormatted}
       </Button>
 
-      {isLastSlug && (
-        <CwdActionsMenu
-          explorerId={explorerId}
-          anchorEl={menuAnchorEl}
-          onClose={() => setMenuAnchorEl(null)}
-        />
-      )}
+      {isLastSlug && <CwdActionsMenu explorerId={explorerId} menuInstance={menuInstance} />}
     </>
   );
 };
