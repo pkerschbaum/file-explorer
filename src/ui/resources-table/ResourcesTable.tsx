@@ -446,7 +446,6 @@ const RenameInput: React.FC<RenameInputProps> = ({ resource, onSubmit, abortRena
       >
         <TextField
           aria-label="new name for resource"
-          autoFocus
           value={value}
           onChange={setValue}
           onKeyDown={abortOnEsc}

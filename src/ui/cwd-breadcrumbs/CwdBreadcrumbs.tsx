@@ -1,4 +1,5 @@
 import KeyboardArrowDownOutlinedIcon from '@mui/icons-material/KeyboardArrowDownOutlined';
+import { mergeProps } from '@react-aria/utils';
 import { PressEvent } from '@react-types/shared';
 import * as React from 'react';
 import styled from 'styled-components';
@@ -159,7 +160,8 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
         }
         enableLayoutAnimation
         ariaButtonProps={menuTriggerProps}
-        {...itemProps}
+        /* do not set "aria-disabled" for the last slug */
+        {...mergeProps(itemProps, { 'aria-disabled': false })}
       >
         {slugFormatted}
       </BreadcrumbButton>

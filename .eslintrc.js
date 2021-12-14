@@ -138,7 +138,7 @@ module.exports = {
                   "Don't import from @mui/material directly. Implement reusable components in the component library (@app/ui/component-library).",
               },
               {
-                pattern: /^(?:@react-aria|@react-stately)/,
+                pattern: /^(?:@react-aria(?!\/utils)|@react-stately)/,
                 errorMessage:
                   "Don't import from @react-aria or @react-stately directly. Implement reusable components in the component library (@app/ui/component-library).",
               },
@@ -165,7 +165,6 @@ module.exports = {
               'framer-motion',
               'react',
               'react-dom',
-              /^@react-types/,
               'react-virtual',
               'styled-components',
               'tiny-invariant',
@@ -173,6 +172,8 @@ module.exports = {
               'use-immer',
               /^@mui\/icons-material/,
               /^@mui\/utils/,
+              /^@react-aria\/utils/,
+              /^@react-types/,
             ],
           },
           {
