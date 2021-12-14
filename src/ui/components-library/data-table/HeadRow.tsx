@@ -11,10 +11,10 @@ const HeadRowBase = React.forwardRef<HTMLTableRowElement, HeadRowProps>(function
   props,
   ref,
 ) {
-  const { children, ...delegated } = props;
+  const { children, ...delegatedProps } = props;
 
   return (
-    <Row {...delegated} ref={ref}>
+    <Row {...delegatedProps} ref={ref}>
       {children}
     </Row>
   );

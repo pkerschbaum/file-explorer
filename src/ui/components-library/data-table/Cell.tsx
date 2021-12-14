@@ -1,7 +1,11 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
-export type CellProps = React.ComponentProps<'td'> & CellComponentProps;
+export type CellProps = CellComponentProps &
+  Omit<
+    React.ComponentPropsWithoutRef<'td'> & React.RefAttributes<HTMLTableCellElement>,
+    keyof CellComponentProps
+  >;
 
 type CellComponentProps = {};
 
@@ -9,10 +13,10 @@ const CellBase = React.forwardRef<HTMLTableCellElement, CellProps>(function Cell
   props,
   ref,
 ) {
-  const { children, ...htmlProps } = props;
+  const { children, ...delegatedProps } = props;
 
   return (
-    <td {...htmlProps} ref={ref}>
+    <td {...delegatedProps} ref={ref}>
       {children}
     </td>
   );

@@ -6,7 +6,13 @@ import { Box } from '@app/ui/components-library/Box';
 import { Icon } from '@app/ui/components-library/Icon';
 import { IconButton } from '@app/ui/components-library/IconButton';
 
-type ChipProps = Pick<React.HTMLProps<HTMLDivElement>, 'className' | 'style'> & {
+type ChipProps = ChipComponentProps &
+  Omit<
+    React.ComponentPropsWithoutRef<'div'> & React.RefAttributes<HTMLDivElement>,
+    keyof ChipComponentProps
+  >;
+
+type ChipComponentProps = {
   label: React.ReactNode;
   onDelete: () => void;
   deleteTooltipContent: React.ReactChild;
@@ -19,12 +25,12 @@ const ChipBase: React.FC<ChipProps> = (props) => {
     onDelete,
     deleteTooltipContent,
 
-    /* html props */
-    ...htmlProps
+    /* other props */
+    ...delegatedProps
   } = props;
 
   return (
-    <Box {...htmlProps}>
+    <Box {...delegatedProps}>
       <ChipLabel>{label}</ChipLabel>
       <ChipDeleteButton tooltipContent={deleteTooltipContent} onPress={onDelete}>
         <Icon Component={CancelIcon} />

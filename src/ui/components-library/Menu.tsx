@@ -97,13 +97,13 @@ type MenuPopupComponentProps = {
 };
 
 export function MenuPopup<T extends object>(props: MenuPopupProps<T>) {
-  const { menuPopupInstance, ...otherProps } = props;
+  const { menuPopupInstance, ...reactAriaProps } = props;
 
   const menuRef = React.useRef<HTMLUListElement>(null);
-  const state = useTreeState<T>({ ...otherProps, selectionMode: 'none' });
+  const state = useTreeState<T>({ ...reactAriaProps, selectionMode: 'none' });
   const { menuProps } = useReactAriaMenu<T>(
     {
-      ...otherProps,
+      ...reactAriaProps,
       autoFocus: menuPopupInstance.state.focusStrategy,
     },
     state,
@@ -124,7 +124,7 @@ export function MenuPopup<T extends object>(props: MenuPopupProps<T>) {
               item={item}
               state={state}
               onClose={onClose}
-              closeOnSelect={otherProps.closeOnSelect}
+              closeOnSelect={reactAriaProps.closeOnSelect}
             />
           ))}
         </MenuContainer>

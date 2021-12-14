@@ -16,7 +16,9 @@ const tabsContext = createContext<TabsContext>('TabsContext');
 const useTabsContext = tabsContext.useContextValue;
 const TabsContextProvider = tabsContext.Provider;
 
-type TabsProps = Pick<React.HTMLProps<HTMLDivElement>, 'className'> & {
+type TabsProps = TabsComponentProps & Pick<React.ComponentPropsWithoutRef<'div'>, 'className'>;
+
+type TabsComponentProps = {
   selectedValue?: string;
   setSelectedValue: (newValue: string) => void;
   children: React.ReactNode;
@@ -29,13 +31,13 @@ const TabsBase: React.FC<TabsProps> = (props) => {
     setSelectedValue,
     children,
 
-    /* html props */
-    ...htmlProps
+    /* other props */
+    ...delegatedProps
   } = props;
 
   return (
     <TabsContextProvider value={{ selectedValue, setSelectedValue }}>
-      <Box role="tablist" {...htmlProps}>
+      <Box role="tablist" {...delegatedProps}>
         {children}
       </Box>
     </TabsContextProvider>
@@ -50,7 +52,9 @@ export const Tabs = styled(TabsBase)`
   gap: var(--spacing-2);
 `;
 
-type TabProps = {
+type TabProps = TabComponentProps & Pick<React.ComponentPropsWithoutRef<'div'>, 'className'>;
+
+type TabComponentProps = {
   value: string;
   children: React.ReactNode;
 };
@@ -61,14 +65,14 @@ const TabBase: React.FC<TabProps> = (props) => {
     value,
     children,
 
-    /* html props */
-    ...htmlProps
+    /* other props */
+    ...delegatedProps
   } = props;
 
   const { tabProps } = useTab({ value });
 
   return (
-    <Box {...mergeProps(htmlProps, tabProps)}>
+    <Box {...mergeProps(delegatedProps, tabProps)}>
       {children}
       {tabProps['aria-selected'] && <TabIsActiveIndicator layoutId={INDICATOR_MOTION_LAYOUT_ID} />}
     </Box>

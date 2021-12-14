@@ -1,8 +1,12 @@
 import { Placement } from '@popperjs/core';
-import { useTooltip as useReactAriaTooltip, useTooltipTrigger } from '@react-aria/tooltip';
+import {
+  TooltipTriggerAria,
+  useTooltip as useReactAriaTooltip,
+  useTooltipTrigger,
+} from '@react-aria/tooltip';
 import { mergeProps } from '@react-aria/utils';
 import { TooltipTriggerState, useTooltipTriggerState } from '@react-stately/tooltip';
-import { AriaTooltipProps, TooltipTriggerProps } from '@react-types/tooltip';
+import { TooltipTriggerProps } from '@react-types/tooltip';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { usePopper } from 'react-popper';
@@ -19,10 +23,24 @@ type UseTooltipArgs<
   anchorRef: React.RefObject<AnchorHTMLElement>;
 };
 
+type UseTooltipReturnType<AnchorHTMLElement extends HTMLElement> = {
+  triggerProps: TooltipTriggerAria['triggerProps'];
+  tooltipInstance: TooltipInstance<AnchorHTMLElement>;
+};
+
+type TooltipInstance<AnchorHTMLElement extends HTMLElement> = {
+  tooltipRef: React.RefObject<AnchorHTMLElement>;
+  tooltipDomProps: React.HTMLAttributes<HTMLElement>;
+  state: TooltipTriggerState;
+};
+
 export function useTooltip<
   TriggerHTMLElement extends HTMLElement,
   AnchorHTMLElement extends HTMLElement,
->({ triggerRef, anchorRef }: UseTooltipArgs<TriggerHTMLElement, AnchorHTMLElement>) {
+>({
+  triggerRef,
+  anchorRef,
+}: UseTooltipArgs<TriggerHTMLElement, AnchorHTMLElement>): UseTooltipReturnType<AnchorHTMLElement> {
   const props: TooltipTriggerProps = { delay: 0 };
   const state = useTooltipTriggerState(props);
   const { triggerProps, tooltipProps: reactAriaTooltipProps } = useTooltipTrigger(
@@ -31,25 +49,22 @@ export function useTooltip<
     triggerRef,
   );
 
-  const tooltipProps = {
-    state,
-    anchorRef,
-    ...reactAriaTooltipProps,
-  };
-
   return {
     triggerProps,
-    tooltipProps,
+    tooltipInstance: {
+      tooltipRef: anchorRef,
+      tooltipDomProps: reactAriaTooltipProps,
+      state,
+    },
   };
 }
 
-export type TooltipProps = AriaTooltipProps &
-  Pick<React.HTMLProps<HTMLDivElement>, 'className'> &
-  TooltipComponentProps;
+export type TooltipProps<AnchorHTMLElement extends HTMLElement> =
+  TooltipComponentProps<AnchorHTMLElement> &
+    Pick<React.ComponentPropsWithoutRef<'div'>, 'className'>;
 
-export type TooltipComponentProps = {
-  state: TooltipTriggerState;
-  anchorRef: React.RefObject<HTMLElement>;
+type TooltipComponentProps<AnchorHTMLElement extends HTMLElement> = {
+  tooltipInstance: TooltipInstance<AnchorHTMLElement>;
   children: React.ReactNode;
   placement?: Placement;
   offset?: {
@@ -57,28 +72,25 @@ export type TooltipComponentProps = {
   };
 };
 
-const TooltipBase: React.FC<TooltipProps> = (props) => {
+function TooltipBase<AnchorHTMLElement extends HTMLElement>(
+  props: TooltipProps<AnchorHTMLElement>,
+) {
   const {
     /* component props */
-    anchorRef,
+    tooltipInstance,
     children,
     placement = 'bottom',
     offset,
 
-    /* html props */
-    className,
-
-    /* react-aria props */
-    state,
-    ...ariaTooltipProps
+    /* other props */
+    ...delegatedProps
   } = props;
-  const htmlProps = { className };
 
-  const { tooltipProps } = useReactAriaTooltip(ariaTooltipProps, state);
+  const { tooltipProps } = useReactAriaTooltip({}, tooltipInstance.state);
 
   const [popperElement, setPopperElement] = React.useState<HTMLElement | null>(null);
   const [arrowElement, setArrowElement] = React.useState<HTMLElement | null>(null);
-  const { styles, attributes } = usePopper(anchorRef.current, popperElement, {
+  const { styles, attributes } = usePopper(tooltipInstance.tooltipRef.current, popperElement, {
     placement,
     modifiers: [
       { name: 'arrow', options: { element: arrowElement } },
@@ -91,7 +103,7 @@ const TooltipBase: React.FC<TooltipProps> = (props) => {
 
   const bodyElement = React.useMemo(() => document.querySelector('body'), []);
 
-  if (!state.isOpen) {
+  if (!tooltipInstance.state.isOpen) {
     return null;
   }
 
@@ -102,14 +114,14 @@ const TooltipBase: React.FC<TooltipProps> = (props) => {
       ref={setPopperElement}
       style={styles.popper}
       {...attributes.popper}
-      {...mergeProps(htmlProps, ariaTooltipProps, tooltipProps)}
+      {...mergeProps(delegatedProps, tooltipInstance.tooltipDomProps, tooltipProps)}
     >
       <TooltipArrow ref={setArrowElement} style={styles.arrow} />
       <TooltipContent>{children}</TooltipContent>
     </Box>,
     bodyElement,
   );
-};
+}
 
 export const Tooltip = styled(TooltipBase)`
   padding: var(--spacing-1) var(--spacing-2);

@@ -1,7 +1,11 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 
-export type RowProps = React.ComponentProps<'tr'> & RowComponentProps;
+export type RowProps = RowComponentProps &
+  Omit<
+    React.ComponentPropsWithoutRef<'tr'> & React.RefAttributes<HTMLTableRowElement>,
+    keyof RowComponentProps
+  >;
 
 type RowComponentProps = {
   isSelectable?: boolean;
@@ -18,12 +22,12 @@ const RowBase = React.forwardRef<HTMLTableRowElement, RowProps>(function RowBase
     isSelectable: _ignored2,
     isSelected: _ignored1,
 
-    /* html props */
-    ...htmlProps
+    /* other props */
+    ...delegatedProps
   } = props;
 
   return (
-    <tr {...htmlProps} ref={ref}>
+    <tr {...delegatedProps} ref={ref}>
       {children}
     </tr>
   );

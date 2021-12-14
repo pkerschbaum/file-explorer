@@ -6,12 +6,17 @@ import styled from 'styled-components';
 import { Box } from '@app/ui/components-library/Box';
 import type { DataAttributes } from '@app/ui/components-library/utils';
 
-type TextFieldProps = Pick<
+type TextFieldProps = TextFieldAriaProps &
+  TextFieldComponentProps &
+  Omit<
+    React.ComponentPropsWithoutRef<'div'> & React.RefAttributes<HTMLDivElement>,
+    keyof TextFieldAriaProps | keyof TextFieldComponentProps
+  >;
+
+type TextFieldAriaProps = Pick<
   AriaTextFieldOptions<'input'>,
   'label' | 'aria-label' | 'placeholder' | 'value' | 'onChange' | 'autoFocus' | 'onKeyDown'
-> &
-  Pick<React.HTMLProps<HTMLDivElement>, 'className'> &
-  TextFieldComponentProps;
+>;
 
 type TextFieldComponentProps = {
   inputRef?: React.RefObject<HTMLInputElement>;
@@ -34,8 +39,8 @@ const TextFieldBase = React.forwardRef<HTMLDivElement, TextFieldProps>(
       inputRef: componentInputRef,
       inputProps: componentInputProps = {},
 
-      /* html props */
-      ...htmlProps
+      /* other props */
+      ...delegatedProps
     } = props;
     const reactAriaProps: AriaTextFieldOptions<'input'> = {
       label,
@@ -51,7 +56,7 @@ const TextFieldBase = React.forwardRef<HTMLDivElement, TextFieldProps>(
     const { labelProps, inputProps } = useTextField(reactAriaProps, inputRef);
 
     return (
-      <Box ref={ref} {...htmlProps}>
+      <Box ref={ref} {...delegatedProps}>
         {label && <TextFieldLabel {...labelProps}>{label}</TextFieldLabel>}
         <TextFieldInput
           {...mergeProps({ spellCheck: false }, componentInputProps, inputProps)}

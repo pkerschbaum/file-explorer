@@ -18,10 +18,18 @@ const RadioGroupContext = createContext<RadioGroupState>('RadioGroupContext');
 const useRadioGroupContext = RadioGroupContext.useContextValue;
 const RadioGroupContextProvider = RadioGroupContext.Provider;
 
-type RadioGroupProps = Pick<ReactAriaRadioGroupProps, 'label' | 'value' | 'onChange'> &
-  Pick<React.HTMLProps<HTMLDivElement>, 'className'> & {
-    children: React.ReactNode;
-  };
+type RadioGroupProps = RadioGroupAriaProps &
+  RadioGroupComponentProps &
+  Omit<
+    React.ComponentPropsWithoutRef<'div'> & React.RefAttributes<HTMLDivElement>,
+    keyof RadioGroupAriaProps | keyof RadioGroupComponentProps
+  >;
+
+type RadioGroupAriaProps = Pick<ReactAriaRadioGroupProps, 'label' | 'value' | 'onChange'>;
+
+type RadioGroupComponentProps = {
+  children: React.ReactNode;
+};
 
 const RadioGroupBase = React.forwardRef<HTMLDivElement, RadioGroupProps>(
   function RadioGroupBaseWithRef(props, ref) {
@@ -34,8 +42,8 @@ const RadioGroupBase = React.forwardRef<HTMLDivElement, RadioGroupProps>(
       /* component props */
       children,
 
-      /* html props */
-      ...htmlProps
+      /* other props */
+      ...delegatedProps
     } = props;
     const reactAriaProps: ReactAriaRadioGroupProps = {
       label,
@@ -47,7 +55,7 @@ const RadioGroupBase = React.forwardRef<HTMLDivElement, RadioGroupProps>(
     const { radioGroupProps, labelProps } = useRadioGroup(reactAriaProps, state);
 
     return (
-      <RadioGroupContainer ref={ref} {...mergeProps(htmlProps, radioGroupProps)}>
+      <RadioGroupContainer ref={ref} {...mergeProps(delegatedProps, radioGroupProps)}>
         <RadioGroupLabel {...labelProps}>{label}</RadioGroupLabel>
         <RadioGroupContextProvider value={state}>{children}</RadioGroupContextProvider>
       </RadioGroupContainer>
@@ -68,8 +76,10 @@ const RadioGroupLabel = styled(Box)`
   text-transform: uppercase;
 `;
 
-type RadioProps = Pick<AriaRadioProps, 'value' | 'children'> &
-  Pick<React.HTMLProps<HTMLInputElement>, 'className'>;
+type RadioProps = RadioAriaProps &
+  Omit<React.ComponentPropsWithoutRef<'label'>, keyof RadioAriaProps>;
+
+type RadioAriaProps = Pick<AriaRadioProps, 'value' | 'children'>;
 
 function RadioBase(props: RadioProps) {
   const {
@@ -77,10 +87,13 @@ function RadioBase(props: RadioProps) {
     value,
     children,
 
-    /* html props */
-    ...htmlProps
+    /* other props */
+    ...delegatedProps
   } = props;
-  const reactAriaProps: AriaRadioProps = { value, children };
+  const reactAriaProps: AriaRadioProps = {
+    value,
+    children,
+  };
 
   const state = useRadioGroupContext();
   const nativeInputRef = React.useRef<HTMLInputElement>(null);
@@ -90,7 +103,7 @@ function RadioBase(props: RadioProps) {
   const isSelected = state.selectedValue === value;
 
   return (
-    <RadioContainer {...htmlProps}>
+    <RadioContainer {...delegatedProps}>
       <VisuallyHidden>
         <input {...inputProps} {...focusProps} ref={nativeInputRef} />
       </VisuallyHidden>

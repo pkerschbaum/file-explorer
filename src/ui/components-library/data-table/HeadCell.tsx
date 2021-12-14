@@ -1,16 +1,20 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
-export type HeadCellProps = React.ComponentProps<'th'> & HeadCellComponentProps;
+export type HeadCellProps = HeadCellComponentProps &
+  Omit<
+    React.ComponentPropsWithoutRef<'th'> & React.RefAttributes<HTMLTableCellElement>,
+    keyof HeadCellComponentProps
+  >;
 
 type HeadCellComponentProps = {};
 
 const HeadCellBase = React.forwardRef<HTMLTableCellElement, HeadCellProps>(
   function HeadCellBaseWithRef(props, ref) {
-    const { children, ...htmlProps } = props;
+    const { children, ...delegatedProps } = props;
 
     return (
-      <th {...htmlProps} ref={ref}>
+      <th {...delegatedProps} ref={ref}>
         {children}
       </th>
     );

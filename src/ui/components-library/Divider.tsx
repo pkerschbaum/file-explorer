@@ -5,8 +5,13 @@ import styled, { css } from 'styled-components';
 
 import { Box } from '@app/ui/components-library/Box';
 
-type DividerProps = Pick<SeparatorProps, 'orientation'> &
-  Pick<React.HTMLProps<HTMLDivElement>, 'className'>;
+type DividerProps = DividerAriaProps &
+  Omit<
+    React.ComponentPropsWithoutRef<'div'> & React.RefAttributes<HTMLDivElement>,
+    keyof DividerAriaProps
+  >;
+
+type DividerAriaProps = Pick<SeparatorProps, 'orientation'>;
 
 const DividerBase = React.forwardRef<HTMLDivElement, DividerProps>(function DividerForwardRef(
   props,
@@ -16,15 +21,15 @@ const DividerBase = React.forwardRef<HTMLDivElement, DividerProps>(function Divi
     /* react-aria props */
     orientation,
 
-    /* html props */
-    ...htmlProps
+    /* other props */
+    ...delegatedProps
   } = props;
-  const reactAriaProps = {
+  const reactAriaProps: SeparatorProps = {
     orientation,
   };
 
   const { separatorProps } = useSeparator(reactAriaProps);
-  return <Box ref={ref} {...mergeProps(htmlProps, separatorProps)} />;
+  return <Box ref={ref} {...mergeProps(delegatedProps, separatorProps)} />;
 });
 
 export const Divider = styled(DividerBase)`

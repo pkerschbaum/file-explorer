@@ -1,16 +1,20 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
-export type TableBodyProps = React.ComponentProps<'tbody'> & TableBodyComponentProps;
+export type TableBodyProps = TableBodyComponentProps &
+  Omit<
+    React.ComponentPropsWithoutRef<'tbody'> & React.RefAttributes<HTMLTableSectionElement>,
+    keyof TableBodyComponentProps
+  >;
 
 type TableBodyComponentProps = {};
 
 const TableBodyBase = React.forwardRef<HTMLTableSectionElement, TableBodyProps>(
   function TableBodyBaseWithRef(props, ref) {
-    const { children, ...htmlProps } = props;
+    const { children, ...delegatedProps } = props;
 
     return (
-      <tbody {...htmlProps} ref={ref}>
+      <tbody {...delegatedProps} ref={ref}>
         {children}
       </tbody>
     );

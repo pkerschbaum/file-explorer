@@ -60,14 +60,15 @@ export function usePopover<TriggerHTMLElement extends HTMLElement>(
   return {
     triggerProps: triggerProps as AriaButtonProps<any>,
     popoverInstance: {
+      popoverRef,
       popoverDomProps: mergeProps(overlayProps, positionProps),
       state,
-      popoverRef,
     },
   };
 }
 
-type PopoverProps = PopoverComponentProps & Pick<React.HTMLProps<HTMLDivElement>, 'className'>;
+type PopoverProps = PopoverComponentProps &
+  Omit<React.ComponentPropsWithoutRef<'div'>, keyof PopoverComponentProps>;
 
 type PopoverComponentProps = {
   children: React.ReactNode;
@@ -80,8 +81,8 @@ function PopoverBase(props: PopoverProps) {
     children,
     popoverInstance,
 
-    /* html props */
-    ...htmlProps
+    /* other props */
+    ...delegatedProps
   } = props;
 
   function onClose() {
@@ -108,7 +109,7 @@ function PopoverBase(props: PopoverProps) {
             dialogProps,
             popoverInstance.popoverDomProps,
             modalProps,
-            htmlProps,
+            delegatedProps,
           )}
           ref={popoverInstance.popoverRef}
         >

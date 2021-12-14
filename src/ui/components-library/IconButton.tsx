@@ -6,25 +6,23 @@ import * as React from 'react';
 import styled, { css } from 'styled-components';
 
 import { Box } from '@app/ui/components-library/Box';
-import {
-  Tooltip,
-  TooltipComponentProps,
-  TooltipProps,
-  useTooltip,
-} from '@app/ui/components-library/Tooltip';
+import { Tooltip, TooltipProps, useTooltip } from '@app/ui/components-library/Tooltip';
+
+type IconButtonProps = IconButtonAriaProps &
+  IconButtonComponentProps &
+  Omit<
+    React.ComponentPropsWithoutRef<'button'> & React.RefAttributes<HTMLButtonElement>,
+    keyof IconButtonAriaProps | keyof IconButtonComponentProps
+  >;
 
 type IconButtonAriaProps = Pick<AriaButtonProps<'button'>, 'children' | 'onPress' | 'isDisabled'>;
 
 type IconButtonComponentProps = {
   tooltipContent: React.ReactChild;
-  tooltipPlacement?: TooltipProps['placement'];
+  tooltipPlacement?: TooltipProps<any>['placement'];
   size?: 'medium' | 'small';
   disablePadding?: boolean;
 };
-
-type IconButtonProps = IconButtonAriaProps &
-  IconButtonComponentProps &
-  Omit<React.ComponentProps<'button'>, keyof IconButtonAriaProps | keyof IconButtonComponentProps>;
 
 const IconButtonBase = React.forwardRef<HTMLButtonElement, IconButtonProps>(
   function IconButtonBaseWithRef(props, ref) {
@@ -40,10 +38,10 @@ const IconButtonBase = React.forwardRef<HTMLButtonElement, IconButtonProps>(
       size,
       disablePadding,
 
-      /* html props */
-      ...htmlProps
+      /* other props */
+      ...delegatedProps
     } = props;
-    const reactAriaProps = {
+    const reactAriaProps: AriaButtonProps<'button'> = {
       children,
       onPress,
       isDisabled,
@@ -51,23 +49,25 @@ const IconButtonBase = React.forwardRef<HTMLButtonElement, IconButtonProps>(
 
     const buttonRef = useObjectRef(ref);
     const { buttonProps } = useButton(reactAriaProps, buttonRef);
-    const { triggerProps, tooltipProps } = useTooltip({
+    const { triggerProps, tooltipInstance } = useTooltip({
       triggerRef: buttonRef,
       anchorRef: buttonRef,
     });
-    const tooltipComponentProps: Pick<TooltipComponentProps, 'placement' | 'offset'> = {
-      placement: tooltipPlacement,
-      offset: { mainAxis: !disablePadding ? undefined : 17 },
-    };
 
     return (
       <>
-        <motion.button ref={buttonRef} {...mergeProps(htmlProps, buttonProps, triggerProps)}>
+        <motion.button ref={buttonRef} {...mergeProps(delegatedProps, buttonProps, triggerProps)}>
           <FocusAndHoverCircle disablePadding={disablePadding} size={size} />
           <ButtonContent>{children}</ButtonContent>
         </motion.button>
 
-        <Tooltip {...mergeProps(tooltipComponentProps, tooltipProps)}>{tooltipContent}</Tooltip>
+        <Tooltip
+          tooltipInstance={tooltipInstance}
+          placement={tooltipPlacement}
+          offset={{ mainAxis: !disablePadding ? undefined : 17 }}
+        >
+          {tooltipContent}
+        </Tooltip>
       </>
     );
   },

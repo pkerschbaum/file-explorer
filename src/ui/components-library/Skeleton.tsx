@@ -14,14 +14,14 @@ const SkeletonBase = React.forwardRef<HTMLDivElement, SkeletonProps>(function Sk
   props,
   ref,
 ) {
-  const { variant = 'text', width: _ignored, ...htmlProps } = props;
+  const { variant = 'text', width: _ignored, ...delegatedProps } = props;
 
   return (
     <>
       {variant === 'text' ? (
-        <SkeletonText ref={ref} {...htmlProps} />
+        <SkeletonText ref={ref} {...delegatedProps} />
       ) : (
-        <SkeletonRectangular ref={ref} {...htmlProps} />
+        <SkeletonRectangular ref={ref} {...delegatedProps} />
       )}
     </>
   );

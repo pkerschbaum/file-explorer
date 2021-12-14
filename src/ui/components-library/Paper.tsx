@@ -3,7 +3,13 @@ import styled from 'styled-components';
 
 import { Box } from '@app/ui/components-library/Box';
 
-type PaperProps = Pick<React.HTMLProps<HTMLDivElement>, 'className' | 'aria-label'> & {
+type PaperProps = PaperComponentProps &
+  Omit<
+    React.ComponentPropsWithoutRef<'div'> & React.RefAttributes<HTMLDivElement>,
+    keyof PaperComponentProps
+  >;
+
+type PaperComponentProps = {
   children: React.ReactNode;
 };
 
@@ -15,12 +21,12 @@ const PaperBase = React.forwardRef<HTMLDivElement, PaperProps>(function PaperBas
     /* component props */
     children,
 
-    /* html props */
-    ...htmlProps
+    /* other props */
+    ...delegatedProps
   } = props;
 
   return (
-    <Box {...htmlProps} ref={ref}>
+    <Box {...delegatedProps} ref={ref}>
       {children}
     </Box>
   );

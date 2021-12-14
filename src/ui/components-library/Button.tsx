@@ -12,6 +12,13 @@ import invariant from 'tiny-invariant';
 import { Box } from '@app/ui/components-library/Box';
 import { Paper } from '@app/ui/components-library/Paper';
 
+type ButtonProps = ButtonAriaProps &
+  ButtonComponentProps &
+  Omit<
+    React.ComponentPropsWithoutRef<'button'> & React.RefAttributes<HTMLButtonElement>,
+    keyof ButtonAriaProps | keyof ButtonComponentProps
+  >;
+
 type ButtonAriaProps = Pick<
   AriaButtonProps<'button'>,
   'children' | 'onPress' | 'onKeyDown' | 'isDisabled' | 'type'
@@ -27,10 +34,6 @@ type ButtonComponentProps = {
   handleRef?: React.RefObject<ButtonHandle>;
   enableLayoutAnimation?: boolean;
 };
-
-type ButtonProps = ButtonAriaProps &
-  ButtonComponentProps &
-  Omit<React.ComponentProps<'button'>, keyof ButtonAriaProps | keyof ButtonComponentProps>;
 
 export type ButtonHandle = {
   triggerSyntheticPress: () => void;
@@ -62,10 +65,10 @@ const ButtonBase = React.forwardRef<HTMLButtonElement, ButtonProps>(function But
     handleRef,
     enableLayoutAnimation,
 
-    /* html props */
-    ...htmlProps
+    /* other props */
+    ...delegatedProps
   } = props;
-  const reactAriaProps = mergeProps(
+  const reactAriaProps: AriaButtonProps<'button'> = mergeProps(
     {
       children,
       onPress,
@@ -114,7 +117,11 @@ const ButtonBase = React.forwardRef<HTMLButtonElement, ButtonProps>(function But
   const animateLayout = enableLayoutAnimation && !prefersReducedMotion;
 
   return (
-    <motion.button {...mergeProps(htmlProps, buttonProps)} ref={buttonRef} layout={animateLayout}>
+    <motion.button
+      {...mergeProps(delegatedProps, buttonProps)}
+      ref={buttonRef}
+      layout={animateLayout}
+    >
       <ButtonIcon layout={animateLayout} startIconIsPresent={!!startIcon}>
         {startIcon}
       </ButtonIcon>

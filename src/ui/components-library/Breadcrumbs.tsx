@@ -9,27 +9,27 @@ import styled from 'styled-components';
 
 import { Box } from '@app/ui/components-library/Box';
 
-type BreadcrumbsAriaProps = Required<Pick<AriaBreadcrumbsProps<unknown>, 'children'>>;
-
 type BreadcrumbsProps = BreadcrumbsAriaProps &
-  Omit<React.ComponentProps<'nav'>, keyof BreadcrumbsAriaProps>;
+  Omit<React.ComponentPropsWithoutRef<'nav'>, keyof BreadcrumbsAriaProps>;
+
+type BreadcrumbsAriaProps = Required<Pick<AriaBreadcrumbsProps<unknown>, 'children'>>;
 
 const BreadcrumbsBase: React.FC<BreadcrumbsProps> = (props) => {
   const {
     /* react-aria props */
     children,
 
-    /* html props */
-    ...htmlProps
+    /* other props */
+    ...delegatedProps
   } = props;
-  const reactAriaProps = {
+  const reactAriaProps: AriaBreadcrumbsProps<unknown> = {
     children,
   };
 
   const { navProps } = useBreadcrumbs(reactAriaProps);
 
   return (
-    <nav {...mergeProps(htmlProps, navProps)}>
+    <nav {...mergeProps(delegatedProps, navProps)}>
       <BreadcrumbsList>{children}</BreadcrumbsList>
     </nav>
   );
@@ -48,9 +48,10 @@ const BreadcrumbsList = styled.ol`
   padding: 0;
 `;
 
-type BreadcrumbItemAriaProps = Required<Pick<AriaBreadcrumbItemProps, 'isCurrent' | 'children'>>;
+type BreadcrumbItemProps = BreadcrumbItemAriaProps &
+  Omit<React.ComponentPropsWithoutRef<'li'>, keyof BreadcrumbItemAriaProps>;
 
-type BreadcrumbItemProps = BreadcrumbItemAriaProps;
+type BreadcrumbItemAriaProps = Required<Pick<AriaBreadcrumbItemProps, 'isCurrent' | 'children'>>;
 
 const BreadcrumbItemBase: React.FC<BreadcrumbItemProps> = (props) => {
   const {
@@ -58,13 +59,13 @@ const BreadcrumbItemBase: React.FC<BreadcrumbItemProps> = (props) => {
     isCurrent,
     children,
 
-    /* html props */
-    ...htmlProps
+    /* other props */
+    ...delegatedProps
   } = props;
 
   return (
     <>
-      <li {...htmlProps}>{children}</li>
+      <li {...delegatedProps}>{children}</li>
       {!isCurrent && <BreadcrumbSeparator aria-hidden="true">/</BreadcrumbSeparator>}
     </>
   );

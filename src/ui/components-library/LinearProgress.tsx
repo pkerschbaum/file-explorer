@@ -9,11 +9,16 @@ import { check } from '@app/base/utils/assert.util';
 import { Box } from '@app/ui/components-library/Box';
 import { MoveLeftToRight1, MoveLeftToRight2 } from '@app/ui/utils/animations';
 
-type LinearProgressProps = Pick<
+type LinearProgressProps = LinearProgressAriaProps &
+  Omit<
+    React.ComponentPropsWithoutRef<'div'> & React.RefAttributes<HTMLDivElement>,
+    keyof LinearProgressAriaProps
+  >;
+
+type LinearProgressAriaProps = Pick<
   AriaProgressBarProps,
   'value' | 'isIndeterminate' | 'minValue' | 'maxValue'
-> &
-  Pick<React.HTMLProps<HTMLDivElement>, 'className'>;
+>;
 
 const LinearProgressBase = React.forwardRef<HTMLDivElement, LinearProgressProps>(
   function LinearProgressBaseWithRef(props, ref) {
@@ -24,10 +29,10 @@ const LinearProgressBase = React.forwardRef<HTMLDivElement, LinearProgressProps>
       minValue = 0,
       maxValue = 100,
 
-      /* html props */
-      ...htmlProps
+      /* other props */
+      ...delegatedProps
     } = props;
-    const reactAriaProps = {
+    const reactAriaProps: AriaProgressBarProps = {
       value,
       isIndeterminate,
       minValue,
@@ -42,7 +47,7 @@ const LinearProgressBase = React.forwardRef<HTMLDivElement, LinearProgressProps>
     const barWidthPercentage = Math.round(percentage * 100);
 
     return (
-      <ProgressContainer ref={ref} {...mergeProps(htmlProps, progressBarProps)}>
+      <ProgressContainer ref={ref} {...mergeProps(delegatedProps, progressBarProps)}>
         {!prefersReducedMotion ? (
           <ProgressBarBackground>
             {!isIndeterminate ? (

@@ -6,7 +6,11 @@ import styled from 'styled-components';
 import { commonStyles } from '@app/ui/Common.styles';
 import { Box } from '@app/ui/components-library/Box';
 
-export type DataTableProps = React.ComponentProps<'div'> & DataTableComponentProps;
+export type DataTableProps = DataTableComponentProps &
+  Omit<
+    React.ComponentPropsWithoutRef<'div'> & React.RefAttributes<HTMLDivElement>,
+    keyof DataTableComponentProps
+  >;
 
 type DataTableComponentProps = {
   labels?: { table?: string };
@@ -17,19 +21,21 @@ type DataTableComponentProps = {
 const DataTableBase = React.forwardRef<HTMLDivElement, DataTableProps>(
   function DataTableBaseWithRef(props, ref) {
     const {
+      /* component props */
       children,
       labels,
       classes,
       refs,
 
-      ...htmlProps
+      /* other props */
+      ...delegatedProps
     } = props;
 
     const combinedRef = useForkRef(null, ref);
 
     return (
       <Box
-        {...mergeProps(htmlProps, {
+        {...mergeProps(delegatedProps, {
           className: classes?.table,
           'aria-label': labels?.table,
         })}

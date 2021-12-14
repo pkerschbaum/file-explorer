@@ -362,7 +362,7 @@ const PasteInfoBadge: React.FC = () => {
   const draftPasteState = useDraftPasteState();
 
   const triggerRef = React.useRef<HTMLDivElement>(null);
-  const { triggerProps, tooltipProps } = useTooltip({ triggerRef, anchorRef: triggerRef });
+  const { triggerProps, tooltipInstance } = useTooltip({ triggerRef, anchorRef: triggerRef });
 
   if (draftPasteState === undefined || clipboardResources.length === 0) {
     return null;
@@ -378,7 +378,7 @@ const PasteInfoBadge: React.FC = () => {
         )}
       </StyledBadge>
 
-      <Tooltip {...tooltipProps}>
+      <Tooltip tooltipInstance={tooltipInstance}>
         <ClipboardResourcesList>
           {clipboardResources.map((resource) => (
             <Box key={uriHelper.getComparisonKey(resource)}>{formatter.resourcePath(resource)}</Box>
@@ -394,7 +394,7 @@ const StyledBadge = styled(Box)`
   justify-content: center;
   align-items: center;
 
-  color: var(--color-primary-main);
+  color: var(--color-fg-0);
   background-color: var(--color-bg-1);
   border: 2px solid var(--color-bg-0);
   padding: 3px;
