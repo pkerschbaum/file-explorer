@@ -174,6 +174,7 @@ module.exports = {
               /^@mui\/utils/,
               /^@react-aria\/utils/,
               /^@react-types/,
+              /^@rooks\//,
             ],
           },
           {

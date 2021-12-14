@@ -371,11 +371,11 @@ const PasteInfoBadge: React.FC = () => {
   return (
     <>
       <StyledBadge ref={triggerRef} {...triggerProps}>
-        {draftPasteState.pasteShouldMove ? (
-          <ContentCutOutlinedIcon fontSize="inherit" />
-        ) : (
-          <ContentCopyOutlinedIcon fontSize="inherit" />
-        )}
+        <Icon
+          Component={
+            draftPasteState.pasteShouldMove ? ContentCutOutlinedIcon : ContentCopyOutlinedIcon
+          }
+        />
       </StyledBadge>
 
       <Tooltip tooltipInstance={tooltipInstance}>
@@ -396,9 +396,10 @@ const StyledBadge = styled(Box)`
 
   color: var(--color-fg-0);
   background-color: var(--color-bg-1);
-  border: 2px solid var(--color-bg-0);
-  padding: 3px;
   border-radius: 50%;
+  padding: 5px;
+  /* compensate vertical padding so that the container does not grow because of the StyledBadge */
+  margin-block: -5px;
 `;
 
 const ClipboardResourcesList = styled(Box)`

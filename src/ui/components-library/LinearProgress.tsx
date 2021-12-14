@@ -1,7 +1,7 @@
-import { useMediaQuery } from '@mui/material';
 import { useProgressBar } from '@react-aria/progress';
 import { mergeProps } from '@react-aria/utils';
 import { AriaProgressBarProps } from '@react-types/progress';
+import useMediaMatch from '@rooks/use-media-match';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 
@@ -15,15 +15,14 @@ type LinearProgressProps = LinearProgressAriaProps &
     keyof LinearProgressAriaProps
   >;
 
-type LinearProgressAriaProps = Pick<
-  AriaProgressBarProps,
-  'value' | 'isIndeterminate' | 'minValue' | 'maxValue'
->;
+type LinearProgressAriaProps = Required<Pick<AriaProgressBarProps, 'aria-label'>> &
+  Pick<AriaProgressBarProps, 'value' | 'isIndeterminate' | 'minValue' | 'maxValue'>;
 
 const LinearProgressBase = React.forwardRef<HTMLDivElement, LinearProgressProps>(
   function LinearProgressBaseWithRef(props, ref) {
     const {
       /* react-aria props */
+      'aria-label': ariaLabel,
       value = 0,
       isIndeterminate,
       minValue = 0,
@@ -33,6 +32,7 @@ const LinearProgressBase = React.forwardRef<HTMLDivElement, LinearProgressProps>
       ...delegatedProps
     } = props;
     const reactAriaProps: AriaProgressBarProps = {
+      'aria-label': ariaLabel,
       value,
       isIndeterminate,
       minValue,
@@ -41,7 +41,7 @@ const LinearProgressBase = React.forwardRef<HTMLDivElement, LinearProgressProps>
 
     const { progressBarProps } = useProgressBar(reactAriaProps);
 
-    const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+    const prefersReducedMotion = useMediaMatch('(prefers-reduced-motion: reduce)');
 
     const percentage = (value - minValue) / (maxValue - minValue);
     const barWidthPercentage = Math.round(percentage * 100);

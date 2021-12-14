@@ -175,6 +175,7 @@ export function computeProcessCardPropsFromPasteProcess(
         {processMeta.showProgress && (
           <ProgressArea status={process.status}>
             <LinearProgress
+              aria-label="Progress of paste process"
               isIndeterminate={progressIsIndeterminate}
               value={percentageBytesProcessed}
             />

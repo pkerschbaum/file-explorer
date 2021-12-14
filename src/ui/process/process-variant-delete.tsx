@@ -65,7 +65,7 @@ export function computeProcessCardPropsFromDeleteProcess(
       contentToRender = (
         <>
           <Box>Deletion is in progress...</Box>
-          <LinearProgress isIndeterminate />
+          <LinearProgress aria-label="Progress of delete process" isIndeterminate />
         </>
       );
       break;

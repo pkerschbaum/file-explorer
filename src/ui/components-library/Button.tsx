@@ -1,9 +1,9 @@
-import { useMediaQuery } from '@mui/material';
 // @ts-expect-error -- we have to import from /node here because jest would otherwise import the ESM module (which Jest cannot handle)
 import TouchRipple from '@mui/material/node/ButtonBase/TouchRipple';
 import { useButton } from '@react-aria/button';
 import { mergeProps, useObjectRef } from '@react-aria/utils';
 import { AriaButtonProps } from '@react-types/button';
+import useMediaMatch from '@rooks/use-media-match';
 import { motion } from 'framer-motion';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
@@ -86,7 +86,7 @@ const ButtonBase = React.forwardRef<HTMLButtonElement, ButtonProps>(function But
 
   const touchRippleRef = React.useRef<TouchRippleRef>(null);
 
-  const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const prefersReducedMotion = useMediaMatch('(prefers-reduced-motion: reduce)');
 
   React.useImperativeHandle(
     handleRef,

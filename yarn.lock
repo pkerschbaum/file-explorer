@@ -2593,6 +2593,11 @@
     redux-thunk "^2.4.1"
     reselect "^4.1.5"
 
+"@rooks/use-media-match@^4.11.2":
+  version "4.11.2"
+  resolved "https://registry.yarnpkg.com/@rooks/use-media-match/-/use-media-match-4.11.2.tgz#93d064e092070d243e4786ada07e453d9021acda"
+  integrity sha512-QuezsMUAFN+wjJnXxQrD2MtUlnmterQhshr6LDDKTt0LXQ6gGRwls4d/d0xTlCak3rsnvxEqVgZ6Bs4616jB+Q==
+
 "@shopify/polyfills@^3.1.5":
   version "3.1.5"
   resolved "https://registry.yarnpkg.com/@shopify/polyfills/-/polyfills-3.1.5.tgz#e975e05078c99916cf6e1896a70af6ee6e1b6d53"
