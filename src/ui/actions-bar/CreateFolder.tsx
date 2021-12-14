@@ -40,8 +40,10 @@ export const CreateFolder: React.FC<CreateFolderProps> = ({
     [popoverInstance.state.isOpen],
   );
 
+  const inputIsValid = check.isNonEmptyString(createFolderValue);
+
   async function handleSubmit() {
-    if (check.isEmptyString(createFolderValue)) {
+    if (!inputIsValid) {
       return;
     }
 
@@ -84,9 +86,11 @@ export const CreateFolder: React.FC<CreateFolderProps> = ({
                 }
                 actions={
                   <Button
-                    variant={check.isEmptyString(createFolderValue) ? undefined : 'contained'}
+                    variant={!inputIsValid ? undefined : 'contained'}
                     type="submit"
-                    isDisabled={check.isEmptyString(createFolderValue)}
+                    isDisabled={!inputIsValid}
+                    /* https://github.com/adobe/react-spectrum/issues/1593 */
+                    onPress={handleSubmit}
                   >
                     Create
                   </Button>

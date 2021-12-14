@@ -76,6 +76,7 @@ export const CwdActionsMenu: React.FC<CwdActionsMenuProps> = ({ explorerId, menu
         <Popover popoverInstance={changeCwdPopoverInstance}>
           <Paper>
             <ChangeCwdForm
+              isOpen={changeCwdPopoverInstance.state.isOpen}
               initialCwdValue={formatter.resourcePath(cwd)}
               onSubmit={async (newDir) => {
                 await changeDirectory(explorerId, uriHelper.parseUri(cwd.scheme, newDir));

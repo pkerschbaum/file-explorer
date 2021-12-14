@@ -2,10 +2,10 @@ import { mergeProps } from '@react-aria/utils';
 import styled from 'styled-components';
 
 import { Box } from '@app/ui/components-library/Box';
-import { uiUtils } from '@app/ui/components-library/utils';
+import { componentLibraryUtils } from '@app/ui/components-library/utils';
 import { createContext } from '@app/ui/utils/react.util';
 
-const INDICATOR_MOTION_LAYOUT_ID = uiUtils.generateMotionLayoutId();
+const INDICATOR_MOTION_LAYOUT_ID = componentLibraryUtils.generateMotionLayoutId();
 
 type TabsContext = {
   selectedValue?: string;

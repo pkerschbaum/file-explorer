@@ -175,7 +175,9 @@ export const DesignTokenProvider: React.FC<DesignTokenProviderProps> = ({ childr
         --color-warning: ${themeConfiguration.highlight.warning};
         --color-border: ${borderColorToUse};
         --color-outline: ${outlineColorToUse};
+        --color-darken-0: rgba(255, 255, 255, 0.12);
         --color-darken-1: rgba(255, 255, 255, 0.23);
+        --color-darken-2: rgba(255, 255, 255, 0.3);
 
         --color-bg-contrast: var(--color-fg-0);
         --color-fg-contrast: var(--color-bg-0);

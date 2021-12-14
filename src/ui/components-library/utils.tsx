@@ -1,8 +1,6 @@
-import { darken } from '@mui/material';
-
 import { config } from '@app/config';
 
-export const uiUtils = { darken, generateMotionLayoutId };
+export const componentLibraryUtils = { generateMotionLayoutId };
 
 const MOTION_LAYOUTID_PREFIX = `${config.productName}motion-layoutid`;
 let lastId = 0;

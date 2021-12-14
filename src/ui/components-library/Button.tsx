@@ -12,7 +12,10 @@ import invariant from 'tiny-invariant';
 import { Box } from '@app/ui/components-library/Box';
 import { Paper } from '@app/ui/components-library/Paper';
 
-type ButtonProps = Pick<AriaButtonProps<'button'>, 'children' | 'onPress' | 'isDisabled' | 'type'> &
+type ButtonProps = Pick<
+  AriaButtonProps<'button'>,
+  'children' | 'onPress' | 'onKeyDown' | 'isDisabled' | 'type'
+> &
   ButtonComponentProps &
   Pick<React.HTMLProps<HTMLButtonElement>, 'className' | 'tabIndex' | 'style'>;
 
@@ -44,6 +47,7 @@ const ButtonBase = React.forwardRef<HTMLButtonElement, ButtonProps>(function But
     /* react-aria props */
     children,
     onPress,
+    onKeyDown,
     isDisabled,
     type,
     ariaButtonProps: delegatedAriaButtonProps,
@@ -59,20 +63,21 @@ const ButtonBase = React.forwardRef<HTMLButtonElement, ButtonProps>(function But
     /* html props */
     ...htmlProps
   } = props;
-  const reactAriaProps = {
-    children,
-    onPress,
-    isDisabled,
-    type,
-  };
+  const reactAriaProps = mergeProps(
+    {
+      children,
+      onPress,
+      onKeyDown,
+      isDisabled,
+      type,
+    },
+    delegatedAriaButtonProps ?? {},
+  );
 
   const buttonRef = useObjectRef(ref);
   // @ts-expect-error -- when using the "triggerSyntheticPress" function, react-aria useButton does sometimes set the focus on the synthetically pressed button. This is not the intended behavior - the button should just get triggered without changing the focus. The undocumented prop "preventFocusOnPress" does disable the focus behavior of react-aria.
   reactAriaProps.preventFocusOnPress = true;
-  const { buttonProps } = useButton(
-    mergeProps(reactAriaProps, delegatedAriaButtonProps ?? {}),
-    buttonRef,
-  );
+  const { buttonProps } = useButton(reactAriaProps, buttonRef);
 
   const touchRippleRef = React.useRef<TouchRippleRef>(null);
 
@@ -133,9 +138,9 @@ const variantRules = css<{ variant?: 'outlined' | 'contained' | 'text' }>`
         font-weight: var(--font-weight-bold);
 
         &:disabled {
-          color: rgba(255, 255, 255, 0.3);
+          color: var(--color-darken-2);
           background-color: var(--color-bg-1);
-          border-color: rgba(255, 255, 255, 0.12);
+          border-color: var(--color-darken-0);
         }
 
         &:not(:disabled):hover {
@@ -154,9 +159,9 @@ const variantRules = css<{ variant?: 'outlined' | 'contained' | 'text' }>`
         border-width: 0;
 
         &:disabled {
-          color: rgba(255, 255, 255, 0.3);
+          color: var(--color-darken-2);
           background-color: var(--color-bg-1);
-          border-color: rgba(255, 255, 255, 0.12);
+          border-color: var(--color-darken-0);
         }
 
         &:not(:disabled):hover {

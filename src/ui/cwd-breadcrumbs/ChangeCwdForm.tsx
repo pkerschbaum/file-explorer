@@ -4,15 +4,31 @@ import { check } from '@app/base/utils/assert.util';
 import { Button, Card, TextField } from '@app/ui/components-library';
 
 type ChangeCwdFormProps = {
+  isOpen: boolean;
   initialCwdValue: string;
   onSubmit: (folderName: string) => void | Promise<void>;
 };
 
-export const ChangeCwdForm: React.FC<ChangeCwdFormProps> = ({ initialCwdValue, onSubmit }) => {
+export const ChangeCwdForm: React.FC<ChangeCwdFormProps> = ({
+  isOpen,
+  initialCwdValue,
+  onSubmit,
+}) => {
   const [cwdValue, setCwdValue] = React.useState(initialCwdValue);
 
+  React.useEffect(
+    function resetValueOnPopoverClose() {
+      if (!isOpen) {
+        setCwdValue(initialCwdValue);
+      }
+    },
+    [initialCwdValue, isOpen],
+  );
+
+  const inputIsValid = check.isNonEmptyString(cwdValue);
+
   async function handleSubmit() {
-    if (check.isEmptyString(cwdValue)) {
+    if (!inputIsValid) {
       return;
     }
 
@@ -38,9 +54,11 @@ export const ChangeCwdForm: React.FC<ChangeCwdFormProps> = ({ initialCwdValue, o
         }
         actions={
           <Button
-            variant={check.isEmptyString(cwdValue) ? undefined : 'contained'}
+            variant={!inputIsValid ? undefined : 'contained'}
             type="submit"
-            isDisabled={check.isEmptyString(cwdValue)}
+            isDisabled={!inputIsValid}
+            /* https://github.com/adobe/react-spectrum/issues/1593 */
+            onPress={handleSubmit}
           >
             Change Directory
           </Button>

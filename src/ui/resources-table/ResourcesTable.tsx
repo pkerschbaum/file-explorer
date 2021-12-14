@@ -1,4 +1,5 @@
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import { KeyboardEvent } from '@react-types/shared';
 import * as React from 'react';
 import { useVirtual } from 'react-virtual';
 import styled, { css } from 'styled-components';
@@ -421,11 +422,27 @@ type RenameInputProps = {
 const RenameInput: React.FC<RenameInputProps> = ({ resource, onSubmit, abortRename }) => {
   const [value, setValue] = React.useState(formatter.resourceBasename(resource));
 
+  const inputIsValid = check.isNonEmptyString(value);
+
+  function handleSubmit() {
+    if (!inputIsValid) {
+      return;
+    }
+
+    onSubmit(value);
+  }
+
+  function abortOnEsc(e: KeyboardEvent) {
+    if (e.key === KEY.ESC) {
+      abortRename();
+    }
+  }
+
   return (
     <RenameInputForm
       onSubmit={(e) => {
         e.preventDefault();
-        onSubmit(value);
+        handleSubmit();
       }}
     >
       <TextField
@@ -433,16 +450,19 @@ const RenameInput: React.FC<RenameInputProps> = ({ resource, onSubmit, abortRena
         autoFocus
         value={value}
         onChange={setValue}
-        onKeyDown={(e) => {
-          if (e.key === KEY.ESC) {
-            abortRename();
-          }
-        }}
+        onKeyDown={abortOnEsc}
       />
-      <Button buttonSize="sm" isDisabled={check.isNullishOrEmptyString(value)} type="submit">
+      <Button
+        buttonSize="sm"
+        type="submit"
+        isDisabled={!inputIsValid}
+        /* https://github.com/adobe/react-spectrum/issues/1593 */
+        onPress={handleSubmit}
+        onKeyDown={abortOnEsc}
+      >
         OK
       </Button>
-      <Button buttonSize="sm" onPress={abortRename}>
+      <Button buttonSize="sm" onPress={abortRename} onKeyDown={abortOnEsc}>
         Abort
       </Button>
     </RenameInputForm>

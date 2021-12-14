@@ -21,12 +21,12 @@ import {
   OverlayProvider,
   TARGET_MEDIUM_FONTSIZE,
   ThemeProvider,
-  uiUtils,
 } from '@app/ui/components-library';
 import {
   DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED,
   GlobalShortcutsContextProvider,
 } from '@app/ui/GlobalShortcutsContext';
+import { uiUtils } from '@app/ui/utils/ui.utils';
 
 export function createQueryClient() {
   return new QueryClient({
