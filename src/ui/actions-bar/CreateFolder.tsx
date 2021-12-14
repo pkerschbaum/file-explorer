@@ -77,7 +77,6 @@ export const CreateFolder: React.FC<CreateFolderProps> = ({
               <Card
                 content={
                   <TextField
-                    autoFocus
                     placeholder="Name of folder"
                     aria-label="Name of folder"
                     value={createFolderValue}

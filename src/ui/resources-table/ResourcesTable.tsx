@@ -10,7 +10,15 @@ import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
 import { getNativeIconURLForResource, startNativeFileDnD } from '@app/operations/app.operations';
 import { changeDirectory } from '@app/operations/explorer.operations';
 import { openFiles, removeTagsFromResources } from '@app/operations/resource.operations';
-import { Box, Button, Chip, Skeleton, TextField, useTheme } from '@app/ui/components-library';
+import {
+  Box,
+  Button,
+  Chip,
+  FocusScope,
+  Skeleton,
+  TextField,
+  useTheme,
+} from '@app/ui/components-library';
 import {
   Cell,
   DataTable,
@@ -439,33 +447,35 @@ const RenameInput: React.FC<RenameInputProps> = ({ resource, onSubmit, abortRena
   }
 
   return (
-    <RenameInputForm
-      onSubmit={(e) => {
-        e.preventDefault();
-        handleSubmit();
-      }}
-    >
-      <TextField
-        aria-label="new name for resource"
-        autoFocus
-        value={value}
-        onChange={setValue}
-        onKeyDown={abortOnEsc}
-      />
-      <Button
-        buttonSize="sm"
-        type="submit"
-        isDisabled={!inputIsValid}
-        /* https://github.com/adobe/react-spectrum/issues/1593 */
-        onPress={handleSubmit}
-        onKeyDown={abortOnEsc}
+    <FocusScope contain autoFocus restoreFocus>
+      <RenameInputForm
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSubmit();
+        }}
       >
-        OK
-      </Button>
-      <Button buttonSize="sm" onPress={abortRename} onKeyDown={abortOnEsc}>
-        Abort
-      </Button>
-    </RenameInputForm>
+        <TextField
+          aria-label="new name for resource"
+          autoFocus
+          value={value}
+          onChange={setValue}
+          onKeyDown={abortOnEsc}
+        />
+        <Button
+          buttonSize="sm"
+          type="submit"
+          isDisabled={!inputIsValid}
+          /* https://github.com/adobe/react-spectrum/issues/1593 */
+          onPress={handleSubmit}
+          onKeyDown={abortOnEsc}
+        >
+          OK
+        </Button>
+        <Button buttonSize="sm" onPress={abortRename} onKeyDown={abortOnEsc}>
+          Abort
+        </Button>
+      </RenameInputForm>
+    </FocusScope>
   );
 };
 

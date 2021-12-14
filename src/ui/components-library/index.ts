@@ -8,6 +8,7 @@ export * from '@app/ui/components-library/CssBaseline';
 export * from '@app/ui/components-library/DesignTokenProvider';
 export * from '@app/ui/components-library/Dialog';
 export * from '@app/ui/components-library/Divider';
+export * from '@app/ui/components-library/FocusScope';
 export * from '@app/ui/components-library/Icon';
 export * from '@app/ui/components-library/IconButton';
 export * from '@app/ui/components-library/LinearProgress';

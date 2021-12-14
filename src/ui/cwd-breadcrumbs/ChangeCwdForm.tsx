@@ -45,7 +45,6 @@ export const ChangeCwdForm: React.FC<ChangeCwdFormProps> = ({
       <Card
         content={
           <TextField
-            autoFocus
             placeholder="Directory"
             aria-label="Directory"
             value={cwdValue}

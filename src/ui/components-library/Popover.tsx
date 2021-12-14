@@ -1,5 +1,4 @@
 import { useDialog } from '@react-aria/dialog';
-import { FocusScope } from '@react-aria/focus';
 import {
   useOverlay,
   useOverlayTrigger,
@@ -16,6 +15,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 import { Box } from '@app/ui/components-library/Box';
+import { FocusScope } from '@app/ui/components-library/FocusScope';
 
 export { OverlayProvider } from '@react-aria/overlays';
 
@@ -101,7 +101,7 @@ function PopoverBase(props: PopoverProps) {
 
   return (
     <OverlayContainer>
-      <FocusScope restoreFocus>
+      <FocusScope contain autoFocus restoreFocus>
         <Box
           {...mergeProps(
             overlayProps,
