@@ -10,13 +10,7 @@ import invariant from 'tiny-invariant';
 
 import { formatter } from '@app/base/utils/formatter.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
-import { config } from '@app/config';
-import { RESOURCE_TYPE } from '@app/domain/types';
 import { useDraftPasteState } from '@app/global-state/slices/processes.hooks';
-import { useTags } from '@app/global-state/slices/tags.hooks';
-import { addTagsToResources } from '@app/operations/resource.operations';
-import { addTag } from '@app/operations/tag.operations';
-import { AddTag } from '@app/ui/actions-bar/AddTag';
 import { CreateFolder } from '@app/ui/actions-bar/CreateFolder';
 import {
   Box,
@@ -48,7 +42,6 @@ import { useClipboardResources } from '@app/ui/hooks/clipboard-resources.hooks';
 
 export const ActionsBar: React.FC = () => {
   const draftPasteState = useDraftPasteState();
-  const tags = useTags();
 
   const selectedShownResources = useSelectedShownResources();
 
@@ -237,9 +230,6 @@ export const ActionsBar: React.FC = () => {
 
   const singleResourceActionsDisabled = selectedShownResources.length !== 1;
   const multipleResourcesActionsDisabled = selectedShownResources.length < 1;
-  const multipleDirectoriesActionsDisabled =
-    selectedShownResources.length < 1 ||
-    selectedShownResources.some((resource) => resource.resourceType !== RESOURCE_TYPE.DIRECTORY);
 
   return (
     <ActionBarContainer>
@@ -322,22 +312,6 @@ export const ActionsBar: React.FC = () => {
           buttonEndIcon={registerShortcutsResult.triggerCreateNewFolderShortcut?.icon}
           onSubmit={createFolderInExplorer}
         />
-        {config.featureFlags.tags && (
-          <AddTag
-            options={Object.entries(tags).map(([id, otherValues]) => ({
-              ...otherValues,
-              id,
-            }))}
-            onValueCreated={(tag) => addTag(tag)}
-            onValueChosen={async (chosenTag) => {
-              await addTagsToResources(
-                selectedShownResources.map((resource) => resource.uri),
-                [chosenTag.id],
-              );
-            }}
-            disabled={multipleDirectoriesActionsDisabled}
-          />
-        )}
       </ActionBarButtons>
     </ActionBarContainer>
   );
