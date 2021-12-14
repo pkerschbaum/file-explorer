@@ -1,12 +1,10 @@
-// @ts-expect-error -- we have to import from /node here because jest would otherwise import the ESM module (which Jest cannot handle)
-import TouchRipple from '@mui/material/node/ButtonBase/TouchRipple';
 import { useButton } from '@react-aria/button';
 import { mergeProps, useObjectRef } from '@react-aria/utils';
 import { AriaButtonProps } from '@react-types/button';
 import useMediaMatch from '@rooks/use-media-match';
 import { motion } from 'framer-motion';
 import * as React from 'react';
-import styled, { css } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 import invariant from 'tiny-invariant';
 
 import { Box } from '@app/ui/components-library/Box';
@@ -37,11 +35,6 @@ type ButtonComponentProps = {
 
 export type ButtonHandle = {
   triggerSyntheticPress: () => void;
-};
-
-type TouchRippleRef = {
-  start: (e: MouseEvent) => void;
-  stop: (e: MouseEvent) => void;
 };
 
 const ButtonBase = React.forwardRef<HTMLButtonElement, ButtonProps>(function ButtonBaseWithRef(
@@ -80,11 +73,11 @@ const ButtonBase = React.forwardRef<HTMLButtonElement, ButtonProps>(function But
   );
 
   const buttonRef = useObjectRef(ref);
+  const touchRippleHandleRef = React.useRef<TouchRippleHandle>(null);
+
   // @ts-expect-error -- when using the "triggerSyntheticPress" function, react-aria useButton does sometimes set the focus on the synthetically pressed button. This is not the intended behavior - the button should just get triggered without changing the focus. The undocumented prop "preventFocusOnPress" does disable the focus behavior of react-aria.
   reactAriaProps.preventFocusOnPress = true;
   const { buttonProps } = useButton(reactAriaProps, buttonRef);
-
-  const touchRippleRef = React.useRef<TouchRippleRef>(null);
 
   const prefersReducedMotion = useMediaMatch('(prefers-reduced-motion: reduce)');
 
@@ -93,6 +86,7 @@ const ButtonBase = React.forwardRef<HTMLButtonElement, ButtonProps>(function But
     () => ({
       triggerSyntheticPress: () => {
         invariant(buttonRef.current);
+        invariant(touchRippleHandleRef.current);
 
         if (buttonRef.current.disabled || buttonRef.current.ariaDisabled === 'true') {
           return;
@@ -105,10 +99,8 @@ const ButtonBase = React.forwardRef<HTMLButtonElement, ButtonProps>(function But
         });
         buttonRef.current.dispatchEvent(clickEvent);
 
-        touchRippleRef.current?.start(clickEvent);
-        setTimeout(() => {
-          touchRippleRef.current?.stop(clickEvent);
-        }, 200);
+        // Trigger touch ripple animation
+        touchRippleHandleRef.current.trigger();
       },
     }),
     [buttonRef],
@@ -131,7 +123,7 @@ const ButtonBase = React.forwardRef<HTMLButtonElement, ButtonProps>(function But
       <ButtonIcon layout={animateLayout} endIconIsPresent={!!endIcon}>
         {endIcon}
       </ButtonIcon>
-      <TouchRipple ref={touchRippleRef} center={false} />
+      <TouchRipple handleRef={touchRippleHandleRef} />
     </motion.button>
   );
 });
@@ -220,8 +212,13 @@ const variantRules = css<{ variant?: 'outlined' | 'contained' | 'text' }>`
 export const Button = styled(ButtonBase)`
   min-width: 45px;
 
-  /* set position to relative so that the button is a container for the absolutely positioned TouchRipple */
+  /* 
+     set "position: relative" and "overflow: hidden" so that the button is a container for the 
+     absolutely positioned TouchRipple and the ripple animation does not leak out of the container.
+   */
   position: relative;
+  overflow: hidden;
+
   display: flex;
   justify-content: center;
   align-items: center;
@@ -270,4 +267,57 @@ const ButtonIcon = styled(Box)<{ startIconIsPresent?: boolean; endIconIsPresent?
   padding-left: ${({ endIconIsPresent }) => !!endIconIsPresent && 'var(--spacing-2)'};
   display: flex;
   align-items: center;
+`;
+
+type TouchRippleProps = {
+  handleRef?: React.RefObject<TouchRippleHandle>;
+};
+
+type TouchRippleHandle = {
+  trigger: () => void;
+};
+
+const TouchRipple: React.FC<TouchRippleProps> = ({ handleRef }) => {
+  const touchRippleRef = React.useRef<HTMLSpanElement>(null);
+
+  React.useImperativeHandle(
+    handleRef,
+    () => ({
+      trigger: () => {
+        invariant(touchRippleRef.current);
+
+        // trigger animation (https://stackoverflow.com/a/45036752/1700319)
+        touchRippleRef.current.style.animation = 'none';
+        touchRippleRef.current.offsetHeight;
+        touchRippleRef.current.style.animation = '';
+        touchRippleRef.current.style.animationDuration = '500ms';
+      },
+    }),
+    [],
+  );
+
+  return <TouchRippleSpan ref={touchRippleRef} />;
+};
+
+const ripple = keyframes`
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+`;
+
+// taken from https://css-tricks.com/how-to-recreate-the-ripple-effect-of-material-design-buttons/#react
+const TouchRippleSpan = styled.span`
+  position: absolute;
+  height: calc(3 * 1em);
+  width: calc(3 * 1em);
+
+  border-radius: 50%;
+  background-color: var(--color-darken-3);
+  transform: scale(0);
+  /* 
+     Animation duration is initially set to 0s so that the animation does not run on mount.
+     The animation duration will be set in the TouchRipple component when the animation should be triggered.
+   */
+  animation: ${ripple} 0s linear;
 `;
