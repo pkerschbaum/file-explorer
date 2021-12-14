@@ -10,11 +10,7 @@ import {
   EXPLORER_CWDBREADCRUMBS_GRID_AREA,
   EXPLORER_RESOURCESTABLE_GRID_AREA,
 } from '@app/ui/explorer-panel/ExplorerPanel';
-import {
-  ROOTCONTAINER_PADDING_BOTTOM_FACTOR,
-  ROOTCONTAINER_PADDING_LEFT_FACTOR,
-  ROOTCONTAINER_PADDING_RIGHT_FACTOR,
-} from '@app/ui/shell/constants';
+import { ROOTCONTAINER_PADDING_FACTOR } from '@app/ui/shell/constants';
 import { ProcessesArea } from '@app/ui/shell/ProcessesArea';
 import { TabsArea } from '@app/ui/shell/TabsArea';
 import { TitleBar, TITLE_BAR_GRID_AREA } from '@app/ui/shell/TitleBar';
@@ -101,13 +97,17 @@ const RootContainer = styled(Box)<{ userPreferencesSidebarOpen: boolean }>`
   ${useCustomTitleBar
     ? CUSTOM_TITLE_BAR_GRID_CONFIGURATION
     : NON_CUSTOM_TITLE_BAR_GRID_CONFIGURATION}
-  grid-row-gap: ${(props) => props.theme.spacing(0.5)};
-  grid-column-gap: ${(props) => props.theme.spacing(2)};
-  padding-top: ${(props) =>
-    !useCustomTitleBar && props.theme.spacing(ROOTCONTAINER_PADDING_BOTTOM_FACTOR)};
-  padding-right: ${(props) => props.theme.spacing(ROOTCONTAINER_PADDING_RIGHT_FACTOR)};
-  padding-bottom: ${(props) => props.theme.spacing(ROOTCONTAINER_PADDING_BOTTOM_FACTOR)};
-  padding-left: ${(props) => props.theme.spacing(ROOTCONTAINER_PADDING_LEFT_FACTOR)};
+  grid-row-gap: var(--spacing-1);
+  grid-column-gap: var(--spacing-4);
+
+  ${() =>
+    !useCustomTitleBar &&
+    css`
+      padding-top: calc(${ROOTCONTAINER_PADDING_FACTOR} * var(--spacing-1));
+    `}
+  padding-right: calc(${ROOTCONTAINER_PADDING_FACTOR} * var(--spacing-1));
+  padding-bottom: calc(${ROOTCONTAINER_PADDING_FACTOR} * var(--spacing-1));
+  padding-left: calc(${ROOTCONTAINER_PADDING_FACTOR} * var(--spacing-1));
 `;
 
 const TabsAndProcesses = styled(Box)`
@@ -136,5 +136,5 @@ const TabsAndProcesses = styled(Box)`
    * are too many to fit into the TabsAndProcesses container, the resulting overflow will reach till
    * the lower border of the RootContainer.
    */
-  margin-bottom: ${(props) => props.theme.spacing(-ROOTCONTAINER_PADDING_BOTTOM_FACTOR)};
+  margin-bottom: calc(-1 * ${ROOTCONTAINER_PADDING_FACTOR} * var(--spacing-1));
 `;

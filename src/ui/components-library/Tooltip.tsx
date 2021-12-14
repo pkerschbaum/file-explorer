@@ -47,11 +47,14 @@ export type TooltipProps = AriaTooltipProps &
   Pick<React.HTMLProps<HTMLDivElement>, 'className'> &
   TooltipComponentProps;
 
-type TooltipComponentProps = {
+export type TooltipComponentProps = {
   state: TooltipTriggerState;
   anchorRef: React.RefObject<HTMLElement>;
   children: React.ReactNode;
   placement?: Placement;
+  offset?: {
+    mainAxis?: number;
+  };
 };
 
 const TooltipBase: React.FC<TooltipProps> = (props) => {
@@ -60,6 +63,7 @@ const TooltipBase: React.FC<TooltipProps> = (props) => {
     anchorRef,
     children,
     placement = 'bottom',
+    offset,
 
     /* html props */
     className,
@@ -80,7 +84,7 @@ const TooltipBase: React.FC<TooltipProps> = (props) => {
       { name: 'arrow', options: { element: arrowElement } },
       {
         name: 'offset',
-        options: { offset: [0, 10] },
+        options: { offset: [0, offset?.mainAxis ?? 10] },
       },
     ],
   });

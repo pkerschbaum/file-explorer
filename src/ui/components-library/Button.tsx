@@ -12,16 +12,14 @@ import invariant from 'tiny-invariant';
 import { Box } from '@app/ui/components-library/Box';
 import { Paper } from '@app/ui/components-library/Paper';
 
-type ButtonProps = Pick<
+type ButtonAriaProps = Pick<
   AriaButtonProps<'button'>,
   'children' | 'onPress' | 'onKeyDown' | 'isDisabled' | 'type'
-> &
-  ButtonComponentProps &
-  Pick<React.HTMLProps<HTMLButtonElement>, 'className' | 'tabIndex' | 'style'>;
+> & {
+  ariaButtonProps?: AriaButtonProps<'button'>;
+};
 
 type ButtonComponentProps = {
-  ariaButtonProps?: AriaButtonProps<'button'>;
-
   variant?: 'outlined' | 'contained' | 'text';
   buttonSize?: 'md' | 'sm';
   startIcon?: React.ReactNode;
@@ -29,6 +27,10 @@ type ButtonComponentProps = {
   handleRef?: React.RefObject<ButtonHandle>;
   enableLayoutAnimation?: boolean;
 };
+
+type ButtonProps = ButtonAriaProps &
+  ButtonComponentProps &
+  Omit<React.ComponentProps<'button'>, keyof ButtonAriaProps | keyof ButtonComponentProps>;
 
 export type ButtonHandle = {
   triggerSyntheticPress: () => void;
@@ -242,7 +244,7 @@ export const Button = styled(ButtonBase)`
 
 
   &:focus-visible {
-    outline: 2px solid var(--color-outline);
+    outline: var(--outline);
   }
 
   &:not(:disabled) {

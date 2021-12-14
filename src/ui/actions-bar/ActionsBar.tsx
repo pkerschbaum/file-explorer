@@ -394,9 +394,9 @@ const StyledBadge = styled(Box)`
   justify-content: center;
   align-items: center;
 
-  color: ${(props) => props.theme.palette.text.primary};
-  background-color: ${(props) => props.theme.palette.background.paper};
-  border: 2px solid ${(props) => props.theme.palette.background.default};
+  color: var(--color-primary-main);
+  background-color: var(--color-bg-1);
+  border: 2px solid var(--color-bg-0);
   padding: 3px;
   border-radius: 50%;
 `;
@@ -405,7 +405,7 @@ const ClipboardResourcesList = styled(Box)`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: ${({ theme }) => theme.spacing()};
+  gap: var(--spacing-2);
 
   word-break: break-all;
   white-space: pre-wrap;

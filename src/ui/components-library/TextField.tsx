@@ -99,7 +99,7 @@ const TextFieldInput = styled.input`
   }
 
   &::placeholder {
-    color: var(--color-fg-dark);
+    color: var(--color-fg-0-dark);
   }
 
   &:hover:not(:focus) {

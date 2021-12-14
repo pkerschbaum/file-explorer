@@ -70,7 +70,7 @@ export const LinearProgress = styled(LinearProgressBase)``;
 const ProgressContainer = styled(Box)`
   display: flex;
   align-items: center;
-  gap: ${({ theme }) => theme.spacing(1.5)};
+  gap: var(--spacing-3);
 `;
 
 const ProgressBarBackground = styled(Box)`

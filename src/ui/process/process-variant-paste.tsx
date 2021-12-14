@@ -2,7 +2,7 @@ import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
 import ContentCutOutlinedIcon from '@mui/icons-material/ContentCutOutlined';
 import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
 import * as React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { assertThat } from '@app/base/utils/assert.util';
 import { byteSize } from '@app/base/utils/byte-size.util';
@@ -215,7 +215,7 @@ const ResourcesList = styled(Box)`
 `;
 
 const ResourceBox = styled(Box)`
-  font-weight: ${({ theme }) => theme.font.weights.bold};
+  font-weight: var(--font-weight-bold);
   word-break: break-all;
 `;
 
@@ -224,8 +224,11 @@ const ProgressArea = styled(Box)<{ status: PASTE_PROCESS_STATUS }>`
   flex-direction: column;
   gap: var(--spacing-2);
 
-  color: ${(props) =>
-    props.status === PASTE_PROCESS_STATUS.FAILURE && props.theme.palette.action.disabled};
+  ${(props) =>
+    props.status === PASTE_PROCESS_STATUS.FAILURE &&
+    css`
+      color: var(--color-darken-3);
+    `};
 `;
 
 const ProgressBytes = styled(Box)`

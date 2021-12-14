@@ -17,7 +17,7 @@ export const Card: React.FC<CardProps> = ({ content, actions }) => {
 };
 
 const CardContainer = styled(Box)`
-  width: ${({ theme }) => theme.sizes.card.sm.width}px;
+  width: var(--box-size-card-sm-width);
 
   padding: var(--spacing-3);
   display: flex;

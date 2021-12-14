@@ -15,6 +15,7 @@ import {
   BreadcrumbItem,
   Icon,
   useMenu,
+  useBreadcrumbItem,
 } from '@app/ui/components-library';
 import { KEY, MOUSE_BUTTONS } from '@app/ui/constants';
 import { CwdActionsMenu } from '@app/ui/cwd-breadcrumbs/CwdActionsMenu';
@@ -37,15 +38,14 @@ export const CwdBreadcrumbs: React.FC = () => {
         const isSecondToLastSlug = idx === cwdSlugsWithFormatting.length - 2;
 
         return (
-          <BreadcrumbItem key={uriHelper.getComparisonKey(slug.uri)}>
-            <Breadcrumb
-              explorerId={explorerId}
-              slugFormatted={slug.formatted}
-              isLastSlug={isLastSlug}
-              isSecondToLastSlug={isSecondToLastSlug}
-              changeDirectory={() => changeDirectory(explorerId, slug.uri)}
-            />
-          </BreadcrumbItem>
+          <Breadcrumb
+            key={uriHelper.getComparisonKey(slug.uri)}
+            explorerId={explorerId}
+            slugFormatted={slug.formatted}
+            isLastSlug={isLastSlug}
+            isSecondToLastSlug={isSecondToLastSlug}
+            changeDirectory={() => changeDirectory(explorerId, slug.uri)}
+          />
         );
       })}
     </Breadcrumbs>
@@ -69,6 +69,11 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
 }) => {
   const buttonRef = React.useRef<HTMLButtonElement>(null);
   const buttonHandleRef = React.useRef<ButtonHandle>(null);
+
+  const { itemProps } = useBreadcrumbItem({
+    itemRef: buttonRef,
+    itemProps: { isCurrent: isLastSlug, elementType: 'button' },
+  });
 
   const { triggerProps: menuTriggerProps, menuInstance } = useMenu({
     triggerRef: buttonRef,
@@ -135,7 +140,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
   }
 
   return (
-    <>
+    <BreadcrumbItem isCurrent={isLastSlug}>
       <BreadcrumbButton
         ref={buttonRef}
         handleRef={buttonHandleRef}
@@ -154,12 +159,13 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
         }
         enableLayoutAnimation
         ariaButtonProps={menuTriggerProps}
+        {...itemProps}
       >
         {slugFormatted}
       </BreadcrumbButton>
 
       {isLastSlug && <CwdActionsMenu explorerId={explorerId} menuInstance={menuInstance} />}
-    </>
+    </BreadcrumbItem>
   );
 };
 
@@ -170,5 +176,5 @@ const BreadcrumbButton = styled(Button)`
 const CwdActionsMenuTrigger = styled(Box)`
   display: flex;
   align-items: stretch;
-  gap: ${({ theme }) => theme.spacing()};
+  gap: var(--spacing-2);
 `;

@@ -123,7 +123,7 @@ type TagId = string;
 export type ResourcesToTags = {
   [uri: string]: { ctimeOfResource: number; tags: TagId[] } | undefined;
 };
-export type AvailableTagIds = `tagColor${
+export type AvailableTagIds = `tag-color-${
   | '1'
   | '2'
   | '3'

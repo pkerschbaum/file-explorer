@@ -133,7 +133,7 @@ const ResourcesList = styled(Box)`
 `;
 
 const ResourceBox = styled(Box)`
-  font-weight: ${({ theme }) => theme.font.weights.bold};
+  font-weight: var(--font-weight-bold);
   word-break: break-all;
 `;
 

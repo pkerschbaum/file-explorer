@@ -63,15 +63,15 @@ const CwdBreadcrumbsContainer = styled(Box)<{ hide: boolean; customTitleBarUsed:
 
   width: fit-content;
   grid-area: ${EXPLORER_CWDBREADCRUMBS_GRID_AREA};
-  padding-bottom: ${(props) => props.theme.spacing()};
-  margin-bottom: ${(props) => props.theme.spacing()};
+  padding-bottom: var(--spacing-2);
+  margin-bottom: var(--spacing-2);
 `;
 
 const ActionsBarContainer = styled(Box)<{ hide: boolean }>`
   visibility: ${({ hide }) => (hide ? 'hidden' : undefined)};
 
   grid-area: ${EXPLORER_ACTIONSBAR_GRID_AREA};
-  padding-bottom: ${(props) => props.theme.spacing()};
+  padding-bottom: var(--spacing-2);
 `;
 
 const ResourcesTableContainer = styled(Box)<{ hide: boolean }>`

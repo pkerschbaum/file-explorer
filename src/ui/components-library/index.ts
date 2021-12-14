@@ -17,6 +17,5 @@ export * from '@app/ui/components-library/RadioGroup';
 export * from '@app/ui/components-library/Skeleton';
 export * from '@app/ui/components-library/Tabs';
 export * from '@app/ui/components-library/TextField';
-export * from '@app/ui/components-library/Theme';
 export * from '@app/ui/components-library/Tooltip';
 export * from '@app/ui/components-library/utils';

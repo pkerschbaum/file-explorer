@@ -5,7 +5,6 @@ import invariant from 'tiny-invariant';
 
 import { assertIsUnreachable } from '@app/base/utils/assert.util';
 import { useActiveTheme } from '@app/global-state/slices/user.hooks';
-import { TARGET_MEDIUM_FONTSIZE } from '@app/ui/components-library/Theme';
 import { createContext } from '@app/ui/utils/react.util';
 
 // "Nord" theme color palette (https://www.nordtheme.com/docs/colors-and-palettes)
@@ -115,6 +114,9 @@ export type ThemeConfiguration = {
 export const availableThemes = Object.keys(THEMES) as AvailableTheme[];
 export const defaultTheme: AvailableTheme = 'nord';
 
+export const BASE_FONTSIZE = 14;
+export const LINE_HEIGHT = 1.5;
+
 // border colors are taken from material-ui OutlinedInput <fieldset> border color
 const BORDER_COLOR_LIGHT = 'rgba(0, 0, 0, 0.23)';
 const BORDER_COLOR_DARK = 'var(--color-darken-1)';
@@ -160,12 +162,14 @@ export const DesignTokenProvider: React.FC<DesignTokenProviderProps> = ({ childr
     return css`
       :root {
         --color-fg-0: ${themeConfiguration.foreground[0]};
-        --color-fg-dark: ${fg0Darkened.formatHsl()};
+        --color-fg-0-dark: ${fg0Darkened.formatHsl()};
         --color-bg-0-dark: ${bg0Darkened.formatHsl()};
         --color-bg-0: ${themeConfiguration.background[0]};
         --color-bg-1: ${themeConfiguration.background[1]};
         --color-bg-2: ${themeConfiguration.background[2]};
         --color-bg-3: ${themeConfiguration.background[3]};
+        --color-fg-contrast: var(--color-bg-0);
+        --color-bg-contrast: var(--color-fg-0);
         --color-primary-main: ${themeConfiguration.highlight.primary};
         --color-primary-dark-0: ${primaryDarkened0.formatHsl()};
         --color-primary-dark-1: ${primaryDarkened1.formatHsl()};
@@ -174,13 +178,21 @@ export const DesignTokenProvider: React.FC<DesignTokenProviderProps> = ({ childr
         --color-error: ${themeConfiguration.highlight.error};
         --color-warning: ${themeConfiguration.highlight.warning};
         --color-border: ${borderColorToUse};
-        --color-outline: ${outlineColorToUse};
-        --color-darken-0: rgba(255, 255, 255, 0.12);
-        --color-darken-1: rgba(255, 255, 255, 0.23);
-        --color-darken-2: rgba(255, 255, 255, 0.3);
+        --color-darken-0: rgba(255, 255, 255, 0.1);
+        --color-darken-1: rgba(255, 255, 255, 0.22);
+        --color-darken-2: rgba(255, 255, 255, 0.34);
+        --color-darken-3: rgba(255, 255, 255, 0.46);
 
-        --color-bg-contrast: var(--color-fg-0);
-        --color-fg-contrast: var(--color-bg-0);
+        --color-tags-tag-color-1: #f28b82;
+        --color-tags-tag-color-2: #5b7e2f;
+        --color-tags-tag-color-3: #fbbc04;
+        --color-tags-tag-color-4: #fff475;
+        --color-tags-tag-color-5: #3bd4c5;
+        --color-tags-tag-color-6: #5ea9eb;
+        --color-tags-tag-color-7: #aecbfa;
+        --color-tags-tag-color-8: #d7aefb;
+        --color-tags-tag-color-9: #fdcfe8;
+        --color-tags-tag-color-10: #e6c9a8;
 
         --shadow-color: ${bg0HSLString};
         --shadow-elevation-low: 0px 0.3px 0.4px hsl(var(--shadow-color) / 0.21),
@@ -204,12 +216,15 @@ export const DesignTokenProvider: React.FC<DesignTokenProviderProps> = ({ childr
         --spacing-2: calc(var(--spacing-1) * 2);
         --spacing-3: calc(var(--spacing-1) * 3);
         --spacing-4: calc(var(--spacing-1) * 4);
+        --spacing-8: calc(var(--spacing-1) * 8);
         --padding-button-md-block: 5px;
         --padding-button-md-inline: 10px;
 
-        --font-size-sm: ${`${(TARGET_MEDIUM_FONTSIZE - 2) / TARGET_MEDIUM_FONTSIZE}rem`};
+        --font-size-xs: ${`${(BASE_FONTSIZE - 4) / BASE_FONTSIZE}rem`};
+        --font-size-sm: ${`${(BASE_FONTSIZE - 2) / BASE_FONTSIZE}rem`};
         --font-size-md: 1rem;
-        --font-size-lg: ${`${(TARGET_MEDIUM_FONTSIZE + 2) / TARGET_MEDIUM_FONTSIZE}rem`};
+        --font-size-lg: ${`${(BASE_FONTSIZE + 2) / BASE_FONTSIZE}rem`};
+        --font-size-xl: ${`${(BASE_FONTSIZE + 4) / BASE_FONTSIZE}rem`};
         --font-weight-bold: 700;
 
         --border-width-1: 1px;
@@ -218,8 +233,13 @@ export const DesignTokenProvider: React.FC<DesignTokenProviderProps> = ({ childr
         --border-radius-4: calc(var(--border-radius-1) * 4);
         --border-radius-8: calc(var(--border-radius-1) * 8);
 
-        --icon-size-small: ${`${20 / TARGET_MEDIUM_FONTSIZE}rem`};
-        --icon-size-medium: ${`${24 / TARGET_MEDIUM_FONTSIZE}rem`};
+        --outline: 2px solid ${outlineColorToUse};
+
+        --icon-size-small: ${`${20 / BASE_FONTSIZE}rem`};
+        --icon-size-medium: ${`${24 / BASE_FONTSIZE}rem`};
+
+        --box-size-card-sm-width: 220px;
+        --box-size-card-md-width: 280px;
       }
     `;
   }, [borderColorToUse, outlineColorToUse, themeConfiguration]);

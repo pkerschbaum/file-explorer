@@ -176,6 +176,7 @@ const ExplorerTabContent: React.FC<ExplorerTabContentProps> = (props) => {
           tooltipContent="Close Tab"
           tooltipPlacement="right"
           onPress={props.onRemove}
+          disablePadding
         >
           <CloseOutlinedIcon />
         </TabIconButton>
@@ -189,17 +190,16 @@ const TabButton = styled(Button)`
   justify-content: start;
   text-align: start;
   /* make some space on the right side available for the (absolutely positioned) TabCloseButton */
-  padding-right: ${({ theme }) => theme.spacing(4)};
+  padding-right: var(--spacing-8);
 `;
 
 const TabIconButton = styled(IconButton)`
   position: absolute;
   top: 0;
   bottom: 0;
-  right: ${(props) => props.theme.spacing(1)};
+  right: var(--spacing-2);
   margin-block: auto;
   height: fit-content;
 
-  padding: 0;
   border-radius: 0;
 `;

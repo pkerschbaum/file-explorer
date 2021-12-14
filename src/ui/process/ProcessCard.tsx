@@ -39,7 +39,7 @@ export const ProcessCard: React.FC<ProcessCardProps> = ({
         {isBusy && <RotatingAutorenewOutlinedIcon fontSize="inherit" />}
 
         {isRemovable && (
-          <DiscardIconButton tooltipContent="Discard card" onPress={onRemove}>
+          <DiscardIconButton tooltipContent="Discard card" onPress={onRemove} disablePadding>
             <Icon Component={ClearAllIcon} />
           </DiscardIconButton>
         )}
@@ -60,7 +60,7 @@ const ProcessCardContainer = styled(Paper)`
 
 const SummarySection = styled(Box)`
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: var(--spacing-2);
 `;
 
@@ -80,20 +80,17 @@ const ProcessIconWrapper = styled(Box)`
   justify-items: center;
   gap: var(--spacing-2);
 
-  font-size: ${({ theme }) => theme.font.sizes.lg};
+  font-size: var(--font-size-lg);
 `;
 
 const SummaryText = styled(Box)`
   ${commonStyles.layout.flex.shrinkAndFitHorizontal}
 
   ${commonStyles.text.singleLineEllipsis}
-
-  /* some margin for optical alignment */
-  margin-bottom: 3px;
 `;
 
 const RotatingAutorenewOutlinedIcon = styled(AutorenewOutlinedIcon)`
-  font-size: ${({ theme }) => theme.font.sizes.lg};
+  font-size: var(--font-size-lg);
 
   animation: ${rotate} 2s linear infinite;
   @media (prefers-reduced-motion: reduce) {
@@ -102,9 +99,11 @@ const RotatingAutorenewOutlinedIcon = styled(AutorenewOutlinedIcon)`
 `;
 
 const DiscardIconButton = styled(IconButton)`
-  /* undo paddings of IconButton via negative margin */
-  margin: -9px -9px -9px 0;
-  font-size: ${({ theme }) => theme.font.sizes.xl};
+  /* move button down for optical alignment */
+  position: relative;
+  bottom: -1px;
+
+  font-size: var(--font-size-xl);
 `;
 
 const DetailsSection = styled(Box)`

@@ -10,15 +10,7 @@ import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
 import { getNativeIconURLForResource, startNativeFileDnD } from '@app/operations/app.operations';
 import { changeDirectory } from '@app/operations/explorer.operations';
 import { openFiles, removeTagsFromResources } from '@app/operations/resource.operations';
-import {
-  Box,
-  Button,
-  Chip,
-  FocusScope,
-  Skeleton,
-  TextField,
-  useTheme,
-} from '@app/ui/components-library';
+import { Box, Button, Chip, FocusScope, Skeleton, TextField } from '@app/ui/components-library';
 import {
   Cell,
   DataTable,
@@ -77,7 +69,7 @@ const StyledHeadCell = styled(HeadCell)`
   padding-inline: var(--padding-button-md-inline);
 
   text-align: start;
-  font-weight: ${({ theme }) => theme.font.weights.bold};
+  font-weight: var(--font-weight-bold);
 `;
 
 const SizeHeadCell = styled(StyledHeadCell)`
@@ -85,7 +77,7 @@ const SizeHeadCell = styled(StyledHeadCell)`
 `;
 
 const MtimeHeadCell = styled(StyledHeadCell)`
-  min-width: 150px;
+  min-width: 155px;
 `;
 
 const ForwardClassNameTable = React.forwardRef<
@@ -201,8 +193,6 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
   const keyOfResourceToRename = useKeyOfResourceToRename();
   const setKeyOfResourceToRename = useSetKeyOfResourceToRename();
 
-  const { availableTagColors } = useTheme();
-
   const themeResourceIconClasses = useThemeResourceIconClasses(resourceForRow);
 
   const [nativeIconLoadStatus, setNativeIconLoadStatus] = React.useState<
@@ -290,7 +280,7 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
             : resourceForRow.tags.map((tag) => (
                 <Chip
                   key={tag.id}
-                  style={{ backgroundColor: availableTagColors[tag.colorId] }}
+                  style={{ backgroundColor: `var(--color-tags-${tag.colorId})` }}
                   label={tag.name}
                   onDelete={() => removeTagsFromResources([resourceForRow.uri], [tag.id])}
                   deleteTooltipContent="Remove tag"
@@ -412,7 +402,7 @@ const ResourceIconAndNameAndTags = styled(Box)`
   height: 100%;
 
   display: flex;
-  gap: ${({ theme }) => theme.spacing()};
+  gap: var(--spacing-2);
 `;
 
 const ResourceIconAndName = styled(Box)<{ fullWidth: boolean }>`
@@ -484,7 +474,7 @@ const RenameInputForm = styled.form`
 
   display: flex;
   align-items: stretch;
-  gap: ${(props) => props.theme.spacing(2)};
+  gap: var(--spacing-4);
 
   & > ${Button} {
     margin-block: var(--padding-button-md-block);

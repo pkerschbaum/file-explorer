@@ -4,13 +4,9 @@ import MinimizeOutlinedIcon from '@mui/icons-material/MinimizeOutlined';
 import * as React from 'react';
 import styled from 'styled-components';
 
-import { assertThat } from '@app/base/utils/assert.util';
 import { windowClose, windowMinimize, windowToggleMaximized } from '@app/operations/app.operations';
 import { Box, Button } from '@app/ui/components-library';
-import {
-  ROOTCONTAINER_PADDING_LEFT_FACTOR,
-  ROOTCONTAINER_PADDING_RIGHT_FACTOR,
-} from '@app/ui/shell/constants';
+import { ROOTCONTAINER_PADDING_FACTOR } from '@app/ui/shell/constants';
 
 export const TITLE_BAR_GRID_AREA = 'shell-title-bar';
 
@@ -41,8 +37,8 @@ const WindowDragRegion = styled(Box)`
   grid-area: ${TITLE_BAR_GRID_AREA};
 
   /* revert padding on left and right side introduced by the Shell RootContainer */
-  margin-left: ${(props) => props.theme.spacing(-ROOTCONTAINER_PADDING_LEFT_FACTOR)};
-  margin-right: ${(props) => props.theme.spacing(-ROOTCONTAINER_PADDING_RIGHT_FACTOR)};
+  margin-left: calc(-1 * ${ROOTCONTAINER_PADDING_FACTOR} * var(--spacing-1));
+  margin-right: calc(-1 * ${ROOTCONTAINER_PADDING_FACTOR} * var(--spacing-1));
 
   /* https://www.electronjs.org/docs/latest/tutorial/window-customization#set-custom-draggable-region */
   -webkit-app-region: drag;
@@ -81,15 +77,7 @@ const TitleBarButton = styled(Button)`
 `;
 
 const TitleBarCloseButton = styled(TitleBarButton)`
-  &:hover {
-    background-color: ${(props) => {
-      if (props.theme.palette.mode === 'dark') {
-        return props.theme.palette.error.dark;
-      } else if (props.theme.palette.mode === 'light') {
-        return props.theme.palette.error.light;
-      } else {
-        assertThat.isUnreachable(props.theme.palette.mode);
-      }
-    }};
+  &:not(:disabled):hover {
+    background-color: var(--color-error);
   }
 `;

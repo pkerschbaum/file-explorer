@@ -18,15 +18,14 @@ import {
 import {
   CssBaseline,
   DesignTokenProvider,
+  LINE_HEIGHT,
   OverlayProvider,
-  TARGET_MEDIUM_FONTSIZE,
-  ThemeProvider,
+  BASE_FONTSIZE,
 } from '@app/ui/components-library';
 import {
   DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED,
   GlobalShortcutsContextProvider,
 } from '@app/ui/GlobalShortcutsContext';
-import { uiUtils } from '@app/ui/utils/ui.utils';
 
 export function createQueryClient() {
   return new QueryClient({
@@ -49,22 +48,31 @@ const globalStyle = css`
   }
 
   :root {
+    font-family: 'Segoe UI Variable', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+
     /*
-      We want to set a default font-size of TARGET_MEDIUM_FONTSIZE pixels for the application, 
-      for users which have the (default) font-size of 16px set for their user agent.
+      We want to set a font-size of BASE_FONTSIZE pixels for the application, for users which have 
+      the (default) font-size of 16px set for their user agent.
       About 13-14px is used by many applications like VS Code, Chrome, ...
 
       In order to respect changes of the font-size of the user (e.g., they have increased the 
       font-size to 20px), we use a percentage-based value here.
      */
-    font-size: ${(TARGET_MEDIUM_FONTSIZE / 16) * 100}%;
-    line-height: 1.5;
+    font-size: ${(BASE_FONTSIZE / 16) * 100}%;
+    line-height: ${LINE_HEIGHT};
   }
 
+  /* https://www.joshwcomeau.com/css/custom-css-reset/#digit-percentage-based-heights */
   :root,
   body,
   #root {
     height: 100%;
+  }
+
+  /* set colors based on active theme */
+  body {
+    color: var(--color-fg-0);
+    background-color: var(--color-bg-0);
   }
 
   /* create separate stacking context for root container */
@@ -108,11 +116,11 @@ const globalStyle = css`
   }
   *::-webkit-scrollbar-thumb {
     border-radius: 1000px;
-    background-color: ${(props) => uiUtils.darken(props.theme.palette.text.secondary, 0.25)};
-    border: 2px solid ${(props) => props.theme.palette.background.default};
+    background-color: var(--color-fg-0-dark);
+    border: 2px solid var(--color-bg-0);
   }
   *::-webkit-scrollbar-thumb:hover {
-    background-color: ${(props) => props.theme.palette.text.secondary};
+    background-color: var(--color-fg-0);
   }
   ::-webkit-scrollbar-corner {
     background-color: rgba(0, 0, 0, 0);
@@ -154,18 +162,16 @@ export const Globals: React.FC<GlobalsProps> = ({ queryClient, store, children }
       <QueryClientProvider client={queryClient}>
         <ReactReduxProvider store={store}>
           <DesignTokenProvider>
-            <ThemeProvider>
-              <GlobalShortcutsContextProvider>
-                <CssBaseline />
-                <GlobalStyle />
-                {/* class "show-file-icons" will enable file icon theme of code-oss project */}
-                <FileIconThemeLoader>
-                  <OverlayProvider style={{ height: '100%' }}>
-                    <RootContainer className="show-file-icons">{children}</RootContainer>
-                  </OverlayProvider>
-                </FileIconThemeLoader>
-              </GlobalShortcutsContextProvider>
-            </ThemeProvider>
+            <GlobalShortcutsContextProvider>
+              <CssBaseline />
+              <GlobalStyle />
+              {/* class "show-file-icons" will enable file icon theme of code-oss project */}
+              <FileIconThemeLoader>
+                <OverlayProvider style={{ height: '100%' }}>
+                  <RootContainer className="show-file-icons">{children}</RootContainer>
+                </OverlayProvider>
+              </FileIconThemeLoader>
+            </GlobalShortcutsContextProvider>
           </DesignTokenProvider>
         </ReactReduxProvider>
 
@@ -211,5 +217,4 @@ const FileIconThemeLoader: React.FC = ({ children }) => {
 
 const RootContainer = styled.div`
   height: 100%;
-  background-color: ${({ theme }) => theme.palette.background.default};
 `;
