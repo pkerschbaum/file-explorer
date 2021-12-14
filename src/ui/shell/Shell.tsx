@@ -97,7 +97,7 @@ const RootContainer = styled(Box)<{ userPreferencesSidebarOpen: boolean }>`
   ${useCustomTitleBar
     ? CUSTOM_TITLE_BAR_GRID_CONFIGURATION
     : NON_CUSTOM_TITLE_BAR_GRID_CONFIGURATION}
-  grid-row-gap: var(--spacing-1);
+  grid-row-gap: var(--spacing-2);
   grid-column-gap: var(--spacing-4);
 
   ${() =>
@@ -123,7 +123,7 @@ const TabsAndProcesses = styled(Box)`
   ${() => {
     if (useCustomTitleBar) {
       return css`
-        margin-top: -20px;
+        margin-top: -24px;
         -webkit-app-region: no-drag;
       `;
     }

@@ -3,7 +3,6 @@ export * from '@app/ui/components-library/Button';
 export * from '@app/ui/components-library/Breadcrumbs';
 export * from '@app/ui/components-library/Card';
 export * from '@app/ui/components-library/Chip';
-export * from '@app/ui/components-library/CssBaseline';
 export * from '@app/ui/components-library/DesignTokenProvider';
 export * from '@app/ui/components-library/Divider';
 export * from '@app/ui/components-library/FocusScope';

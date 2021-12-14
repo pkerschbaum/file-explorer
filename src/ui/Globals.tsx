@@ -16,7 +16,6 @@ import {
   fileIconThemeLoaderRef,
 } from '@app/operations/global-modules';
 import {
-  CssBaseline,
   DesignTokenProvider,
   LINE_HEIGHT,
   OverlayProvider,
@@ -62,25 +61,31 @@ const globalStyle = css`
     line-height: ${LINE_HEIGHT};
   }
 
-  /* https://www.joshwcomeau.com/css/custom-css-reset/#digit-percentage-based-heights */
+  /* Use a more-intuitive box-sizing model (https://www.joshwcomeau.com/css/custom-css-reset/#digit-box-sizing-model) */
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  /* Remove default margin (https://www.joshwcomeau.com/css/custom-css-reset/#digit-remove-default-margin) */
+  * {
+    margin: 0;
+  }
+
+  /* Allow percentage-based heights in the application (https://www.joshwcomeau.com/css/custom-css-reset/#digit-percentage-based-heights) */
   :root,
   body,
   #root {
     height: 100%;
   }
 
-  /* set colors based on active theme */
-  body {
-    color: var(--color-fg-0);
-    background-color: var(--color-bg-0);
-  }
-
-  /* create separate stacking context for root container */
+  /* Create a root stacking context (https://www.joshwcomeau.com/css/custom-css-reset/#digit-root-stacking-context) */
   #root {
     isolation: isolate;
   }
 
-  /* Sensible media defaults, https://www.joshwcomeau.com/css/custom-css-reset/#digit-sensible-media-defaults */
+  /* Sensible media defaults (https://www.joshwcomeau.com/css/custom-css-reset/#digit-sensible-media-defaults) */
   img,
   picture,
   video,
@@ -90,7 +95,7 @@ const globalStyle = css`
     max-width: 100%;
   }
 
-  /* Remove built-in form typography styles, https://www.joshwcomeau.com/css/custom-css-reset/#digit-inherit-fonts-for-form-controls */
+  /* Remove built-in form typography styles (https://www.joshwcomeau.com/css/custom-css-reset/#digit-inherit-fonts-for-form-controls) */
   input,
   button,
   textarea,
@@ -98,9 +103,15 @@ const globalStyle = css`
     font: inherit;
   }
 
-  /* Word wrapping, https://www.joshwcomeau.com/css/custom-css-reset/#digit-word-wrapping, https://twitter.com/sophiebits/status/1462921205359386628 */
+  /* Word wrapping (https://www.joshwcomeau.com/css/custom-css-reset/#digit-word-wrapping, https://twitter.com/sophiebits/status/1462921205359386628) */
   * {
     overflow-wrap: anywhere;
+  }
+
+  /* set colors based on active theme */
+  body {
+    color: var(--color-fg-0);
+    background-color: var(--color-bg-0);
   }
 
   /* Components of the components library define der own focus styles */
@@ -161,18 +172,17 @@ export const Globals: React.FC<GlobalsProps> = ({ queryClient, store, children }
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
         <ReactReduxProvider store={store}>
-          <DesignTokenProvider>
-            <GlobalShortcutsContextProvider>
-              <CssBaseline />
-              <GlobalStyle />
-              {/* class "show-file-icons" will enable file icon theme of code-oss project */}
-              <FileIconThemeLoader>
-                <OverlayProvider style={{ height: '100%' }}>
-                  <RootContainer className="show-file-icons">{children}</RootContainer>
-                </OverlayProvider>
-              </FileIconThemeLoader>
-            </GlobalShortcutsContextProvider>
-          </DesignTokenProvider>
+          <GlobalShortcutsContextProvider>
+            <GlobalStyle />
+            <DesignTokenProvider />
+
+            {/* class "show-file-icons" will enable file icon theme of code-oss project */}
+            <FileIconThemeLoader>
+              <OverlayProvider style={{ height: '100%' }}>
+                <RootContainer className="show-file-icons">{children}</RootContainer>
+              </OverlayProvider>
+            </FileIconThemeLoader>
+          </GlobalShortcutsContextProvider>
         </ReactReduxProvider>
 
         {config.showReactQueryDevtools && <ReactQueryDevtools />}

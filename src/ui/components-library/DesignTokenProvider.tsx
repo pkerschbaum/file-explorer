@@ -5,7 +5,6 @@ import invariant from 'tiny-invariant';
 
 import { assertIsUnreachable } from '@app/base/utils/assert.util';
 import { useActiveTheme } from '@app/global-state/slices/user.hooks';
-import { createContext } from '@app/ui/utils/react.util';
 
 // "Nord" theme color palette (https://www.nordtheme.com/docs/colors-and-palettes)
 const NORD_THEME = {
@@ -117,35 +116,10 @@ export const defaultTheme: AvailableTheme = 'nord';
 export const BASE_FONTSIZE = 14;
 export const LINE_HEIGHT = 1.5;
 
-// border colors are taken from material-ui OutlinedInput <fieldset> border color
-const BORDER_COLOR_LIGHT = 'rgba(0, 0, 0, 0.23)';
-const BORDER_COLOR_DARK = 'var(--color-darken-1)';
-const OUTLINE_COLOR_LIGHT = 'rgba(0, 0, 0, 0.8)';
-const OUTLINE_COLOR_DARK = 'rgba(255, 255, 255, 0.8)';
-
-const themeConfigurationContext = createContext<ThemeConfiguration>('ThemeConfigurationContext');
-export const useThemeConfiguration = themeConfigurationContext.useContextValue;
-const ThemeConfigurationContextProvider = themeConfigurationContext.Provider;
-
-type DesignTokenProviderProps = {
-  children: React.ReactNode;
-};
-
-export const DesignTokenProvider: React.FC<DesignTokenProviderProps> = ({ children }) => {
+export const DesignTokenProvider: React.FC = () => {
   const activeTheme = useActiveTheme();
 
   const themeConfiguration = THEMES[activeTheme];
-  let borderColorToUse: string;
-  let outlineColorToUse: string;
-  if (themeConfiguration.mode === 'dark') {
-    borderColorToUse = BORDER_COLOR_DARK;
-    outlineColorToUse = OUTLINE_COLOR_DARK;
-  } else if (themeConfiguration.mode === 'light') {
-    borderColorToUse = BORDER_COLOR_LIGHT;
-    outlineColorToUse = OUTLINE_COLOR_LIGHT;
-  } else {
-    assertIsUnreachable(themeConfiguration);
-  }
 
   const designTokensCss = React.useMemo(() => {
     const hsl = d3.hsl(themeConfiguration.background[0]);
@@ -158,6 +132,27 @@ export const DesignTokenProvider: React.FC<DesignTokenProviderProps> = ({ childr
     invariant(bg0Darkened);
     invariant(primaryDarkened0);
     invariant(primaryDarkened1);
+
+    let modeColors;
+    if (themeConfiguration.mode === 'dark') {
+      modeColors = css`
+        --color-darken-0: rgba(255, 255, 255, 0.1);
+        --color-darken-1: rgba(255, 255, 255, 0.22);
+        --color-darken-2: rgba(255, 255, 255, 0.34);
+        --color-darken-3: rgba(255, 255, 255, 0.46);
+        --outline: 2px solid rgba(255, 255, 255, 0.8);
+      `;
+    } else if (themeConfiguration.mode === 'light') {
+      modeColors = css`
+        --color-darken-0: rgba(0, 0, 0, 0.1);
+        --color-darken-1: rgba(0, 0, 0, 0.22);
+        --color-darken-2: rgba(0, 0, 0, 0.34);
+        --color-darken-3: rgba(0, 0, 0, 0.46);
+        --outline: 2px solid rgba(0, 0, 0, 0.8);
+      `;
+    } else {
+      assertIsUnreachable(themeConfiguration);
+    }
 
     return css`
       :root {
@@ -177,11 +172,9 @@ export const DesignTokenProvider: React.FC<DesignTokenProviderProps> = ({ childr
         --color-success: ${themeConfiguration.highlight.success};
         --color-error: ${themeConfiguration.highlight.error};
         --color-warning: ${themeConfiguration.highlight.warning};
-        --color-border: ${borderColorToUse};
-        --color-darken-0: rgba(255, 255, 255, 0.1);
-        --color-darken-1: rgba(255, 255, 255, 0.22);
-        --color-darken-2: rgba(255, 255, 255, 0.34);
-        --color-darken-3: rgba(255, 255, 255, 0.46);
+        --color-border: var(--color-darken-1);
+
+        ${modeColors}
 
         --color-tags-tag-color-1: #f28b82;
         --color-tags-tag-color-2: #5b7e2f;
@@ -233,8 +226,6 @@ export const DesignTokenProvider: React.FC<DesignTokenProviderProps> = ({ childr
         --border-radius-4: calc(var(--border-radius-1) * 4);
         --border-radius-8: calc(var(--border-radius-1) * 8);
 
-        --outline: 2px solid ${outlineColorToUse};
-
         --icon-size-small: ${`${20 / BASE_FONTSIZE}rem`};
         --icon-size-medium: ${`${24 / BASE_FONTSIZE}rem`};
 
@@ -242,21 +233,9 @@ export const DesignTokenProvider: React.FC<DesignTokenProviderProps> = ({ childr
         --box-size-card-md-width: 280px;
       }
     `;
-  }, [borderColorToUse, outlineColorToUse, themeConfiguration]);
+  }, [themeConfiguration]);
 
-  return (
-    <>
-      <DesignTokensGlobalStyle designTokensCss={designTokensCss} />
-      <ThemeConfigurationContextProvider
-        value={{
-          theme: themeConfiguration,
-          borderColorToUse,
-        }}
-      >
-        {children}
-      </ThemeConfigurationContextProvider>
-    </>
-  );
+  return <DesignTokensGlobalStyle designTokensCss={designTokensCss} />;
 };
 
 const DesignTokensGlobalStyle = createGlobalStyle<{ designTokensCss: FlattenSimpleInterpolation }>`

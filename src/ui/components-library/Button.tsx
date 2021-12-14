@@ -190,9 +190,9 @@ const variantRules = css<{ variant?: 'outlined' | 'contained' | 'text' }>`
         border-width: 1px;
 
         &:disabled {
-          color: rgba(255, 255, 255, 0.3);
+          color: var(--color-darken-2);
           background-color: var(--color-bg-1);
-          border-color: rgba(255, 255, 255, 0.12);
+          border-color: var(--color-darken-0);
         }
 
         &:not(:disabled):hover {

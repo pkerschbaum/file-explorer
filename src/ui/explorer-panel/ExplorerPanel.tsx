@@ -55,7 +55,7 @@ const CwdBreadcrumbsContainer = styled(Box)<{ hide: boolean; customTitleBarUsed:
   ${({ customTitleBarUsed }) => {
     if (customTitleBarUsed) {
       return css`
-        margin-top: -20px;
+        margin-top: -24px;
         -webkit-app-region: no-drag;
       `;
     }
@@ -63,19 +63,18 @@ const CwdBreadcrumbsContainer = styled(Box)<{ hide: boolean; customTitleBarUsed:
 
   width: fit-content;
   grid-area: ${EXPLORER_CWDBREADCRUMBS_GRID_AREA};
-  padding-bottom: var(--spacing-2);
-  margin-bottom: var(--spacing-2);
 `;
 
 const ActionsBarContainer = styled(Box)<{ hide: boolean }>`
   visibility: ${({ hide }) => (hide ? 'hidden' : undefined)};
 
   grid-area: ${EXPLORER_ACTIONSBAR_GRID_AREA};
-  padding-bottom: var(--spacing-2);
 `;
 
 const ResourcesTableContainer = styled(Box)<{ hide: boolean }>`
   visibility: ${({ hide }) => (hide ? 'hidden' : undefined)};
 
   grid-area: ${EXPLORER_RESOURCESTABLE_GRID_AREA};
+  /* add some padding-top for optical alignment */
+  padding-top: 1px;
 `;
