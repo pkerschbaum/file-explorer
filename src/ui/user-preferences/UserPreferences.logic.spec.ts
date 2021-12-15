@@ -1,4 +1,4 @@
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, within } from '@testing-library/react';
 
 import { AvailableFileIconTheme } from '@app/constants';
 import { createStoreInstance } from '@app/global-state/store';
@@ -24,16 +24,21 @@ describe('UserPreferences [logic]', () => {
 
     fireEvent.click(openUserPreferencesButton);
 
-    const switchToCoffeeThemeButton = await screen.findByRole('button', { name: /Coffee/i });
-    const switchToFlowThemeButton = await screen.findByRole('button', { name: /Flow/i });
+    const themeRadioGroup = await screen.findByRole('radiogroup', { name: /Theme/i });
+    const switchToCoffeeThemeRadio = await within(themeRadioGroup).findByRole('radio', {
+      name: /Coffee/i,
+    });
+    const switchToFlowThemeRadio = await within(themeRadioGroup).findByRole('radio', {
+      name: /Flow/i,
+    });
 
-    fireEvent.click(switchToFlowThemeButton);
+    fireEvent.click(switchToFlowThemeRadio);
 
     expect(storeRef.current.getState().userSlice.preferences.activeTheme).toEqual('flow');
     const newPersistedState1 = await readStorageState();
     expect(newPersistedState1.userState?.preferences.activeTheme).toEqual('flow');
 
-    fireEvent.click(switchToCoffeeThemeButton);
+    fireEvent.click(switchToCoffeeThemeRadio);
 
     expect(storeRef.current.getState().userSlice.preferences.activeTheme).toEqual('coffee');
     const newPersistedState2 = await readStorageState();
@@ -59,14 +64,15 @@ describe('UserPreferences [logic]', () => {
 
     fireEvent.click(openUserPreferencesButton);
 
-    const switchToVsCodeFileIconThemeButton = await screen.findByRole('button', {
+    const fileIconsRadioGroup = await screen.findByRole('radiogroup', { name: /File Icons/i });
+    const switchToVsCodeFileIconThemeRadio = await within(fileIconsRadioGroup).findByRole('radio', {
       name: /VS Code/i,
     });
-    const switchToMDFileIconThemeButton = await screen.findByRole('button', {
+    const switchToMDFileIconThemeRadio = await within(fileIconsRadioGroup).findByRole('radio', {
       name: /Material Design/i,
     });
 
-    fireEvent.click(switchToMDFileIconThemeButton);
+    fireEvent.click(switchToMDFileIconThemeRadio);
 
     expect(storeRef.current.getState().userSlice.preferences.activeFileIconTheme).toEqual(
       materialDesignId,
@@ -74,7 +80,7 @@ describe('UserPreferences [logic]', () => {
     const newPersistedState1 = await readStorageState();
     expect(newPersistedState1.userState?.preferences.activeFileIconTheme).toEqual(materialDesignId);
 
-    fireEvent.click(switchToVsCodeFileIconThemeButton);
+    fireEvent.click(switchToVsCodeFileIconThemeRadio);
 
     expect(storeRef.current.getState().userSlice.preferences.activeFileIconTheme).toEqual(
       vsCodeThemeId,

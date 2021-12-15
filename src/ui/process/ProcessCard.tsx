@@ -91,6 +91,9 @@ const ProcessIconWrapper = styled(Box)`
   gap: var(--spacing-2);
 
   font-size: var(--font-size-lg);
+
+  /* add some margin-top for optical alignment */
+  margin-top: 2px;
 `;
 
 const SummaryText = styled(Box)`
