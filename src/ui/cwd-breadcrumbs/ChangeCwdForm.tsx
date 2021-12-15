@@ -54,9 +54,8 @@ export const ChangeCwdForm: React.FC<ChangeCwdFormProps> = ({
         <CardActions>
           <Button
             variant={!inputIsValid ? undefined : 'contained'}
-            type="submit"
             isDisabled={!inputIsValid}
-            /* https://github.com/adobe/react-spectrum/issues/1593 */
+            /* cannot use type="submit" because of https://github.com/adobe/react-spectrum/issues/1593 */
             onPress={handleSubmit}
           >
             Change Directory

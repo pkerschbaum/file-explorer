@@ -19,6 +19,7 @@
     "cypress:open": "cross-env ELECTRON_EXTRA_LAUNCH_ARGS=\"--force-prefers-reduced-motion\" cypress open --browser chrome",
     "storybook": "cross-env STORYBOOK_RQDEVTOOLS_ENABLED=false start-storybook -c storybook -p 6006",
     "build-storybook": "cross-env STORYBOOK_RQDEVTOOLS_ENABLED=false build-storybook -c storybook",
+    "serve-built-storybook": "npx http-server -p 6006 ./storybook-static",
     "compile-language-extensions-into-json-file": "ts-node --project ./tsconfig.json -r tsconfig-paths/register ./scripts/compile-language-extensions-into-json-file.ts && prettier --write ./src/static/icon-theme/language-extension-points.json"
   },
   "keywords": [],
@@ -59,7 +60,7 @@
     "@react-stately/tree": "^3.2.0",
     "@reduxjs/toolkit": "^1.6.2",
     "@rooks/use-media-match": "^4.11.2",
-    "d3-color": "^3.0.1",
+    "d3-color": "^2.0.0",
     "dayjs": "^1.10.7",
     "electron-squirrel-startup": "^1.0.0",
     "electron-store": "^8.0.1",

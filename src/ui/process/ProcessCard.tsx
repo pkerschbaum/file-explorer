@@ -45,6 +45,7 @@ export const ProcessCard: React.FC<ProcessCardProps> = ({
         {isRemovable && (
           <DiscardIconButton
             size="sm"
+            aria-label="Discard card"
             tooltipContent="Discard card"
             onPress={onRemove}
             disablePadding

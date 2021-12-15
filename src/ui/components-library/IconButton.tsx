@@ -16,7 +16,8 @@ type IconButtonProps = IconButtonAriaProps &
     keyof IconButtonAriaProps | keyof IconButtonComponentProps
   >;
 
-type IconButtonAriaProps = Pick<AriaButtonProps<'button'>, 'children' | 'onPress' | 'isDisabled'>;
+type IconButtonAriaProps = Required<Pick<AriaButtonProps<'button'>, 'aria-label'>> &
+  Pick<AriaButtonProps<'button'>, 'children' | 'onPress' | 'isDisabled'>;
 
 type IconButtonComponentProps = {
   tooltipContent: React.ReactChild;
@@ -29,6 +30,7 @@ export const IconButton = styled(
   React.forwardRef<HTMLButtonElement, IconButtonProps>(function IconButtonWithRef(props, ref) {
     const {
       /* react-aria props */
+      'aria-label': ariaLabel,
       children,
       onPress,
       isDisabled,
@@ -43,6 +45,7 @@ export const IconButton = styled(
       ...delegatedProps
     } = props;
     const reactAriaProps: AriaButtonProps<'button'> = {
+      'aria-label': ariaLabel,
       children,
       onPress,
       isDisabled,

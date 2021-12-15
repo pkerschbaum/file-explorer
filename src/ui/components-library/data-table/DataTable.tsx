@@ -37,12 +37,11 @@ export const DataTable = styled(
       <DataTableRoot
         {...mergeProps(delegatedProps, {
           className: classes?.table,
-          'aria-label': labels?.table,
         })}
         ref={combinedRef}
       >
         <TableContainer ref={refs?.tableContainer}>
-          <StyledTable>{children}</StyledTable>
+          <StyledTable aria-label={labels?.table}>{children}</StyledTable>
         </TableContainer>
       </DataTableRoot>
     );

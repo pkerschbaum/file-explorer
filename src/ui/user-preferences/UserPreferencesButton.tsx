@@ -14,12 +14,13 @@ export const UserPreferencesButton: React.FC<UserPreferencesButtonProps> = ({
   userPreferencesSidebarOpen,
   setUserPreferencesSidebarOpen,
 }) => {
+  const label = !userPreferencesSidebarOpen ? 'Open User Preferences' : 'Hide User Preferences';
+
   return (
     <UserPreferencesButtonContainer>
       <IconButton
-        tooltipContent={
-          !userPreferencesSidebarOpen ? 'Open User Preferences' : 'Hide User Preferences'
-        }
+        aria-label={label}
+        tooltipContent={label}
         onPress={() => {
           setUserPreferencesSidebarOpen(!userPreferencesSidebarOpen);
         }}

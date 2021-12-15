@@ -31,7 +31,11 @@ export const Chip = styled((props: ChipProps) => {
   return (
     <ChipRoot {...delegatedProps}>
       <ChipLabel>{label}</ChipLabel>
-      <ChipDeleteButton tooltipContent={deleteTooltipContent} onPress={onDelete}>
+      <ChipDeleteButton
+        aria-label="Remove tag from resource"
+        tooltipContent={deleteTooltipContent}
+        onPress={onDelete}
+      >
         <CancelIcon />
       </ChipDeleteButton>
     </ChipRoot>

@@ -452,9 +452,8 @@ const RenameInput: React.FC<RenameInputProps> = ({ resource, onSubmit, abortRena
         />
         <Button
           buttonSize="sm"
-          type="submit"
           isDisabled={!inputIsValid}
-          /* https://github.com/adobe/react-spectrum/issues/1593 */
+          /* cannot use type="submit" because of https://github.com/adobe/react-spectrum/issues/1593 */
           onPress={handleSubmit}
           onKeyDown={abortOnEsc}
         >
