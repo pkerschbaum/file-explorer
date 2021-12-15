@@ -37,100 +37,102 @@ export type ButtonHandle = {
   triggerSyntheticPress: () => void;
 };
 
-const ButtonBase = React.forwardRef<HTMLButtonElement, ButtonProps>(function ButtonBaseWithRef(
-  props,
-  ref,
-) {
-  const {
-    /* react-aria props */
-    children,
-    onPress,
-    onKeyDown,
-    isDisabled,
-    type,
-    ariaButtonProps: delegatedAriaButtonProps,
-
-    /* component props */
-    variant: _ignored1,
-    buttonSize: _ignored2,
-    startIcon,
-    endIcon,
-    handleRef,
-    enableLayoutAnimation,
-
-    /* other props */
-    ...delegatedProps
-  } = props;
-  const reactAriaProps: AriaButtonProps<'button'> = mergeProps(
-    {
+export const Button = styled(
+  React.forwardRef<HTMLButtonElement, ButtonProps>(function ButtonWithRef(props, ref) {
+    const {
+      /* react-aria props */
       children,
       onPress,
       onKeyDown,
       isDisabled,
       type,
-    },
-    delegatedAriaButtonProps ?? {},
-  );
+      ariaButtonProps: delegatedAriaButtonProps,
 
-  const buttonRef = useObjectRef(ref);
-  const touchRippleHandleRef = React.useRef<TouchRippleHandle>(null);
+      /* component props */
+      variant: _ignored1,
+      buttonSize: _ignored2,
+      startIcon,
+      endIcon,
+      handleRef,
+      enableLayoutAnimation,
 
-  // @ts-expect-error -- when using the "triggerSyntheticPress" function, react-aria useButton does sometimes set the focus on the synthetically pressed button. This is not the intended behavior - the button should just get triggered without changing the focus. The undocumented prop "preventFocusOnPress" does disable the focus behavior of react-aria.
-  reactAriaProps.preventFocusOnPress = true;
-  const { buttonProps } = useButton(reactAriaProps, buttonRef);
-
-  const prefersReducedMotion = useMediaMatch('(prefers-reduced-motion: reduce)');
-
-  React.useImperativeHandle(
-    handleRef,
-    () => ({
-      triggerSyntheticPress: () => {
-        invariant(buttonRef.current);
-        invariant(touchRippleHandleRef.current);
-
-        if (buttonRef.current.disabled || buttonRef.current.ariaDisabled === 'true') {
-          return;
-        }
-
-        const clickEvent = new MouseEvent('click', {
-          bubbles: true,
-          cancelable: true,
-          view: window,
-        });
-        buttonRef.current.dispatchEvent(clickEvent);
-
-        // Trigger touch ripple animation
-        touchRippleHandleRef.current.trigger();
+      /* other props */
+      ...delegatedProps
+    } = props;
+    const reactAriaProps: AriaButtonProps<'button'> = mergeProps(
+      {
+        children,
+        onPress,
+        onKeyDown,
+        isDisabled,
+        type,
       },
-    }),
-    [buttonRef],
-  );
+      delegatedAriaButtonProps ?? {},
+    );
 
-  const animateLayout = enableLayoutAnimation && !prefersReducedMotion;
+    const buttonRef = useObjectRef(ref);
+    const touchRippleHandleRef = React.useRef<TouchRippleHandle>(null);
 
-  return (
-    <motion.button
-      {...mergeProps(delegatedProps, buttonProps)}
-      ref={buttonRef}
-      layout={animateLayout}
-    >
-      <ButtonIcon layout={animateLayout} startIconIsPresent={!!startIcon}>
-        {startIcon}
-      </ButtonIcon>
+    // @ts-expect-error -- when using the "triggerSyntheticPress" function, react-aria useButton does sometimes set the focus on the synthetically pressed button. This is not the intended behavior - the button should just get triggered without changing the focus. The undocumented prop "preventFocusOnPress" does disable the focus behavior of react-aria.
+    reactAriaProps.preventFocusOnPress = true;
+    const { buttonProps } = useButton(reactAriaProps, buttonRef);
 
-      {children && <ButtonContent layout={animateLayout}>{children}</ButtonContent>}
+    const prefersReducedMotion = useMediaMatch('(prefers-reduced-motion: reduce)');
 
-      <ButtonIcon layout={animateLayout} endIconIsPresent={!!endIcon}>
-        {endIcon}
-      </ButtonIcon>
-      <TouchRipple handleRef={touchRippleHandleRef} />
-    </motion.button>
-  );
-});
+    React.useImperativeHandle(
+      handleRef,
+      () => ({
+        triggerSyntheticPress: () => {
+          invariant(buttonRef.current);
+          invariant(touchRippleHandleRef.current);
 
-const variantRules = css<{ variant?: 'outlined' | 'contained' | 'text' }>`
-  ${({ variant }) => {
-    if (variant === 'contained') {
+          if (buttonRef.current.disabled || buttonRef.current.ariaDisabled === 'true') {
+            return;
+          }
+
+          const clickEvent = new MouseEvent('click', {
+            bubbles: true,
+            cancelable: true,
+            view: window,
+          });
+          buttonRef.current.dispatchEvent(clickEvent);
+
+          // Trigger touch ripple animation
+          touchRippleHandleRef.current.trigger();
+        },
+      }),
+      [buttonRef],
+    );
+
+    const animateLayout = enableLayoutAnimation && !prefersReducedMotion;
+
+    return (
+      <ButtonRoot
+        {...mergeProps(delegatedProps, buttonProps)}
+        ref={buttonRef}
+        layout={animateLayout}
+        styleProps={props}
+      >
+        <ButtonIcon layout={animateLayout} startIconIsPresent={!!startIcon}>
+          {startIcon}
+        </ButtonIcon>
+
+        {children && <ButtonContent layout={animateLayout}>{children}</ButtonContent>}
+
+        <ButtonIcon layout={animateLayout} endIconIsPresent={!!endIcon}>
+          {endIcon}
+        </ButtonIcon>
+        <TouchRipple handleRef={touchRippleHandleRef} />
+      </ButtonRoot>
+    );
+  }),
+)``;
+
+type StyleProps = ButtonProps;
+
+const variantRules = css<{ styleProps: StyleProps }>`
+  ${({ styleProps }) => {
+    if (styleProps.variant === 'contained') {
       return css`
         color: var(--color-primary-contrast);
         background-color: var(--color-primary-main);
@@ -153,7 +155,7 @@ const variantRules = css<{ variant?: 'outlined' | 'contained' | 'text' }>`
           filter: brightness(70%);
         }
       `;
-    } else if (variant === 'text') {
+    } else if (styleProps.variant === 'text') {
       return css`
         color: var(--color-fg-0);
         background-color: transparent;
@@ -209,7 +211,7 @@ const variantRules = css<{ variant?: 'outlined' | 'contained' | 'text' }>`
   }}
 `;
 
-export const Button = styled(ButtonBase)`
+const ButtonRoot = styled(motion.button)<{ styleProps: StyleProps }>`
   min-width: 45px;
 
   /* 
@@ -233,8 +235,8 @@ export const Button = styled(ButtonBase)`
 
   ${variantRules}
 
-  ${({ buttonSize }) => {
-    if (buttonSize === 'sm') {
+  ${({ styleProps }) => {
+    if (styleProps.buttonSize === 'sm') {
       return css`
         padding: 0 6px;
         font-size: var(--font-size-sm);

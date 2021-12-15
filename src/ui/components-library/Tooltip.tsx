@@ -84,7 +84,7 @@ type TooltipComponentProps = {
   children: React.ReactNode;
 };
 
-function TooltipBase(props: TooltipProps) {
+export const Tooltip = styled((props: TooltipProps) => {
   const {
     /* component props */
     tooltipInstance,
@@ -101,18 +101,20 @@ function TooltipBase(props: TooltipProps) {
 
   return (
     <OverlayContainer>
-      <Box
+      <TooltipRoot
         ref={tooltipInstance.tooltipRef}
         {...mergeProps(delegatedProps, tooltipInstance.tooltipDomProps, tooltipProps)}
       >
         <TooltipArrow {...tooltipInstance.tooltipArrowDomProps} styleProps={props} />
         <TooltipContent>{children}</TooltipContent>
-      </Box>
+      </TooltipRoot>
     </OverlayContainer>
   );
-}
+})``;
 
-export const Tooltip = styled(TooltipBase)`
+type StyleProps = TooltipProps;
+
+const TooltipRoot = styled(Box)`
   padding: var(--spacing-1) var(--spacing-2);
 
   --border-to-use: 1px solid var(--color-bg-3);
@@ -122,8 +124,6 @@ export const Tooltip = styled(TooltipBase)`
   border-radius: var(--border-radius-4);
   box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.26);
 `;
-
-type StyleProps = TooltipProps;
 
 const TooltipArrow = styled(Box)<{ styleProps: StyleProps }>`
   position: absolute;

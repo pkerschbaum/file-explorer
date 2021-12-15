@@ -31,8 +31,8 @@ type RadioGroupComponentProps = {
   children: React.ReactNode;
 };
 
-const RadioGroupBase = React.forwardRef<HTMLDivElement, RadioGroupProps>(
-  function RadioGroupBaseWithRef(props, ref) {
+export const RadioGroup = styled(
+  React.forwardRef<HTMLDivElement, RadioGroupProps>(function RadioGroupWithRef(props, ref) {
     const {
       /* react-aria props */
       label,
@@ -55,17 +55,15 @@ const RadioGroupBase = React.forwardRef<HTMLDivElement, RadioGroupProps>(
     const { radioGroupProps, labelProps } = useRadioGroup(reactAriaProps, state);
 
     return (
-      <RadioGroupContainer ref={ref} {...mergeProps(delegatedProps, radioGroupProps)}>
+      <RadioGroupRoot ref={ref} {...mergeProps(delegatedProps, radioGroupProps)}>
         <RadioGroupLabel {...labelProps}>{label}</RadioGroupLabel>
         <RadioGroupContextProvider value={state}>{children}</RadioGroupContextProvider>
-      </RadioGroupContainer>
+      </RadioGroupRoot>
     );
-  },
-);
+  }),
+)``;
 
-export const RadioGroup = styled(RadioGroupBase)``;
-
-const RadioGroupContainer = styled(Box)`
+const RadioGroupRoot = styled(Box)`
   display: flex;
   flex-direction: column;
   gap: var(--spacing-2);
@@ -81,7 +79,7 @@ type RadioProps = RadioAriaProps &
 
 type RadioAriaProps = Pick<AriaRadioProps, 'value' | 'children'>;
 
-function RadioBase(props: RadioProps) {
+export const Radio = styled((props: RadioProps) => {
   const {
     /* react-aria props */
     value,
@@ -103,7 +101,7 @@ function RadioBase(props: RadioProps) {
   const isSelected = state.selectedValue === value;
 
   return (
-    <RadioContainer {...delegatedProps}>
+    <RadioRoot {...delegatedProps}>
       <VisuallyHidden>
         <input {...inputProps} {...focusProps} ref={nativeInputRef} />
       </VisuallyHidden>
@@ -116,13 +114,11 @@ function RadioBase(props: RadioProps) {
         {isFocusVisible && <StyledIconFocused Component={CircleOutlinedIcon} />}
       </OverlayedIconsContainer>
       {children}
-    </RadioContainer>
+    </RadioRoot>
   );
-}
+})``;
 
-export const Radio = styled(RadioBase)``;
-
-const RadioContainer = styled.label`
+const RadioRoot = styled.label`
   display: flex;
   align-items: center;
   gap: var(--spacing-1);

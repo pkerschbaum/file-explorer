@@ -19,13 +19,19 @@ type CharVisualKey = {
   contentSize: 'sm' | 'md';
 };
 
-export const VisualKey: React.FC<VisualKeyProps> = ({ children, ...delegated }) => (
-  <VisualKeyContainer {...delegated}>
-    <VisualKeyChild {...delegated}>{children}</VisualKeyChild>
-  </VisualKeyContainer>
-);
+export const VisualKey: React.FC<VisualKeyProps> = (props) => {
+  const { children } = props;
 
-const VisualKeyContainer = styled(Box)<VisualKeyProps>`
+  return (
+    <VisualKeyRoot styleProps={props}>
+      <VisualKeyChild styleProps={props}>{children}</VisualKeyChild>
+    </VisualKeyRoot>
+  );
+};
+
+type StyleProps = VisualKeyProps;
+
+const VisualKeyRoot = styled(Box)<{ styleProps: StyleProps }>`
   /* 
    * The visual keys should be a square not exceeding the containers content. We take the current 
    * font size times the line height to get the height of the surrounding content box, and take that 
@@ -41,32 +47,32 @@ const VisualKeyContainer = styled(Box)<VisualKeyProps>`
   align-self: center;
 
   display: flex;
-  justify-content: ${(props) => (props.type === 'char' ? 'flex-start' : 'center')};
-  align-items: ${(props) => (props.type === 'char' ? 'flex-start' : 'center')};
-  padding-top: ${(props) => {
-    if (props.type === 'icon') {
+  justify-content: ${({ styleProps }) => (styleProps.type === 'char' ? 'flex-start' : 'center')};
+  align-items: ${({ styleProps }) => (styleProps.type === 'char' ? 'flex-start' : 'center')};
+  padding-top: ${({ styleProps }) => {
+    if (styleProps.type === 'icon') {
       return '3px';
-    } else if (props.type === 'char') {
-      if (props.contentSize === 'md') {
+    } else if (styleProps.type === 'char') {
+      if (styleProps.contentSize === 'md') {
         return '2px';
       } else {
         return '3px';
       }
     } else {
-      assertThat.isUnreachable(props);
+      assertThat.isUnreachable(styleProps);
     }
   }};
-  padding-left: ${(props) => {
-    if (props.type === 'icon') {
+  padding-left: ${({ styleProps }) => {
+    if (styleProps.type === 'icon') {
       return undefined;
-    } else if (props.type === 'char') {
-      if (props.contentSize === 'md') {
+    } else if (styleProps.type === 'char') {
+      if (styleProps.contentSize === 'md') {
         return '4px';
       } else {
         return '2px';
       }
     } else {
-      assertThat.isUnreachable(props);
+      assertThat.isUnreachable(styleProps);
     }
   }};
   border-bottom: 3px solid rgba(0, 0, 0, 0.2);
@@ -78,20 +84,20 @@ const VisualKeyContainer = styled(Box)<VisualKeyProps>`
   background-color: lightgrey;
 `;
 
-const VisualKeyChild = styled(Box)<VisualKeyProps>`
-  font-size: ${(props) => {
-    if (props.type === 'icon') {
+const VisualKeyChild = styled(Box)<{ styleProps: StyleProps }>`
+  font-size: ${({ styleProps }) => {
+    if (styleProps.type === 'icon') {
       return '100%';
-    } else if (props.type === 'char') {
-      if (props.contentSize === 'md') {
+    } else if (styleProps.type === 'char') {
+      if (styleProps.contentSize === 'md') {
         return '80%';
-      } else if (props.contentSize === 'sm') {
+      } else if (styleProps.contentSize === 'sm') {
         return '70%';
       } else {
-        assertThat.isUnreachable(props.contentSize);
+        assertThat.isUnreachable(styleProps.contentSize);
       }
     } else {
-      assertThat.isUnreachable(props);
+      assertThat.isUnreachable(styleProps);
     }
   }};
   line-height: 1;

@@ -13,26 +13,25 @@ type PaperComponentProps = {
   children: React.ReactNode;
 };
 
-const PaperBase = React.forwardRef<HTMLDivElement, PaperProps>(function PaperBaseWithRef(
-  props,
-  ref,
-) {
-  const {
-    /* component props */
-    children,
+export const Paper = styled(
+  React.forwardRef<HTMLDivElement, PaperProps>(function PaperWithRef(props, ref) {
+    const {
+      /* component props */
+      children,
 
-    /* other props */
-    ...delegatedProps
-  } = props;
+      /* other props */
+      ...delegatedProps
+    } = props;
 
-  return (
-    <Box {...delegatedProps} ref={ref}>
-      {children}
-    </Box>
-  );
-});
+    return (
+      <PaperRoot {...delegatedProps} ref={ref}>
+        {children}
+      </PaperRoot>
+    );
+  }),
+)``;
 
-export const Paper = styled(PaperBase)`
+const PaperRoot = styled(Box)`
   border-radius: var(--border-radius-2);
   background-color: var(--color-bg-1);
   box-shadow: var(--shadow-elevation-low);

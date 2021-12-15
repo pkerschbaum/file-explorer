@@ -18,7 +18,7 @@ type ChipComponentProps = {
   deleteTooltipContent: React.ReactChild;
 };
 
-const ChipBase: React.FC<ChipProps> = (props) => {
+export const Chip = styled((props: ChipProps) => {
   const {
     /* component props */
     label,
@@ -30,16 +30,16 @@ const ChipBase: React.FC<ChipProps> = (props) => {
   } = props;
 
   return (
-    <Box {...delegatedProps}>
+    <ChipRoot {...delegatedProps}>
       <ChipLabel>{label}</ChipLabel>
       <ChipDeleteButton tooltipContent={deleteTooltipContent} onPress={onDelete}>
         <Icon Component={CancelIcon} />
       </ChipDeleteButton>
-    </Box>
+    </ChipRoot>
   );
-};
+})``;
 
-export const Chip = styled(ChipBase)`
+const ChipRoot = styled(Box)`
   padding-left: var(--spacing-2);
   display: flex;
   gap: var(--spacing-1);

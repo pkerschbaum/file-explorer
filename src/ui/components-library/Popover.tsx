@@ -75,7 +75,7 @@ type PopoverComponentProps = {
   popoverInstance: PopoverInstance;
 };
 
-function PopoverBase(props: PopoverProps) {
+export const Popover = styled((props: PopoverProps) => {
   const {
     /* component props */
     children,
@@ -119,6 +119,4 @@ function PopoverBase(props: PopoverProps) {
       </FocusScope>
     </OverlayContainer>
   );
-}
-
-export const Popover = styled(PopoverBase)``;
+})``;

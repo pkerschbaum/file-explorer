@@ -18,8 +18,8 @@ type DataTableComponentProps = {
   refs?: { tableContainer?: React.RefObject<HTMLDivElement> };
 };
 
-const DataTableBase = React.forwardRef<HTMLDivElement, DataTableProps>(
-  function DataTableBaseWithRef(props, ref) {
+export const DataTable = styled(
+  React.forwardRef<HTMLDivElement, DataTableProps>(function DataTableWithRef(props, ref) {
     const {
       /* component props */
       children,
@@ -34,7 +34,7 @@ const DataTableBase = React.forwardRef<HTMLDivElement, DataTableProps>(
     const combinedRef = useForkRef(null, ref);
 
     return (
-      <Box
+      <DataTableRoot
         {...mergeProps(delegatedProps, {
           className: classes?.table,
           'aria-label': labels?.table,
@@ -44,12 +44,12 @@ const DataTableBase = React.forwardRef<HTMLDivElement, DataTableProps>(
         <TableContainer ref={refs?.tableContainer}>
           <StyledTable>{children}</StyledTable>
         </TableContainer>
-      </Box>
+      </DataTableRoot>
     );
-  },
-);
+  }),
+)``;
 
-export const DataTable = styled(DataTableBase)`
+const DataTableRoot = styled(Box)`
   min-height: 0;
   height: 100%;
   max-height: 100%;

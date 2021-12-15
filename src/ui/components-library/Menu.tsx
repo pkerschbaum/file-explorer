@@ -87,7 +87,7 @@ export function useMenu<TriggerHTMLElement extends HTMLElement>(
   };
 }
 
-type MenuPopupProps<T extends object> = TreeProps<T> &
+type MenuPopupProps<T extends object> = Pick<TreeProps<T>, 'children'> &
   Required<Pick<AriaMenuOptions<unknown>, 'aria-label'>> &
   Pick<MenuTriggerProps, 'closeOnSelect'> &
   MenuPopupComponentProps;
@@ -97,7 +97,20 @@ type MenuPopupComponentProps = {
 };
 
 export function MenuPopup<T extends object>(props: MenuPopupProps<T>) {
-  const { menuPopupInstance, ...reactAriaProps } = props;
+  const {
+    /* react-aria props */
+    children,
+    'aria-label': ariaLabel,
+    closeOnSelect,
+
+    /* component props */
+    menuPopupInstance,
+  } = props;
+  const reactAriaProps = {
+    children,
+    'aria-label': ariaLabel,
+    closeOnSelect,
+  };
 
   const menuRef = React.useRef<HTMLUListElement>(null);
   const state = useTreeState<T>({ ...reactAriaProps, selectionMode: 'none' });
@@ -170,18 +183,27 @@ function MenuItem<T extends object>(props: MenuItemProps<T>) {
   );
   const { focusProps } = useFocus({ onFocusChange: setFocused });
 
+  const styleProps: MenuItemStyleProps<T> = {
+    ...props,
+    isFocused,
+  };
+
   return (
-    <ItemContainer
+    <MenuItemRoot
       {...mergeProps(menuItemProps, focusProps, itemDomProps)}
       ref={ref}
-      isFocused={isFocused}
+      styleProps={styleProps}
     >
       {item.rendered}
-    </ItemContainer>
+    </MenuItemRoot>
   );
 }
 
-const ItemContainer = styled.li<{ isFocused: boolean }>`
+type MenuItemStyleProps<T extends object> = MenuItemProps<T> & {
+  isFocused: boolean;
+};
+
+const MenuItemRoot = styled.li<{ styleProps: MenuItemStyleProps<any> }>`
   padding: var(--padding-button-md-block) var(--padding-button-md-inline);
   display: flex;
   align-items: center;
@@ -189,8 +211,8 @@ const ItemContainer = styled.li<{ isFocused: boolean }>`
 
   cursor: pointer;
 
-  ${({ isFocused }) =>
-    isFocused &&
+  ${({ styleProps }) =>
+    styleProps.isFocused &&
     css`
       border-color: var(--color-bg-2);
       background-color: var(--color-bg-2);

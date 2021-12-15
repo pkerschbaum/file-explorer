@@ -13,32 +13,35 @@ type DividerProps = DividerAriaProps &
 
 type DividerAriaProps = Pick<SeparatorProps, 'orientation'>;
 
-const DividerBase = React.forwardRef<HTMLDivElement, DividerProps>(function DividerForwardRef(
-  props,
-  ref,
-) {
-  const {
-    /* react-aria props */
-    orientation,
+export const Divider = styled(
+  React.forwardRef<HTMLDivElement, DividerProps>(function DividerForwardRef(props, ref) {
+    const {
+      /* react-aria props */
+      orientation,
 
-    /* other props */
-    ...delegatedProps
-  } = props;
-  const reactAriaProps: SeparatorProps = {
-    orientation,
-  };
+      /* other props */
+      ...delegatedProps
+    } = props;
+    const reactAriaProps: SeparatorProps = {
+      orientation,
+    };
 
-  const { separatorProps } = useSeparator(reactAriaProps);
-  return <Box ref={ref} {...mergeProps(delegatedProps, separatorProps)} />;
-});
+    const { separatorProps } = useSeparator(reactAriaProps);
+    return (
+      <DividerRoot ref={ref} {...mergeProps(delegatedProps, separatorProps)} styleProps={props} />
+    );
+  }),
+)``;
 
-export const Divider = styled(DividerBase)`
+type StyleProps = DividerProps;
+
+const DividerRoot = styled(Box)<{ styleProps: StyleProps }>`
   border-top-width: 0;
   border-left-width: 0;
   border-color: var(--color-darken-1);
   border-style: solid;
-  ${({ orientation }) => {
-    if (orientation === 'vertical') {
+  ${({ styleProps }) => {
+    if (styleProps.orientation === 'vertical') {
       return css`
         border-bottom-width: 0;
         border-right-width: var(--border-width-1);

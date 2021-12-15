@@ -9,20 +9,19 @@ export type CellProps = CellComponentProps &
 
 type CellComponentProps = {};
 
-const CellBase = React.forwardRef<HTMLTableCellElement, CellProps>(function CellBaseWithRef(
-  props,
-  ref,
-) {
-  const { children, ...delegatedProps } = props;
+export const Cell = styled(
+  React.forwardRef<HTMLTableCellElement, CellProps>(function CellWithRef(props, ref) {
+    const { children, ...delegatedProps } = props;
 
-  return (
-    <td {...delegatedProps} ref={ref}>
-      {children}
-    </td>
-  );
-});
+    return (
+      <CellRoot {...delegatedProps} ref={ref}>
+        {children}
+      </CellRoot>
+    );
+  }),
+)``;
 
-export const Cell = styled(CellBase)`
+const CellRoot = styled.td`
   padding: 0;
 
   border-bottom: var(--border-width-1) solid var(--color-darken-1);

@@ -9,16 +9,16 @@ export type TableBodyProps = TableBodyComponentProps &
 
 type TableBodyComponentProps = {};
 
-const TableBodyBase = React.forwardRef<HTMLTableSectionElement, TableBodyProps>(
-  function TableBodyBaseWithRef(props, ref) {
+export const TableBody = styled(
+  React.forwardRef<HTMLTableSectionElement, TableBodyProps>(function TableBodyWithRef(props, ref) {
     const { children, ...delegatedProps } = props;
 
     return (
-      <tbody {...delegatedProps} ref={ref}>
+      <TableBodyRoot {...delegatedProps} ref={ref}>
         {children}
-      </tbody>
+      </TableBodyRoot>
     );
-  },
-);
+  }),
+)``;
 
-export const TableBody = styled(TableBodyBase)``;
+const TableBodyRoot = styled.tbody``;

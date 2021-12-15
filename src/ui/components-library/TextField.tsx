@@ -23,8 +23,8 @@ type TextFieldComponentProps = {
   inputProps?: React.InputHTMLAttributes<HTMLInputElement> & DataAttributes;
 };
 
-const TextFieldBase = React.forwardRef<HTMLDivElement, TextFieldProps>(
-  function TextFieldBaseWithRef(props, ref) {
+export const TextField = styled(
+  React.forwardRef<HTMLDivElement, TextFieldProps>(function TextFieldWithRef(props, ref) {
     const {
       /* react-aria props */
       label,
@@ -56,18 +56,18 @@ const TextFieldBase = React.forwardRef<HTMLDivElement, TextFieldProps>(
     const { labelProps, inputProps } = useTextField(reactAriaProps, inputRef);
 
     return (
-      <Box ref={ref} {...delegatedProps}>
+      <TextFieldRoot ref={ref} {...delegatedProps}>
         {label && <TextFieldLabel {...labelProps}>{label}</TextFieldLabel>}
         <TextFieldInput
           {...mergeProps({ spellCheck: false }, componentInputProps, inputProps)}
           ref={inputRef}
         />
-      </Box>
+      </TextFieldRoot>
     );
-  },
-);
+  }),
+)``;
 
-export const TextField = styled(TextFieldBase)`
+const TextFieldRoot = styled(Box)`
   display: flex;
   flex-direction: column;
 `;

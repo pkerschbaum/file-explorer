@@ -7,20 +7,19 @@ export type HeadRowProps = RowProps & HeadRowComponentProps;
 
 type HeadRowComponentProps = {};
 
-const HeadRowBase = React.forwardRef<HTMLTableRowElement, HeadRowProps>(function HeadRowBaseWithRef(
-  props,
-  ref,
-) {
-  const { children, ...delegatedProps } = props;
+export const HeadRow = styled(
+  React.forwardRef<HTMLTableRowElement, HeadRowProps>(function HeadRowWithRef(props, ref) {
+    const { children, ...delegatedProps } = props;
 
-  return (
-    <Row {...delegatedProps} ref={ref}>
-      {children}
-    </Row>
-  );
-});
+    return (
+      <HeadRowRoot {...delegatedProps} ref={ref}>
+        {children}
+      </HeadRowRoot>
+    );
+  }),
+)``;
 
-export const HeadRow = styled(HeadRowBase)`
+const HeadRowRoot = styled(Row)`
   position: sticky;
   top: 0;
 `;

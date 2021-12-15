@@ -9,19 +9,19 @@ export type HeadCellProps = HeadCellComponentProps &
 
 type HeadCellComponentProps = {};
 
-const HeadCellBase = React.forwardRef<HTMLTableCellElement, HeadCellProps>(
-  function HeadCellBaseWithRef(props, ref) {
+export const HeadCell = styled(
+  React.forwardRef<HTMLTableCellElement, HeadCellProps>(function HeadCellWithRef(props, ref) {
     const { children, ...delegatedProps } = props;
 
     return (
-      <th {...delegatedProps} ref={ref}>
+      <HeadCellRoot {...delegatedProps} ref={ref}>
         {children}
-      </th>
+      </HeadCellRoot>
     );
-  },
-);
+  }),
+)``;
 
-export const HeadCell = styled(HeadCellBase)`
+const HeadCellRoot = styled.th`
   padding: 0;
 
   border-bottom: var(--border-width-1) solid var(--color-darken-1);

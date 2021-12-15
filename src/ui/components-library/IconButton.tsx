@@ -90,14 +90,14 @@ export const IconButton = styled(
 
     return (
       <>
-        <IconButtonContainer
+        <IconButtonRoot
           ref={buttonRef}
           {...mergeProps(delegatedProps, buttonProps, triggerProps)}
           styleProps={styleProps}
         >
           <FocusAndHoverCircle styleProps={styleProps} />
           <ButtonContent>{children}</ButtonContent>
-        </IconButtonContainer>
+        </IconButtonRoot>
 
         {tooltipInstance.state.isOpen && (
           <Tooltip tooltipInstance={tooltipInstance}>{tooltipContent}</Tooltip>
@@ -110,7 +110,8 @@ export const IconButton = styled(
 type StyleProps = IconButtonProps & {
   iconButtonPadding: number;
 };
-const IconButtonContainer = styled(motion.button)<{ styleProps: StyleProps }>`
+
+const IconButtonRoot = styled(motion.button)<{ styleProps: StyleProps }>`
   position: relative;
   isolation: isolate;
 
@@ -152,8 +153,8 @@ const ButtonContent = styled(Box)`
 
 const FocusAndHoverCircle = styled(Box)<{ styleProps: StyleProps }>`
   position: absolute;
-  ${({ styleProps: scProps }) =>
-    !scProps.disablePadding
+  ${({ styleProps }) =>
+    !styleProps.disablePadding
       ? css`
           inset: 0;
         `

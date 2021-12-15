@@ -24,7 +24,7 @@ type TabsComponentProps = {
   children: React.ReactNode;
 };
 
-const TabsBase: React.FC<TabsProps> = (props) => {
+export const Tabs = styled((props: TabsProps) => {
   const {
     /* component props */
     selectedValue,
@@ -37,14 +37,14 @@ const TabsBase: React.FC<TabsProps> = (props) => {
 
   return (
     <TabsContextProvider value={{ selectedValue, setSelectedValue }}>
-      <Box role="tablist" {...delegatedProps}>
+      <TabsRoot role="tablist" {...delegatedProps}>
         {children}
-      </Box>
+      </TabsRoot>
     </TabsContextProvider>
   );
-};
+})``;
 
-export const Tabs = styled(TabsBase)`
+const TabsRoot = styled(Box)`
   isolation: isolate;
 
   display: flex;
@@ -59,7 +59,7 @@ type TabComponentProps = {
   children: React.ReactNode;
 };
 
-const TabBase: React.FC<TabProps> = (props) => {
+export const Tab = styled((props: TabProps) => {
   const {
     /* component props */
     value,
@@ -72,14 +72,14 @@ const TabBase: React.FC<TabProps> = (props) => {
   const { tabProps } = useTab({ value });
 
   return (
-    <Box {...mergeProps(delegatedProps, tabProps)}>
+    <TabRoot {...mergeProps(delegatedProps, tabProps)}>
       {children}
       {tabProps['aria-selected'] && <TabIsActiveIndicator layoutId={INDICATOR_MOTION_LAYOUT_ID} />}
-    </Box>
+    </TabRoot>
   );
-};
+})``;
 
-export const Tab = styled(TabBase)`
+const TabRoot = styled(Box)`
   position: relative;
 `;
 

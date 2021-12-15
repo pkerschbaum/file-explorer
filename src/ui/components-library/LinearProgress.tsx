@@ -18,8 +18,8 @@ type LinearProgressProps = LinearProgressAriaProps &
 type LinearProgressAriaProps = Required<Pick<AriaProgressBarProps, 'aria-label'>> &
   Pick<AriaProgressBarProps, 'value' | 'isIndeterminate' | 'minValue' | 'maxValue'>;
 
-const LinearProgressBase = React.forwardRef<HTMLDivElement, LinearProgressProps>(
-  function LinearProgressBaseWithRef(props, ref) {
+export const LinearProgress = styled(
+  React.forwardRef<HTMLDivElement, LinearProgressProps>(function LinearProgressWithRef(props, ref) {
     const {
       /* react-aria props */
       'aria-label': ariaLabel,
@@ -47,7 +47,7 @@ const LinearProgressBase = React.forwardRef<HTMLDivElement, LinearProgressProps>
     const barWidthPercentage = Math.round(percentage * 100);
 
     return (
-      <ProgressContainer ref={ref} {...mergeProps(delegatedProps, progressBarProps)}>
+      <ProgressRoot ref={ref} {...mergeProps(delegatedProps, progressBarProps)}>
         {!prefersReducedMotion ? (
           <ProgressBarBackground>
             {!isIndeterminate ? (
@@ -65,14 +65,12 @@ const LinearProgressBase = React.forwardRef<HTMLDivElement, LinearProgressProps>
         {check.isNonEmptyString(progressBarProps['aria-valuetext']) && (
           <ProgressValueBox>{progressBarProps['aria-valuetext']}</ProgressValueBox>
         )}
-      </ProgressContainer>
+      </ProgressRoot>
     );
-  },
-);
+  }),
+)``;
 
-export const LinearProgress = styled(LinearProgressBase)``;
-
-const ProgressContainer = styled(Box)`
+const ProgressRoot = styled(Box)`
   display: flex;
   align-items: center;
   gap: var(--spacing-3);

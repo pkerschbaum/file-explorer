@@ -14,7 +14,7 @@ type BreadcrumbsProps = BreadcrumbsAriaProps &
 
 type BreadcrumbsAriaProps = Required<Pick<AriaBreadcrumbsProps<unknown>, 'children'>>;
 
-const BreadcrumbsBase: React.FC<BreadcrumbsProps> = (props) => {
+export const Breadcrumbs = styled((props: BreadcrumbsProps) => {
   const {
     /* react-aria props */
     children,
@@ -29,13 +29,13 @@ const BreadcrumbsBase: React.FC<BreadcrumbsProps> = (props) => {
   const { navProps } = useBreadcrumbs(reactAriaProps);
 
   return (
-    <nav {...mergeProps(delegatedProps, navProps)}>
+    <BreadcrumbsRoot {...mergeProps(delegatedProps, navProps)}>
       <BreadcrumbsList>{children}</BreadcrumbsList>
-    </nav>
+    </BreadcrumbsRoot>
   );
-};
+})``;
 
-export const Breadcrumbs = styled(BreadcrumbsBase)``;
+const BreadcrumbsRoot = styled.nav``;
 
 const BreadcrumbsList = styled.ol`
   display: flex;
@@ -53,7 +53,7 @@ type BreadcrumbItemProps = BreadcrumbItemAriaProps &
 
 type BreadcrumbItemAriaProps = Required<Pick<AriaBreadcrumbItemProps, 'isCurrent' | 'children'>>;
 
-const BreadcrumbItemBase: React.FC<BreadcrumbItemProps> = (props) => {
+export const BreadcrumbItem = styled((props: BreadcrumbItemProps) => {
   const {
     /* react-aria props */
     isCurrent,
@@ -65,13 +65,13 @@ const BreadcrumbItemBase: React.FC<BreadcrumbItemProps> = (props) => {
 
   return (
     <>
-      <li {...delegatedProps}>{children}</li>
+      <BreadcrumbRoot {...delegatedProps}>{children}</BreadcrumbRoot>
       {!isCurrent && <BreadcrumbSeparator aria-hidden="true">/</BreadcrumbSeparator>}
     </>
   );
-};
+})``;
 
-export const BreadcrumbItem = styled(BreadcrumbItemBase)``;
+const BreadcrumbRoot = styled.li``;
 
 const BreadcrumbSeparator = styled(Box)``;
 
