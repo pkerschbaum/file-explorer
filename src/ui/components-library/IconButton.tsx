@@ -102,9 +102,7 @@ export const IconButton = styled(
           <ButtonContent>{children}</ButtonContent>
         </IconButtonRoot>
 
-        {tooltipInstance.state.isOpen && (
-          <Tooltip tooltipInstance={tooltipInstance}>{tooltipContent}</Tooltip>
-        )}
+        <Tooltip tooltipInstance={tooltipInstance}>{tooltipContent}</Tooltip>
       </>
     );
   }),

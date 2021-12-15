@@ -85,6 +85,12 @@ type TooltipComponentProps = {
 };
 
 export const Tooltip = styled((props: TooltipProps) => {
+  const { tooltipInstance } = props;
+
+  return <>{tooltipInstance.state.isOpen && <TooltipInner {...props} />}</>;
+})``;
+
+const TooltipInner = styled((props: TooltipProps) => {
   const {
     /* component props */
     tooltipInstance,
@@ -100,7 +106,7 @@ export const Tooltip = styled((props: TooltipProps) => {
   );
 
   return (
-    <OverlayContainer>
+    <OverlayContainer style={{ isolation: 'isolate' }}>
       <TooltipRoot
         ref={tooltipInstance.tooltipRef}
         {...mergeProps(delegatedProps, tooltipInstance.tooltipDomProps, tooltipProps)}

@@ -378,17 +378,13 @@ const PasteInfoBadge: React.FC = () => {
         {draftPasteState.pasteShouldMove ? <ContentCutOutlinedIcon /> : <ContentCopyOutlinedIcon />}
       </StyledBadge>
 
-      {tooltipInstance.state.isOpen && (
-        <Tooltip tooltipInstance={tooltipInstance}>
-          <ClipboardResourcesList>
-            {clipboardResources.map((resource) => (
-              <Box key={uriHelper.getComparisonKey(resource)}>
-                {formatter.resourcePath(resource)}
-              </Box>
-            ))}
-          </ClipboardResourcesList>
-        </Tooltip>
-      )}
+      <Tooltip tooltipInstance={tooltipInstance}>
+        <ClipboardResourcesList>
+          {clipboardResources.map((resource) => (
+            <Box key={uriHelper.getComparisonKey(resource)}>{formatter.resourcePath(resource)}</Box>
+          ))}
+        </ClipboardResourcesList>
+      </Tooltip>
     </>
   );
 };

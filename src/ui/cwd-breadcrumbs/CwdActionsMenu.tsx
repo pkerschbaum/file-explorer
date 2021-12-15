@@ -41,51 +41,47 @@ export const CwdActionsMenu: React.FC<CwdActionsMenuProps> = ({ explorerId, menu
 
   return (
     <>
-      {menuInstance.state.isOpen && (
-        <MenuPopup
-          aria-label="Actions for the current working directory"
-          menuPopupInstance={menuInstance}
-          closeOnSelect={false}
+      <MenuPopup
+        aria-label="Actions for the current working directory"
+        menuPopupInstance={menuInstance}
+        closeOnSelect={false}
+      >
+        <Item
+          key={CWD_ACTIONS_MENU_ACTION.REVEAL_IN_OS_FILE_EXPLORER}
+          textValue="Reveal in OS File Explorer"
+          onAction={async () => {
+            await revealCwdInOSExplorer(explorerId);
+            menuInstance.state.close();
+          }}
         >
-          <Item
-            key={CWD_ACTIONS_MENU_ACTION.REVEAL_IN_OS_FILE_EXPLORER}
-            textValue="Reveal in OS File Explorer"
-            onAction={async () => {
-              await revealCwdInOSExplorer(explorerId);
+          <FolderOutlinedIcon />
+          Reveal in OS File Explorer
+        </Item>
+        <Item
+          key={CWD_ACTIONS_MENU_ACTION.CHANGE_CWD}
+          textValue="Change Directory"
+          itemRef={changeCwdLIRef}
+          itemDomProps={changeCwdTriggerProps}
+          onAction={() => changeCwdPopoverInstance.state.open()}
+        >
+          <ArrowRightAltOutlinedIcon />
+          Change Directory
+        </Item>
+      </MenuPopup>
+
+      <Popover popoverInstance={changeCwdPopoverInstance}>
+        <Paper>
+          <ChangeCwdForm
+            isOpen={changeCwdPopoverInstance.state.isOpen}
+            initialCwdValue={formatter.resourcePath(cwd)}
+            onSubmit={async (newDir) => {
+              await changeDirectory(explorerId, uriHelper.parseUri(cwd.scheme, newDir));
+              changeCwdPopoverInstance.state.close();
               menuInstance.state.close();
             }}
-          >
-            <FolderOutlinedIcon />
-            Reveal in OS File Explorer
-          </Item>
-          <Item
-            key={CWD_ACTIONS_MENU_ACTION.CHANGE_CWD}
-            textValue="Change Directory"
-            itemRef={changeCwdLIRef}
-            itemDomProps={changeCwdTriggerProps}
-            onAction={() => changeCwdPopoverInstance.state.open()}
-          >
-            <ArrowRightAltOutlinedIcon />
-            Change Directory
-          </Item>
-        </MenuPopup>
-      )}
-
-      {changeCwdPopoverInstance.state.isOpen && (
-        <Popover popoverInstance={changeCwdPopoverInstance}>
-          <Paper>
-            <ChangeCwdForm
-              isOpen={changeCwdPopoverInstance.state.isOpen}
-              initialCwdValue={formatter.resourcePath(cwd)}
-              onSubmit={async (newDir) => {
-                await changeDirectory(explorerId, uriHelper.parseUri(cwd.scheme, newDir));
-                changeCwdPopoverInstance.state.close();
-                menuInstance.state.close();
-              }}
-            />
-          </Paper>
-        </Popover>
-      )}
+          />
+        </Paper>
+      </Popover>
     </>
   );
 };

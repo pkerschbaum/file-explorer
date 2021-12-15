@@ -11,11 +11,13 @@ import { mergeProps } from '@react-aria/utils';
 import { OverlayTriggerState, useOverlayTriggerState } from '@react-stately/overlays';
 import { AriaButtonProps } from '@react-types/button';
 import { PositionProps } from '@react-types/overlays';
+import { AnimatePresence } from 'framer-motion';
 import * as React from 'react';
 import styled from 'styled-components';
 
 import { Box } from '@app/ui/components-library/Box';
 import { FocusScope } from '@app/ui/components-library/FocusScope';
+import { framerMotionAnimation } from '@app/ui/utils/animations';
 
 export { OverlayProvider } from '@react-aria/overlays';
 
@@ -73,13 +75,23 @@ type PopoverProps = PopoverComponentProps &
 type PopoverComponentProps = {
   children: React.ReactNode;
   popoverInstance: PopoverInstance;
+  hideBackdrop?: boolean;
 };
 
 export const Popover = styled((props: PopoverProps) => {
+  const { popoverInstance } = props;
+
+  return (
+    <AnimatePresence>{popoverInstance.state.isOpen && <PopoverInner {...props} />}</AnimatePresence>
+  );
+})``;
+
+const PopoverInner = styled((props: PopoverProps) => {
   const {
     /* component props */
     children,
     popoverInstance,
+    hideBackdrop,
 
     /* other props */
     ...delegatedProps
@@ -101,8 +113,11 @@ export const Popover = styled((props: PopoverProps) => {
   const { dialogProps } = useDialog({}, popoverInstance.popoverRef);
 
   return (
-    <OverlayContainer>
+    <OverlayContainer style={{ isolation: 'isolate' }}>
       <FocusScope contain autoFocus restoreFocus>
+        {!hideBackdrop && (
+          <PopoverBackdrop onClick={onClose} {...framerMotionAnimation.fadeInOut} />
+        )}
         <Box
           {...mergeProps(
             overlayProps,
@@ -111,6 +126,7 @@ export const Popover = styled((props: PopoverProps) => {
             modalProps,
             delegatedProps,
           )}
+          {...framerMotionAnimation.fadeInOut}
           ref={popoverInstance.popoverRef}
         >
           {children}
@@ -120,3 +136,9 @@ export const Popover = styled((props: PopoverProps) => {
     </OverlayContainer>
   );
 })``;
+
+const PopoverBackdrop = styled(Box)`
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.34);
+`;

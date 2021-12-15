@@ -66,38 +66,36 @@ export const CreateFolder: React.FC<CreateFolderProps> = ({
         New Folder
       </Button>
 
-      {popoverInstance.state.isOpen && (
-        <Popover popoverInstance={popoverInstance}>
-          <Paper>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                void handleSubmit();
-              }}
-            >
-              <Card>
-                <TextField
-                  placeholder="Name of folder"
-                  aria-label="Name of folder"
-                  value={createFolderValue}
-                  onChange={setCreateFolderValue}
-                />
+      <Popover popoverInstance={popoverInstance}>
+        <Paper>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              void handleSubmit();
+            }}
+          >
+            <Card>
+              <TextField
+                placeholder="Name of folder"
+                aria-label="Name of folder"
+                value={createFolderValue}
+                onChange={setCreateFolderValue}
+              />
 
-                <CardActions>
-                  <Button
-                    variant={!inputIsValid ? undefined : 'contained'}
-                    isDisabled={!inputIsValid}
-                    /* cannot use type="submit" because of https://github.com/adobe/react-spectrum/issues/1593 */
-                    onPress={handleSubmit}
-                  >
-                    Create
-                  </Button>
-                </CardActions>
-              </Card>
-            </form>
-          </Paper>
-        </Popover>
-      )}
+              <CardActions>
+                <Button
+                  variant={!inputIsValid ? undefined : 'contained'}
+                  isDisabled={!inputIsValid}
+                  /* cannot use type="submit" because of https://github.com/adobe/react-spectrum/issues/1593 */
+                  onPress={handleSubmit}
+                >
+                  Create
+                </Button>
+              </CardActions>
+            </Card>
+          </form>
+        </Paper>
+      </Popover>
     </>
   );
 };

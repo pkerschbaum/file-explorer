@@ -60,3 +60,12 @@ export const Pulsate = keyframes`
     opacity: 1;
   }
 `;
+
+export const framerMotionAnimation = {
+  fadeInOut: {
+    initial: { opacity: 0 },
+    animate: { opacity: 1 },
+    transition: { duration: 0.15 },
+    exit: { opacity: 0 },
+  },
+};

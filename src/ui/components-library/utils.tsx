@@ -1,3 +1,5 @@
+import { MotionProps } from 'framer-motion';
+
 import { config } from '@app/config';
 
 export const componentLibraryUtils = { generateMotionLayoutId };
@@ -12,3 +14,13 @@ function generateMotionLayoutId() {
 export type DataAttributes = Partial<{
   [attribute: `data-${string}`]: string;
 }>;
+
+export type ReactMotionProps<
+  T extends React.ElementType,
+  U extends HTMLElement,
+> = React.ComponentPropsWithoutRef<T> &
+  React.RefAttributes<U> &
+  Pick<
+    MotionProps,
+    'layout' | 'layoutId' | 'initial' | 'animate' | 'exit' | 'transition' | 'variants'
+  >;

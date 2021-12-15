@@ -97,6 +97,12 @@ type MenuPopupComponentProps = {
 };
 
 export function MenuPopup<T extends object>(props: MenuPopupProps<T>) {
+  const { menuPopupInstance } = props;
+
+  return <>{menuPopupInstance.state.isOpen && <MenuPopupInner {...props} />}</>;
+}
+
+function MenuPopupInner<T extends object>(props: MenuPopupProps<T>) {
   const {
     /* react-aria props */
     children,
@@ -128,7 +134,7 @@ export function MenuPopup<T extends object>(props: MenuPopupProps<T>) {
   }
 
   return (
-    <Popover popoverInstance={menuPopupInstance.popoverInstance}>
+    <Popover popoverInstance={menuPopupInstance.popoverInstance} hideBackdrop>
       <PopupPaper>
         <MenuContainer {...mergeProps(menuProps, menuPopupInstance.menuDomProps)} ref={menuRef}>
           {[...state.collection].map((item) => (
