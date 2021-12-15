@@ -36,10 +36,15 @@ export const ProcessCard: React.FC<ProcessCardProps> = ({
           <SummaryText>{summaryText}</SummaryText>
         </ProcessIconAndText>
 
-        {isBusy && <RotatingAutorenewOutlinedIcon fontSize="inherit" />}
+        {isBusy && <Icon Component={RotatingAutorenewOutlinedIcon} />}
 
         {isRemovable && (
-          <DiscardIconButton tooltipContent="Discard card" onPress={onRemove} disablePadding>
+          <DiscardIconButton
+            size="sm"
+            tooltipContent="Discard card"
+            onPress={onRemove}
+            disablePadding
+          >
             <Icon Component={ClearAllIcon} />
           </DiscardIconButton>
         )}
@@ -61,7 +66,7 @@ const ProcessCardContainer = styled(Paper)`
 const SummarySection = styled(Box)`
   display: flex;
   align-items: baseline;
-  gap: var(--spacing-2);
+  gap: var(--spacing-3);
 `;
 
 const ProcessIconAndText = styled(Box)`
@@ -102,8 +107,6 @@ const DiscardIconButton = styled(IconButton)`
   /* move button down for optical alignment */
   position: relative;
   bottom: -1px;
-
-  font-size: var(--font-size-xl);
 `;
 
 const DetailsSection = styled(Box)`

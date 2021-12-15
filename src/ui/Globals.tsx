@@ -15,12 +15,7 @@ import {
   dispatchRef,
   fileIconThemeLoaderRef,
 } from '@app/operations/global-modules';
-import {
-  DesignTokenProvider,
-  LINE_HEIGHT,
-  OverlayProvider,
-  BASE_FONTSIZE,
-} from '@app/ui/components-library';
+import { DesignTokenProvider, DESIGN_TOKENS, OverlayProvider } from '@app/ui/components-library';
 import {
   DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED,
   GlobalShortcutsContextProvider,
@@ -57,8 +52,8 @@ const globalStyle = css`
       In order to respect changes of the font-size of the user (e.g., they have increased the 
       font-size to 20px), we use a percentage-based value here.
      */
-    font-size: ${(BASE_FONTSIZE / 16) * 100}%;
-    line-height: ${LINE_HEIGHT};
+    font-size: ${(DESIGN_TOKENS.BASE_FONTSIZE / 16) * 100}%;
+    line-height: ${DESIGN_TOKENS.LINE_HEIGHT};
   }
 
   /* Use a more-intuitive box-sizing model (https://www.joshwcomeau.com/css/custom-css-reset/#digit-box-sizing-model) */

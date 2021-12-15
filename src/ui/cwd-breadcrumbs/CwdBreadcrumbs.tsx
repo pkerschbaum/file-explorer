@@ -149,7 +149,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
         endIcon={
           isLastSlug ? (
             <CwdActionsMenuTrigger>
-              <Icon Component={KeyboardArrowDownOutlinedIcon} fontSize="small" />
+              <Icon Component={KeyboardArrowDownOutlinedIcon} fontSize="sm" />
               {registerShortcutsResult.changeDirectoryShortcut?.icon ??
                 registerShortcutsResult.openCwdMenuShortcut?.icon}
             </CwdActionsMenuTrigger>

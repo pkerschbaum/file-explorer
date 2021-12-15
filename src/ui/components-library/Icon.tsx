@@ -10,7 +10,7 @@ type IconProps = IconComponentProps & Pick<MuiIconComponentProps, 'className'>;
 
 type IconComponentProps = {
   Component: MuiIconComponent;
-  fontSize?: 'inherit' | 'small';
+  fontSize?: 'inherit' | 'sm';
 };
 
 const IconBase: React.FC<IconProps> = (props) => {
@@ -27,5 +27,5 @@ const IconBase: React.FC<IconProps> = (props) => {
 };
 
 export const Icon = styled(IconBase)`
-  font-size: ${({ fontSize }) => fontSize === 'small' && 'var(--icon-size-small)'};
+  font-size: ${({ fontSize }) => fontSize === 'sm' && 'var(--icon-size-sm)'};
 `;

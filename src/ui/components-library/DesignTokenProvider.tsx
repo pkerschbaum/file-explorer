@@ -113,8 +113,18 @@ export type ThemeConfiguration = {
 export const availableThemes = Object.keys(THEMES) as AvailableTheme[];
 export const defaultTheme: AvailableTheme = 'nord';
 
-export const BASE_FONTSIZE = 14;
-export const LINE_HEIGHT = 1.5;
+const SPACING_1 = 4;
+export const DESIGN_TOKENS = {
+  BASE_FONTSIZE: 14,
+  LINE_HEIGHT: 1.5,
+  SPACING_1,
+  SPACING_1_5: SPACING_1 * 1.5,
+  SPACING_2: SPACING_1 * 2,
+  SPACING_3: SPACING_1 * 3,
+  SPACING_4: SPACING_1 * 4,
+  SPACING_8: SPACING_1 * 8,
+  OUTLINE_WIDTH: 2,
+};
 
 export const DesignTokenProvider: React.FC = () => {
   const activeTheme = useActiveTheme();
@@ -140,7 +150,7 @@ export const DesignTokenProvider: React.FC = () => {
         --color-darken-1: rgba(255, 255, 255, 0.22);
         --color-darken-2: rgba(255, 255, 255, 0.34);
         --color-darken-3: rgba(255, 255, 255, 0.46);
-        --outline: 2px solid rgba(255, 255, 255, 0.8);
+        --outline: ${DESIGN_TOKENS.OUTLINE_WIDTH}px solid rgba(255, 255, 255, 0.8);
       `;
     } else if (themeConfiguration.mode === 'light') {
       modeColors = css`
@@ -148,7 +158,7 @@ export const DesignTokenProvider: React.FC = () => {
         --color-darken-1: rgba(0, 0, 0, 0.22);
         --color-darken-2: rgba(0, 0, 0, 0.34);
         --color-darken-3: rgba(0, 0, 0, 0.46);
-        --outline: 2px solid rgba(0, 0, 0, 0.8);
+        --outline: ${DESIGN_TOKENS.OUTLINE_WIDTH}px solid rgba(0, 0, 0, 0.8);
       `;
     } else {
       assertIsUnreachable(themeConfiguration);
@@ -205,19 +215,19 @@ export const DesignTokenProvider: React.FC = () => {
           0px 30.5px 38.9px -1.5px hsl(var(--shadow-color) / 0.44);
         --shadow-elevation-16: var(--shadow-elevation-medium);
 
-        --spacing-1: 4px;
-        --spacing-2: calc(var(--spacing-1) * 2);
-        --spacing-3: calc(var(--spacing-1) * 3);
-        --spacing-4: calc(var(--spacing-1) * 4);
-        --spacing-8: calc(var(--spacing-1) * 8);
+        --spacing-1: ${DESIGN_TOKENS.SPACING_1}px;
+        --spacing-2: ${DESIGN_TOKENS.SPACING_2}px;
+        --spacing-3: ${DESIGN_TOKENS.SPACING_3}px;
+        --spacing-4: ${DESIGN_TOKENS.SPACING_4}px;
+        --spacing-8: ${DESIGN_TOKENS.SPACING_8}px;
         --padding-button-md-block: 5px;
         --padding-button-md-inline: 10px;
 
-        --font-size-xs: ${`${(BASE_FONTSIZE - 4) / BASE_FONTSIZE}rem`};
-        --font-size-sm: ${`${(BASE_FONTSIZE - 2) / BASE_FONTSIZE}rem`};
+        --font-size-xs: ${`${(DESIGN_TOKENS.BASE_FONTSIZE - 4) / DESIGN_TOKENS.BASE_FONTSIZE}rem`};
+        --font-size-sm: ${`${(DESIGN_TOKENS.BASE_FONTSIZE - 2) / DESIGN_TOKENS.BASE_FONTSIZE}rem`};
         --font-size-md: 1rem;
-        --font-size-lg: ${`${(BASE_FONTSIZE + 2) / BASE_FONTSIZE}rem`};
-        --font-size-xl: ${`${(BASE_FONTSIZE + 4) / BASE_FONTSIZE}rem`};
+        --font-size-lg: ${`${(DESIGN_TOKENS.BASE_FONTSIZE + 2) / DESIGN_TOKENS.BASE_FONTSIZE}rem`};
+        --font-size-xl: ${`${(DESIGN_TOKENS.BASE_FONTSIZE + 4) / DESIGN_TOKENS.BASE_FONTSIZE}rem`};
         --font-weight-bold: 700;
 
         --border-width-1: 1px;
@@ -226,8 +236,8 @@ export const DesignTokenProvider: React.FC = () => {
         --border-radius-4: calc(var(--border-radius-1) * 4);
         --border-radius-8: calc(var(--border-radius-1) * 8);
 
-        --icon-size-small: ${`${20 / BASE_FONTSIZE}rem`};
-        --icon-size-medium: ${`${24 / BASE_FONTSIZE}rem`};
+        --icon-size-sm: ${`${18 / DESIGN_TOKENS.BASE_FONTSIZE}rem`};
+        --icon-size-md: ${`${22 / DESIGN_TOKENS.BASE_FONTSIZE}rem`};
 
         --box-size-card-sm-width: 220px;
         --box-size-card-md-width: 280px;

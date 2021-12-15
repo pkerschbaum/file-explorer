@@ -114,7 +114,7 @@ module.exports = {
           },
           {
             target: /\/src\/ui\/components-library\/.+/,
-            allowedPatterns: [/^@react-aria/, /^@react-stately/, '@popperjs/core', 'react-popper'],
+            allowedPatterns: [/^@react-aria/, /^@react-stately/],
             forbiddenPatterns: [
               {
                 pattern: /^@app\/ui\/components-library$/,

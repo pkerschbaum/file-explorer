@@ -1,4 +1,4 @@
-import { Placement } from '@popperjs/core';
+import { OverlayContainer, useOverlayPosition } from '@react-aria/overlays';
 import {
   TooltipTriggerAria,
   useTooltip as useReactAriaTooltip,
@@ -6,120 +6,109 @@ import {
 } from '@react-aria/tooltip';
 import { mergeProps } from '@react-aria/utils';
 import { TooltipTriggerState, useTooltipTriggerState } from '@react-stately/tooltip';
+import { Placement as ReactAriaPlacement, PlacementAxis } from '@react-types/overlays';
 import { TooltipTriggerProps } from '@react-types/tooltip';
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-import { usePopper } from 'react-popper';
-import styled from 'styled-components';
-import invariant from 'tiny-invariant';
+import styled, { css } from 'styled-components';
 
 import { Box } from '@app/ui/components-library/Box';
 
-type UseTooltipArgs<
-  TriggerHTMLElement extends HTMLElement,
-  AnchorHTMLElement extends HTMLElement,
-> = {
+export type Placement = ReactAriaPlacement;
+
+export type UseTooltipArgs<TriggerHTMLElement extends HTMLElement> = {
   triggerRef: React.RefObject<TriggerHTMLElement>;
-  anchorRef: React.RefObject<AnchorHTMLElement>;
+  tooltip?: {
+    placement?: Placement;
+    offset?: {
+      mainAxis?: number;
+    };
+  };
 };
 
-type UseTooltipReturnType<AnchorHTMLElement extends HTMLElement> = {
+type UseTooltipReturnType = {
   triggerProps: TooltipTriggerAria['triggerProps'];
-  tooltipInstance: TooltipInstance<AnchorHTMLElement>;
+  tooltipInstance: TooltipInstance;
 };
 
-type TooltipInstance<AnchorHTMLElement extends HTMLElement> = {
-  tooltipRef: React.RefObject<AnchorHTMLElement>;
+type TooltipInstance = {
+  tooltipRef: React.RefObject<HTMLDivElement>;
   tooltipDomProps: React.HTMLAttributes<HTMLElement>;
+  tooltipArrowDomProps: React.HTMLAttributes<HTMLElement>;
+  tooltipActualPlacement: PlacementAxis;
   state: TooltipTriggerState;
 };
 
-export function useTooltip<
-  TriggerHTMLElement extends HTMLElement,
-  AnchorHTMLElement extends HTMLElement,
->({
-  triggerRef,
-  anchorRef,
-}: UseTooltipArgs<TriggerHTMLElement, AnchorHTMLElement>): UseTooltipReturnType<AnchorHTMLElement> {
-  const props: TooltipTriggerProps = { delay: 0 };
-  const state = useTooltipTriggerState(props);
+export function useTooltip<TriggerHTMLElement extends HTMLElement>(
+  props: UseTooltipArgs<TriggerHTMLElement>,
+): UseTooltipReturnType {
+  const tooltipRef = React.useRef<HTMLDivElement>(null);
+
+  const tooltipTriggerProps: TooltipTriggerProps = { delay: 0 };
+  const state = useTooltipTriggerState(tooltipTriggerProps);
   const { triggerProps, tooltipProps: reactAriaTooltipProps } = useTooltipTrigger(
-    props,
+    tooltipTriggerProps,
     state,
-    triggerRef,
+    props.triggerRef,
   );
+
+  const {
+    overlayProps: positionProps,
+    arrowProps,
+    placement,
+  } = useOverlayPosition({
+    targetRef: props.triggerRef,
+    overlayRef: tooltipRef,
+    placement: props.tooltip?.placement ?? 'bottom',
+    offset: props.tooltip?.offset?.mainAxis ?? 0,
+    isOpen: state.isOpen,
+    containerPadding: 0,
+  });
 
   return {
     triggerProps,
     tooltipInstance: {
-      tooltipRef: anchorRef,
-      tooltipDomProps: reactAriaTooltipProps,
+      tooltipRef,
+      tooltipDomProps: mergeProps(reactAriaTooltipProps, positionProps),
+      tooltipArrowDomProps: arrowProps,
+      tooltipActualPlacement: placement,
       state,
     },
   };
 }
 
-export type TooltipProps<AnchorHTMLElement extends HTMLElement> =
-  TooltipComponentProps<AnchorHTMLElement> &
-    Pick<React.ComponentPropsWithoutRef<'div'>, 'className'>;
+export type TooltipProps = TooltipComponentProps &
+  Pick<React.ComponentPropsWithoutRef<'div'>, 'className'>;
 
-type TooltipComponentProps<AnchorHTMLElement extends HTMLElement> = {
-  tooltipInstance: TooltipInstance<AnchorHTMLElement>;
+type TooltipComponentProps = {
+  tooltipInstance: TooltipInstance;
   children: React.ReactNode;
-  placement?: Placement;
-  offset?: {
-    mainAxis?: number;
-  };
 };
 
-function TooltipBase<AnchorHTMLElement extends HTMLElement>(
-  props: TooltipProps<AnchorHTMLElement>,
-) {
+function TooltipBase(props: TooltipProps) {
   const {
     /* component props */
     tooltipInstance,
     children,
-    placement = 'bottom',
-    offset,
 
     /* other props */
     ...delegatedProps
   } = props;
 
-  const { tooltipProps } = useReactAriaTooltip({}, tooltipInstance.state);
+  const { tooltipProps } = useReactAriaTooltip(
+    { isOpen: tooltipInstance.state.isOpen },
+    tooltipInstance.state,
+  );
 
-  const [popperElement, setPopperElement] = React.useState<HTMLElement | null>(null);
-  const [arrowElement, setArrowElement] = React.useState<HTMLElement | null>(null);
-  const { styles, attributes } = usePopper(tooltipInstance.tooltipRef.current, popperElement, {
-    placement,
-    modifiers: [
-      { name: 'arrow', options: { element: arrowElement } },
-      {
-        name: 'offset',
-        options: { offset: [0, offset?.mainAxis ?? 10] },
-      },
-    ],
-  });
-
-  const bodyElement = React.useMemo(() => document.querySelector('body'), []);
-
-  if (!tooltipInstance.state.isOpen) {
-    return null;
-  }
-
-  invariant(bodyElement);
-
-  return ReactDOM.createPortal(
-    <Box
-      ref={setPopperElement}
-      style={styles.popper}
-      {...attributes.popper}
-      {...mergeProps(delegatedProps, tooltipInstance.tooltipDomProps, tooltipProps)}
-    >
-      <TooltipArrow ref={setArrowElement} style={styles.arrow} />
-      <TooltipContent>{children}</TooltipContent>
-    </Box>,
-    bodyElement,
+  return (
+    <OverlayContainer>
+      <Box
+        ref={tooltipInstance.tooltipRef}
+        {...mergeProps(delegatedProps, tooltipInstance.tooltipDomProps, tooltipProps)}
+      >
+        <TooltipArrow {...tooltipInstance.tooltipArrowDomProps} styleProps={props} />
+        <TooltipContent>{children}</TooltipContent>
+      </Box>
+    </OverlayContainer>
   );
 }
 
@@ -134,10 +123,19 @@ export const Tooltip = styled(TooltipBase)`
   box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.26);
 `;
 
-const TooltipArrow = styled(Box)`
-  /* based on https://popper.js.org/react-popper/v2/hook/ and https://popper.js.org/docs/v2/tutorial/ */
+type StyleProps = TooltipProps;
+
+const TooltipArrow = styled(Box)<{ styleProps: StyleProps }>`
+  position: absolute;
+
+  /* 
+    Computation of arrow size, offsets, transforms and borders is based on
+     - https://popper.js.org/react-popper/v2/hook/
+     - https://popper.js.org/docs/v2/tutorial/
+     - https://github.com/intergalacticspacehighway/react-native-popper/blob/e08f2ca08ca968e46fa6d88e236464c94c0fc0f6/src/Popper/Popper.tsx#L195-L244 
+   */
   --arrow-size: 12px;
-  --arrow-offset-to-apply: calc(-1 * var(--arrow-size) / 2);
+  --arrow-offset-to-apply: calc(-1 * var(--arrow-size) / 2 - 1px);
 
   width: var(--arrow-size);
   height: var(--arrow-size);
@@ -145,34 +143,45 @@ const TooltipArrow = styled(Box)`
 
   visibility: hidden;
 
-  ${Tooltip}[data-popper-placement^='top'] > & {
-    bottom: var(--arrow-offset-to-apply);
-    &::before {
-      border-right: var(--border-to-use);
-      border-bottom: var(--border-to-use);
+  ${({ styleProps }) => {
+    if (styleProps.tooltipInstance.tooltipActualPlacement === 'top') {
+      return css`
+        bottom: var(--arrow-offset-to-apply);
+        transform: translateX(var(--arrow-offset-to-apply));
+        &::before {
+          border-right: var(--border-to-use);
+          border-bottom: var(--border-to-use);
+        }
+      `;
+    } else if (styleProps.tooltipInstance.tooltipActualPlacement === 'bottom') {
+      return css`
+        top: var(--arrow-offset-to-apply);
+        transform: translateX(var(--arrow-offset-to-apply));
+        &::before {
+          border-left: var(--border-to-use);
+          border-top: var(--border-to-use);
+        }
+      `;
+    } else if (styleProps.tooltipInstance.tooltipActualPlacement === 'left') {
+      return css`
+        right: var(--arrow-offset-to-apply);
+        transform: translateY(var(--arrow-offset-to-apply));
+        &::before {
+          border-top: var(--border-to-use);
+          border-right: var(--border-to-use);
+        }
+      `;
+    } else if (styleProps.tooltipInstance.tooltipActualPlacement === 'right') {
+      return css`
+        left: var(--arrow-offset-to-apply);
+        transform: translateY(var(--arrow-offset-to-apply));
+        &::before {
+          border-bottom: var(--border-to-use);
+          border-left: var(--border-to-use);
+        }
+      `;
     }
-  }
-  ${Tooltip}[data-popper-placement^='bottom'] > & {
-    top: var(--arrow-offset-to-apply);
-    &::before {
-      border-left: var(--border-to-use);
-      border-top: var(--border-to-use);
-    }
-  }
-  ${Tooltip}[data-popper-placement^='left'] > & {
-    right: var(--arrow-offset-to-apply);
-    &::before {
-      border-top: var(--border-to-use);
-      border-right: var(--border-to-use);
-    }
-  }
-  ${Tooltip}[data-popper-placement^='right'] > & {
-    left: var(--arrow-offset-to-apply);
-    &::before {
-      border-bottom: var(--border-to-use);
-      border-left: var(--border-to-use);
-    }
-  }
+  }}
 
   &::before {
     position: absolute;

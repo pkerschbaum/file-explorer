@@ -362,7 +362,12 @@ const PasteInfoBadge: React.FC = () => {
   const draftPasteState = useDraftPasteState();
 
   const triggerRef = React.useRef<HTMLDivElement>(null);
-  const { triggerProps, tooltipInstance } = useTooltip({ triggerRef, anchorRef: triggerRef });
+  const { triggerProps, tooltipInstance } = useTooltip({
+    triggerRef,
+    tooltip: {
+      offset: { mainAxis: 8 },
+    },
+  });
 
   if (draftPasteState === undefined || clipboardResources.length === 0) {
     return null;
@@ -378,13 +383,17 @@ const PasteInfoBadge: React.FC = () => {
         />
       </StyledBadge>
 
-      <Tooltip tooltipInstance={tooltipInstance}>
-        <ClipboardResourcesList>
-          {clipboardResources.map((resource) => (
-            <Box key={uriHelper.getComparisonKey(resource)}>{formatter.resourcePath(resource)}</Box>
-          ))}
-        </ClipboardResourcesList>
-      </Tooltip>
+      {tooltipInstance.state.isOpen && (
+        <Tooltip tooltipInstance={tooltipInstance}>
+          <ClipboardResourcesList>
+            {clipboardResources.map((resource) => (
+              <Box key={uriHelper.getComparisonKey(resource)}>
+                {formatter.resourcePath(resource)}
+              </Box>
+            ))}
+          </ClipboardResourcesList>
+        </Tooltip>
+      )}
     </>
   );
 };

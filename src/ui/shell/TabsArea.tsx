@@ -172,13 +172,13 @@ const ExplorerTabContent: React.FC<ExplorerTabContentProps> = (props) => {
       </TabButton>
       {!props.removeExplorerActionDisabled && (
         <TabIconButton
-          size="small"
+          size="sm"
           tooltipContent="Close Tab"
           tooltipPlacement="right"
           onPress={props.onRemove}
           disablePadding
         >
-          <CloseOutlinedIcon />
+          <Icon Component={CloseOutlinedIcon} />
         </TabIconButton>
       )}
     </>

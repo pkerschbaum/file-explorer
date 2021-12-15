@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { assertThat } from '@app/base/utils/assert.util';
 import { Box } from '@app/ui/components-library/Box';
-import { LINE_HEIGHT } from '@app/ui/components-library/DesignTokenProvider';
+import { DESIGN_TOKENS } from '@app/ui/components-library/DesignTokenProvider';
 
 type VisualKeyProps = IconVisualKey | CharVisualKey;
 
@@ -36,8 +36,8 @@ const VisualKeyContainer = styled(Box)<VisualKeyProps>`
    * But it seems like the resulting width of the visual key is not taken into account for the parent, 
    * there is always some spacing issue when trying this solution...
    */
-  height: calc(${LINE_HEIGHT} * 1em);
-  width: calc(${LINE_HEIGHT} * 1em);
+  height: calc(${DESIGN_TOKENS.LINE_HEIGHT} * 1em);
+  width: calc(${DESIGN_TOKENS.LINE_HEIGHT} * 1em);
   align-self: center;
 
   display: flex;
