@@ -1,8 +1,7 @@
-import SettingsIcon from '@mui/icons-material/Settings';
 import * as React from 'react';
 import styled from 'styled-components';
 
-import { Box, Icon, IconButton } from '@app/ui/components-library';
+import { Box, IconButton, SettingsIcon } from '@app/ui/components-library';
 
 export const USER_PREFERENCES_BUTTON_GRID_AREA = 'shell-app-settings-button';
 
@@ -25,7 +24,7 @@ export const UserPreferencesButton: React.FC<UserPreferencesButtonProps> = ({
           setUserPreferencesSidebarOpen(!userPreferencesSidebarOpen);
         }}
       >
-        <Icon Component={SettingsIcon} />
+        <SettingsIcon />
       </IconButton>
     </UserPreferencesButtonContainer>
   );

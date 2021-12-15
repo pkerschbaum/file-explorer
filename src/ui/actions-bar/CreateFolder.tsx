@@ -1,4 +1,3 @@
-import CreateNewFolderOutlinedIcon from '@mui/icons-material/CreateNewFolderOutlined';
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -6,13 +5,13 @@ import { check } from '@app/base/utils/assert.util';
 import {
   ButtonHandle,
   Button,
-  Icon,
   Popover,
   TextField,
   usePopover,
   Paper,
   Box,
   commonComponentStyles,
+  CreateNewFolderOutlinedIcon,
 } from '@app/ui/components-library';
 
 type CreateFolderProps = {
@@ -58,7 +57,7 @@ export const CreateFolder: React.FC<CreateFolderProps> = ({
       <Button
         ref={buttonRef}
         handleRef={buttonHandleRef}
-        startIcon={<Icon Component={CreateNewFolderOutlinedIcon} />}
+        startIcon={<CreateNewFolderOutlinedIcon />}
         endIcon={buttonEndIcon}
         enableLayoutAnimation
         onPress={() => popoverInstance.state.open()}

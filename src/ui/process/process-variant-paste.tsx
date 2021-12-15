@@ -1,7 +1,3 @@
-import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
-import ContentCutOutlinedIcon from '@mui/icons-material/ContentCutOutlined';
-import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
-import * as React from 'react';
 import styled, { css } from 'styled-components';
 
 import { assertThat } from '@app/base/utils/assert.util';
@@ -10,7 +6,14 @@ import { formatter } from '@app/base/utils/formatter.util';
 import { numbers } from '@app/base/utils/numbers.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { PasteProcess as PasteProcessType, PASTE_PROCESS_STATUS } from '@app/domain/types';
-import { Box, Button, LinearProgress } from '@app/ui/components-library';
+import {
+  Box,
+  Button,
+  ContentCopyOutlinedIcon,
+  ContentCutOutlinedIcon,
+  DoubleArrowIcon,
+  LinearProgress,
+} from '@app/ui/components-library';
 import type { ProcessVariantProps } from '@app/ui/process/Process';
 
 type StatusMetaInfos = {
@@ -136,13 +139,13 @@ export function computeProcessCardPropsFromPasteProcess(
     summaryIcon: (
       <>
         {process.pasteShouldMove ? (
-          <ContentCutOutlinedIcon fontSize="inherit" />
+          <ContentCutOutlinedIcon />
         ) : !process.pasteShouldMove ? (
-          <ContentCopyOutlinedIcon fontSize="inherit" />
+          <ContentCopyOutlinedIcon />
         ) : (
           assertThat.isUnreachable(process.pasteShouldMove)
         )}
-        <DoubleArrowIcon fontSize="inherit" />
+        <DoubleArrowIcon />
       </>
     ),
     summaryText: destinationFolderLabel,

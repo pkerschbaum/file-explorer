@@ -1,9 +1,3 @@
-import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
-import ContentCutOutlinedIcon from '@mui/icons-material/ContentCutOutlined';
-import ContentPasteOutlinedIcon from '@mui/icons-material/ContentPasteOutlined';
-import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import LaunchOutlinedIcon from '@mui/icons-material/LaunchOutlined';
 import * as React from 'react';
 import styled from 'styled-components';
 import invariant from 'tiny-invariant';
@@ -16,8 +10,13 @@ import {
   Box,
   Button,
   ButtonHandle,
+  ContentCopyOutlinedIcon,
+  ContentCutOutlinedIcon,
+  ContentPasteOutlinedIcon,
+  DeleteOutlinedIcon,
   Divider,
-  Icon,
+  EditOutlinedIcon,
+  LaunchOutlinedIcon,
   TextField,
   Tooltip,
   useTooltip,
@@ -244,7 +243,7 @@ export const ActionsBar: React.FC = () => {
           handleRef={openButtonHandleRef}
           onPress={openSelectedResources}
           isDisabled={singleResourceActionsDisabled}
-          startIcon={<Icon Component={LaunchOutlinedIcon} />}
+          startIcon={<LaunchOutlinedIcon />}
           endIcon={!singleResourceActionsDisabled && registerShortcutsResult.openShortcut?.icon}
           enableLayoutAnimation
         >
@@ -254,7 +253,7 @@ export const ActionsBar: React.FC = () => {
           handleRef={copyButtonHandleRef}
           onPress={copySelectedResources}
           isDisabled={multipleResourcesActionsDisabled}
-          startIcon={<Icon Component={ContentCopyOutlinedIcon} />}
+          startIcon={<ContentCopyOutlinedIcon />}
           endIcon={!multipleResourcesActionsDisabled && registerShortcutsResult.copyShortcut?.icon}
           enableLayoutAnimation
         >
@@ -264,7 +263,7 @@ export const ActionsBar: React.FC = () => {
           handleRef={cutButtonHandleRef}
           onPress={cutSelectedResources}
           isDisabled={multipleResourcesActionsDisabled}
-          startIcon={<Icon Component={ContentCutOutlinedIcon} />}
+          startIcon={<ContentCutOutlinedIcon />}
           endIcon={!multipleResourcesActionsDisabled && registerShortcutsResult.cutShortcut?.icon}
           enableLayoutAnimation
         >
@@ -275,7 +274,7 @@ export const ActionsBar: React.FC = () => {
           variant={draftPasteState === undefined ? undefined : 'contained'}
           onPress={pasteResourcesIntoExplorer}
           isDisabled={draftPasteState === undefined}
-          startIcon={<Icon Component={ContentPasteOutlinedIcon} />}
+          startIcon={<ContentPasteOutlinedIcon />}
           endIcon={draftPasteState !== undefined && registerShortcutsResult.pasteShortcut?.icon}
           enableLayoutAnimation
         >
@@ -286,7 +285,7 @@ export const ActionsBar: React.FC = () => {
           handleRef={triggerRenameButtonHandleRef}
           onPress={triggerRenameForSelectedResources}
           isDisabled={singleResourceActionsDisabled}
-          startIcon={<Icon Component={EditOutlinedIcon} />}
+          startIcon={<EditOutlinedIcon />}
           endIcon={
             !singleResourceActionsDisabled && registerShortcutsResult.triggerRenameShortcut?.icon
           }
@@ -298,7 +297,7 @@ export const ActionsBar: React.FC = () => {
           handleRef={scheduleDeleteButtonHandleRef}
           onPress={scheduleDeleteSelectedResources}
           isDisabled={multipleResourcesActionsDisabled}
-          startIcon={<Icon Component={DeleteOutlinedIcon} />}
+          startIcon={<DeleteOutlinedIcon />}
           endIcon={
             !multipleResourcesActionsDisabled &&
             registerShortcutsResult.scheduleDeleteShortcut?.icon
@@ -376,11 +375,7 @@ const PasteInfoBadge: React.FC = () => {
   return (
     <>
       <StyledBadge ref={triggerRef} {...triggerProps}>
-        <Icon
-          Component={
-            draftPasteState.pasteShouldMove ? ContentCutOutlinedIcon : ContentCopyOutlinedIcon
-          }
-        />
+        {draftPasteState.pasteShouldMove ? <ContentCutOutlinedIcon /> : <ContentCopyOutlinedIcon />}
       </StyledBadge>
 
       {tooltipInstance.state.isOpen && (

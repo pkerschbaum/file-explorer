@@ -1,5 +1,3 @@
-import ArrowRightAltOutlinedIcon from '@mui/icons-material/ArrowRightAltOutlined';
-import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import * as React from 'react';
 
 import { formatter } from '@app/base/utils/formatter.util';
@@ -7,13 +5,14 @@ import { uriHelper } from '@app/base/utils/uri-helper';
 import { useCwd } from '@app/global-state/slices/explorers.hooks';
 import { changeDirectory, revealCwdInOSExplorer } from '@app/operations/explorer.operations';
 import {
-  Icon,
   Paper,
   Popover,
   usePopover,
   Item,
   MenuPopup,
   MenuInstance,
+  ArrowRightAltOutlinedIcon,
+  FolderOutlinedIcon,
 } from '@app/ui/components-library';
 import { ChangeCwdForm } from '@app/ui/cwd-breadcrumbs/ChangeCwdForm';
 
@@ -56,7 +55,7 @@ export const CwdActionsMenu: React.FC<CwdActionsMenuProps> = ({ explorerId, menu
               menuInstance.state.close();
             }}
           >
-            <Icon Component={FolderOutlinedIcon} />
+            <FolderOutlinedIcon />
             Reveal in OS File Explorer
           </Item>
           <Item
@@ -66,7 +65,7 @@ export const CwdActionsMenu: React.FC<CwdActionsMenuProps> = ({ explorerId, menu
             itemDomProps={changeCwdTriggerProps}
             onAction={() => changeCwdPopoverInstance.state.open()}
           >
-            <Icon Component={ArrowRightAltOutlinedIcon} />
+            <ArrowRightAltOutlinedIcon />
             Change Directory
           </Item>
         </MenuPopup>

@@ -1,6 +1,5 @@
 // based on https://react-spectrum.adobe.com/react-aria/useRadioGroup.html#styling
-import CircleIcon from '@mui/icons-material/Circle';
-import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined';
+
 import { useFocusRing } from '@react-aria/focus';
 import { useRadio, useRadioGroup } from '@react-aria/radio';
 import { mergeProps } from '@react-aria/utils';
@@ -8,10 +7,10 @@ import { VisuallyHidden } from '@react-aria/visually-hidden';
 import { RadioGroupState, useRadioGroupState } from '@react-stately/radio';
 import { AriaRadioProps, RadioGroupProps as ReactAriaRadioGroupProps } from '@react-types/radio';
 import * as React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { Box } from '@app/ui/components-library/Box';
-import { Icon } from '@app/ui/components-library/Icon';
+import { CircleIcon, CircleOutlinedIcon } from '@app/ui/components-library/icons';
 import { createContext } from '@app/ui/utils/react.util';
 
 const RadioGroupContext = createContext<RadioGroupState>('RadioGroupContext');
@@ -106,12 +105,8 @@ export const Radio = styled((props: RadioProps) => {
         <input {...inputProps} {...focusProps} ref={nativeInputRef} />
       </VisuallyHidden>
       <OverlayedIconsContainer>
-        {isSelected ? (
-          <StyledIcon Component={CircleIcon} />
-        ) : (
-          <StyledIcon Component={CircleOutlinedIcon} />
-        )}
-        {isFocusVisible && <StyledIconFocused Component={CircleOutlinedIcon} />}
+        {isSelected ? <StyledCircleIcon /> : <StyledCircleOutlinedIcon />}
+        {isFocusVisible && <StyledCircleOutlinedIconFocused />}
       </OverlayedIconsContainer>
       {children}
     </RadioRoot>
@@ -131,7 +126,7 @@ const OverlayedIconsContainer = styled(Box)`
   width: calc(1em + 2 * var(--spacing-for-focused-icon));
 `;
 
-const StyledIcon = styled(Icon)`
+const iconStyles = css`
   position: absolute;
   top: 0;
   right: 0;
@@ -140,7 +135,15 @@ const StyledIcon = styled(Icon)`
   margin: auto;
 `;
 
-const StyledIconFocused = styled(StyledIcon)`
+const StyledCircleIcon = styled(CircleIcon)`
+  ${iconStyles}
+`;
+
+const StyledCircleOutlinedIcon = styled(CircleOutlinedIcon)`
+  ${iconStyles}
+`;
+
+const StyledCircleOutlinedIconFocused = styled(StyledCircleOutlinedIcon)`
   font-size: calc(1em + 2 * var(--spacing-for-focused-icon));
   top: calc(-1 * var(--spacing-for-focused-icon));
   right: calc(-1 * var(--spacing-for-focused-icon));

@@ -1,5 +1,3 @@
-import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -17,11 +15,12 @@ import {
   Box,
   ButtonHandle,
   Button,
-  Icon,
   IconButton,
   Tabs,
   Tab,
   useTab,
+  AddCircleOutlineOutlinedIcon,
+  CloseOutlinedIcon,
 } from '@app/ui/components-library';
 import { KEY } from '@app/ui/constants';
 import { useRegisterGlobalShortcuts } from '@app/ui/GlobalShortcutsContext';
@@ -137,7 +136,7 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
       <Button
         handleRef={addTabButtonHandleRef}
         onPress={duplicateFocusedExplorerPanel}
-        startIcon={<Icon Component={AddCircleOutlineOutlinedIcon} />}
+        startIcon={<AddCircleOutlineOutlinedIcon />}
         endIcon={registerShortcutsResult.addNewTabShortcut.icon}
         enableLayoutAnimation
       >
@@ -178,7 +177,7 @@ const ExplorerTabContent: React.FC<ExplorerTabContentProps> = (props) => {
           onPress={props.onRemove}
           disablePadding
         >
-          <Icon Component={CloseOutlinedIcon} />
+          <CloseOutlinedIcon />
         </TabIconButton>
       )}
     </>

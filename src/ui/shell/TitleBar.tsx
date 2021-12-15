@@ -1,11 +1,14 @@
-import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
-import FullscreenOutlinedIcon from '@mui/icons-material/FullscreenOutlined';
-import MinimizeOutlinedIcon from '@mui/icons-material/MinimizeOutlined';
 import * as React from 'react';
 import styled from 'styled-components';
 
 import { windowClose, windowMinimize, windowToggleMaximized } from '@app/operations/app.operations';
-import { Box, Button } from '@app/ui/components-library';
+import {
+  Box,
+  Button,
+  CloseOutlinedIcon,
+  FullscreenOutlinedIcon,
+  MinimizeOutlinedIcon,
+} from '@app/ui/components-library';
 import { ROOTCONTAINER_PADDING_FACTOR } from '@app/ui/shell/constants';
 
 export const TITLE_BAR_GRID_AREA = 'shell-title-bar';
@@ -15,13 +18,13 @@ export const TitleBar: React.FC = () => {
     <WindowDragRegion>
       <TitleBarWindowControls>
         <TitleBarButton tabIndex={-1} onPress={windowMinimize}>
-          <MinimizeOutlinedIcon />
+          <MinimizeOutlinedIcon fontSize="sm" />
         </TitleBarButton>
         <TitleBarButton tabIndex={-1} onPress={windowToggleMaximized}>
-          <FullscreenOutlinedIcon />
+          <FullscreenOutlinedIcon fontSize="sm" />
         </TitleBarButton>
         <TitleBarCloseButton tabIndex={-1} onPress={windowClose}>
-          <CloseOutlinedIcon />
+          <CloseOutlinedIcon fontSize="sm" />
         </TitleBarCloseButton>
       </TitleBarWindowControls>
     </WindowDragRegion>

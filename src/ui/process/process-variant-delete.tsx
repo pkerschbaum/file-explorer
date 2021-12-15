@@ -1,6 +1,3 @@
-import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
-import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
-import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import styled from 'styled-components';
 
 import { assertIsUnreachable } from '@app/base/utils/assert.util';
@@ -8,7 +5,14 @@ import { formatter } from '@app/base/utils/formatter.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { DeleteProcess as DeleteProcessType, DELETE_PROCESS_STATUS } from '@app/domain/types';
 import { removeProcess, runDeleteProcess } from '@app/operations/resource.operations';
-import { Box, Button, LinearProgress } from '@app/ui/components-library';
+import {
+  Box,
+  Button,
+  DeleteForeverOutlinedIcon,
+  DeleteOutlinedIcon,
+  DeleteOutlineOutlinedIcon,
+  LinearProgress,
+} from '@app/ui/components-library';
 import type { ProcessVariantProps } from '@app/ui/process/Process';
 
 type StatusMetaInfos = {
@@ -92,7 +96,7 @@ export function computeProcessCardPropsFromDeleteProcess(
 
   return {
     labels: { container: 'Delete Process' },
-    summaryIcon: <DeleteOutlinedIcon fontSize="inherit" />,
+    summaryIcon: <DeleteOutlinedIcon />,
     summaryText: process.uris
       .map((uri) => {
         const { resourceName, extension } = uriHelper.extractNameAndExtension(uri);

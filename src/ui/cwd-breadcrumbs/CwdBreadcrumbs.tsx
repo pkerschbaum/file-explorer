@@ -1,4 +1,3 @@
-import KeyboardArrowDownOutlinedIcon from '@mui/icons-material/KeyboardArrowDownOutlined';
 import { mergeProps } from '@react-aria/utils';
 import { PressEvent } from '@react-types/shared';
 import * as React from 'react';
@@ -14,9 +13,9 @@ import {
   Breadcrumbs,
   Button,
   BreadcrumbItem,
-  Icon,
   useMenu,
   useBreadcrumbItem,
+  KeyboardArrowDownOutlinedIcon,
 } from '@app/ui/components-library';
 import { KEY, MOUSE_BUTTONS } from '@app/ui/constants';
 import { CwdActionsMenu } from '@app/ui/cwd-breadcrumbs/CwdActionsMenu';
@@ -149,7 +148,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
         endIcon={
           isLastSlug ? (
             <CwdActionsMenuTrigger>
-              <Icon Component={KeyboardArrowDownOutlinedIcon} fontSize="sm" />
+              <KeyboardArrowDownOutlinedIcon fontSize="sm" />
               {registerShortcutsResult.changeDirectoryShortcut?.icon ??
                 registerShortcutsResult.openCwdMenuShortcut?.icon}
             </CwdActionsMenuTrigger>

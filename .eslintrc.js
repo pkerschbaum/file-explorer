@@ -113,6 +113,21 @@ module.exports = {
             allowedPatterns: ['react'],
           },
           {
+            target: /\/src\/ui\/components-library\/icons\.tsx$/,
+            allowedPatterns: [/^@mui\/icons-material/],
+          },
+          {
+            target: /\/src\/ui\/(?!components-library\/icons\.tsx)/,
+            forbiddenPatterns: [
+              {
+                pattern: /^@mui\/icons-material/,
+                errorMessage:
+                  "Don't import from @mui/icons-material directly. " +
+                  'Add a wrapped icon in @app/ui/component-library/icons.tsx instead (so that behavior of all icons is consistent).',
+              },
+            ],
+          },
+          {
             target: /\/src\/ui\/components-library\/.+/,
             allowedPatterns: [/^@react-aria/, /^@react-stately/],
             forbiddenPatterns: [
@@ -159,7 +174,6 @@ module.exports = {
               'tiny-invariant',
               'use-context-selector',
               'use-immer',
-              /^@mui\/icons-material/,
               /^@mui\/utils/,
               /^@react-aria\/utils/,
               /^@react-types/,

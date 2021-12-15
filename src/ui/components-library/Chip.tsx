@@ -1,10 +1,9 @@
-import CancelIcon from '@mui/icons-material/Cancel';
 import * as React from 'react';
 import styled from 'styled-components';
 
 import { Box } from '@app/ui/components-library/Box';
-import { Icon } from '@app/ui/components-library/Icon';
 import { IconButton } from '@app/ui/components-library/IconButton';
+import { CancelIcon } from '@app/ui/components-library/icons';
 
 type ChipProps = ChipComponentProps &
   Omit<
@@ -33,7 +32,7 @@ export const Chip = styled((props: ChipProps) => {
     <ChipRoot {...delegatedProps}>
       <ChipLabel>{label}</ChipLabel>
       <ChipDeleteButton tooltipContent={deleteTooltipContent} onPress={onDelete}>
-        <Icon Component={CancelIcon} />
+        <CancelIcon />
       </ChipDeleteButton>
     </ChipRoot>
   );

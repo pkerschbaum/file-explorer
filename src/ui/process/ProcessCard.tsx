@@ -1,10 +1,14 @@
-import AutorenewOutlinedIcon from '@mui/icons-material/AutorenewOutlined';
-import ClearAllIcon from '@mui/icons-material/ClearAll';
 import * as React from 'react';
 import styled from 'styled-components';
 
 import { commonStyles } from '@app/ui/common-styles';
-import { Box, Icon, IconButton, Paper } from '@app/ui/components-library';
+import {
+  AutorenewOutlinedIcon,
+  Box,
+  ClearAllIcon,
+  IconButton,
+  Paper,
+} from '@app/ui/components-library';
 import { rotate } from '@app/ui/utils/animations';
 
 export type ProcessCardProps = {
@@ -36,7 +40,7 @@ export const ProcessCard: React.FC<ProcessCardProps> = ({
           <SummaryText>{summaryText}</SummaryText>
         </ProcessIconAndText>
 
-        {isBusy && <Icon Component={RotatingAutorenewOutlinedIcon} />}
+        {isBusy && <RotatingAutorenewOutlinedIcon />}
 
         {isRemovable && (
           <DiscardIconButton
@@ -45,7 +49,7 @@ export const ProcessCard: React.FC<ProcessCardProps> = ({
             onPress={onRemove}
             disablePadding
           >
-            <Icon Component={ClearAllIcon} />
+            <ClearAllIcon />
           </DiscardIconButton>
         )}
       </SummarySection>
