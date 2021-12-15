@@ -3,7 +3,7 @@ import ClearAllIcon from '@mui/icons-material/ClearAll';
 import * as React from 'react';
 import styled from 'styled-components';
 
-import { commonStyles } from '@app/ui/Common.styles';
+import { commonStyles } from '@app/ui/common-styles';
 import { Box, Icon, IconButton, Paper } from '@app/ui/components-library';
 import { rotate } from '@app/ui/utils/animations';
 

@@ -3,7 +3,7 @@ import { mergeProps } from '@react-aria/utils';
 import * as React from 'react';
 import styled from 'styled-components';
 
-import { commonStyles } from '@app/ui/Common.styles';
+import { commonStyles } from '@app/ui/common-styles';
 import { Box } from '@app/ui/components-library/Box';
 
 export type DataTableProps = DataTableComponentProps &

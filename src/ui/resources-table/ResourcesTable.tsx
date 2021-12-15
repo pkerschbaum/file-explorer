@@ -473,7 +473,7 @@ const RenameInputForm = styled.form`
 
   display: flex;
   align-items: stretch;
-  gap: var(--spacing-4);
+  gap: var(--spacing-2);
 
   & > ${Button} {
     margin-block: var(--padding-button-md-block);

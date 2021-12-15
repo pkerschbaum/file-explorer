@@ -114,13 +114,7 @@ module.exports = {
           },
           {
             target: /\/src\/ui\/components-library\/.+/,
-            allowedPatterns: [
-              /^@mui\/material/,
-              /^@react-aria/,
-              /^@react-stately/,
-              '@popperjs/core',
-              'react-popper',
-            ],
+            allowedPatterns: [/^@react-aria/, /^@react-stately/, '@popperjs/core', 'react-popper'],
             forbiddenPatterns: [
               {
                 pattern: /^@app\/ui\/components-library$/,
@@ -132,11 +126,6 @@ module.exports = {
           {
             target: /\/src\/ui\/(?!components-library)/,
             forbiddenPatterns: [
-              {
-                pattern: /^@mui\/material/,
-                errorMessage:
-                  "Don't import from @mui/material directly. Implement reusable components in the component library (@app/ui/component-library).",
-              },
               {
                 pattern: /^(?:@react-aria(?!\/utils)|@react-stately)/,
                 errorMessage:

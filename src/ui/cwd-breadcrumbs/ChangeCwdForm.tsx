@@ -1,7 +1,8 @@
 import * as React from 'react';
+import styled from 'styled-components';
 
 import { check } from '@app/base/utils/assert.util';
-import { Button, Card, TextField } from '@app/ui/components-library';
+import { Box, Button, commonComponentStyles, TextField } from '@app/ui/components-library';
 
 type ChangeCwdFormProps = {
   isOpen: boolean;
@@ -42,16 +43,15 @@ export const ChangeCwdForm: React.FC<ChangeCwdFormProps> = ({
         void handleSubmit();
       }}
     >
-      <Card
-        content={
-          <TextField
-            placeholder="Directory"
-            aria-label="Directory"
-            value={cwdValue}
-            onChange={setCwdValue}
-          />
-        }
-        actions={
+      <Card>
+        <TextField
+          placeholder="Directory"
+          aria-label="Directory"
+          value={cwdValue}
+          onChange={setCwdValue}
+        />
+
+        <CardActions>
           <Button
             variant={!inputIsValid ? undefined : 'contained'}
             type="submit"
@@ -61,8 +61,16 @@ export const ChangeCwdForm: React.FC<ChangeCwdFormProps> = ({
           >
             Change Directory
           </Button>
-        }
-      />
+        </CardActions>
+      </Card>
     </form>
   );
 };
+
+const Card = styled(Box)`
+  ${commonComponentStyles.card}
+`;
+
+const CardActions = styled(Box)`
+  ${commonComponentStyles.actionsRow}
+`;

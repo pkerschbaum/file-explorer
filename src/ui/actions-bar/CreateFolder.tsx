@@ -1,16 +1,18 @@
 import CreateNewFolderOutlinedIcon from '@mui/icons-material/CreateNewFolderOutlined';
 import * as React from 'react';
+import styled from 'styled-components';
 
 import { check } from '@app/base/utils/assert.util';
 import {
   ButtonHandle,
   Button,
-  Card,
   Icon,
   Popover,
   TextField,
   usePopover,
   Paper,
+  Box,
+  commonComponentStyles,
 } from '@app/ui/components-library';
 
 type CreateFolderProps = {
@@ -74,16 +76,15 @@ export const CreateFolder: React.FC<CreateFolderProps> = ({
                 void handleSubmit();
               }}
             >
-              <Card
-                content={
-                  <TextField
-                    placeholder="Name of folder"
-                    aria-label="Name of folder"
-                    value={createFolderValue}
-                    onChange={setCreateFolderValue}
-                  />
-                }
-                actions={
+              <Card>
+                <TextField
+                  placeholder="Name of folder"
+                  aria-label="Name of folder"
+                  value={createFolderValue}
+                  onChange={setCreateFolderValue}
+                />
+
+                <CardActions>
                   <Button
                     variant={!inputIsValid ? undefined : 'contained'}
                     type="submit"
@@ -93,8 +94,8 @@ export const CreateFolder: React.FC<CreateFolderProps> = ({
                   >
                     Create
                   </Button>
-                }
-              />
+                </CardActions>
+              </Card>
             </form>
           </Paper>
         </Popover>
@@ -102,3 +103,11 @@ export const CreateFolder: React.FC<CreateFolderProps> = ({
     </>
   );
 };
+
+const Card = styled(Box)`
+  ${commonComponentStyles.card}
+`;
+
+const CardActions = styled(Box)`
+  ${commonComponentStyles.actionsRow}
+`;
