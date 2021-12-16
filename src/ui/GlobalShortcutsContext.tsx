@@ -141,10 +141,6 @@ export const GlobalShortcutsContextProvider: React.FC<GlobalShortcutsContextProv
 
   React.useEffect(function setModifiersOnKeydownAndKeyup() {
     const eventListener = (e: WindowEventMap['keydown'] | WindowEventMap['keyup']) => {
-      if (!shouldEventGetProcessed(e)) {
-        return;
-      }
-
       const newActiveModifiers: Modifiers = {
         ctrl: e.ctrlKey ? 'SET' : 'NOT_SET',
         alt: e.altKey ? 'SET' : 'NOT_SET',

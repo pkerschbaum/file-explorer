@@ -85,6 +85,20 @@ module.exports = {
     'no-console': 'error',
     'no-extra-boolean-cast': 'off',
     'no-inner-declarations': 'off',
+    'no-restricted-syntax': [
+      'error',
+      {
+        selector:
+          "MemberExpression[object.name='it'][property.name='only'], MemberExpression[object.name='test'][property.name='only']",
+        message:
+          'Do not check in spec files with tests using ".only" - the other tests of that spec file would be skipped!',
+      },
+      {
+        selector:
+          "MemberExpression[object.name='it'][property.name='skip'], MemberExpression[object.name='test'][property.name='skip']",
+        message: 'Do not check in dead tests. Either fix or delete them.',
+      },
+    ],
     'node/no-process-env': 'error',
     'node/process-exit-as-throw': 'off',
     'node/no-deprecated-api': 'off',

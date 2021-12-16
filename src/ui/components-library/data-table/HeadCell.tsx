@@ -22,6 +22,12 @@ export const HeadCell = styled(
 )``;
 
 const HeadCellRoot = styled.th`
+  /* make head cells sticky and put them before data cells, with opaque background */
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: inherit;
+
   padding: 0;
 
   border-bottom: var(--border-width-1) solid var(--color-darken-1);

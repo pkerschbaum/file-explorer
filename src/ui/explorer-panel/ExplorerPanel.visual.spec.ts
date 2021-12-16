@@ -30,7 +30,7 @@ describe('ExplorerPanel [visual]', () => {
     cy.document().matchImageSnapshot(`${getTestTitle()}_1`);
 
     cy.findByRole('textbox', { name: /new name for resource/i })
-      .clear()
+      .clearUsingBackspace()
       .type('new-name.txt');
     cy.findByRole('button', { name: /OK/i }).click();
 

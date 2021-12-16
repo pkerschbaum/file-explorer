@@ -151,9 +151,11 @@ export const ActionsBar: React.FC = () => {
           },
         },
       ],
-      handler: () => {
+      handler: (e) => {
         invariant(scheduleDeleteButtonHandleRef.current);
         scheduleDeleteButtonHandleRef.current.triggerSyntheticPress();
+        // prevent the default action of the DELETE key (e.g. deletion of a character in the "Filter" textbox)
+        e.preventDefault();
       },
     },
     triggerCreateNewFolderShortcut: {

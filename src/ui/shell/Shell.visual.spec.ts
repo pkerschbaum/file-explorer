@@ -29,7 +29,7 @@ describe('Shell [visual]', () => {
     cy.document().matchImageSnapshot(`${getTestTitle()}_1_after-first-filter-input`);
 
     cy.findByRole('textbox', { name: /Filter/i })
-      .clear()
+      .clearUsingBackspace()
       .type('aa test');
 
     cy.document().matchImageSnapshot(`${getTestTitle()}_2_after-second-filter-input`);
@@ -108,6 +108,8 @@ describe('Shell [visual]', () => {
     cy.findByRole('button', { name: /New Folder/i }).click();
     cy.findByRole('textbox', { name: /Name of folder/i }).type('name of new folder');
     cy.findByRole('button', { name: /Create/i }).click();
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(1000);
 
     cy.findByRole('table', { name: /Table of resources/i }).matchImageSnapshot(
       `${getTestTitle()}_1_folder-created`,

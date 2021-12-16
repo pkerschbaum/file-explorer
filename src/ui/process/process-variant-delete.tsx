@@ -11,6 +11,7 @@ import {
   DeleteForeverOutlinedIcon,
   DeleteOutlinedIcon,
   DeleteOutlineOutlinedIcon,
+  FocusScope,
   LinearProgress,
 } from '@app/ui/components-library';
 import type { ProcessVariantProps } from '@app/ui/process/Process';
@@ -47,7 +48,7 @@ export function computeProcessCardPropsFromDeleteProcess(
   switch (process.status) {
     case DELETE_PROCESS_STATUS.PENDING_FOR_USER_INPUT: {
       contentToRender = (
-        <>
+        <FocusScope contain autoFocus restoreFocus>
           <Button
             onPress={() => runDeleteProcess(process.id, { useTrash: true })}
             startIcon={<DeleteOutlineOutlinedIcon />}
@@ -61,7 +62,7 @@ export function computeProcessCardPropsFromDeleteProcess(
             Delete permanently
           </Button>
           <Button onPress={() => removeProcess(process.id)}>Abort</Button>
-        </>
+        </FocusScope>
       );
       break;
     }

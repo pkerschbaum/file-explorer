@@ -106,7 +106,6 @@ const RootContainer = styled(Box)<{ userPreferencesSidebarOpen: boolean }>`
       padding-top: calc(${ROOTCONTAINER_PADDING_FACTOR} * var(--spacing-1));
     `}
   padding-right: calc(${ROOTCONTAINER_PADDING_FACTOR} * var(--spacing-1));
-  padding-bottom: calc(${ROOTCONTAINER_PADDING_FACTOR} * var(--spacing-1));
   padding-left: calc(${ROOTCONTAINER_PADDING_FACTOR} * var(--spacing-1));
 `;
 
@@ -117,7 +116,6 @@ const TabsAndProcesses = styled(Box)`
   gap: var(--spacing-4);
 
   grid-area: shell-tabs-and-processes;
-  overflow-y: auto;
 
   /* If a custom title bar is used, overlap the TabsArea with the WindowDragRegion above it */
   ${() => {

@@ -6,6 +6,7 @@ import {
   AutorenewOutlinedIcon,
   Box,
   ClearAllIcon,
+  FocusScope,
   IconButton,
   Paper,
 } from '@app/ui/components-library';
@@ -43,15 +44,17 @@ export const ProcessCard: React.FC<ProcessCardProps> = ({
         {isBusy && <RotatingAutorenewOutlinedIcon />}
 
         {isRemovable && (
-          <DiscardIconButton
-            size="sm"
-            aria-label="Discard card"
-            tooltipContent="Discard card"
-            onPress={onRemove}
-            disablePadding
-          >
-            <ClearAllIcon />
-          </DiscardIconButton>
+          <FocusScope autoFocus restoreFocus>
+            <DiscardIconButton
+              size="sm"
+              aria-label="Discard card"
+              tooltipContent="Discard card"
+              onPress={onRemove}
+              disablePadding
+            >
+              <ClearAllIcon />
+            </DiscardIconButton>
+          </FocusScope>
         )}
       </SummarySection>
 

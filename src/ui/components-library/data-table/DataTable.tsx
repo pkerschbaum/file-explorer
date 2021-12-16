@@ -1,5 +1,3 @@
-import useForkRef from '@mui/utils/useForkRef';
-import { mergeProps } from '@react-aria/utils';
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -31,17 +29,12 @@ export const DataTable = styled(
       ...delegatedProps
     } = props;
 
-    const combinedRef = useForkRef(null, ref);
-
     return (
-      <DataTableRoot
-        {...mergeProps(delegatedProps, {
-          className: classes?.table,
-        })}
-        ref={combinedRef}
-      >
+      <DataTableRoot {...delegatedProps} ref={ref}>
         <TableContainer ref={refs?.tableContainer}>
-          <StyledTable aria-label={labels?.table}>{children}</StyledTable>
+          <StyledTable aria-label={labels?.table} className={classes?.table}>
+            {children}
+          </StyledTable>
         </TableContainer>
       </DataTableRoot>
     );
@@ -56,14 +49,22 @@ const DataTableRoot = styled(Box)`
   display: flex;
   flex-direction: column;
   align-items: center;
-  overflow-x: auto;
 `;
 
 const TableContainer = styled(Box)`
   width: 100%;
   ${commonStyles.layout.flex.shrinkAndFitVertical}
+
+  overflow-x: auto;
+
+  border: var(--border-width-1) solid var(--color-darken-1);
+  border-radius: var(--border-radius-2);
 `;
 
 const StyledTable = styled.table`
+  width: 100%;
+  /* create stacking context for sticky header cells */
+  isolation: isolate;
+
   border-spacing: 0px;
 `;

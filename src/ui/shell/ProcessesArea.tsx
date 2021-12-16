@@ -30,6 +30,8 @@ const ProcessesAreaContainer = styled(Box)`
   flex-direction: column;
   align-items: stretch;
   gap: var(--spacing-2);
+
+  overflow-y: auto;
 `;
 
 const StyledProcess = styled(Process)`

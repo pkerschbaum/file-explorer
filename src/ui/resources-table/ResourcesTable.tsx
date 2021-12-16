@@ -12,11 +12,9 @@ import { changeDirectory } from '@app/operations/explorer.operations';
 import { openFiles, removeTagsFromResources } from '@app/operations/resource.operations';
 import { Box, Button, Chip, FocusScope, Skeleton, TextField } from '@app/ui/components-library';
 import {
-  Cell,
+  DataCell,
   DataTable,
-  DataTableProps,
   HeadCell,
-  HeadRow,
   Row,
   RowProps,
   TableBody,
@@ -42,20 +40,20 @@ export const ResourcesTable: React.FC = () => {
   const tableContainerRef = React.useRef<HTMLDivElement>(null);
 
   return (
-    <StyledDataTable
+    <DataTable
       labels={{ table: 'Table of resources' }}
       refs={{ tableContainer: tableContainerRef }}
     >
       <StyledTableHead>
-        <HeadRow>
-          <StyledHeadCell>Name</StyledHeadCell>
+        <Row>
+          <NameHeadCell>Name</NameHeadCell>
           <SizeHeadCell>Size</SizeHeadCell>
           <MtimeHeadCell>Last Modified</MtimeHeadCell>
-        </HeadRow>
+        </Row>
       </StyledTableHead>
 
       <ResourcesTableBody tableContainerRef={tableContainerRef} />
-    </StyledDataTable>
+    </DataTable>
   );
 };
 
@@ -63,46 +61,32 @@ const StyledTableHead = styled(TableHead)`
   user-select: none;
 `;
 
-const StyledHeadCell = styled(HeadCell)`
+const headCellStyles = css`
   height: ${ROW_HEIGHT}px;
 
   padding-inline: var(--padding-button-md-inline);
 
   text-align: start;
   font-weight: var(--font-weight-bold);
+  white-space: nowrap;
+  & * {
+    white-space: nowrap;
+  }
 `;
 
-const SizeHeadCell = styled(StyledHeadCell)`
+const NameHeadCell = styled(HeadCell)`
+  ${headCellStyles}
+  width: 100%;
+`;
+
+const SizeHeadCell = styled(HeadCell)`
+  ${headCellStyles}
   min-width: 90px;
 `;
 
-const MtimeHeadCell = styled(StyledHeadCell)`
+const MtimeHeadCell = styled(HeadCell)`
+  ${headCellStyles}
   min-width: 155px;
-`;
-
-const ForwardClassNameTable = React.forwardRef<
-  HTMLDivElement,
-  DataTableProps & { className?: string }
->(function ForwardClassNameTableWithRef({ className, ...delegated }, ref) {
-  return (
-    <DataTable {...delegated} ref={ref} classes={{ ...delegated.classes, table: className }} />
-  );
-});
-
-const StyledDataTable = styled(ForwardClassNameTable)`
-  border: var(--border-width-1) solid var(--color-darken-1);
-  border-radius: var(--border-radius-2);
-
-  & thead th:nth-of-type(1),
-  & tbody td:nth-of-type(1) {
-    width: 100%;
-  }
-  & thead th,
-  & thead th *,
-  & tbody td,
-  & tbody td * {
-    white-space: nowrap;
-  }
 `;
 
 type ResourcesTableBodyProps = {
@@ -377,7 +361,7 @@ const ResourceRowContent: React.FC<ResourceRowContentProps> = ({
   mtimeSlot,
 }) => (
   <>
-    <StyledCell>
+    <NameDataCell>
       <ResourceIconAndNameAndTags>
         <ResourceIconAndName fullWidth={!tagsSlot}>
           {iconSlot}
@@ -386,16 +370,25 @@ const ResourceRowContent: React.FC<ResourceRowContentProps> = ({
 
         {tagsSlot}
       </ResourceIconAndNameAndTags>
-    </StyledCell>
-    <StyledCell>{sizeSlot}</StyledCell>
-    <StyledCell>{mtimeSlot}</StyledCell>
+    </NameDataCell>
+    <StyledDataCell>{sizeSlot}</StyledDataCell>
+    <StyledDataCell>{mtimeSlot}</StyledDataCell>
   </>
 );
 
-const StyledCell = styled(Cell)`
+const StyledDataCell = styled(DataCell)`
   height: ${ROW_HEIGHT}px;
 
   padding-inline: var(--padding-button-md-inline);
+
+  white-space: nowrap;
+  & * {
+    white-space: nowrap;
+  }
+`;
+
+const NameDataCell = styled(StyledDataCell)`
+  width: 100%;
 `;
 
 const ResourceIconAndNameAndTags = styled(Box)`
