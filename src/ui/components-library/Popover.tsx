@@ -16,8 +16,8 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 import { Box } from '@app/ui/components-library/Box';
+import { useFramerMotionAnimations } from '@app/ui/components-library/DesignTokenContext';
 import { FocusScope } from '@app/ui/components-library/FocusScope';
-import { framerMotionAnimation } from '@app/ui/utils/animations';
 
 export { OverlayProvider } from '@react-aria/overlays';
 
@@ -112,11 +112,13 @@ const PopoverInner = styled((props: PopoverProps) => {
   const { modalProps } = useModal();
   const { dialogProps } = useDialog({}, popoverInstance.popoverRef);
 
+  const framerMotionAnimations = useFramerMotionAnimations();
+
   return (
     <OverlayContainer style={{ isolation: 'isolate' }}>
       <FocusScope contain autoFocus restoreFocus>
         {!hideBackdrop && (
-          <PopoverBackdrop onClick={onClose} {...framerMotionAnimation.fadeInOut} />
+          <PopoverBackdrop onClick={onClose} {...framerMotionAnimations.fadeInOut} />
         )}
         <Box
           {...mergeProps(
@@ -126,7 +128,7 @@ const PopoverInner = styled((props: PopoverProps) => {
             modalProps,
             delegatedProps,
           )}
-          {...framerMotionAnimation.fadeInOut}
+          {...framerMotionAnimations.fadeInOut}
           ref={popoverInstance.popoverRef}
         >
           {children}

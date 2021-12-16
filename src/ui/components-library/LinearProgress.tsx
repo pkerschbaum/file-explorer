@@ -1,13 +1,12 @@
 import { useProgressBar } from '@react-aria/progress';
 import { mergeProps } from '@react-aria/utils';
 import { AriaProgressBarProps } from '@react-types/progress';
-import useMediaMatch from '@rooks/use-media-match';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 
 import { check } from '@app/base/utils/assert.util';
 import { Box } from '@app/ui/components-library/Box';
-import { MoveLeftToRight1, MoveLeftToRight2 } from '@app/ui/utils/animations';
+import { componentLibraryUtils } from '@app/ui/components-library/utils';
 
 type LinearProgressProps = LinearProgressAriaProps &
   Omit<
@@ -41,14 +40,14 @@ export const LinearProgress = styled(
 
     const { progressBarProps } = useProgressBar(reactAriaProps);
 
-    const prefersReducedMotion = useMediaMatch('(prefers-reduced-motion: reduce)');
+    const isAnimationAllowed = componentLibraryUtils.useIsAnimationAllowed();
 
     const percentage = (value - minValue) / (maxValue - minValue);
     const barWidthPercentage = Math.round(percentage * 100);
 
     return (
       <ProgressRoot ref={ref} {...mergeProps(delegatedProps, progressBarProps)}>
-        {!prefersReducedMotion ? (
+        {isAnimationAllowed ? (
           <ProgressBarBackground>
             {!isIndeterminate ? (
               <ProgressBarDeterminate barWidthPercentage={barWidthPercentage} />
@@ -111,13 +110,11 @@ const ProgressBarIndeterminate = styled(ProgressBarForeground)<{
   ${({ animationVariant }) => {
     if (animationVariant === 'variant-1') {
       return css`
-        animation: 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) 0s infinite normal none running
-          ${MoveLeftToRight1};
+        animation: var(--animation-move-left-to-right-1);
       `;
     } else {
       return css`
-        animation: 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) 1.15s infinite normal none running
-          ${MoveLeftToRight2};
+        animation: var(--animation-move-left-to-right-2);
       `;
     }
   }}

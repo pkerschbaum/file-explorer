@@ -3,14 +3,13 @@ import styled from 'styled-components';
 
 import { commonStyles } from '@app/ui/common-styles';
 import {
-  AutorenewOutlinedIcon,
   Box,
   ClearAllIcon,
   FocusScope,
   IconButton,
   Paper,
+  RotatingAutorenewOutlinedIcon,
 } from '@app/ui/components-library';
-import { rotate } from '@app/ui/utils/animations';
 
 export type ProcessCardProps = {
   summaryIcon: React.ReactNode;
@@ -41,7 +40,7 @@ export const ProcessCard: React.FC<ProcessCardProps> = ({
           <SummaryText>{summaryText}</SummaryText>
         </ProcessIconAndText>
 
-        {isBusy && <RotatingAutorenewOutlinedIcon />}
+        {isBusy && <RotatingAutorenewOutlinedIcon fontSize="sm" />}
 
         {isRemovable && (
           <FocusScope autoFocus restoreFocus>
@@ -103,15 +102,6 @@ const SummaryText = styled(Box)`
   ${commonStyles.layout.flex.shrinkAndFitHorizontal}
 
   ${commonStyles.text.singleLineEllipsis}
-`;
-
-const RotatingAutorenewOutlinedIcon = styled(AutorenewOutlinedIcon)`
-  font-size: var(--font-size-lg);
-
-  animation: ${rotate} 2s linear infinite;
-  @media (prefers-reduced-motion: reduce) {
-    display: none;
-  }
 `;
 
 const DiscardIconButton = styled(IconButton)`

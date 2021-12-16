@@ -10,7 +10,6 @@ import {
   Button,
   DeleteForeverOutlinedIcon,
   DeleteOutlinedIcon,
-  DeleteOutlineOutlinedIcon,
   FocusScope,
   LinearProgress,
 } from '@app/ui/components-library';
@@ -51,7 +50,7 @@ export function computeProcessCardPropsFromDeleteProcess(
         <FocusScope contain autoFocus restoreFocus>
           <Button
             onPress={() => runDeleteProcess(process.id, { useTrash: true })}
-            startIcon={<DeleteOutlineOutlinedIcon />}
+            startIcon={<DeleteOutlinedIcon />}
           >
             Move to trash
           </Button>

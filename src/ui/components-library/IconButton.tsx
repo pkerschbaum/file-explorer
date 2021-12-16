@@ -6,7 +6,7 @@ import * as React from 'react';
 import styled, { css } from 'styled-components';
 
 import { Box } from '@app/ui/components-library/Box';
-import { DESIGN_TOKENS } from '@app/ui/components-library/DesignTokenProvider';
+import { DESIGN_TOKENS } from '@app/ui/components-library/DesignTokenContext';
 import { Placement, Tooltip, useTooltip } from '@app/ui/components-library/Tooltip';
 
 type IconButtonProps = IconButtonAriaProps &

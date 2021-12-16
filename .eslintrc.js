@@ -127,6 +127,10 @@ module.exports = {
             allowedPatterns: ['react'],
           },
           {
+            target: /\/src\/ui\/components-library\/DesignTokenContext\.tsx$/,
+            allowedPatterns: [/^@mui\/material/],
+          },
+          {
             target: /\/src\/ui\/components-library\/icons\.tsx$/,
             allowedPatterns: [/^@mui\/icons-material/],
           },

@@ -1,8 +1,9 @@
+import useMediaMatch from '@rooks/use-media-match';
 import { MotionProps } from 'framer-motion';
 
 import { config } from '@app/config';
 
-export const componentLibraryUtils = { generateMotionLayoutId };
+export const componentLibraryUtils = { generateMotionLayoutId, useIsAnimationAllowed };
 
 const MOTION_LAYOUTID_PREFIX = `${config.productName}motion-layoutid`;
 let lastId = 0;
@@ -24,3 +25,9 @@ export type ReactMotionProps<
     MotionProps,
     'layout' | 'layoutId' | 'initial' | 'animate' | 'exit' | 'transition' | 'variants'
   >;
+
+function useIsAnimationAllowed(): boolean {
+  const isRunningInCypress = (window as any).Cypress !== undefined;
+  const prefersReducedMotion = useMediaMatch('(prefers-reduced-motion: reduce)');
+  return !isRunningInCypress && !prefersReducedMotion;
+}

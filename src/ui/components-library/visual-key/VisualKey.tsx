@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { assertThat } from '@app/base/utils/assert.util';
 import { Box } from '@app/ui/components-library/Box';
-import { DESIGN_TOKENS } from '@app/ui/components-library/DesignTokenProvider';
+import { DESIGN_TOKENS } from '@app/ui/components-library/DesignTokenContext';
 
 type VisualKeyProps = IconVisualKey | CharVisualKey;
 

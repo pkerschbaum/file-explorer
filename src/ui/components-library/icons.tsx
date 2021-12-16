@@ -14,7 +14,6 @@ import MuiContentPasteOutlinedIcon from '@mui/icons-material/ContentPasteOutline
 import MuiCreateNewFolderOutlinedIcon from '@mui/icons-material/CreateNewFolderOutlined';
 import MuiDeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import MuiDeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
-import MuiDeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import MuiDoubleArrowIcon from '@mui/icons-material/DoubleArrow';
 import MuiEditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import MuiFolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
@@ -30,7 +29,7 @@ import MuiMinimizeOutlinedIcon from '@mui/icons-material/MinimizeOutlined';
 import MuiSettingsIcon from '@mui/icons-material/Settings';
 import { motion } from 'framer-motion';
 import * as React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 type MuiIconComponent = typeof MuiContentCopyOutlinedIcon;
 type MuiIconComponentProps = Parameters<MuiIconComponent>[0];
@@ -113,9 +112,6 @@ export const DeleteForeverOutlinedIcon = styled((delegatedProps: Omit<IconProps,
 export const DeleteOutlinedIcon = styled((delegatedProps: Omit<IconProps, 'Component'>) => {
   return <Icon Component={MuiDeleteOutlinedIcon} {...delegatedProps} />;
 })``;
-export const DeleteOutlineOutlinedIcon = styled((delegatedProps: Omit<IconProps, 'Component'>) => {
-  return <Icon Component={MuiDeleteOutlineOutlinedIcon} {...delegatedProps} />;
-})``;
 export const DoubleArrowIcon = styled((delegatedProps: Omit<IconProps, 'Component'>) => {
   return <Icon Component={MuiDoubleArrowIcon} {...delegatedProps} />;
 })``;
@@ -160,6 +156,14 @@ export const LaunchOutlinedIcon = styled((delegatedProps: Omit<IconProps, 'Compo
 export const MinimizeOutlinedIcon = styled((delegatedProps: Omit<IconProps, 'Component'>) => {
   return <Icon Component={MuiMinimizeOutlinedIcon} {...delegatedProps} />;
 })``;
+export const RotatingAutorenewOutlinedIcon = styled(AutorenewOutlinedIcon)`
+  animation: var(--animation-rotate);
+  ${({ theme }) =>
+    !theme.isAnimationAllowed &&
+    css`
+      display: none;
+    `}
+`;
 export const SettingsIcon = styled((delegatedProps: Omit<IconProps, 'Component'>) => {
   return <Icon Component={MuiSettingsIcon} {...delegatedProps} />;
 })``;

@@ -1,7 +1,6 @@
 import { useButton } from '@react-aria/button';
 import { mergeProps, useObjectRef } from '@react-aria/utils';
 import { AriaButtonProps } from '@react-types/button';
-import useMediaMatch from '@rooks/use-media-match';
 import { motion } from 'framer-motion';
 import * as React from 'react';
 import styled, { css, keyframes } from 'styled-components';
@@ -9,6 +8,7 @@ import invariant from 'tiny-invariant';
 
 import { Box } from '@app/ui/components-library/Box';
 import { Paper } from '@app/ui/components-library/Paper';
+import { componentLibraryUtils } from '@app/ui/components-library/utils';
 
 type ButtonProps = ButtonAriaProps &
   ButtonComponentProps &
@@ -77,7 +77,7 @@ export const Button = styled(
     reactAriaProps.preventFocusOnPress = true;
     const { buttonProps } = useButton(reactAriaProps, buttonRef);
 
-    const prefersReducedMotion = useMediaMatch('(prefers-reduced-motion: reduce)');
+    const isAnimationAllowed = componentLibraryUtils.useIsAnimationAllowed();
 
     React.useImperativeHandle(
       handleRef,
@@ -104,7 +104,7 @@ export const Button = styled(
       [buttonRef],
     );
 
-    const animateLayout = enableLayoutAnimation && !prefersReducedMotion;
+    const animateLayout = enableLayoutAnimation && isAnimationAllowed;
 
     return (
       <ButtonRoot

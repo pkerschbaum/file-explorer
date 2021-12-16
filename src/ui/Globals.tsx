@@ -168,15 +168,15 @@ export const Globals: React.FC<GlobalsProps> = ({ queryClient, store, children }
       <QueryClientProvider client={queryClient}>
         <ReactReduxProvider store={store}>
           <GlobalShortcutsContextProvider>
-            <GlobalStyle />
-            <DesignTokenProvider />
-
-            {/* class "show-file-icons" will enable file icon theme of code-oss project */}
-            <FileIconThemeLoader>
-              <OverlayProvider style={{ height: '100%' }}>
-                <RootContainer className="show-file-icons">{children}</RootContainer>
-              </OverlayProvider>
-            </FileIconThemeLoader>
+            <DesignTokenProvider>
+              <GlobalStyle />
+              {/* class "show-file-icons" will enable file icon theme of code-oss project */}
+              <FileIconThemeLoader>
+                <OverlayProvider style={{ height: '100%' }}>
+                  <RootContainer className="show-file-icons">{children}</RootContainer>
+                </OverlayProvider>
+              </FileIconThemeLoader>
+            </DesignTokenProvider>
           </GlobalShortcutsContextProvider>
         </ReactReduxProvider>
 

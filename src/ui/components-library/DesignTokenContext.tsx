@@ -1,10 +1,33 @@
+import { createTheme, Theme } from '@mui/material';
 import * as d3 from 'd3-color';
+import { MotionProps } from 'framer-motion';
 import * as React from 'react';
-import { createGlobalStyle, css, FlattenSimpleInterpolation } from 'styled-components';
+import {
+  createGlobalStyle,
+  css,
+  FlattenSimpleInterpolation,
+  keyframes,
+  ThemeProvider,
+} from 'styled-components';
 import invariant from 'tiny-invariant';
 
 import { assertIsUnreachable } from '@app/base/utils/assert.util';
 import { useActiveTheme } from '@app/global-state/slices/user.hooks';
+import { componentLibraryUtils } from '@app/ui/components-library/utils';
+
+declare module '@mui/material/styles' {
+  interface Theme {
+    isAnimationAllowed: boolean;
+  }
+  interface ThemeOptions {
+    isAnimationAllowed: boolean;
+  }
+}
+
+declare module 'styled-components' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  export interface DefaultTheme extends Theme {}
+}
 
 // "Nord" theme color palette (https://www.nordtheme.com/docs/colors-and-palettes)
 const NORD_THEME = {
@@ -113,6 +136,90 @@ export type ThemeConfiguration = {
 export const availableThemes = Object.keys(THEMES) as AvailableTheme[];
 export const defaultTheme: AvailableTheme = 'nord';
 
+const ANIMATIONS = {
+  rotate: keyframes`
+    from {
+      transform: rotate(0deg);
+    }
+
+    to {
+      transform: rotate(360deg);
+    }
+  `,
+  moveLeftToRight1: keyframes`
+    0% {
+      left: -35%;
+      right: 100%;
+    }
+
+    60% {
+      left: 100%;
+      right: -90%;
+    }
+
+    100% {    
+      left: 100%;
+      right: -90%;
+    }
+  `,
+  moveLeftToRight2: keyframes`
+    0% {
+      left: -200%;
+      right: 100%;
+    }
+
+    60% {
+      left: 107%;
+      right: -8%;
+    }
+
+    100% {
+      left: 107%;
+      right: -8%;
+    }
+  `,
+  pulsate: keyframes`
+    0% {
+      opacity: 1;
+    }
+
+    50% {
+      opacity: 0.4;
+    }
+
+    100% {
+      opacity: 1;
+    }
+  `,
+};
+type FramerMotionAnimationNames = 'fadeInOut';
+type FramerMotionAnimations = {
+  [animationName in FramerMotionAnimationNames]: Pick<
+    MotionProps,
+    'initial' | 'animate' | 'exit' | 'transition'
+  >;
+};
+const FRAMER_MOTION_ANIMATIONS: FramerMotionAnimations = {
+  fadeInOut: {
+    initial: { opacity: 0 },
+    animate: { opacity: 1 },
+    transition: { duration: 0.15 },
+    exit: { opacity: 0 },
+  },
+};
+const FRAMER_MOTION_ANIMATIONS_DISABLED: FramerMotionAnimations = {
+  fadeInOut: {},
+};
+
+export function useFramerMotionAnimations(): FramerMotionAnimations {
+  const isAnimationAllowed = componentLibraryUtils.useIsAnimationAllowed();
+  if (isAnimationAllowed) {
+    return FRAMER_MOTION_ANIMATIONS;
+  } else {
+    return FRAMER_MOTION_ANIMATIONS_DISABLED;
+  }
+}
+
 const SPACING_1 = 4;
 export const DESIGN_TOKENS = {
   BASE_FONTSIZE: 14,
@@ -124,10 +231,11 @@ export const DESIGN_TOKENS = {
   SPACING_4: SPACING_1 * 4,
   SPACING_8: SPACING_1 * 8,
   OUTLINE_WIDTH: 2,
-};
+} as const;
 
-export const DesignTokenProvider: React.FC = () => {
+export const DesignTokenProvider: React.FC = ({ children }) => {
   const activeTheme = useActiveTheme();
+  const isAnimationAllowed = componentLibraryUtils.useIsAnimationAllowed();
 
   const themeConfiguration = THEMES[activeTheme];
 
@@ -162,6 +270,28 @@ export const DesignTokenProvider: React.FC = () => {
       `;
     } else {
       assertIsUnreachable(themeConfiguration);
+    }
+
+    let animations;
+    if (isAnimationAllowed) {
+      animations = css`
+        --animation-rotate: ${ANIMATIONS.rotate} 2s linear infinite;
+        /* pulsate animation taken from https://mui.com/components/skeleton/#variants */
+        --animation-pulsate: 1.5s ease-in-out 0.5s infinite normal none running
+          ${ANIMATIONS.pulsate};
+        /* move-left-to-right animation taken from https://mui.com/components/progress/#linear-indeterminate */
+        --animation-move-left-to-right-1: 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) 0s infinite
+          normal none running ${ANIMATIONS.moveLeftToRight1};
+        --animation-move-left-to-right-2: 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) 1.15s infinite
+          normal none running ${ANIMATIONS.moveLeftToRight2};
+      `;
+    } else {
+      animations = css`
+        --animation-rotate: none;
+        --animation-pulsate: none;
+        --animation-move-left-to-right-1: none;
+        --animation-move-left-to-right-2: none;
+      `;
     }
 
     return css`
@@ -241,11 +371,22 @@ export const DesignTokenProvider: React.FC = () => {
 
         --box-size-card-sm-width: 220px;
         --box-size-card-md-width: 280px;
+
+        ${animations}
       }
     `;
-  }, [themeConfiguration]);
+  }, [isAnimationAllowed, themeConfiguration]);
 
-  return <DesignTokensGlobalStyle designTokensCss={designTokensCss} />;
+  return (
+    <>
+      <DesignTokensGlobalStyle designTokensCss={designTokensCss} />
+      {/* 
+          We need to render the styled-components ThemeProvider with the MUI theme since the 
+          @mui/icons-material components expect a MUI theme inside the SC ThemeProvider.
+        */}
+      <ThemeProvider theme={createTheme({ isAnimationAllowed })}>{children}</ThemeProvider>
+    </>
+  );
 };
 
 const DesignTokensGlobalStyle = createGlobalStyle<{ designTokensCss: FlattenSimpleInterpolation }>`
