@@ -5,7 +5,7 @@ import { arrays } from '@app/base/utils/arrays.util';
 import { useProcesses } from '@app/global-state/slices/processes.hooks';
 import { Box } from '@app/ui/components-library';
 import { Process } from '@app/ui/process';
-import { ROOTCONTAINER_PADDING_BOTTOM_FACTOR } from '@app/ui/shell/constants';
+import { ROOTCONTAINER_PADDING_FACTOR } from '@app/ui/shell/constants';
 
 export const ProcessesArea: React.FC = () => {
   const processes = useProcesses();
@@ -29,13 +29,13 @@ const ProcessesAreaContainer = styled(Box)`
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: ${(props) => props.theme.spacing()};
+  gap: var(--spacing-2);
 `;
 
 const StyledProcess = styled(Process)`
   &:last-of-type {
     /* add margin-bottom to the last process card because otherwise, the last card would stick right 
        on the lower border of the RootContainer */
-    margin-bottom: ${(props) => props.theme.spacing(ROOTCONTAINER_PADDING_BOTTOM_FACTOR)};
+    margin-bottom: calc(${ROOTCONTAINER_PADDING_FACTOR} * var(--spacing-1));
   }
 `;

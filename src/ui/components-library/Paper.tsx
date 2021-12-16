@@ -1,3 +1,9 @@
-import { Paper as MuiPaper } from '@mui/material';
+import styled from 'styled-components';
 
-export const Paper = MuiPaper;
+import { Box } from '@app/ui/components-library/Box';
+
+export const Paper = styled(Box)`
+  border-radius: var(--border-radius-2);
+  background-color: var(--color-bg-1);
+  box-shadow: var(--shadow-elevation-low);
+`;

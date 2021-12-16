@@ -21,7 +21,7 @@ describe('PasteProcess [visual]', () => {
     );
     bootstrap({ storybookIdToVisit });
 
-    cy.findByLabelText(/Paste Process/i).matchImageSnapshot(`${getTestTitle()}_1`);
+    cy.findByLabelText(/^Paste Process$/i).matchImageSnapshot(`${getTestTitle()}_1`);
   });
 
   it('Running Performing Paste', () => {
@@ -31,7 +31,7 @@ describe('PasteProcess [visual]', () => {
     );
     bootstrap({ storybookIdToVisit });
 
-    cy.findByLabelText(/Paste Process/i).matchImageSnapshot(`${getTestTitle()}_1`);
+    cy.findByLabelText(/^Paste Process$/i).matchImageSnapshot(`${getTestTitle()}_1`);
   });
 
   it('Success', () => {
@@ -41,7 +41,7 @@ describe('PasteProcess [visual]', () => {
     );
     bootstrap({ storybookIdToVisit });
 
-    cy.findByLabelText(/Paste Process/i).matchImageSnapshot(`${getTestTitle()}_1`);
+    cy.findByLabelText(/^Paste Process$/i).matchImageSnapshot(`${getTestTitle()}_1`);
   });
 
   it('Abort Requested', () => {
@@ -51,7 +51,7 @@ describe('PasteProcess [visual]', () => {
     );
     bootstrap({ storybookIdToVisit });
 
-    cy.findByLabelText(/Paste Process/i).matchImageSnapshot(`${getTestTitle()}_1`);
+    cy.findByLabelText(/^Paste Process$/i).matchImageSnapshot(`${getTestTitle()}_1`);
   });
 
   it('Abort Success', () => {
@@ -61,7 +61,7 @@ describe('PasteProcess [visual]', () => {
     );
     bootstrap({ storybookIdToVisit });
 
-    cy.findByLabelText(/Paste Process/i).matchImageSnapshot(`${getTestTitle()}_1`);
+    cy.findByLabelText(/^Paste Process$/i).matchImageSnapshot(`${getTestTitle()}_1`);
   });
 
   it('Failure', () => {
@@ -71,6 +71,6 @@ describe('PasteProcess [visual]', () => {
     );
     bootstrap({ storybookIdToVisit });
 
-    cy.findByLabelText(/Paste Process/i).matchImageSnapshot(`${getTestTitle()}_1`);
+    cy.findByLabelText(/^Paste Process$/i).matchImageSnapshot(`${getTestTitle()}_1`);
   });
 });

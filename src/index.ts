@@ -28,22 +28,25 @@ if (require('electron-squirrel-startup')) {
 export type WindowRef = { current?: BrowserWindow };
 const mainWindowRef: WindowRef = { current: undefined };
 
-// Allow only one instance of the app to run at any moment (https://www.electronjs.org/docs/latest/api/app#apprequestsingleinstancelock)
-const gotTheLock = app.requestSingleInstanceLock();
-if (!gotTheLock) {
-  app.quit();
-}
-app.on('second-instance', () => {
-  // Someone tried to run a second instance, we should focus our window.
-  if (!mainWindowRef.current) {
-    return;
+// In production, allow only one instance of the app to run at any moment (https://www.electronjs.org/docs/latest/api/app#apprequestsingleinstancelock)
+if (!config.isDevEnviroment) {
+  const gotTheLock = app.requestSingleInstanceLock();
+  if (!gotTheLock) {
+    app.quit();
   }
 
-  if (mainWindowRef.current.isMinimized()) {
-    mainWindowRef.current.restore();
-  }
-  mainWindowRef.current.focus();
-});
+  app.on('second-instance', () => {
+    // Someone tried to run a second instance, we should focus our window.
+    if (!mainWindowRef.current) {
+      return;
+    }
+
+    if (mainWindowRef.current.isMinimized()) {
+      mainWindowRef.current.restore();
+    }
+    mainWindowRef.current.focus();
+  });
+}
 
 // Register native-file-icon protocol as privileged
 protocol.registerSchemesAsPrivileged([

@@ -10,11 +10,10 @@ import {
 import {
   AvailableTheme,
   availableThemes,
-  Box,
   Divider,
   Paper,
-  ToggleButton,
-  ToggleButtonGroup,
+  Radio,
+  RadioGroup,
 } from '@app/ui/components-library';
 
 export const USER_PREFERENCES_SIDEBAR_GRID_AREA = 'shell-user-preferences-sidebar';
@@ -30,50 +29,40 @@ export const UserPreferencesSidebar: React.FC<UserPreferencesSidebarProps> = ({
   const activeFileIconTheme = useActiveFileIconTheme();
 
   return (
-    <Container variant="outlined" userPreferencesSidebarOpen={userPreferencesSidebarOpen}>
-      <PreferenceGroup>
-        <PreferenceLabel>Theme</PreferenceLabel>
-
-        <ToggleButtonGroup
-          color="primary"
-          value={activeTheme}
-          exclusive
-          onChange={(_1, newActiveTheme: AvailableTheme | null) => {
-            if (newActiveTheme) {
-              setActiveTheme(newActiveTheme);
-            }
-          }}
-        >
-          {availableThemes.map((availableTheme) => (
-            <ToggleButton key={availableTheme} value={availableTheme}>
-              {availableTheme}
-            </ToggleButton>
-          ))}
-        </ToggleButtonGroup>
-      </PreferenceGroup>
+    <Container userPreferencesSidebarOpen={userPreferencesSidebarOpen}>
+      <RadioGroup
+        label="Theme"
+        value={activeTheme}
+        onChange={(newActiveTheme: string) => {
+          if (newActiveTheme) {
+            setActiveTheme(newActiveTheme as AvailableTheme);
+          }
+        }}
+      >
+        {availableThemes.map((availableTheme) => (
+          <StyledRadio key={availableTheme} value={availableTheme}>
+            {availableTheme}
+          </StyledRadio>
+        ))}
+      </RadioGroup>
 
       <Divider />
 
-      <PreferenceGroup>
-        <PreferenceLabel>File Icons</PreferenceLabel>
-
-        <ToggleButtonGroup
-          color="primary"
-          value={activeFileIconTheme}
-          exclusive
-          onChange={(_1, newActiveFileIconTheme: AvailableFileIconTheme | null) => {
-            if (newActiveFileIconTheme) {
-              setActiveFileIconTheme(newActiveFileIconTheme);
-            }
-          }}
-        >
-          {Object.entries(FILE_ICON_THEMES).map(([id, availableFileIconTheme]) => (
-            <ToggleButton key={id} value={id as AvailableFileIconTheme}>
-              {availableFileIconTheme.label}
-            </ToggleButton>
-          ))}
-        </ToggleButtonGroup>
-      </PreferenceGroup>
+      <RadioGroup
+        label="File Icons"
+        value={activeFileIconTheme}
+        onChange={(newActiveFileIconTheme) => {
+          if (newActiveFileIconTheme) {
+            setActiveFileIconTheme(newActiveFileIconTheme as AvailableFileIconTheme);
+          }
+        }}
+      >
+        {Object.entries(FILE_ICON_THEMES).map(([id, availableFileIconTheme]) => (
+          <StyledRadio key={id} value={id}>
+            {availableFileIconTheme.label}
+          </StyledRadio>
+        ))}
+      </RadioGroup>
 
       <Divider />
     </Container>
@@ -82,21 +71,13 @@ export const UserPreferencesSidebar: React.FC<UserPreferencesSidebarProps> = ({
 
 const Container = styled(Paper)<{ userPreferencesSidebarOpen: boolean }>`
   grid-area: ${USER_PREFERENCES_SIDEBAR_GRID_AREA};
-  padding-inline: ${({ theme }) => theme.spacing()};
-  padding-block: ${({ theme }) => theme.spacing(1.5)};
+  padding: var(--spacing-4);
 
   display: ${({ userPreferencesSidebarOpen }) => (userPreferencesSidebarOpen ? 'flex' : 'none')};
   flex-direction: column;
-  gap: ${({ theme }) => theme.spacing(2)};
+  gap: var(--spacing-4);
 `;
 
-const PreferenceGroup = styled(Box)`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing()};
-`;
-
-const PreferenceLabel = styled(Box)`
-  font-weight: ${({ theme }) => theme.font.weights.bold};
-  text-transform: uppercase;
+const StyledRadio = styled(Radio)`
+  text-transform: capitalize;
 `;

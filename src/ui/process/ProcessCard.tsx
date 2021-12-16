@@ -1,10 +1,14 @@
-import AutorenewOutlinedIcon from '@mui/icons-material/AutorenewOutlined';
-import ClearAllIcon from '@mui/icons-material/ClearAll';
 import * as React from 'react';
 import styled from 'styled-components';
 
-import { commonStyles } from '@app/ui/Common.styles';
-import { Box, IconButton, Paper, Tooltip } from '@app/ui/components-library';
+import { commonStyles } from '@app/ui/common-styles';
+import {
+  AutorenewOutlinedIcon,
+  Box,
+  ClearAllIcon,
+  IconButton,
+  Paper,
+} from '@app/ui/components-library';
 import { rotate } from '@app/ui/utils/animations';
 
 export type ProcessCardProps = {
@@ -27,41 +31,47 @@ export const ProcessCard: React.FC<ProcessCardProps> = ({
   onRemove,
   labels,
   className,
-}) => (
-  <ProcessCardContainer aria-label={labels.container} className={className}>
-    <SummarySection>
-      <ProcessIconAndText>
-        <ProcessIconWrapper>{summaryIcon}</ProcessIconWrapper>
-        <SummaryText>{summaryText}</SummaryText>
-      </ProcessIconAndText>
+}) => {
+  return (
+    <ProcessCardContainer aria-label={labels.container} className={className}>
+      <SummarySection>
+        <ProcessIconAndText>
+          <ProcessIconWrapper>{summaryIcon}</ProcessIconWrapper>
+          <SummaryText>{summaryText}</SummaryText>
+        </ProcessIconAndText>
 
-      {isBusy && <RotatingAutorenewOutlinedIcon fontSize="inherit" />}
+        {isBusy && <RotatingAutorenewOutlinedIcon />}
 
-      {isRemovable && (
-        <Tooltip title="Discard card">
-          <DiscardIconButton onClick={onRemove}>
-            <ClearAllIcon fontSize="inherit" />
+        {isRemovable && (
+          <DiscardIconButton
+            size="sm"
+            aria-label="Discard card"
+            tooltipContent="Discard card"
+            onPress={onRemove}
+            disablePadding
+          >
+            <ClearAllIcon />
           </DiscardIconButton>
-        </Tooltip>
-      )}
-    </SummarySection>
+        )}
+      </SummarySection>
 
-    <DetailsSection>{details}</DetailsSection>
-  </ProcessCardContainer>
-);
+      <DetailsSection>{details}</DetailsSection>
+    </ProcessCardContainer>
+  );
+};
 
 const ProcessCardContainer = styled(Paper)`
-  padding: ${({ theme }) => theme.spacing(2)};
+  padding: var(--spacing-4);
 
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => theme.spacing(2)};
+  gap: var(--spacing-4);
 `;
 
 const SummarySection = styled(Box)`
   display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing()};
+  align-items: baseline;
+  gap: var(--spacing-3);
 `;
 
 const ProcessIconAndText = styled(Box)`
@@ -69,7 +79,7 @@ const ProcessIconAndText = styled(Box)`
 
   display: flex;
   align-items: center;
-  gap: ${({ theme }) => theme.spacing()};
+  gap: var(--spacing-2);
 `;
 
 const ProcessIconWrapper = styled(Box)`
@@ -78,22 +88,22 @@ const ProcessIconWrapper = styled(Box)`
   display: flex;
   align-items: center;
   justify-items: center;
-  gap: ${({ theme }) => theme.spacing()};
+  gap: var(--spacing-2);
 
-  font-size: ${({ theme }) => theme.font.sizes.lg};
+  font-size: var(--font-size-lg);
+
+  /* add some margin-top for optical alignment */
+  margin-top: 2px;
 `;
 
 const SummaryText = styled(Box)`
   ${commonStyles.layout.flex.shrinkAndFitHorizontal}
 
   ${commonStyles.text.singleLineEllipsis}
-
-  /* some margin for optical alignment */
-  margin-bottom: 3px;
 `;
 
 const RotatingAutorenewOutlinedIcon = styled(AutorenewOutlinedIcon)`
-  font-size: ${({ theme }) => theme.font.sizes.lg};
+  font-size: var(--font-size-lg);
 
   animation: ${rotate} 2s linear infinite;
   @media (prefers-reduced-motion: reduce) {
@@ -102,13 +112,13 @@ const RotatingAutorenewOutlinedIcon = styled(AutorenewOutlinedIcon)`
 `;
 
 const DiscardIconButton = styled(IconButton)`
-  /* undo paddings of IconButton via negative margin */
-  margin: -9px -9px -9px 0;
-  font-size: ${({ theme }) => theme.font.sizes.xl};
+  /* move button down for optical alignment */
+  position: relative;
+  bottom: -1px;
 `;
 
-const DetailsSection = styled.div`
+const DetailsSection = styled(Box)`
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => theme.spacing(2)};
+  gap: var(--spacing-4);
 `;

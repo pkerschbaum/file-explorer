@@ -1,8 +1,7 @@
-import SettingsIcon from '@mui/icons-material/Settings';
 import * as React from 'react';
 import styled from 'styled-components';
 
-import { Box, IconButton, Tooltip } from '@app/ui/components-library';
+import { Box, IconButton, SettingsIcon } from '@app/ui/components-library';
 
 export const USER_PREFERENCES_BUTTON_GRID_AREA = 'shell-app-settings-button';
 
@@ -14,22 +13,23 @@ type UserPreferencesButtonProps = {
 export const UserPreferencesButton: React.FC<UserPreferencesButtonProps> = ({
   userPreferencesSidebarOpen,
   setUserPreferencesSidebarOpen,
-}) => (
-  <UserPreferencesButtonContainer>
-    <Tooltip
-      title={!userPreferencesSidebarOpen ? 'Open User Preferences' : 'Hide User Preferences'}
-    >
+}) => {
+  const label = !userPreferencesSidebarOpen ? 'Open User Preferences' : 'Hide User Preferences';
+
+  return (
+    <UserPreferencesButtonContainer>
       <IconButton
-        size="medium"
-        onClick={() => {
+        aria-label={label}
+        tooltipContent={label}
+        onPress={() => {
           setUserPreferencesSidebarOpen(!userPreferencesSidebarOpen);
         }}
       >
-        <SettingsIcon fontSize="inherit" />
+        <SettingsIcon />
       </IconButton>
-    </Tooltip>
-  </UserPreferencesButtonContainer>
-);
+    </UserPreferencesButtonContainer>
+  );
+};
 
 const UserPreferencesButtonContainer = styled(Box)`
   grid-area: ${USER_PREFERENCES_BUTTON_GRID_AREA};

@@ -72,7 +72,9 @@ describe('Shell [visual]', () => {
     bootstrap({ storybookIdToVisit });
 
     cy.findByRole('button', { name: /Open User Preferences/i }).click();
-    cy.findByRole('button', { name: /Flow/i }).click();
+    cy.findByRole('radiogroup', { name: /Theme/i })
+      .findByRole('radio', { name: /Flow/i })
+      .click({ force: true });
 
     cy.document().matchImageSnapshot(`${getTestTitle()}_1_switched-theme`);
   });
@@ -87,7 +89,9 @@ describe('Shell [visual]', () => {
     cy.intercept({ url: /icons\/folder\.svg/i }).as('iconRequest');
 
     cy.findByRole('button', { name: /Open User Preferences/i }).click();
-    cy.findByRole('button', { name: /Material Design/i }).click();
+    cy.findByRole('radiogroup', { name: /File Icons/i })
+      .findByRole('radio', { name: /Material Design/i })
+      .click({ force: true });
 
     cy.wait('@iconRequest');
 

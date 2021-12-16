@@ -1,31 +1,25 @@
-import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
-import ContentCutOutlinedIcon from '@mui/icons-material/ContentCutOutlined';
-import ContentPasteOutlinedIcon from '@mui/icons-material/ContentPasteOutlined';
-import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import LaunchOutlinedIcon from '@mui/icons-material/LaunchOutlined';
 import * as React from 'react';
 import styled from 'styled-components';
 import invariant from 'tiny-invariant';
 
 import { formatter } from '@app/base/utils/formatter.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
-import { config } from '@app/config';
-import { RESOURCE_TYPE } from '@app/domain/types';
 import { useDraftPasteState } from '@app/global-state/slices/processes.hooks';
-import { useTags } from '@app/global-state/slices/tags.hooks';
-import { addTagsToResources } from '@app/operations/resource.operations';
-import { addTag, removeTags } from '@app/operations/tag.operations';
-import { AddTag } from '@app/ui/actions-bar/AddTag';
 import { CreateFolder } from '@app/ui/actions-bar/CreateFolder';
 import {
-  ActionButton,
-  ActionButtonRef,
   Box,
+  Button,
+  ButtonHandle,
+  ContentCopyOutlinedIcon,
+  ContentCutOutlinedIcon,
+  ContentPasteOutlinedIcon,
+  DeleteOutlinedIcon,
   Divider,
-  Stack,
+  EditOutlinedIcon,
+  LaunchOutlinedIcon,
   TextField,
   Tooltip,
+  useTooltip,
 } from '@app/ui/components-library';
 import { KEY } from '@app/ui/constants';
 import {
@@ -47,7 +41,6 @@ import { useClipboardResources } from '@app/ui/hooks/clipboard-resources.hooks';
 
 export const ActionsBar: React.FC = () => {
   const draftPasteState = useDraftPasteState();
-  const tags = useTags();
 
   const selectedShownResources = useSelectedShownResources();
 
@@ -60,15 +53,15 @@ export const ActionsBar: React.FC = () => {
   const createFolderInExplorer = useCreateFolderInExplorer();
   const changeSelectionByKeyboard = useChangeSelectionByKeyboard();
 
-  const openButtonRef = React.useRef<ActionButtonRef>(null);
-  const copyButtonRef = React.useRef<ActionButtonRef>(null);
-  const cutButtonRef = React.useRef<ActionButtonRef>(null);
-  const pasteButtonRef = React.useRef<ActionButtonRef>(null);
-  const triggerRenameButtonRef = React.useRef<ActionButtonRef>(null);
-  const scheduleDeleteButtonRef = React.useRef<ActionButtonRef>(null);
-  const triggerCreateNewFolderButtonRef = React.useRef<ActionButtonRef>(null);
+  const openButtonHandleRef = React.useRef<ButtonHandle>(null);
+  const copyButtonHandleRef = React.useRef<ButtonHandle>(null);
+  const cutButtonHandleRef = React.useRef<ButtonHandle>(null);
+  const pasteButtonHandleRef = React.useRef<ButtonHandle>(null);
+  const triggerRenameButtonHandleRef = React.useRef<ButtonHandle>(null);
+  const scheduleDeleteButtonHandleRef = React.useRef<ButtonHandle>(null);
+  const triggerCreateNewFolderButtonHandleRef = React.useRef<ButtonHandle>(null);
 
-  const filterInputRef = React.useRef<HTMLDivElement>(null);
+  const filterInputRef = React.useRef<HTMLInputElement>(null);
 
   const registerShortcutsResult = useRegisterExplorerShortcuts({
     openShortcut: {
@@ -82,8 +75,8 @@ export const ActionsBar: React.FC = () => {
         },
       ],
       handler: () => {
-        invariant(openButtonRef.current);
-        openButtonRef.current.triggerSyntheticClick();
+        invariant(openButtonHandleRef.current);
+        openButtonHandleRef.current.triggerSyntheticPress();
       },
     },
     copyShortcut: {
@@ -97,8 +90,8 @@ export const ActionsBar: React.FC = () => {
         },
       ],
       handler: () => {
-        invariant(copyButtonRef.current);
-        copyButtonRef.current.triggerSyntheticClick();
+        invariant(copyButtonHandleRef.current);
+        copyButtonHandleRef.current.triggerSyntheticPress();
       },
     },
     cutShortcut: {
@@ -112,8 +105,8 @@ export const ActionsBar: React.FC = () => {
         },
       ],
       handler: () => {
-        invariant(cutButtonRef.current);
-        cutButtonRef.current.triggerSyntheticClick();
+        invariant(cutButtonHandleRef.current);
+        cutButtonHandleRef.current.triggerSyntheticPress();
       },
     },
     pasteShortcut: {
@@ -127,8 +120,8 @@ export const ActionsBar: React.FC = () => {
         },
       ],
       handler: () => {
-        invariant(pasteButtonRef.current);
-        pasteButtonRef.current.triggerSyntheticClick();
+        invariant(pasteButtonHandleRef.current);
+        pasteButtonHandleRef.current.triggerSyntheticPress();
       },
     },
     triggerRenameShortcut: {
@@ -142,8 +135,8 @@ export const ActionsBar: React.FC = () => {
         },
       ],
       handler: (e) => {
-        invariant(triggerRenameButtonRef.current);
-        triggerRenameButtonRef.current.triggerSyntheticClick();
+        invariant(triggerRenameButtonHandleRef.current);
+        triggerRenameButtonHandleRef.current.triggerSyntheticPress();
         // avoid reload of window (default browser action for CTRL+R)
         e.preventDefault();
       },
@@ -159,8 +152,8 @@ export const ActionsBar: React.FC = () => {
         },
       ],
       handler: () => {
-        invariant(scheduleDeleteButtonRef.current);
-        scheduleDeleteButtonRef.current.triggerSyntheticClick();
+        invariant(scheduleDeleteButtonHandleRef.current);
+        scheduleDeleteButtonHandleRef.current.triggerSyntheticPress();
       },
     },
     triggerCreateNewFolderShortcut: {
@@ -174,8 +167,8 @@ export const ActionsBar: React.FC = () => {
         },
       ],
       handler: () => {
-        invariant(triggerCreateNewFolderButtonRef.current);
-        triggerCreateNewFolderButtonRef.current.triggerSyntheticClick();
+        invariant(triggerCreateNewFolderButtonHandleRef.current);
+        triggerCreateNewFolderButtonHandleRef.current.triggerSyntheticPress();
       },
     },
     changeSelectionByKeyboardShortcut: {
@@ -236,109 +229,95 @@ export const ActionsBar: React.FC = () => {
 
   const singleResourceActionsDisabled = selectedShownResources.length !== 1;
   const multipleResourcesActionsDisabled = selectedShownResources.length < 1;
-  const multipleDirectoriesActionsDisabled =
-    selectedShownResources.length < 1 ||
-    selectedShownResources.some((resource) => resource.resourceType !== RESOURCE_TYPE.DIRECTORY);
 
   return (
-    <Stack alignItems="stretch">
-      <Stack alignItems="flex-end">
+    <ActionBarContainer>
+      <Box style={{ alignSelf: 'flex-end' }}>
         <FilterInput filterInputRef={filterInputRef} />
-      </Stack>
+      </Box>
 
-      <Divider orientation="vertical" flexItem />
+      <Divider orientation="vertical" />
 
-      <Stack wrap>
-        <ActionButton
-          ref={openButtonRef}
-          onClick={openSelectedResources}
-          disabled={singleResourceActionsDisabled}
-          StartIconComponent={LaunchOutlinedIcon}
+      <ActionBarButtons>
+        <Button
+          handleRef={openButtonHandleRef}
+          onPress={openSelectedResources}
+          isDisabled={singleResourceActionsDisabled}
+          startIcon={<LaunchOutlinedIcon />}
           endIcon={!singleResourceActionsDisabled && registerShortcutsResult.openShortcut?.icon}
+          enableLayoutAnimation
         >
           Open
-        </ActionButton>
-        <ActionButton
-          ref={copyButtonRef}
-          onClick={copySelectedResources}
-          disabled={multipleResourcesActionsDisabled}
-          StartIconComponent={ContentCopyOutlinedIcon}
+        </Button>
+        <Button
+          handleRef={copyButtonHandleRef}
+          onPress={copySelectedResources}
+          isDisabled={multipleResourcesActionsDisabled}
+          startIcon={<ContentCopyOutlinedIcon />}
           endIcon={!multipleResourcesActionsDisabled && registerShortcutsResult.copyShortcut?.icon}
+          enableLayoutAnimation
         >
           Copy
-        </ActionButton>
-        <ActionButton
-          ref={cutButtonRef}
-          onClick={cutSelectedResources}
-          disabled={multipleResourcesActionsDisabled}
-          StartIconComponent={ContentCutOutlinedIcon}
+        </Button>
+        <Button
+          handleRef={cutButtonHandleRef}
+          onPress={cutSelectedResources}
+          isDisabled={multipleResourcesActionsDisabled}
+          startIcon={<ContentCutOutlinedIcon />}
           endIcon={!multipleResourcesActionsDisabled && registerShortcutsResult.cutShortcut?.icon}
+          enableLayoutAnimation
         >
           Cut
-        </ActionButton>
-        <ActionButton
-          ref={pasteButtonRef}
+        </Button>
+        <Button
+          handleRef={pasteButtonHandleRef}
           variant={draftPasteState === undefined ? undefined : 'contained'}
-          onClick={pasteResourcesIntoExplorer}
-          disabled={draftPasteState === undefined}
-          StartIconComponent={ContentPasteOutlinedIcon}
+          onPress={pasteResourcesIntoExplorer}
+          isDisabled={draftPasteState === undefined}
+          startIcon={<ContentPasteOutlinedIcon />}
           endIcon={draftPasteState !== undefined && registerShortcutsResult.pasteShortcut?.icon}
+          enableLayoutAnimation
         >
           Paste
           <PasteInfoBadge />
-        </ActionButton>
-        <ActionButton
-          ref={triggerRenameButtonRef}
-          onClick={triggerRenameForSelectedResources}
-          disabled={singleResourceActionsDisabled}
-          StartIconComponent={EditOutlinedIcon}
+        </Button>
+        <Button
+          handleRef={triggerRenameButtonHandleRef}
+          onPress={triggerRenameForSelectedResources}
+          isDisabled={singleResourceActionsDisabled}
+          startIcon={<EditOutlinedIcon />}
           endIcon={
             !singleResourceActionsDisabled && registerShortcutsResult.triggerRenameShortcut?.icon
           }
+          enableLayoutAnimation
         >
           Rename
-        </ActionButton>
-        <ActionButton
-          ref={scheduleDeleteButtonRef}
-          onClick={scheduleDeleteSelectedResources}
-          disabled={multipleResourcesActionsDisabled}
-          StartIconComponent={DeleteOutlinedIcon}
+        </Button>
+        <Button
+          handleRef={scheduleDeleteButtonHandleRef}
+          onPress={scheduleDeleteSelectedResources}
+          isDisabled={multipleResourcesActionsDisabled}
+          startIcon={<DeleteOutlinedIcon />}
           endIcon={
             !multipleResourcesActionsDisabled &&
             registerShortcutsResult.scheduleDeleteShortcut?.icon
           }
+          enableLayoutAnimation
         >
           Delete
-        </ActionButton>
+        </Button>
         <CreateFolder
-          actionButtonRef={triggerCreateNewFolderButtonRef}
-          actionButtonEndIcon={registerShortcutsResult.triggerCreateNewFolderShortcut?.icon}
+          buttonHandleRef={triggerCreateNewFolderButtonHandleRef}
+          buttonEndIcon={registerShortcutsResult.triggerCreateNewFolderShortcut?.icon}
           onSubmit={createFolderInExplorer}
         />
-        {config.featureFlags.tags && (
-          <AddTag
-            options={Object.entries(tags).map(([id, otherValues]) => ({
-              ...otherValues,
-              id,
-            }))}
-            onValueCreated={(tag) => addTag(tag)}
-            onValueChosen={async (chosenTag) => {
-              await addTagsToResources(
-                selectedShownResources.map((resource) => resource.uri),
-                [chosenTag.id],
-              );
-            }}
-            onValueDeleted={(tag) => removeTags([tag.id])}
-            disabled={multipleDirectoriesActionsDisabled}
-          />
-        )}
-      </Stack>
-    </Stack>
+      </ActionBarButtons>
+    </ActionBarContainer>
   );
 };
 
 type FilterInputProps = {
-  filterInputRef: React.RefObject<HTMLDivElement>;
+  filterInputRef: React.RefObject<HTMLInputElement>;
 };
 
 const FilterInput: React.FC<FilterInputProps> = ({ filterInputRef }) => {
@@ -349,15 +328,15 @@ const FilterInput: React.FC<FilterInputProps> = ({ filterInputRef }) => {
     <TextField
       inputRef={filterInputRef}
       inputProps={DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED.datasetAttr}
-      InputLabelProps={{ shrink: true, sx: { userSelect: 'none' } }}
-      label="Filter"
+      placeholder="Filter"
+      aria-label="Filter"
       value={filterInput}
-      onChange={(e) => {
-        const newVal = e.target.value.trimStart();
-        setFilterInput(newVal);
+      onChange={(newValue) => {
+        const trimmedValue = newValue.trimStart();
+        setFilterInput(trimmedValue);
 
         // if input is empty now, blur the input field
-        if (newVal === '' && filterInputRef.current !== null) {
+        if (trimmedValue === '' && filterInputRef.current !== null) {
           filterInputRef.current.blur();
         }
       }}
@@ -365,55 +344,70 @@ const FilterInput: React.FC<FilterInputProps> = ({ filterInputRef }) => {
   );
 };
 
+const ActionBarContainer = styled(Box)`
+  display: flex;
+  gap: var(--spacing-2);
+`;
+
+const ActionBarButtons = styled(Box)`
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  flex-wrap: wrap;
+`;
+
 const PasteInfoBadge: React.FC = () => {
   const clipboardResources = useClipboardResources();
   const draftPasteState = useDraftPasteState();
+
+  const triggerRef = React.useRef<HTMLDivElement>(null);
+  const { triggerProps, tooltipInstance } = useTooltip({
+    triggerRef,
+    tooltip: {
+      offset: { mainAxis: 8 },
+    },
+  });
 
   if (draftPasteState === undefined || clipboardResources.length === 0) {
     return null;
   }
 
   return (
-    <Tooltip
-      title={
+    <>
+      <StyledBadge ref={triggerRef} {...triggerProps}>
+        {draftPasteState.pasteShouldMove ? <ContentCutOutlinedIcon /> : <ContentCopyOutlinedIcon />}
+      </StyledBadge>
+
+      <Tooltip tooltipInstance={tooltipInstance}>
         <ClipboardResourcesList>
           {clipboardResources.map((resource) => (
             <Box key={uriHelper.getComparisonKey(resource)}>{formatter.resourcePath(resource)}</Box>
           ))}
         </ClipboardResourcesList>
-      }
-      arrow
-      disableInteractive={false}
-    >
-      <StyledBadge>
-        {draftPasteState.pasteShouldMove ? (
-          <ContentCutOutlinedIcon fontSize="inherit" />
-        ) : (
-          <ContentCopyOutlinedIcon fontSize="inherit" />
-        )}
-      </StyledBadge>
-    </Tooltip>
+      </Tooltip>
+    </>
   );
 };
-
-const ClipboardResourcesList = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: ${({ theme }) => theme.spacing()};
-
-  word-break: break-all;
-  white-space: pre-wrap;
-`;
 
 const StyledBadge = styled(Box)`
   display: flex;
   justify-content: center;
   align-items: center;
 
-  color: ${(props) => props.theme.palette.text.primary};
-  background-color: ${(props) => props.theme.palette.background.paper};
-  border: 2px solid ${(props) => props.theme.palette.background.default};
-  padding: 3px;
+  color: var(--color-fg-0);
+  background-color: var(--color-bg-1);
   border-radius: 50%;
+  padding: 5px;
+  /* compensate vertical padding so that the container does not grow because of the StyledBadge */
+  margin-block: -5px;
+`;
+
+const ClipboardResourcesList = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-2);
+
+  word-break: break-all;
+  white-space: pre-wrap;
 `;

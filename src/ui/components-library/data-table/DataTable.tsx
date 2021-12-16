@@ -1,78 +1,69 @@
-import { Box, Paper, Table, TableContainer } from '@mui/material';
+import useForkRef from '@mui/utils/useForkRef';
+import { mergeProps } from '@react-aria/utils';
 import * as React from 'react';
 import styled from 'styled-components';
 
-import { commonStyles } from '@app/ui/Common.styles';
-import { EmptyRow } from '@app/ui/components-library/data-table/EmptyRow';
-import { TableBody } from '@app/ui/components-library/data-table/TableBody';
+import { commonStyles } from '@app/ui/common-styles';
+import { Box } from '@app/ui/components-library/Box';
 
-export type DataTableProps = {
-  renderNoDataPresentMessage?: boolean;
-  labels?: { container?: string; table?: string };
-  classes?: { tableContainer?: string; table?: string };
+export type DataTableProps = DataTableComponentProps &
+  Omit<
+    React.ComponentPropsWithoutRef<'div'> & React.RefAttributes<HTMLDivElement>,
+    keyof DataTableComponentProps
+  >;
+
+type DataTableComponentProps = {
+  labels?: { table?: string };
+  classes?: { table?: string };
   refs?: { tableContainer?: React.RefObject<HTMLDivElement> };
-  applyIntrinsicHeight?: boolean;
-
-  children: null | React.ReactNode;
-  footer?: React.ReactNode;
 };
 
-export const DataTable: React.FC<DataTableProps> = (props) => {
-  const {
-    renderNoDataPresentMessage,
-    labels,
-    classes: classesFromProps,
-    refs,
-    applyIntrinsicHeight,
-    children,
-    footer,
-  } = props;
+export const DataTable = styled(
+  React.forwardRef<HTMLDivElement, DataTableProps>(function DataTableWithRef(props, ref) {
+    const {
+      /* component props */
+      children,
+      labels,
+      classes,
+      refs,
 
-  return (
-    <DataTableWrapper aria-label={labels?.container}>
-      <StyledTableContainer
-        ref={refs?.tableContainer}
-        className={classesFromProps?.tableContainer}
-        sx={{ flexBasis: !applyIntrinsicHeight ? 0 : 'auto' }}
-        component={Paper}
-        variant="outlined"
+      /* other props */
+      ...delegatedProps
+    } = props;
+
+    const combinedRef = useForkRef(null, ref);
+
+    return (
+      <DataTableRoot
+        {...mergeProps(delegatedProps, {
+          className: classes?.table,
+        })}
+        ref={combinedRef}
       >
-        <Table
-          aria-label={labels?.table}
-          className={classesFromProps?.table}
-          stickyHeader
-          size="small"
-          style={{ height: renderNoDataPresentMessage ? '100%' : undefined }}
-        >
-          {children}
-          {renderNoDataPresentMessage && (
-            <TableBody>
-              <EmptyRow />
-            </TableBody>
-          )}
-        </Table>
-      </StyledTableContainer>
-      {footer}
-    </DataTableWrapper>
-  );
-};
+        <TableContainer ref={refs?.tableContainer}>
+          <StyledTable aria-label={labels?.table}>{children}</StyledTable>
+        </TableContainer>
+      </DataTableRoot>
+    );
+  }),
+)``;
 
-const DataTableWrapper = styled(Box)`
+const DataTableRoot = styled(Box)`
+  min-height: 0;
   height: 100%;
   max-height: 100%;
-  min-height: 0;
-  overflow-x: auto;
 
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow-x: auto;
 `;
 
-const StyledTableContainer: typeof TableContainer = styled(TableContainer)`
+const TableContainer = styled(Box)`
+  width: 100%;
   ${commonStyles.layout.flex.shrinkAndFitVertical}
+`;
 
-  /* material-ui TableContainer does use the "Paper" material-ui component, but this component 
-     does bring it's own background-color. 
-     We don't want any background-color to be set for DataTables, so reset it. */
-  background-color: initial;
+const StyledTable = styled.table`
+  border-spacing: 0px;
 `;

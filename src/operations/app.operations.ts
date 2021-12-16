@@ -63,7 +63,7 @@ export async function windowClose(): Promise<void> {
 }
 
 export async function getDefaultExplorerCwd(): Promise<UriComponents> {
-  return await nativeHostRef.current.app.getPath({ name: 'desktop' });
+  return await nativeHostRef.current.app.getPath({ name: 'home' });
 }
 
 export function getNativeIconURLForResource(resource: ResourceForUI) {

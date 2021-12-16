@@ -28,7 +28,7 @@ export default {
         {story()}
       </Globals>
     ),
-    (story) => <Box sx={{ maxWidth: 250 }}>{story()}</Box>,
+    (story) => <Box style={{ maxWidth: 250 }}>{story()}</Box>,
   ],
 } as ComponentMeta<typeof Process>;
 

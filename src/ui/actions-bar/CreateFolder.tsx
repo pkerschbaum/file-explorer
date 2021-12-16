@@ -1,100 +1,109 @@
-import CreateNewFolderOutlinedIcon from '@mui/icons-material/CreateNewFolderOutlined';
 import * as React from 'react';
+import styled from 'styled-components';
 
 import { check } from '@app/base/utils/assert.util';
 import {
-  ActionButton,
-  ActionButtonRef,
+  ButtonHandle,
   Button,
   Popover,
-  Stack,
   TextField,
+  usePopover,
+  Paper,
+  Box,
+  commonComponentStyles,
+  CreateNewFolderOutlinedIcon,
 } from '@app/ui/components-library';
 
 type CreateFolderProps = {
-  actionButtonRef?: React.Ref<ActionButtonRef>;
-  actionButtonEndIcon?: React.ReactNode;
+  buttonHandleRef?: React.RefObject<ButtonHandle>;
+  buttonEndIcon?: React.ReactNode;
   onSubmit: (folderName: string) => void | Promise<void>;
 };
 
 export const CreateFolder: React.FC<CreateFolderProps> = ({
-  actionButtonRef,
-  actionButtonEndIcon,
+  buttonHandleRef,
+  buttonEndIcon,
   onSubmit,
 }) => {
+  const buttonRef = React.useRef<HTMLButtonElement>(null);
   const [createFolderValue, setCreateFolderValue] = React.useState('');
-  const [createFolderAnchorEl, setCreateFolderAnchorEl] = React.useState<HTMLButtonElement | null>(
-    null,
-  );
+
+  const { triggerProps, popoverInstance } = usePopover({
+    triggerRef: buttonRef,
+  });
 
   React.useEffect(
     function resetValueOnPopoverClose() {
-      if (createFolderAnchorEl === null) {
+      if (!popoverInstance.state.isOpen) {
         setCreateFolderValue('');
       }
     },
-    [createFolderAnchorEl],
+    [popoverInstance.state.isOpen],
   );
 
+  const inputIsValid = check.isNonEmptyString(createFolderValue);
+
   async function handleSubmit() {
-    if (check.isEmptyString(createFolderValue)) {
+    if (!inputIsValid) {
       return;
     }
 
     await onSubmit(createFolderValue);
-    setCreateFolderAnchorEl(null);
+    popoverInstance.state.close();
   }
 
   return (
     <>
-      <ActionButton
-        ref={actionButtonRef}
-        onClick={(e) => setCreateFolderAnchorEl(e.currentTarget)}
-        StartIconComponent={CreateNewFolderOutlinedIcon}
-        endIcon={actionButtonEndIcon}
+      <Button
+        ref={buttonRef}
+        handleRef={buttonHandleRef}
+        startIcon={<CreateNewFolderOutlinedIcon />}
+        endIcon={buttonEndIcon}
+        enableLayoutAnimation
+        onPress={() => popoverInstance.state.open()}
+        ariaButtonProps={triggerProps}
       >
         New Folder
-      </ActionButton>
+      </Button>
 
-      <Popover
-        open={createFolderAnchorEl !== null}
-        anchorEl={createFolderAnchorEl}
-        onClose={() => setCreateFolderAnchorEl(null)}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}
-        BackdropProps={{ invisible: false }}
-      >
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            void handleSubmit();
-          }}
-        >
-          <Stack direction="column" alignItems="stretch" sx={{ padding: 1.5 }}>
-            <TextField
-              autoFocus
-              label="Name of folder"
-              value={createFolderValue}
-              onChange={(event) => setCreateFolderValue(event.target.value)}
-            />
-            <Stack justifyContent="end">
-              <Button
-                variant={check.isEmptyString(createFolderValue) ? undefined : 'contained'}
-                type="submit"
-                disabled={check.isEmptyString(createFolderValue)}
-              >
-                Create
-              </Button>
-            </Stack>
-          </Stack>
-        </form>
+      <Popover popoverInstance={popoverInstance}>
+        <Paper>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              void handleSubmit();
+            }}
+          >
+            <Card>
+              <TextField
+                placeholder="Name of folder"
+                aria-label="Name of folder"
+                value={createFolderValue}
+                onChange={setCreateFolderValue}
+              />
+
+              <CardActions>
+                <Button
+                  variant={!inputIsValid ? undefined : 'contained'}
+                  isDisabled={!inputIsValid}
+                  /* cannot use type="submit" because of https://github.com/adobe/react-spectrum/issues/1593 */
+                  onPress={handleSubmit}
+                >
+                  Create
+                </Button>
+              </CardActions>
+            </Card>
+          </form>
+        </Paper>
       </Popover>
     </>
   );
 };
+
+const Card = styled(Box)`
+  ${commonComponentStyles.card}
+`;
+
+const CardActions = styled(Box)`
+  ${commonComponentStyles.actionsRow}
+`;

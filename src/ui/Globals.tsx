@@ -15,12 +15,7 @@ import {
   dispatchRef,
   fileIconThemeLoaderRef,
 } from '@app/operations/global-modules';
-import {
-  CssBaseline,
-  TARGET_MEDIUM_FONTSIZE,
-  ThemeProvider,
-  uiUtils,
-} from '@app/ui/components-library';
+import { DesignTokenProvider, DESIGN_TOKENS, OverlayProvider } from '@app/ui/components-library';
 import {
   DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED,
   GlobalShortcutsContextProvider,
@@ -47,29 +42,45 @@ const globalStyle = css`
   }
 
   :root {
+    font-family: 'Segoe UI Variable', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+
     /*
-      We want to set a default font-size of TARGET_MEDIUM_FONTSIZE pixels for the application, 
-      for users which have the (default) font-size of 16px set for their user agent.
+      We want to set a font-size of BASE_FONTSIZE pixels for the application, for users which have 
+      the (default) font-size of 16px set for their user agent.
       About 13-14px is used by many applications like VS Code, Chrome, ...
 
       In order to respect changes of the font-size of the user (e.g., they have increased the 
       font-size to 20px), we use a percentage-based value here.
      */
-    font-size: ${(TARGET_MEDIUM_FONTSIZE / 16) * 100}%;
+    font-size: ${(DESIGN_TOKENS.BASE_FONTSIZE / 16) * 100}%;
+    line-height: ${DESIGN_TOKENS.LINE_HEIGHT};
   }
 
+  /* Use a more-intuitive box-sizing model (https://www.joshwcomeau.com/css/custom-css-reset/#digit-box-sizing-model) */
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  /* Remove default margin (https://www.joshwcomeau.com/css/custom-css-reset/#digit-remove-default-margin) */
+  * {
+    margin: 0;
+  }
+
+  /* Allow percentage-based heights in the application (https://www.joshwcomeau.com/css/custom-css-reset/#digit-percentage-based-heights) */
   :root,
   body,
   #root {
     height: 100%;
   }
 
-  /* create separate stacking context for root container */
+  /* Create a root stacking context (https://www.joshwcomeau.com/css/custom-css-reset/#digit-root-stacking-context) */
   #root {
     isolation: isolate;
   }
 
-  /* Sensible media defaults, https://www.joshwcomeau.com/css/custom-css-reset/#digit-sensible-media-defaults */
+  /* Sensible media defaults (https://www.joshwcomeau.com/css/custom-css-reset/#digit-sensible-media-defaults) */
   img,
   picture,
   video,
@@ -79,9 +90,28 @@ const globalStyle = css`
     max-width: 100%;
   }
 
-  /* Word wrapping, https://www.joshwcomeau.com/css/custom-css-reset/#digit-word-wrapping, https://twitter.com/sophiebits/status/1462921205359386628 */
+  /* Remove built-in form typography styles (https://www.joshwcomeau.com/css/custom-css-reset/#digit-inherit-fonts-for-form-controls) */
+  input,
+  button,
+  textarea,
+  select {
+    font: inherit;
+  }
+
+  /* Word wrapping (https://www.joshwcomeau.com/css/custom-css-reset/#digit-word-wrapping, https://twitter.com/sophiebits/status/1462921205359386628) */
   * {
-    overflow-wrap: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  /* set colors based on active theme */
+  body {
+    color: var(--color-fg-0);
+    background-color: var(--color-bg-0);
+  }
+
+  /* Components of the components library define der own focus styles */
+  *:focus-visible {
+    outline: 0;
   }
 
   /* change scrollbar to a thin variant which lightens up on hover */
@@ -92,11 +122,11 @@ const globalStyle = css`
   }
   *::-webkit-scrollbar-thumb {
     border-radius: 1000px;
-    background-color: ${(props) => uiUtils.darken(props.theme.palette.text.secondary, 0.25)};
-    border: 2px solid ${(props) => props.theme.palette.background.default};
+    background-color: var(--color-fg-0-dark);
+    border: 2px solid var(--color-bg-0);
   }
   *::-webkit-scrollbar-thumb:hover {
-    background-color: ${(props) => props.theme.palette.text.secondary};
+    background-color: var(--color-fg-0);
   }
   ::-webkit-scrollbar-corner {
     background-color: rgba(0, 0, 0, 0);
@@ -137,16 +167,17 @@ export const Globals: React.FC<GlobalsProps> = ({ queryClient, store, children }
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
         <ReactReduxProvider store={store}>
-          <ThemeProvider>
-            <GlobalShortcutsContextProvider>
-              <CssBaseline />
-              <GlobalStyle />
-              {/* class "show-file-icons" will enable file icon theme of code-oss project */}
-              <FileIconThemeLoader>
+          <GlobalShortcutsContextProvider>
+            <GlobalStyle />
+            <DesignTokenProvider />
+
+            {/* class "show-file-icons" will enable file icon theme of code-oss project */}
+            <FileIconThemeLoader>
+              <OverlayProvider style={{ height: '100%' }}>
                 <RootContainer className="show-file-icons">{children}</RootContainer>
-              </FileIconThemeLoader>
-            </GlobalShortcutsContextProvider>
-          </ThemeProvider>
+              </OverlayProvider>
+            </FileIconThemeLoader>
+          </GlobalShortcutsContextProvider>
         </ReactReduxProvider>
 
         {config.showReactQueryDevtools && <ReactQueryDevtools />}
@@ -191,5 +222,4 @@ const FileIconThemeLoader: React.FC = ({ children }) => {
 
 const RootContainer = styled.div`
   height: 100%;
-  background-color: ${({ theme }) => theme.palette.background.default};
 `;

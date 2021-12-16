@@ -1,49 +1,28 @@
-import { TableCell, TableCellProps, TableSortLabel } from '@mui/material';
+import * as React from 'react';
+import styled from 'styled-components';
 
-export enum SortDirection {
-  ASC = 'ASC',
-  DESC = 'DESC',
-}
+export type HeadCellProps = HeadCellComponentProps &
+  Omit<
+    React.ComponentPropsWithoutRef<'th'> & React.RefAttributes<HTMLTableCellElement>,
+    keyof HeadCellComponentProps
+  >;
 
-type HeadCellProps = Omit<TableCellProps, 'sortDirection'> & {
-  sortDirection?: SortDirection;
-  onSortDirectionChange?: (sortDirection?: SortDirection) => void;
-};
+type HeadCellComponentProps = {};
 
-export function HeadCell(props: HeadCellProps) {
-  const { sortDirection, onSortDirectionChange, children, ...rest } = props;
+export const HeadCell = styled(
+  React.forwardRef<HTMLTableCellElement, HeadCellProps>(function HeadCellWithRef(props, ref) {
+    const { children, ...delegatedProps } = props;
 
-  let currentSortDirection: 'asc' | 'desc' | undefined;
-  let nextSortDirection: SortDirection | undefined;
+    return (
+      <HeadCellRoot {...delegatedProps} ref={ref}>
+        {children}
+      </HeadCellRoot>
+    );
+  }),
+)``;
 
-  if (sortDirection === undefined) {
-    currentSortDirection = undefined;
-    nextSortDirection = SortDirection.ASC;
-  } else if (sortDirection === SortDirection.ASC) {
-    currentSortDirection = 'asc';
-    nextSortDirection = SortDirection.DESC;
-  } else {
-    currentSortDirection = 'desc';
-    nextSortDirection = undefined;
-  }
+const HeadCellRoot = styled.th`
+  padding: 0;
 
-  return (
-    <TableCell sortDirection={currentSortDirection} {...rest}>
-      {onSortDirectionChange === undefined ? (
-        children
-      ) : (
-        <TableSortLabel
-          active={currentSortDirection !== undefined}
-          direction={currentSortDirection}
-          onClick={() => {
-            if (onSortDirectionChange) {
-              onSortDirectionChange(nextSortDirection);
-            }
-          }}
-        >
-          {children}
-        </TableSortLabel>
-      )}
-    </TableCell>
-  );
-}
+  border-bottom: var(--border-width-1) solid var(--color-darken-1);
+`;

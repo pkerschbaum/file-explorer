@@ -15,6 +15,7 @@ module.exports = {
     'plugin:react/recommended',
     'plugin:react-hooks/recommended',
     'plugin:jsx-a11y/recommended',
+    'plugin:storybook/recommended',
     'plugin:cypress/recommended',
     'plugin:jest-dom/recommended',
   ],
@@ -112,8 +113,23 @@ module.exports = {
             allowedPatterns: ['react'],
           },
           {
+            target: /\/src\/ui\/components-library\/icons\.tsx$/,
+            allowedPatterns: [/^@mui\/icons-material/],
+          },
+          {
+            target: /\/src\/ui\/(?!components-library\/icons\.tsx)/,
+            forbiddenPatterns: [
+              {
+                pattern: /^@mui\/icons-material/,
+                errorMessage:
+                  "Don't import from @mui/icons-material directly. " +
+                  'Add a wrapped icon in @app/ui/component-library/icons.tsx instead (so that behavior of all icons is consistent).',
+              },
+            ],
+          },
+          {
             target: /\/src\/ui\/components-library\/.+/,
-            allowedPatterns: [/^@mui\/material/],
+            allowedPatterns: [/^@react-aria/, /^@react-stately/],
             forbiddenPatterns: [
               {
                 pattern: /^@app\/ui\/components-library$/,
@@ -126,9 +142,9 @@ module.exports = {
             target: /\/src\/ui\/(?!components-library)/,
             forbiddenPatterns: [
               {
-                pattern: /^@mui\/material/,
+                pattern: /^(?:@react-aria(?!\/utils)|@react-stately)/,
                 errorMessage:
-                  "Don't import from @mui/material directly. Import from @app/ui/component-library instead.",
+                  "Don't import from @react-aria or @react-stately directly. Implement reusable components in the component library (@app/ui/component-library).",
               },
               {
                 pattern: /^@app\/ui\/components-library\/[A-Z].+/,
@@ -139,7 +155,7 @@ module.exports = {
           },
           {
             target: /\/src\/ui\/.+\.stories\.tsx$/,
-            allowedPatterns: ['@storybook/react'],
+            allowedPatterns: ['@storybook/react', '@storybook/testing-library'],
           },
           {
             target: /\/src\/ui\/.+\.visual\.spec\.ts$/,
@@ -149,14 +165,19 @@ module.exports = {
             target: /\/src\/ui\/.+/,
             allowedPatterns: [
               'csstype',
+              'd3-color',
               'framer-motion',
               'react',
+              'react-dom',
               'react-virtual',
               'styled-components',
               'tiny-invariant',
               'use-context-selector',
               'use-immer',
-              /^@mui\/icons-material/,
+              /^@mui\/utils/,
+              /^@react-aria\/utils/,
+              /^@react-types/,
+              /^@rooks\//,
             ],
           },
           {
@@ -242,7 +263,10 @@ module.exports = {
     '@typescript-eslint/no-unsafe-call': 'off',
     '@typescript-eslint/no-unsafe-member-access': 'off',
     '@typescript-eslint/no-unsafe-return': 'off',
-    '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_\\d+' }],
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      { varsIgnorePattern: '^_ignored\\d*', argsIgnorePattern: '^_\\d+' },
+    ],
     '@typescript-eslint/non-nullable-type-assertion-style': 'error',
     '@typescript-eslint/prefer-enum-initializers': 'error',
     '@typescript-eslint/prefer-for-of': 'error',

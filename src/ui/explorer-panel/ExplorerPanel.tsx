@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { useCwd, useIdOfFocusedExplorerPanel } from '@app/global-state/slices/explorers.hooks';
@@ -13,9 +13,15 @@ export const EXPLORER_CWDBREADCRUMBS_GRID_AREA = 'shell-explorer-cwd-breadcrumbs
 export const EXPLORER_ACTIONSBAR_GRID_AREA = 'shell-explorer-actions-bar';
 export const EXPLORER_RESOURCESTABLE_GRID_AREA = 'shell-explorer-resources-table';
 
-type ExplorerPanelProps = { explorerId: string };
+type ExplorerPanelProps = {
+  explorerId: string;
+  customTitleBarUsed: boolean;
+};
 
-export const ExplorerPanel = React.memo<ExplorerPanelProps>(function ExplorerPanel({ explorerId }) {
+export const ExplorerPanel = React.memo<ExplorerPanelProps>(function ExplorerPanel({
+  explorerId,
+  customTitleBarUsed,
+}) {
   const cwd = useCwd(explorerId);
   const focusedExplorerId = useIdOfFocusedExplorerPanel();
 
@@ -28,7 +34,7 @@ export const ExplorerPanel = React.memo<ExplorerPanelProps>(function ExplorerPan
         explorerId={explorerId}
         isActiveExplorer={isActiveExplorer}
       >
-        <CwdBreadcrumbsContainer hide={!isActiveExplorer}>
+        <CwdBreadcrumbsContainer hide={!isActiveExplorer} customTitleBarUsed={customTitleBarUsed}>
           <CwdBreadcrumbs />
         </CwdBreadcrumbsContainer>
         <ActionsBarContainer hide={!isActiveExplorer}>
@@ -42,28 +48,33 @@ export const ExplorerPanel = React.memo<ExplorerPanelProps>(function ExplorerPan
   );
 });
 
-const CwdBreadcrumbsContainer = styled(Box)<{ hide: boolean }>`
+const CwdBreadcrumbsContainer = styled(Box)<{ hide: boolean; customTitleBarUsed: boolean }>`
   visibility: ${({ hide }) => (hide ? 'hidden' : undefined)};
 
-  /* Overlap the CwdBreadcrumbs with the WindowDragRegion above it */
-  margin-top: -20px;
-  -webkit-app-region: no-drag;
+  /* If a custom title bar is used, overlap the CwdBreadcrumbs with the WindowDragRegion above it */
+  ${({ customTitleBarUsed }) => {
+    if (customTitleBarUsed) {
+      return css`
+        margin-top: -24px;
+        -webkit-app-region: no-drag;
+      `;
+    }
+  }}
 
   width: fit-content;
   grid-area: ${EXPLORER_CWDBREADCRUMBS_GRID_AREA};
-  padding-bottom: ${(props) => props.theme.spacing()};
-  margin-bottom: ${(props) => props.theme.spacing()};
 `;
 
 const ActionsBarContainer = styled(Box)<{ hide: boolean }>`
   visibility: ${({ hide }) => (hide ? 'hidden' : undefined)};
 
   grid-area: ${EXPLORER_ACTIONSBAR_GRID_AREA};
-  padding-bottom: ${(props) => props.theme.spacing()};
 `;
 
 const ResourcesTableContainer = styled(Box)<{ hide: boolean }>`
   visibility: ${({ hide }) => (hide ? 'hidden' : undefined)};
 
   grid-area: ${EXPLORER_RESOURCESTABLE_GRID_AREA};
+  /* add some padding-top for optical alignment */
+  padding-top: 1px;
 `;

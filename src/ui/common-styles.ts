@@ -17,12 +17,6 @@ export const commonStyles = {
         flex-grow: 1;
       `,
     },
-
-    centerChildren: css`
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    `,
   },
   text: {
     singleLineEllipsis: css`

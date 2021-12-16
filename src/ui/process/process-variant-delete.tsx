@@ -1,6 +1,3 @@
-import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
-import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
-import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import styled from 'styled-components';
 
 import { assertIsUnreachable } from '@app/base/utils/assert.util';
@@ -8,7 +5,14 @@ import { formatter } from '@app/base/utils/formatter.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { DeleteProcess as DeleteProcessType, DELETE_PROCESS_STATUS } from '@app/domain/types';
 import { removeProcess, runDeleteProcess } from '@app/operations/resource.operations';
-import { Box, Button, LinearProgress, Stack } from '@app/ui/components-library';
+import {
+  Box,
+  Button,
+  DeleteForeverOutlinedIcon,
+  DeleteOutlinedIcon,
+  DeleteOutlineOutlinedIcon,
+  LinearProgress,
+} from '@app/ui/components-library';
 import type { ProcessVariantProps } from '@app/ui/process/Process';
 
 type StatusMetaInfos = {
@@ -45,18 +49,18 @@ export function computeProcessCardPropsFromDeleteProcess(
       contentToRender = (
         <>
           <Button
-            onClick={() => runDeleteProcess(process.id, { useTrash: true })}
+            onPress={() => runDeleteProcess(process.id, { useTrash: true })}
             startIcon={<DeleteOutlineOutlinedIcon />}
           >
             Move to trash
           </Button>
           <Button
-            onClick={() => runDeleteProcess(process.id, { useTrash: false })}
+            onPress={() => runDeleteProcess(process.id, { useTrash: false })}
             startIcon={<DeleteForeverOutlinedIcon />}
           >
             Delete permanently
           </Button>
-          <Button onClick={() => removeProcess(process.id)}>Abort</Button>
+          <Button onPress={() => removeProcess(process.id)}>Abort</Button>
         </>
       );
       break;
@@ -65,7 +69,7 @@ export function computeProcessCardPropsFromDeleteProcess(
       contentToRender = (
         <>
           <Box>Deletion is in progress...</Box>
-          <LinearProgress variant="indeterminate" />
+          <LinearProgress aria-label="Progress of delete process" isIndeterminate />
         </>
       );
       break;
@@ -76,10 +80,10 @@ export function computeProcessCardPropsFromDeleteProcess(
     }
     case DELETE_PROCESS_STATUS.FAILURE: {
       contentToRender = (
-        <Stack direction="column" alignItems="flex-start">
+        <ErrorBox>
           <Box>Error occured during deletion of the files/folders:</Box>
           <Box>{process.error}</Box>
-        </Stack>
+        </ErrorBox>
       );
       break;
     }
@@ -92,7 +96,7 @@ export function computeProcessCardPropsFromDeleteProcess(
 
   return {
     labels: { container: 'Delete Process' },
-    summaryIcon: <DeleteOutlinedIcon fontSize="inherit" />,
+    summaryIcon: <DeleteOutlinedIcon />,
     summaryText: process.uris
       .map((uri) => {
         const { resourceName, extension } = uriHelper.extractNameAndExtension(uri);
@@ -107,14 +111,7 @@ export function computeProcessCardPropsFromDeleteProcess(
           {process.uris.map((uri) => {
             const { resourceName, extension } = uriHelper.extractNameAndExtension(uri);
             const resourceLabel = formatter.resourceBasename({ name: resourceName, extension });
-            return (
-              <Box
-                key={uriHelper.getComparisonKey(uri)}
-                sx={{ fontWeight: (theme) => theme.font.weights.bold, wordBreak: 'break-all' }}
-              >
-                {resourceLabel}
-              </Box>
-            );
+            return <ResourceBox key={uriHelper.getComparisonKey(uri)}>{resourceLabel}</ResourceBox>;
           })}
         </ResourcesList>
 
@@ -126,14 +123,26 @@ export function computeProcessCardPropsFromDeleteProcess(
   };
 }
 
-const ResourcesList = styled.div`
+const ErrorBox = styled(Box)`
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => theme.spacing(0.5)};
+  align-items: flex-start;
+  gap: var(--spacing-2);
 `;
 
-const ContentList = styled.div`
+const ResourcesList = styled(Box)`
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => theme.spacing()};
+  gap: var(--spacing-1);
+`;
+
+const ResourceBox = styled(Box)`
+  font-weight: var(--font-weight-bold);
+  word-break: break-all;
+`;
+
+const ContentList = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
 `;

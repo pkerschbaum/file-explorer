@@ -4,26 +4,29 @@
 const path = require('path');
 const fs = require('fs');
 
+const PACKAGE_TO_FIND = 'cypress';
+
+const relativeScriptPath = path.relative(process.cwd(), __filename);
+
 const debug = (...args) => {
   const [message, ...otherArgs] = args;
-  console.debug(`[remove-cypress-globals.js] ${message}`, ...otherArgs);
+  console.debug(`[${relativeScriptPath}] ${message}`, ...otherArgs);
 };
 
-// returns the types folder
-function findCypressTypes() {
-  const cypressAt = require.resolve('cypress');
-  debug('Cypress found at %s', cypressAt);
-  const cypressFolder = path.dirname(cypressAt);
-  const typesFolder = path.join(cypressFolder, 'types');
-  return typesFolder;
+function findPackageDirectoryPath() {
+  const packageAt = require.resolve(PACKAGE_TO_FIND);
+  debug(`"${PACKAGE_TO_FIND}" found at %s`, packageAt);
+  const packageDirectoryPath = path.dirname(packageAt);
+  return packageDirectoryPath;
 }
 
 function noGlobalCy() {
-  const typesFolder = findCypressTypes();
-  const cypressTypesFilename = path.join(typesFolder, 'index.d.ts');
-  debug('loading %s', cypressTypesFilename);
-  const cypressTypesOrig = fs.readFileSync(cypressTypesFilename, 'utf8').trim();
-  const cypressTypesModified = cypressTypesOrig
+  const packageDirectoryPath = findPackageDirectoryPath();
+  const typesDirectoryPath = path.join(packageDirectoryPath, 'types');
+  const fileToModify = path.join(typesDirectoryPath, 'index.d.ts');
+  debug('loading %s', fileToModify);
+  const fileContentOrig = fs.readFileSync(fileToModify, 'utf8');
+  const fileContentModified = fileContentOrig
     .replace(
       /^\/\/\/ <reference path="\.\/cypress-global-vars\.d\.ts" \/>$/m,
       '// /// <reference path="./cypress-global-vars.d.ts" />',
@@ -33,22 +36,23 @@ function noGlobalCy() {
       '// /// <reference path="./cypress-expect.d.ts" />',
     );
 
-  const somethingChanged = cypressTypesOrig !== cypressTypesModified;
+  const somethingChanged = fileContentOrig !== fileContentModified;
 
   if (somethingChanged) {
-    fs.writeFileSync(cypressTypesFilename, cypressTypesModified, 'utf8');
-    debug('modified %s', cypressTypesFilename);
+    fs.writeFileSync(fileToModify, fileContentModified, 'utf8');
+    debug('modified %s', fileToModify);
   } else {
-    debug('nothing to change in %s', cypressTypesFilename);
+    debug('nothing to change in %s', fileToModify);
   }
 }
 
 function noGlobalMocha() {
-  const typesFolder = findCypressTypes();
-  const mochaTypesFilename = path.join(typesFolder, 'mocha', 'index.d.ts');
-  debug('loading %s', mochaTypesFilename);
-  const mochaTypesOrig = fs.readFileSync(mochaTypesFilename, 'utf8').trim();
-  const mochaTypesModified = mochaTypesOrig
+  const packageDirectoryPath = findPackageDirectoryPath();
+  const typesDirectoryPath = path.join(packageDirectoryPath, 'types');
+  const fileToModify = path.join(typesDirectoryPath, 'mocha', 'index.d.ts');
+  debug('loading %s', fileToModify);
+  const fileContentOrig = fs.readFileSync(fileToModify, 'utf8');
+  const fileContentModified = fileContentOrig
     .replace(/^declare var describe: /m, '// declare var describe: ')
     .replace(/^declare var xdescribe: /m, '// declare var xdescribe: ')
     .replace(/^declare var before: /m, '// declare var before: ')
@@ -61,13 +65,13 @@ function noGlobalMocha() {
     .replace(/^declare var test: /m, '// declare var test: ')
     .replace(/^declare var xit: /m, '// declare var xit: ');
 
-  const somethingChanged = mochaTypesOrig !== mochaTypesModified;
+  const somethingChanged = fileContentOrig !== fileContentModified;
 
   if (somethingChanged) {
-    fs.writeFileSync(mochaTypesFilename, mochaTypesModified, 'utf8');
-    debug('modified %s', mochaTypesFilename);
+    fs.writeFileSync(fileToModify, fileContentModified, 'utf8');
+    debug('modified %s', fileToModify);
   } else {
-    debug('nothing to change in %s', mochaTypesFilename);
+    debug('nothing to change in %s', fileToModify);
   }
 }
 

@@ -1,4 +1,5 @@
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import { KeyboardEvent } from '@react-types/shared';
 import * as React from 'react';
 import { useVirtual } from 'react-virtual';
 import styled, { css } from 'styled-components';
@@ -9,12 +10,13 @@ import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
 import { getNativeIconURLForResource, startNativeFileDnD } from '@app/operations/app.operations';
 import { changeDirectory } from '@app/operations/explorer.operations';
 import { openFiles, removeTagsFromResources } from '@app/operations/resource.operations';
-import { Box, Button, Chip, Skeleton, TextField } from '@app/ui/components-library';
+import { Box, Button, Chip, FocusScope, Skeleton, TextField } from '@app/ui/components-library';
 import {
   Cell,
   DataTable,
   DataTableProps,
   HeadCell,
+  HeadRow,
   Row,
   RowProps,
   TableBody,
@@ -45,11 +47,11 @@ export const ResourcesTable: React.FC = () => {
       refs={{ tableContainer: tableContainerRef }}
     >
       <StyledTableHead>
-        <Row>
+        <HeadRow>
           <StyledHeadCell>Name</StyledHeadCell>
           <SizeHeadCell>Size</SizeHeadCell>
           <MtimeHeadCell>Last Modified</MtimeHeadCell>
-        </Row>
+        </HeadRow>
       </StyledTableHead>
 
       <ResourcesTableBody tableContainerRef={tableContainerRef} />
@@ -63,7 +65,11 @@ const StyledTableHead = styled(TableHead)`
 
 const StyledHeadCell = styled(HeadCell)`
   height: ${ROW_HEIGHT}px;
-  font-weight: ${({ theme }) => theme.font.weights.bold};
+
+  padding-inline: var(--padding-button-md-inline);
+
+  text-align: start;
+  font-weight: var(--font-weight-bold);
 `;
 
 const SizeHeadCell = styled(StyledHeadCell)`
@@ -71,15 +77,22 @@ const SizeHeadCell = styled(StyledHeadCell)`
 `;
 
 const MtimeHeadCell = styled(StyledHeadCell)`
-  min-width: 150px;
+  min-width: 155px;
 `;
 
-const ForwardClassNameTable: React.FC<DataTableProps & { className?: string }> = ({
-  className,
-  ...delegated
-}) => <DataTable {...delegated} classes={{ ...delegated.classes, table: className }} />;
+const ForwardClassNameTable = React.forwardRef<
+  HTMLDivElement,
+  DataTableProps & { className?: string }
+>(function ForwardClassNameTableWithRef({ className, ...delegated }, ref) {
+  return (
+    <DataTable {...delegated} ref={ref} classes={{ ...delegated.classes, table: className }} />
+  );
+});
 
 const StyledDataTable = styled(ForwardClassNameTable)`
+  border: var(--border-width-1) solid var(--color-darken-1);
+  border-radius: var(--border-radius-2);
+
   & thead th:nth-of-type(1),
   & tbody td:nth-of-type(1) {
     width: 100%;
@@ -223,7 +236,8 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
       }}
       onClick={(e) => changeSelectionByClick(e, resourceForRow, idxOfResourceForRow)}
       onDoubleClick={() => openResource(resourceForRow)}
-      selected={resourceIsSelected}
+      isSelectable
+      isSelected={resourceIsSelected}
       style={rowStyleForVirtualization}
     >
       <ResourceRowContent
@@ -260,16 +274,19 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
             </ResourceNameFormatted>
           )
         }
-        tagsSlot={resourceForRow.tags.map((tag) => (
-          <Chip
-            key={tag.id}
-            sx={{ backgroundColor: (theme) => theme.availableTagColors[tag.colorId] }}
-            variant="outlined"
-            size="small"
-            label={tag.name}
-            onDelete={() => removeTagsFromResources([resourceForRow.uri], [tag.id])}
-          />
-        ))}
+        tagsSlot={
+          renameForResourceIsActive
+            ? undefined
+            : resourceForRow.tags.map((tag) => (
+                <Chip
+                  key={tag.id}
+                  style={{ backgroundColor: `var(--color-tags-${tag.colorId})` }}
+                  label={tag.name}
+                  onDelete={() => removeTagsFromResources([resourceForRow.uri], [tag.id])}
+                  deleteTooltipContent="Remove tag"
+                />
+              ))
+        }
         sizeSlot={
           resourceForRow.resourceType === RESOURCE_TYPE.FILE &&
           resourceForRow.size !== undefined &&
@@ -281,8 +298,10 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
   );
 });
 
-const ResourceNameFormatted = styled.div`
-  padding-left: ${(props) => props.theme.spacing(ResourceNameFormattedSpacingFactor * 2)};
+const ResourceNameFormattedSpacingFactor = 1;
+
+const ResourceNameFormatted = styled(Box)`
+  padding-left: calc(2 * ${ResourceNameFormattedSpacingFactor} * var(--spacing-1));
   display: flex;
   align-items: center;
 `;
@@ -298,6 +317,8 @@ const iconStyles = css`
 `;
 
 const IconWrapper = styled(Box)`
+  padding-block: var(--padding-button-md-block);
+
   ${iconStyles}
 
   ::before {
@@ -322,10 +343,18 @@ type SkeletonRowProps = {
 };
 
 const SkeletonRow: React.FC<SkeletonRowProps> = ({ opacity }) => (
-  <Row sx={{ opacity }}>
+  <Row style={{ opacity }}>
     <ResourceRowContent
-      iconSlot={<IconWrapper />}
-      resourceNameSlot={<Skeleton variant="text" width={160} />}
+      iconSlot={
+        <IconWrapper>
+          <Skeleton variant="rectangular" />
+        </IconWrapper>
+      }
+      resourceNameSlot={
+        <ResourceNameFormatted>
+          <Skeleton variant="text" width={160} />
+        </ResourceNameFormatted>
+      }
       sizeSlot={<Skeleton variant="text" width={50} />}
       mtimeSlot={<Skeleton variant="text" width={110} />}
     />
@@ -350,7 +379,7 @@ const ResourceRowContent: React.FC<ResourceRowContentProps> = ({
   <>
     <StyledCell>
       <ResourceIconAndNameAndTags>
-        <ResourceIconAndName>
+        <ResourceIconAndName fullWidth={!tagsSlot}>
           {iconSlot}
           {resourceNameSlot}
         </ResourceIconAndName>
@@ -365,17 +394,19 @@ const ResourceRowContent: React.FC<ResourceRowContentProps> = ({
 
 const StyledCell = styled(Cell)`
   height: ${ROW_HEIGHT}px;
+
+  padding-inline: var(--padding-button-md-inline);
 `;
 
 const ResourceIconAndNameAndTags = styled(Box)`
   height: 100%;
 
   display: flex;
-  gap: ${({ theme }) => theme.spacing()};
+  gap: var(--spacing-2);
 `;
 
-const ResourceIconAndName = styled(Box)`
-  width: 100%;
+const ResourceIconAndName = styled(Box)<{ fullWidth: boolean }>`
+  width: ${({ fullWidth }) => fullWidth && '100%'};
 
   display: flex;
 `;
@@ -389,56 +420,84 @@ type RenameInputProps = {
 const RenameInput: React.FC<RenameInputProps> = ({ resource, onSubmit, abortRename }) => {
   const [value, setValue] = React.useState(formatter.resourceBasename(resource));
 
+  const inputIsValid = check.isNonEmptyString(value);
+
+  function handleSubmit() {
+    if (!inputIsValid) {
+      return;
+    }
+
+    onSubmit(value);
+  }
+
+  function abortOnEsc(e: KeyboardEvent) {
+    if (e.key === KEY.ESC) {
+      abortRename();
+    }
+  }
+
   return (
-    <RenameInputForm
-      onSubmit={(e) => {
-        e.preventDefault();
-        onSubmit(value);
-      }}
-    >
-      <ResourceNameTextField
-        fullWidth
-        inputProps={{ 'aria-label': 'new name for resource' }}
-        autoFocus
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === KEY.ESC) {
-            abortRename();
-          }
+    <FocusScope contain autoFocus restoreFocus>
+      <RenameInputForm
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSubmit();
         }}
-      />
-      <RenameActionButton size="small" disabled={check.isNullishOrEmptyString(value)} type="submit">
-        OK
-      </RenameActionButton>
-      <RenameActionButton size="small" onClick={abortRename}>
-        Abort
-      </RenameActionButton>
-    </RenameInputForm>
+      >
+        <TextField
+          aria-label="new name for resource"
+          value={value}
+          onChange={setValue}
+          onKeyDown={abortOnEsc}
+        />
+        <Button
+          buttonSize="sm"
+          isDisabled={!inputIsValid}
+          /* cannot use type="submit" because of https://github.com/adobe/react-spectrum/issues/1593 */
+          onPress={handleSubmit}
+          onKeyDown={abortOnEsc}
+        >
+          OK
+        </Button>
+        <Button buttonSize="sm" onPress={abortRename} onKeyDown={abortOnEsc}>
+          Abort
+        </Button>
+      </RenameInputForm>
+    </FocusScope>
   );
 };
 
 const RenameInputForm = styled.form`
   width: 100%;
+
   display: flex;
   align-items: stretch;
-  gap: ${(props) => props.theme.spacing(2)};
-`;
+  gap: var(--spacing-2);
 
-const ResourceNameFormattedSpacingFactor = 0.5;
-
-const ResourceNameTextField = styled(TextField)`
-  & .MuiInputBase-root {
-    height: 100%;
-    margin-left: ${(props) => props.theme.spacing(ResourceNameFormattedSpacingFactor)};
+  & > ${Button} {
+    margin-block: var(--padding-button-md-block);
   }
 
-  & .MuiInputBase-input {
-    padding-left: ${(props) => props.theme.spacing(ResourceNameFormattedSpacingFactor)};
-    padding-block: 0;
-  }
-`;
+  /* 
+     The spacing between the TextField and the resource icon is evenly distributed across the 
+     TextField container and the TextField input.
+     Also, width is set to 100% so that it takes up the full width of the row.
+   */
+  --padding-block-for-rename-textfield: 3px;
+  & > ${TextField} {
+    padding-left: calc(${ResourceNameFormattedSpacingFactor} * var(--spacing-1) - 1px);
 
-const RenameActionButton = styled(Button)`
-  padding-block: 0;
+    width: 100%;
+  }
+
+  & > ${TextField} > input {
+    padding-inline: calc(${ResourceNameFormattedSpacingFactor} * var(--spacing-1));
+    padding-block: var(--padding-block-for-rename-textfield);
+  }
+
+  & > ${TextField} > input:focus {
+    padding-bottom: calc(
+      var(--padding-block-for-rename-textfield) - var(--border-bottom-width-difference)
+    );
+  }
 `;

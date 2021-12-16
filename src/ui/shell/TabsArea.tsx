@@ -1,5 +1,3 @@
-import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -14,14 +12,15 @@ import {
   removeExplorerPanel,
 } from '@app/operations/app.operations';
 import {
-  ActionButton,
-  ActionButtonRef,
+  Box,
+  ButtonHandle,
+  Button,
   IconButton,
-  Stack,
-  Tab,
-  tabIndicatorSpanClassName,
   Tabs,
-  Tooltip,
+  Tab,
+  useTab,
+  AddCircleOutlineOutlinedIcon,
+  CloseOutlinedIcon,
 } from '@app/ui/components-library';
 import { KEY } from '@app/ui/constants';
 import { useRegisterGlobalShortcuts } from '@app/ui/GlobalShortcutsContext';
@@ -31,9 +30,9 @@ type TabsAreaProps = { explorersToShow: ExplorerPanelEntry[] };
 export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
   const idOfFocusedExplorerPanel = useIdOfFocusedExplorerPanel();
 
-  const addTabButtonRef = React.useRef<ActionButtonRef>(null);
-  const prevTabButtonRef = React.useRef<ActionButtonRef>(null);
-  const nextTabButtonRef = React.useRef<ActionButtonRef>(null);
+  const addTabButtonHandleRef = React.useRef<ButtonHandle>(null);
+  const prevTabButtonHandleRef = React.useRef<ButtonHandle>(null);
+  const nextTabButtonHandleRef = React.useRef<ButtonHandle>(null);
 
   const focusedExplorer = explorersToShow.find(
     (explorer) => explorer.explorerId === idOfFocusedExplorerPanel,
@@ -62,7 +61,7 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
           },
         },
       ],
-      handler: () => prevTabButtonRef.current?.triggerSyntheticClick(),
+      handler: () => prevTabButtonHandleRef.current?.triggerSyntheticPress(),
     },
     changeToNextTabShortcut: {
       keybindings: [
@@ -74,7 +73,7 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
           },
         },
       ],
-      handler: () => nextTabButtonRef.current?.triggerSyntheticClick(),
+      handler: () => nextTabButtonHandleRef.current?.triggerSyntheticPress(),
     },
     addNewTabShortcut: {
       keybindings: [
@@ -93,13 +92,8 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
   const removeExplorerActionDisabled = explorersToShow.length < 2;
 
   return (
-    <Stack direction="column" alignItems="stretch">
-      <Tabs
-        orientation="vertical"
-        value={idOfFocusedExplorerPanel}
-        onChange={(_, newValue: string) => changeFocusedExplorer(newValue)}
-        TabIndicatorProps={{ children: <span className={tabIndicatorSpanClassName} /> }}
-      >
+    <TabsAreaContainer>
+      <Tabs selectedValue={idOfFocusedExplorerPanel} setSelectedValue={changeFocusedExplorer}>
         {explorersToShow.map((explorer, explorerIdx) => {
           const isFocusedExplorer = explorerIdx === focusedExplorerIdx;
           const isPrevExplorer = explorerIdx === explorerIdxPrevious;
@@ -109,99 +103,103 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
           const uriSlugToRender = uriSlugs[uriSlugs.length - 1];
 
           return (
-            <Tab
-              key={explorer.explorerId}
-              component="div"
-              disableRipple
-              label={
-                <ExplorerPanelTab
-                  label={uriSlugToRender.formatted}
-                  buttonRef={
-                    isPrevExplorer
-                      ? prevTabButtonRef
-                      : isNextExplorer
-                      ? nextTabButtonRef
-                      : undefined
-                  }
-                  buttonEndIcon={
-                    isPrevExplorer
-                      ? registerShortcutsResult.changeToPrevTabShortcut.icon
-                      : isNextExplorer
-                      ? registerShortcutsResult.changeToNextTabShortcut.icon
-                      : undefined
-                  }
-                  onRemove={() =>
-                    removeExplorerPanel(
-                      explorer.explorerId,
-                      !isFocusedExplorer ? undefined : previousExplorer?.explorerId,
-                    )
-                  }
-                  removeExplorerActionDisabled={removeExplorerActionDisabled}
-                />
-              }
-              value={explorer.explorerId}
-            />
+            <Tab key={explorer.explorerId} value={explorer.explorerId}>
+              <ExplorerTabContent
+                value={explorer.explorerId}
+                label={uriSlugToRender.formatted}
+                buttonHandleRef={
+                  isPrevExplorer
+                    ? prevTabButtonHandleRef
+                    : isNextExplorer
+                    ? nextTabButtonHandleRef
+                    : undefined
+                }
+                buttonEndIcon={
+                  isPrevExplorer
+                    ? registerShortcutsResult.changeToPrevTabShortcut.icon
+                    : isNextExplorer
+                    ? registerShortcutsResult.changeToNextTabShortcut.icon
+                    : undefined
+                }
+                onRemove={() =>
+                  removeExplorerPanel(
+                    explorer.explorerId,
+                    !isFocusedExplorer ? undefined : previousExplorer?.explorerId,
+                  )
+                }
+                removeExplorerActionDisabled={removeExplorerActionDisabled}
+              />
+            </Tab>
           );
         })}
       </Tabs>
-      <ActionButton
-        ref={addTabButtonRef}
-        onClick={duplicateFocusedExplorerPanel}
-        StartIconComponent={AddCircleOutlineOutlinedIcon}
+      <Button
+        handleRef={addTabButtonHandleRef}
+        onPress={duplicateFocusedExplorerPanel}
+        startIcon={<AddCircleOutlineOutlinedIcon />}
         endIcon={registerShortcutsResult.addNewTabShortcut.icon}
+        enableLayoutAnimation
       >
         Add tab
-      </ActionButton>
-    </Stack>
+      </Button>
+    </TabsAreaContainer>
   );
 };
 
-type ExplorerPanelTabProps = {
+const TabsAreaContainer = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+`;
+
+type ExplorerTabContentProps = {
+  value: string;
   label: string;
-  buttonRef?: React.Ref<ActionButtonRef>;
+  buttonHandleRef?: React.RefObject<ButtonHandle>;
   buttonEndIcon?: React.ReactNode;
   onRemove: () => void;
   removeExplorerActionDisabled: boolean;
 };
 
-const ExplorerPanelTab: React.FC<ExplorerPanelTabProps> = (props) => {
+const ExplorerTabContent: React.FC<ExplorerTabContentProps> = (props) => {
+  const { onSelect } = useTab({ value: props.value });
+
   return (
     <>
-      <ActionButton
-        ref={props.buttonRef}
-        endIcon={props.buttonEndIcon}
-        disableLayoutAnimation
-        sx={{
-          width: '100%',
-          justifyContent: 'start',
-          textAlign: 'start',
-          // make some space on the right side available for the (absolutely positioned) TabCloseButton
-          paddingRight: (theme) => theme.spacing(4.5),
-        }}
-      >
+      <TabButton onPress={onSelect} handleRef={props.buttonHandleRef} endIcon={props.buttonEndIcon}>
         {props.label}
-      </ActionButton>
+      </TabButton>
       {!props.removeExplorerActionDisabled && (
-        <Tooltip title="Close Tab">
-          <TabIconButton
-            size="small"
-            onClick={(e) => {
-              // stop propagation so that the click on the close button does not get through to the button of the Tab
-              e.stopPropagation();
-              props.onRemove();
-            }}
-          >
-            <CloseOutlinedIcon />
-          </TabIconButton>
-        </Tooltip>
+        <TabIconButton
+          size="sm"
+          aria-label="Close Tab"
+          tooltipContent="Close Tab"
+          tooltipPlacement="right"
+          onPress={props.onRemove}
+          disablePadding
+        >
+          <CloseOutlinedIcon />
+        </TabIconButton>
       )}
     </>
   );
 };
 
+const TabButton = styled(Button)`
+  width: 100%;
+  justify-content: start;
+  text-align: start;
+  /* make some space on the right side available for the (absolutely positioned) TabCloseButton */
+  padding-right: var(--spacing-8);
+`;
+
 const TabIconButton = styled(IconButton)`
   position: absolute;
-  right: ${(props) => props.theme.spacing(1.5)};
+  top: 0;
+  bottom: 0;
+  right: var(--spacing-2);
+  margin-block: auto;
+  height: fit-content;
+
   border-radius: 0;
-  padding: 0;
 `;
