@@ -55,7 +55,7 @@ const TableContainer = styled(Box)`
   width: 100%;
   ${commonStyles.layout.flex.shrinkAndFitVertical}
 
-  overflow-x: auto;
+  overflow: auto;
 
   border: var(--border-width-1) solid var(--color-darken-1);
   border-radius: var(--border-radius-2);

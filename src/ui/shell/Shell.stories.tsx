@@ -1,8 +1,12 @@
+import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
+import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 
-import { PASTE_PROCESS_STATUS } from '@app/domain/types';
+import { numbers } from '@app/base/utils/numbers.util';
+import { PASTE_PROCESS_STATUS, RESOURCE_TYPE } from '@app/domain/types';
 import { createStoreInstance } from '@app/global-state/store';
 import { getDefaultExplorerCwd } from '@app/operations/app.operations';
+import { FileSystemResourceToCreate } from '@app/platform/fake/file-system';
 import { createQueryClient, Globals } from '@app/ui/Globals';
 import { Shell } from '@app/ui/shell';
 
@@ -82,6 +86,37 @@ export const MultipleTabs = Template.bind({});
         },
       },
     });
+    const queryClient = createQueryClient();
+    return { store, queryClient };
+  },
+];
+
+export const ManyResources = Template.bind({});
+(ManyResources as any).loaders = [
+  async () => {
+    let resourcesToCreate: FileSystemResourceToCreate[] = [
+      {
+        type: RESOURCE_TYPE.DIRECTORY,
+        uri: URI.parse(`${Schemas.inMemory}:///home/testdir`),
+      },
+    ];
+    resourcesToCreate = [
+      ...resourcesToCreate,
+      ...numbers.sequence({ fromInclusive: 1, toInclusive: 1001 }).map((number) => {
+        const resource: FileSystemResourceToCreate = {
+          type: RESOURCE_TYPE.FILE,
+          uri: URI.parse(
+            `${Schemas.inMemory}:///home/testdir/testfile-${number
+              .toString()
+              .padStart(5, '0')}.txt`,
+          ),
+        };
+        return resource;
+      }),
+    ];
+
+    await initializeStorybookPlatformModules({ createFileSystemArgs: { resourcesToCreate } });
+    const store = await createStoreInstance();
     const queryClient = createQueryClient();
     return { store, queryClient };
   },

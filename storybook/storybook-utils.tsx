@@ -7,7 +7,10 @@ import { fileIconThemeLoaderRef, logWriterRef } from '@app/operations/global-mod
 import { createLogWriter } from '@app/platform/browser/log-writer';
 import { createStorybookFileIconThemeLoader } from '@app/platform/storybook/file-icon-theme-loader';
 
-import { initializeFakePlatformModules } from '@app-test/utils/fake-platform-modules';
+import {
+  initializeFakePlatformModules,
+  InitializeFakePlatformModulesArgs,
+} from '@app-test/utils/fake-platform-modules';
 
 /**
  * https://stackoverflow.com/a/42791996/1700319
@@ -24,8 +27,8 @@ export function deriveIdFromMetadataAndExportName(
   return toId(metadata.title, storyNameFromExport(nameOfStoryBinding));
 }
 
-export async function initializeStorybookPlatformModules() {
-  await initializeFakePlatformModules();
+export async function initializeStorybookPlatformModules(args?: InitializeFakePlatformModulesArgs) {
+  await initializeFakePlatformModules(args);
   fileIconThemeLoaderRef.current = createStorybookFileIconThemeLoader();
   logWriterRef.current = createLogWriter();
 }

@@ -134,6 +134,8 @@ const VirtualizedTableBody: React.FC<VirtualizedTableBodyProps> = ({
   const rowVirtualizer = useVirtual({
     size: resourcesToShow.length,
     parentRef: tableContainerRef,
+    /* add paddingStart for space of the parent which is occupied by the sticky header row */
+    paddingStart: ROW_HEIGHT,
     estimateSize: React.useCallback(() => ROW_HEIGHT, []),
     keyExtractor: (index) => resourcesToShow[index].key,
     overscan: 50,
@@ -142,9 +144,21 @@ const VirtualizedTableBody: React.FC<VirtualizedTableBodyProps> = ({
   return (
     <TableBody
       style={{
-        /* subtract height for header row */
-        height: `${rowVirtualizer.totalSize - ROW_HEIGHT}px`,
         position: 'relative',
+        /**
+         * Because of paddingStart set to ROW_HEIGHT, react-virtual thinks it must move all rows
+         * down by ROW_HEIGHT pixels. This is not the case - the <tbody> element is already below the
+         * sticky header row, so there is no need to move the rows further down.
+         *
+         * Since there seems to be no way to tell react-virtual that the given paddingStart should
+         * just be used for space calculation (not for positioning), we just move the <tbody> element
+         * up, below the sticky header row, to align with the react-virtual behavior.
+         *
+         * We also have to reduce the height by the paddingStart because react-virtual does include
+         * it in the calculated total size.
+         */
+        top: -ROW_HEIGHT,
+        height: `${rowVirtualizer.totalSize - ROW_HEIGHT}px`,
       }}
     >
       {rowVirtualizer.virtualItems.map((virtualRow) => (
