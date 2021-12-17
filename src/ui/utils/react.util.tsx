@@ -153,3 +153,11 @@ export function useRunCallbackOnUnmount(callback: FunctionType<[], void>) {
     return () => latestCallback();
   }, [latestCallbackRef]);
 }
+
+/**
+ * https://stackoverflow.com/a/53837442/1700319
+ */
+export function useForceUpdate() {
+  const [_ignored, setValue] = React.useState(0);
+  return React.useCallback(() => setValue((oldValue) => oldValue + 1), []);
+}

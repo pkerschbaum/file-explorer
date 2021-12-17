@@ -146,6 +146,20 @@ module.exports = {
             ],
           },
           {
+            target: /\/src\/ui\/components-library\/virtualized-list\.ts$/,
+            allowedPatterns: ['react-virtual'],
+          },
+          {
+            target: /\/src\/ui\/(?!components-library\/virtualized-list\.ts)/,
+            forbiddenPatterns: [
+              {
+                pattern: /^react-virtual/,
+                errorMessage:
+                  "Don't import useVirtual from react-virtual directly, import from the component library instead (there is an wrapped version of that hook with important changes).",
+              },
+            ],
+          },
+          {
             target: /\/src\/ui\/components-library\/.+/,
             allowedPatterns: [/^@react-aria/, /^@react-stately/],
             forbiddenPatterns: [
@@ -187,7 +201,6 @@ module.exports = {
               'framer-motion',
               'react',
               'react-dom',
-              'react-virtual',
               'styled-components',
               'tiny-invariant',
               'use-context-selector',

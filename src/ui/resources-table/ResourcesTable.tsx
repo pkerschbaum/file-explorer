@@ -1,7 +1,6 @@
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { KeyboardEvent } from '@react-types/shared';
 import * as React from 'react';
-import { useVirtual } from 'react-virtual';
 import styled, { css } from 'styled-components';
 
 import { check } from '@app/base/utils/assert.util';
@@ -10,7 +9,15 @@ import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
 import { getNativeIconURLForResource, startNativeFileDnD } from '@app/operations/app.operations';
 import { changeDirectory } from '@app/operations/explorer.operations';
 import { openFiles, removeTagsFromResources } from '@app/operations/resource.operations';
-import { Box, Button, Chip, FocusScope, Skeleton, TextField } from '@app/ui/components-library';
+import {
+  Box,
+  Button,
+  Chip,
+  FocusScope,
+  Skeleton,
+  TextField,
+  useVirtual,
+} from '@app/ui/components-library';
 import {
   DataCell,
   DataTable,
