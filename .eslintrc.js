@@ -98,6 +98,11 @@ module.exports = {
           "MemberExpression[object.name='it'][property.name='skip'], MemberExpression[object.name='test'][property.name='skip']",
         message: 'Do not check in dead tests. Either fix or delete them.',
       },
+      {
+        selector: "MemberExpression[object.name='fireEvent']",
+        message:
+          'Use "userEvent" from @testing-library/user-event instead of "fireEvent" from @testing-library/react.',
+      },
     ],
     'node/no-process-env': 'error',
     'node/process-exit-as-throw': 'off',
@@ -194,6 +199,10 @@ module.exports = {
             allowedPatterns: ['local-cypress'],
           },
           {
+            target: /\/src\/ui\/Globals\.tsx$/,
+            allowedPatterns: ['focus-visible'],
+          },
+          {
             target: /\/src\/ui\/.+/,
             allowedPatterns: [
               'csstype',
@@ -213,7 +222,7 @@ module.exports = {
           },
           {
             target: /\/src\/.+\.logic\.spec\.ts$/,
-            allowedPatterns: ['@testing-library/react'],
+            allowedPatterns: ['@testing-library/react', '@testing-library/user-event'],
           },
           {
             target: /\/src\/platform\/.+/,

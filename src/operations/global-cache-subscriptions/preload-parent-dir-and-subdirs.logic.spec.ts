@@ -1,7 +1,8 @@
 import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
 import * as resources from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import { fireEvent, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { Resource } from '@app/domain/types';
@@ -60,7 +61,7 @@ describe('Preload of resources of parent directory and sub directories [logic]',
     expect(cacheEntriesForSubDirLevel2).toHaveLength(0);
 
     // now switch into the sub directory, i.e. one level down
-    fireEvent.dblClick(await screen.findByRole('row', { name: /zz test folder/i }));
+    userEvent.dblClick(await screen.findByRole('row', { name: /zz test folder/i }));
     await screen.findByRole('row', { name: /zz test folder sub directory/i });
 
     // now, the second level should also have been preloaded

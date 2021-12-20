@@ -252,6 +252,9 @@ const ButtonRoot = styled(motion.button)<{ styleProps: StyleProps }>`
   &:focus-visible {
     outline: var(--outline);
   }
+  &.focus-visible {
+    outline: var(--outline);
+  }
 
   &:not(:disabled) {
     cursor: pointer;

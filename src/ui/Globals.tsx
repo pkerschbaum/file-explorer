@@ -3,6 +3,8 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { Provider as ReactReduxProvider } from 'react-redux';
 import styled, { createGlobalStyle, css } from 'styled-components';
+// Polyfill for ":focus-visible" pseudo class. Needed because jest dom (jsdom) does not support that pseudo class.
+import 'focus-visible';
 
 import { config } from '@app/config';
 import { FILE_ICON_THEMES } from '@app/constants';
@@ -109,9 +111,12 @@ const globalStyle = css`
     background-color: var(--color-bg-0);
   }
 
-  /* Components of the components library define der own focus styles */
+  /* Disable default focus styles (components of the components library define der own focus styles) */
+  *:focus {
+    outline: none;
+  }
   *:focus-visible {
-    outline: 0;
+    outline: none;
   }
 
   /* change scrollbar to a thin variant which lightens up on hover */

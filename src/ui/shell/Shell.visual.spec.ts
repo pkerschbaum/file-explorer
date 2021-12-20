@@ -114,20 +114,37 @@ describe('Shell [visual]', () => {
     );
   });
 
-  it('if modifier keys are pressed, possible shortcuts should be shown next to the shortcut actions', () => {
+  it('available shortcuts should be shown depending on pressed modifier keys and current focus', () => {
     const storybookIdToVisit = deriveIdFromMetadataAndExportName(
       metadata,
       varToString({ MultipleTabs }),
     );
     bootstrap({ storybookIdToVisit });
 
+    cy.document().matchImageSnapshot(
+      `${getTestTitle()}_1_no-modifier-keydown_default-shortcuts-should-be-shown`,
+    );
+
     cy.get('body').type('{ctrl}', { release: false });
-    cy.document().matchImageSnapshot(`${getTestTitle()}_1_ctrl-keydown`);
+    cy.document().matchImageSnapshot(
+      `${getTestTitle()}_2_ctrl-keydown_ctrl-shortcuts-should-be-shown`,
+    );
     cy.get('body').type('{ctrl}');
+
     cy.get('body').type('{alt}', { release: false });
-    cy.document().matchImageSnapshot(`${getTestTitle()}_2_alt-keydown`);
+    cy.document().matchImageSnapshot(
+      `${getTestTitle()}_3_alt-keydown_alt-shortcuts-should-be-shown`,
+    );
     cy.get('body').type('{alt}');
-    cy.document().matchImageSnapshot(`${getTestTitle()}_3_no-modifier-keydown`);
+
+    cy.document().matchImageSnapshot(
+      `${getTestTitle()}_4_modifier-released_default-shortcuts-should-be-shown`,
+    );
+
+    cy.findByRole('button', { name: /^Open$/i }).focus();
+    cy.document().matchImageSnapshot(
+      `${getTestTitle()}_5_focus-present_no-shortcuts-should-be-shown`,
+    );
   });
 
   it('ctrl+c should trigger copy action', () => {

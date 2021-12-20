@@ -1,5 +1,6 @@
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import { fireEvent, screen, waitFor, within } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import { createStoreInstance } from '@app/global-state/store';
 import { getDefaultExplorerCwd } from '@app/operations/app.operations';
@@ -33,7 +34,7 @@ describe('TabsArea [logic]', () => {
     const closeButton = await within(currentlySelectedTab).findByRole('button', {
       name: /Close Tab/i,
     });
-    fireEvent.click(closeButton);
+    userEvent.click(closeButton);
 
     await waitFor(async () => {
       const tabs = await screen.findAllByRole('tab');
@@ -70,7 +71,7 @@ describe('TabsArea [logic]', () => {
     const closeButton = await within(nonFocusedTab).findByRole('button', {
       name: /Close Tab/i,
     });
-    fireEvent.click(closeButton);
+    userEvent.click(closeButton);
 
     await waitFor(async () => {
       const tabs = await screen.findAllByRole('tab');

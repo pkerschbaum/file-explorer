@@ -1,9 +1,10 @@
-import { fireEvent, screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
+import { asyncUtils } from '@app/base/utils/async.util';
 import { ResourceUIDescription, uriHelper } from '@app/base/utils/uri-helper';
 import { createStoreInstance } from '@app/global-state/store';
 import { nativeHostRef, storeRef } from '@app/operations/global-modules';
-import { KEY } from '@app/ui/constants';
 import { createQueryClient } from '@app/ui/Globals';
 
 import { initializeFakePlatformModules } from '@app-test/utils/fake-platform-modules';
@@ -19,10 +20,10 @@ describe('ActionsBar [logic]', () => {
     // select some resources and copy them
     const res1 = await screen.findByRole('row', { name: /aa test folder/i });
     const res2 = await screen.findByRole('row', { name: /testfile1.txt/i });
-    fireEvent.click(res1);
-    fireEvent.click(res2, { ctrlKey: true });
+    userEvent.click(res1);
+    userEvent.click(res2, { ctrlKey: true });
     const copyButton = await screen.findByRole('button', { name: /Copy/i });
-    fireEvent.click(copyButton);
+    userEvent.click(copyButton);
 
     // assert clipboard
     const resourcesInClipboard = nativeHostRef.current.clipboard.readResources();
@@ -53,9 +54,9 @@ describe('ActionsBar [logic]', () => {
     // select some resources and copy them
     const res1 = await screen.findByRole('row', { name: /aa test folder/i });
     const res2 = await screen.findByRole('row', { name: /testfile1.txt/i });
-    fireEvent.click(res1);
-    fireEvent.click(res2, { ctrlKey: true });
-    fireEvent.keyDown(res1, { ctrlKey: true, key: KEY.C });
+    userEvent.click(res1);
+    userEvent.click(res2, { ctrlKey: true });
+    userEvent.keyboard('{ctrl}c');
 
     // assert clipboard
     const resourcesInClipboard = nativeHostRef.current.clipboard.readResources();
@@ -86,10 +87,10 @@ describe('ActionsBar [logic]', () => {
     // select some resources and copy them
     const res1 = await screen.findByRole('row', { name: /aa test folder/i });
     const res2 = await screen.findByRole('row', { name: /testfile1.txt/i });
-    fireEvent.click(res1);
-    fireEvent.click(res2, { ctrlKey: true });
+    userEvent.click(res1);
+    userEvent.click(res2, { ctrlKey: true });
     const copyButton = await screen.findByRole('button', { name: /Cut/i });
-    fireEvent.click(copyButton);
+    userEvent.click(copyButton);
 
     // assert clipboard
     const resourcesInClipboard = nativeHostRef.current.clipboard.readResources();
@@ -120,9 +121,9 @@ describe('ActionsBar [logic]', () => {
     // select some resources and copy them
     const res1 = await screen.findByRole('row', { name: /aa test folder/i });
     const res2 = await screen.findByRole('row', { name: /testfile1.txt/i });
-    fireEvent.click(res1);
-    fireEvent.click(res2, { ctrlKey: true });
-    fireEvent.keyDown(res1, { ctrlKey: true, key: KEY.X });
+    userEvent.click(res1);
+    userEvent.click(res2, { ctrlKey: true });
+    userEvent.keyboard('{ctrl}x');
 
     // assert clipboard
     const resourcesInClipboard = nativeHostRef.current.clipboard.readResources();
@@ -142,5 +143,31 @@ describe('ActionsBar [logic]', () => {
     // assert that "pasteShouldMove" was set to "false" in global state
     expect(storeRef.current.getState().processesSlice.draftPasteState).not.toBeUndefined();
     expect(storeRef.current.getState().processesSlice.draftPasteState?.pasteShouldMove).toBe(true);
+  });
+
+  it('if an element has focus, CTRL+C should be disabled and thus not trigger any action', async () => {
+    await initializeFakePlatformModules();
+    const store = await createStoreInstance();
+    const queryClient = createQueryClient();
+    renderApp({ queryClient, store });
+
+    let resourcesInClipboard = nativeHostRef.current.clipboard.readResources();
+    expect(resourcesInClipboard).toHaveLength(0);
+
+    // set focus on "Open" button by first clicking on the Filter textbox and then tab once
+    const filterInput = await screen.findByRole('textbox', { name: /Filter/i });
+    userEvent.click(filterInput);
+    userEvent.tab();
+
+    // yield to the browser (the GlobalShortcutsContext does determine if elements have focus in a setTimeout call)
+    await waitFor(() => asyncUtils.wait(0));
+
+    // fire copy shortcut
+    userEvent.keyboard('{ctrl}c');
+
+    // shortcut should not have been invoked
+    resourcesInClipboard = nativeHostRef.current.clipboard.readResources();
+    expect(resourcesInClipboard).toHaveLength(0);
+    expect(storeRef.current.getState().processesSlice.draftPasteState).toBeUndefined();
   });
 });
