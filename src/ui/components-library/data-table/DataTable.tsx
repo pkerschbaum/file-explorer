@@ -13,7 +13,6 @@ export type DataTableProps = DataTableComponentProps &
 type DataTableComponentProps = {
   labels?: { table?: string };
   classes?: { table?: string };
-  refs?: { tableContainer?: React.RefObject<HTMLDivElement> };
 };
 
 export const DataTable = styled(
@@ -23,33 +22,20 @@ export const DataTable = styled(
       children,
       labels,
       classes,
-      refs,
 
       /* other props */
       ...delegatedProps
     } = props;
 
     return (
-      <DataTableRoot {...delegatedProps} ref={ref}>
-        <TableContainer ref={refs?.tableContainer}>
-          <StyledTable aria-label={labels?.table} className={classes?.table}>
-            {children}
-          </StyledTable>
-        </TableContainer>
-      </DataTableRoot>
+      <TableContainer {...delegatedProps} ref={ref}>
+        <StyledTable aria-label={labels?.table} className={classes?.table}>
+          {children}
+        </StyledTable>
+      </TableContainer>
     );
   }),
 )``;
-
-const DataTableRoot = styled(Box)`
-  min-height: 0;
-  height: 100%;
-  max-height: 100%;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
 
 const TableContainer = styled(Box)`
   width: 100%;

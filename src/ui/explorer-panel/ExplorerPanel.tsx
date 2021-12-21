@@ -6,12 +6,13 @@ import { useCwd, useIdOfFocusedExplorerPanel } from '@app/global-state/slices/ex
 import { ActionsBar } from '@app/ui/actions-bar';
 import { Box } from '@app/ui/components-library';
 import { CwdBreadcrumbs } from '@app/ui/cwd-breadcrumbs';
-import { ExplorerContextProvider } from '@app/ui/explorer-context';
+import { ExplorerContextProvider, useActiveResourcesView } from '@app/ui/explorer-context';
+import { ResourcesGallery } from '@app/ui/resources-gallery';
 import { ResourcesTable } from '@app/ui/resources-table';
 
 export const EXPLORER_CWDBREADCRUMBS_GRID_AREA = 'shell-explorer-cwd-breadcrumbs';
 export const EXPLORER_ACTIONSBAR_GRID_AREA = 'shell-explorer-actions-bar';
-export const EXPLORER_RESOURCESTABLE_GRID_AREA = 'shell-explorer-resources-table';
+export const EXPLORER_RESOURCESVIEW_GRID_AREA = 'shell-explorer-resources-view';
 
 type ExplorerPanelProps = {
   explorerId: string;
@@ -40,9 +41,9 @@ export const ExplorerPanel = React.memo<ExplorerPanelProps>(function ExplorerPan
         <ActionsBarContainer hide={!isActiveExplorer}>
           <ActionsBar />
         </ActionsBarContainer>
-        <ResourcesTableContainer hide={!isActiveExplorer}>
-          <ResourcesTable />
-        </ResourcesTableContainer>
+        <ResourcesViewContainer hide={!isActiveExplorer}>
+          <ResourcesView />
+        </ResourcesViewContainer>
       </ExplorerContextProvider>
     </>
   );
@@ -71,10 +72,22 @@ const ActionsBarContainer = styled(Box)<{ hide: boolean }>`
   grid-area: ${EXPLORER_ACTIONSBAR_GRID_AREA};
 `;
 
-const ResourcesTableContainer = styled(Box)<{ hide: boolean }>`
+const ResourcesViewContainer = styled(Box)<{ hide: boolean }>`
   visibility: ${({ hide }) => (hide ? 'hidden' : undefined)};
 
-  grid-area: ${EXPLORER_RESOURCESTABLE_GRID_AREA};
+  grid-area: ${EXPLORER_RESOURCESVIEW_GRID_AREA};
+  min-height: 0;
+  height: 100%;
+  max-height: 100%;
+
   /* add some padding-top for optical alignment */
   padding-top: 1px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
 `;
+
+const ResourcesView: React.FC = () => {
+  const activeResourcesView = useActiveResourcesView();
+  return activeResourcesView === 'table' ? <ResourcesTable /> : <ResourcesGallery />;
+};

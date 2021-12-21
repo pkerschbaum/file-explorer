@@ -4,12 +4,16 @@ import Store from 'electron-store';
 import invariant from 'tiny-invariant';
 
 import { config } from '@app/config';
+import { bootstrapDiskFileService } from '@app/platform/electron/electron-preload/bootstrap-disk-file-service';
 import { registerListeners as registerAppListeners } from '@app/platform/electron/ipc/electron-main/app';
 import { registerListeners as registerFileDragStartListeners } from '@app/platform/electron/ipc/electron-main/file-drag-start';
 import { registerListeners as registerPersistentStoreListeners } from '@app/platform/electron/ipc/electron-main/persistent-store';
 import { registerListeners as registerShellListeners } from '@app/platform/electron/ipc/electron-main/shell';
 import { registerListeners as registerWindowListeners } from '@app/platform/electron/ipc/electron-main/window';
-import { NATIVE_FILE_ICON_PROTOCOL_SCHEME } from '@app/platform/electron/protocol/common/app';
+import {
+  NATIVE_FILE_ICON_PROTOCOL_SCHEME,
+  THUMBNAIL_PROTOCOL_SCHEME,
+} from '@app/platform/electron/protocol/common/app';
 import { registerProtocols as registerAppProtocols } from '@app/platform/electron/protocol/electron-main/app';
 import type { StorageState } from '@app/platform/persistent-storage.types';
 import { AvailableTheme, defaultTheme, THEMES } from '@app/ui/components-library';
@@ -48,8 +52,12 @@ if (!config.isDevEnviroment) {
   });
 }
 
-// Register native-file-icon protocol as privileged
+// Register some protocols as privileged
 protocol.registerSchemesAsPrivileged([
+  {
+    scheme: THUMBNAIL_PROTOCOL_SCHEME,
+    privileges: { bypassCSP: true },
+  },
   {
     scheme: NATIVE_FILE_ICON_PROTOCOL_SCHEME,
     privileges: { bypassCSP: true },
@@ -60,6 +68,7 @@ protocol.registerSchemesAsPrivileged([
 const store = new Store();
 const activeTheme: AvailableTheme =
   (store.store as StorageState).userState?.preferences.activeTheme ?? defaultTheme;
+const fileService = bootstrapDiskFileService();
 app.on('ready', () => {
   async function bootstrap() {
     if (config.isDevEnviroment && !process.argv.includes('--noDevServer')) {
@@ -75,7 +84,7 @@ app.on('ready', () => {
     registerWindowListeners(mainWindowRef);
 
     // register custom protocols
-    registerAppProtocols();
+    registerAppProtocols(fileService);
 
     // create and show window
     mainWindowRef.current = createMainWindow();

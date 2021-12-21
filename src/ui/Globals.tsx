@@ -77,6 +77,11 @@ const globalStyle = css`
     height: 100%;
   }
 
+  /* Improve text rendering (https://www.joshwcomeau.com/css/custom-css-reset/#digit-font-smoothing) */
+  body {
+    -webkit-font-smoothing: antialiased;
+  }
+
   /* Create a root stacking context (https://www.joshwcomeau.com/css/custom-css-reset/#digit-root-stacking-context) */
   #root {
     isolation: isolate;

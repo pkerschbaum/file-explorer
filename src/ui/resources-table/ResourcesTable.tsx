@@ -1,4 +1,3 @@
-import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { KeyboardEvent } from '@react-types/shared';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
@@ -6,9 +5,10 @@ import styled, { css } from 'styled-components';
 import { check } from '@app/base/utils/assert.util';
 import { formatter } from '@app/base/utils/formatter.util';
 import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
-import { getNativeIconURLForResource, startNativeFileDnD } from '@app/operations/app.operations';
-import { changeDirectory } from '@app/operations/explorer.operations';
-import { openFiles, removeTagsFromResources } from '@app/operations/resource.operations';
+import { startNativeFileDnD } from '@app/operations/app.operations';
+import { openResource } from '@app/operations/explorer.operations';
+import { removeTagsFromResources } from '@app/operations/resource.operations';
+import { commonStyles } from '@app/ui/common-styles';
 import {
   Box,
   Button,
@@ -38,19 +38,17 @@ import {
   useRenameResource,
   useDataAvailable,
 } from '@app/ui/explorer-context';
-import { useThemeResourceIconClasses } from '@app/ui/hooks/resources.hooks';
+import { ResourceIcon } from '@app/ui/resource-icon';
 
 const ROW_HEIGHT = 38;
+const ICON_SIZE = 24;
 const VIRTUALIZE_TABLE_BODY_THRESHOLD = 1000;
 
 export const ResourcesTable: React.FC = () => {
   const tableContainerRef = React.useRef<HTMLDivElement>(null);
 
   return (
-    <DataTable
-      labels={{ table: 'Table of resources' }}
-      refs={{ tableContainer: tableContainerRef }}
-    >
+    <DataTable ref={tableContainerRef} labels={{ table: 'Table of resources' }}>
       <StyledTableHead>
         <Row>
           <NameHeadCell>Name</NameHeadCell>
@@ -198,20 +196,6 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
   const keyOfResourceToRename = useKeyOfResourceToRename();
   const setKeyOfResourceToRename = useSetKeyOfResourceToRename();
 
-  const themeResourceIconClasses = useThemeResourceIconClasses(resourceForRow);
-
-  const [nativeIconLoadStatus, setNativeIconLoadStatus] = React.useState<
-    'NOT_LOADED_YET' | 'SUCCESS' | 'ERROR'
-  >('NOT_LOADED_YET');
-
-  async function openResource(resource: ResourceForUI) {
-    if (resource.resourceType === RESOURCE_TYPE.DIRECTORY) {
-      await changeDirectory(explorerId, URI.from(resource.uri));
-    } else {
-      await openFiles([resource.uri]);
-    }
-  }
-
   function abortRename() {
     setKeyOfResourceToRename(undefined);
   }
@@ -229,8 +213,6 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
           transform: `translateY(${virtualRowStart}px)`,
         };
 
-  const nativeIconUrl = getNativeIconURLForResource(resourceForRow);
-
   return (
     <Row
       data-window-keydownhandlers-enabled="true"
@@ -240,31 +222,16 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
         startNativeFileDnD(resourceForRow.uri);
       }}
       onClick={(e) => changeSelectionByClick(e, resourceForRow, idxOfResourceForRow)}
-      onDoubleClick={() => openResource(resourceForRow)}
+      onDoubleClick={() => openResource(explorerId, resourceForRow)}
       isSelectable
       isSelected={resourceIsSelected}
       style={rowStyleForVirtualization}
     >
       <ResourceRowContent
         iconSlot={
-          <IconWrapper
-            className={nativeIconLoadStatus === 'SUCCESS' ? undefined : themeResourceIconClasses}
-          >
-            {check.isNonEmptyString(nativeIconUrl) &&
-              (nativeIconLoadStatus === 'NOT_LOADED_YET' || nativeIconLoadStatus === 'SUCCESS') && (
-                <img
-                  src={nativeIconUrl}
-                  alt="icon for resource"
-                  style={{ maxHeight: '100%' }}
-                  onLoad={() => {
-                    setNativeIconLoadStatus('SUCCESS');
-                  }}
-                  onError={() => {
-                    setNativeIconLoadStatus('ERROR');
-                  }}
-                />
-              )}
-          </IconWrapper>
+          <ResourceIconContainer>
+            <ResourceIcon resource={resourceForRow} />
+          </ResourceIconContainer>
         }
         resourceNameSlot={
           renameForResourceIsActive ? (
@@ -311,30 +278,6 @@ const ResourceNameFormatted = styled(Box)`
   align-items: center;
 `;
 
-const iconStyles = css`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  max-width: 24px;
-  height: 100%;
-  max-height: 100%;
-`;
-
-const IconWrapper = styled(Box)`
-  padding-block: var(--padding-button-md-block);
-
-  ${iconStyles}
-
-  ::before {
-    ${iconStyles}
-
-    background-size: 24px 100%;
-    background-repeat: no-repeat;
-    -webkit-font-smoothing: antialiased;
-  }
-`;
-
 const SkeletonTableBody: React.FC = () => (
   <TableBody>
     <SkeletonRow />
@@ -351,9 +294,9 @@ const SkeletonRow: React.FC<SkeletonRowProps> = ({ opacity }) => (
   <Row style={{ opacity }}>
     <ResourceRowContent
       iconSlot={
-        <IconWrapper>
+        <ResourceIconContainer>
           <Skeleton variant="rectangular" />
-        </IconWrapper>
+        </ResourceIconContainer>
       }
       resourceNameSlot={
         <ResourceNameFormatted>
@@ -365,6 +308,22 @@ const SkeletonRow: React.FC<SkeletonRowProps> = ({ opacity }) => (
     />
   </Row>
 );
+
+const ResourceIconContainer = styled(Box)`
+  width: ${ICON_SIZE}px;
+  max-width: ${ICON_SIZE}px;
+  height: 100%;
+  max-height: 100%;
+
+  padding-block: var(--padding-button-md-block);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  & > * {
+    ${commonStyles.layout.flex.shrinkAndFitVertical}
+  }
+`;
 
 type ResourceRowContentProps = {
   iconSlot: React.ReactNode;

@@ -3,6 +3,7 @@ import * as React from 'react';
 import { arrays } from '@app/base/utils/arrays.util';
 import { check } from '@app/base/utils/assert.util';
 import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
+import { nativeHostRef } from '@app/operations/global-modules';
 import type {
   ExplorerContextProviderProps,
   ExplorerState,
@@ -10,6 +11,8 @@ import type {
 } from '@app/ui/explorer-context/ExplorerState.context';
 import { useEnrichResourcesWithTags, useResourcesForUI } from '@app/ui/hooks/resources.hooks';
 import { createSelectableContext, usePrevious } from '@app/ui/utils/react.util';
+
+const USE_GALLERY_VIEW_PERCENTAGE = 0.75;
 
 type ExplorerDerivedValuesContext = {
   explorerId: string;
@@ -27,12 +30,43 @@ const DerivedValuesContextProvider = selectableContext.Provider;
 type ExplorerDerivedValuesContextProviderProps = ExplorerContextProviderProps & {
   explorerState: ExplorerState;
   setKeysOfSelectedResources: ExplorerStateUpdateFunctions['setKeysOfSelectedResources'];
+  setActiveResourcesView: ExplorerStateUpdateFunctions['setActiveResourcesView'];
 };
 
 export const ExplorerDerivedValuesContextProvider: React.FC<
   ExplorerDerivedValuesContextProviderProps
-> = ({ explorerState, setKeysOfSelectedResources, explorerId, isActiveExplorer, children }) => {
+> = ({
+  explorerState,
+  setKeysOfSelectedResources,
+  setActiveResourcesView,
+  explorerId,
+  isActiveExplorer,
+  children,
+}) => {
   const { resources, dataAvailable } = useResourcesForUI(explorerId);
+
+  React.useEffect(
+    function setInitialResourcesViewAfterResourcesGotLoaded() {
+      if (dataAvailable) {
+        const files = resources.filter((resource) => resource.resourceType === RESOURCE_TYPE.FILE);
+        const thumbnailUrls = files
+          .map((file) => nativeHostRef.current.app.getThumbnailURLForResource(file))
+          .filter(check.isNonEmptyString);
+
+        // if enough files have thumbnail urls available to retrieve a thumbnail from, boot into "gallery" view
+        // the user can toggle the view afterwards
+        if (
+          files.length > 0 &&
+          thumbnailUrls.length / files.length >= USE_GALLERY_VIEW_PERCENTAGE
+        ) {
+          setActiveResourcesView('gallery');
+        } else {
+          setActiveResourcesView('table');
+        }
+      }
+    },
+    [dataAvailable, resources, setActiveResourcesView],
+  );
 
   const resourcesWithTags = useEnrichResourcesWithTags(resources);
 

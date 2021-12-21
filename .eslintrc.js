@@ -225,6 +225,10 @@ module.exports = {
             allowedPatterns: ['@testing-library/react', '@testing-library/user-event'],
           },
           {
+            target: /\/src\/platform\/electron\/protocol\/electron-main\/app.ts$/,
+            allowedPatterns: ['file-type'],
+          },
+          {
             target: /\/src\/platform\/.+/,
             allowedPatterns: ['electron', 'electron-store'],
           },
@@ -266,6 +270,7 @@ module.exports = {
             target: /.+/,
             allowedPatterns: [
               'dayjs',
+              'mime',
               'tiny-invariant',
               /^@app.+/,
               /^@pkerschbaum\/code-oss-file-service/,

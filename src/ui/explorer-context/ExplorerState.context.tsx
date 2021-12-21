@@ -1,11 +1,13 @@
 import * as React from 'react';
 import { useImmer } from 'use-immer';
 
+import { UpdateFn } from '@app/domain/types';
 import { ExplorerDerivedValuesContextProvider } from '@app/ui/explorer-context/ExplorerDerivedValues.context';
 import { ExplorerOperationsContextProvider } from '@app/ui/explorer-context/ExplorerOperations.context';
 import { createSelectableContext } from '@app/ui/utils/react.util';
 
 type RenameHistoryKeys = string[];
+type ResourcesView = 'table' | 'gallery';
 
 export type ExplorerState = {
   filterInput: string;
@@ -14,21 +16,18 @@ export type ExplorerState = {
     keyOfResourceSelectionGotStartedWith: RenameHistoryKeys | undefined;
   };
   keyOfResourceToRename: string | undefined;
+  activeResourcesView: ResourcesView;
 };
 
 export type ExplorerStateUpdateFunctions = {
   setFilterInput: (newValue: string) => void;
   setKeysOfSelectedResources: (
-    newKeysOrFunction:
-      | RenameHistoryKeys[]
-      | ((currentKeysOfSelectedResources: RenameHistoryKeys[]) => RenameHistoryKeys[]),
+    newKeysOrFunction: RenameHistoryKeys[] | UpdateFn<RenameHistoryKeys[]>,
   ) => void;
   setKeyOfResourceToRename: (
-    newValueOrFunction:
-      | string
-      | undefined
-      | ((currentKeyOfResourceToRename: string | undefined) => string | undefined),
+    newValueOrFunction: string | undefined | UpdateFn<string | undefined>,
   ) => void;
+  setActiveResourcesView: (newValueOrFunction: ResourcesView | UpdateFn<ResourcesView>) => void;
 };
 
 type ExplorerStateContext = ExplorerState & ExplorerStateUpdateFunctions;
@@ -55,6 +54,7 @@ export const ExplorerContextProvider: React.FC<ExplorerContextProviderProps> = (
       keyOfResourceSelectionGotStartedWith: undefined,
     },
     keyOfResourceToRename: undefined,
+    activeResourcesView: 'table',
   });
 
   const explorerStateUpdateFunctions: ExplorerStateUpdateFunctions = React.useMemo(
@@ -67,18 +67,18 @@ export const ExplorerContextProvider: React.FC<ExplorerContextProviderProps> = (
 
       setKeysOfSelectedResources: (newKeysOrUpdateFn) => {
         updateExplorerState((draft) => {
-          let newKeysOfSelectedResources;
+          let newValue;
           if (typeof newKeysOrUpdateFn === 'function') {
-            newKeysOfSelectedResources = newKeysOrUpdateFn(draft.selection.keysOfSelectedResources);
+            newValue = newKeysOrUpdateFn(draft.selection.keysOfSelectedResources);
           } else {
-            newKeysOfSelectedResources = newKeysOrUpdateFn;
+            newValue = newKeysOrUpdateFn;
           }
 
           draft.selection = {
-            keysOfSelectedResources: newKeysOfSelectedResources,
+            keysOfSelectedResources: newValue,
             keyOfResourceSelectionGotStartedWith:
-              newKeysOfSelectedResources.length === 1
-                ? newKeysOfSelectedResources[0]
+              newValue.length === 1
+                ? newValue[0]
                 : draft.selection.keyOfResourceSelectionGotStartedWith,
           };
         });
@@ -86,14 +86,27 @@ export const ExplorerContextProvider: React.FC<ExplorerContextProviderProps> = (
 
       setKeyOfResourceToRename: (newValueOrUpdateFn) => {
         updateExplorerState((draft) => {
-          let newKeyOfResourceToRename;
+          let newValue;
           if (typeof newValueOrUpdateFn === 'function') {
-            newKeyOfResourceToRename = newValueOrUpdateFn(draft.keyOfResourceToRename);
+            newValue = newValueOrUpdateFn(draft.keyOfResourceToRename);
           } else {
-            newKeyOfResourceToRename = newValueOrUpdateFn;
+            newValue = newValueOrUpdateFn;
           }
 
-          draft.keyOfResourceToRename = newKeyOfResourceToRename;
+          draft.keyOfResourceToRename = newValue;
+        });
+      },
+
+      setActiveResourcesView: (newValueOrUpdateFn) => {
+        updateExplorerState((draft) => {
+          let newValue;
+          if (typeof newValueOrUpdateFn === 'function') {
+            newValue = newValueOrUpdateFn(draft.activeResourcesView);
+          } else {
+            newValue = newValueOrUpdateFn;
+          }
+
+          draft.activeResourcesView = newValue;
         });
       },
     }),
@@ -112,6 +125,7 @@ export const ExplorerContextProvider: React.FC<ExplorerContextProviderProps> = (
         isActiveExplorer={isActiveExplorer}
         explorerState={explorerState}
         setKeysOfSelectedResources={explorerStateUpdateFunctions.setKeysOfSelectedResources}
+        setActiveResourcesView={explorerStateUpdateFunctions.setActiveResourcesView}
       >
         <ExplorerOperationsContextProvider>{children}</ExplorerOperationsContextProvider>
       </ExplorerDerivedValuesContextProvider>
@@ -133,6 +147,10 @@ export function useKeyOfResourceToRename() {
   return useExplorerStateSelector((explorerValues) => explorerValues.keyOfResourceToRename);
 }
 
+export function useActiveResourcesView() {
+  return useExplorerStateSelector((explorerValues) => explorerValues.activeResourcesView);
+}
+
 export function useSetFilterInput() {
   return useExplorerStateSelector((explorerValues) => explorerValues.setFilterInput);
 }
@@ -143,4 +161,8 @@ export function useSetKeysOfSelectedResources() {
 
 export function useSetKeyOfResourceToRename() {
   return useExplorerStateSelector((explorerValues) => explorerValues.setKeyOfResourceToRename);
+}
+
+export function useSetActiveResourcesView() {
+  return useExplorerStateSelector((explorerValues) => explorerValues.setActiveResourcesView);
 }

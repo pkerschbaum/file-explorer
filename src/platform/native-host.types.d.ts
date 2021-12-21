@@ -7,6 +7,7 @@ import { ResourceForUI } from '@app/domain/types';
 export type PlatformNativeHost = {
   app: {
     getPath: (args: { name: Parameters<typeof app.getPath>[0] }) => Promise<UriComponents>;
+    getThumbnailURLForResource: (resource: ResourceForUI) => string | undefined;
     getNativeIconURLForResource: (resource: ResourceForUI) => string | undefined;
   };
   shell: {
