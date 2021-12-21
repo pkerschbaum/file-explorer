@@ -12,10 +12,13 @@ import {
   useChangeSelectionByClick,
   useExplorerId,
   useKeyOfResourceToRename,
+  useRenameResource,
   useResourcesToShow,
   useSelectedShownResources,
+  useSetKeyOfResourceToRename,
 } from '@app/ui/explorer-context';
 import { ResourceIcon } from '@app/ui/resource-icon';
+import { ResourceRenameInput } from '@app/ui/resource-rename-input';
 
 export const ResourcesGallery: React.FC = () => {
   const resourcesToShow = useResourcesToShow();
@@ -31,7 +34,6 @@ export const ResourcesGallery: React.FC = () => {
 
 const GalleryViewRoot = styled(Box)`
   ${commonStyles.layout.flex.shrinkAndFitVertical}
-  margin-top: var(--spacing-1);
 
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -48,10 +50,14 @@ type ResourceTileProps = {
 const ResourceTile: React.FC<ResourceTileProps> = ({ resourceForTile, idxOfResource }) => {
   const explorerId = useExplorerId();
   const selectedShownResources = useSelectedShownResources();
+  const renameResource = useRenameResource();
   const changeSelectionByClick = useChangeSelectionByClick();
   const keyOfResourceToRename = useKeyOfResourceToRename();
+  const setKeyOfResourceToRename = useSetKeyOfResourceToRename();
 
-  // TODO implement rename
+  function abortRename() {
+    setKeyOfResourceToRename(undefined);
+  }
 
   const resourceIsSelected = !!selectedShownResources.find(
     (resource) => resource.key === resourceForTile.key,
@@ -72,7 +78,15 @@ const ResourceTile: React.FC<ResourceTileProps> = ({ resourceForTile, idxOfResou
     >
       <StyledResourceIcon resource={resourceForTile} />
       <ResourceDetails>
-        <NameFormatted>{formatter.resourceBasename(resourceForTile)}</NameFormatted>
+        {renameForResourceIsActive ? (
+          <ResourceRenameInput
+            resource={resourceForTile}
+            onSubmit={(newName) => renameResource(resourceForTile, newName)}
+            abortRename={abortRename}
+          />
+        ) : (
+          <NameFormatted>{formatter.resourceBasename(resourceForTile)}</NameFormatted>
+        )}
         <SizeAndExtension>
           <SizeFormatted>
             {resourceForTile.resourceType === RESOURCE_TYPE.FILE &&

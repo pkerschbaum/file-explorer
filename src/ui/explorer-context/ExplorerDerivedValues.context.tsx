@@ -4,10 +4,11 @@ import { arrays } from '@app/base/utils/arrays.util';
 import { check } from '@app/base/utils/assert.util';
 import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
 import { nativeHostRef } from '@app/operations/global-modules';
-import type {
+import { useSetActiveResourcesView } from '@app/ui/explorer-context';
+import {
   ExplorerContextProviderProps,
   ExplorerState,
-  ExplorerStateUpdateFunctions,
+  useSetKeysOfSelectedResources,
 } from '@app/ui/explorer-context/ExplorerState.context';
 import { useEnrichResourcesWithTags, useResourcesForUI } from '@app/ui/hooks/resources.hooks';
 import { createSelectableContext, usePrevious } from '@app/ui/utils/react.util';
@@ -29,43 +30,42 @@ const DerivedValuesContextProvider = selectableContext.Provider;
 
 type ExplorerDerivedValuesContextProviderProps = ExplorerContextProviderProps & {
   explorerState: ExplorerState;
-  setKeysOfSelectedResources: ExplorerStateUpdateFunctions['setKeysOfSelectedResources'];
-  setActiveResourcesView: ExplorerStateUpdateFunctions['setActiveResourcesView'];
 };
 
 export const ExplorerDerivedValuesContextProvider: React.FC<
   ExplorerDerivedValuesContextProviderProps
-> = ({
-  explorerState,
-  setKeysOfSelectedResources,
-  setActiveResourcesView,
-  explorerId,
-  isActiveExplorer,
-  children,
-}) => {
+> = ({ explorerState, explorerId, isActiveExplorer, children }) => {
+  const setKeysOfSelectedResources = useSetKeysOfSelectedResources();
+  const setActiveResourcesView = useSetActiveResourcesView();
+
   const { resources, dataAvailable } = useResourcesForUI(explorerId);
 
   React.useEffect(
     function setInitialResourcesViewAfterResourcesGotLoaded() {
-      if (dataAvailable) {
-        const files = resources.filter((resource) => resource.resourceType === RESOURCE_TYPE.FILE);
-        const thumbnailUrls = files
-          .map((file) => nativeHostRef.current.app.getThumbnailURLForResource(file))
-          .filter(check.isNonEmptyString);
+      if (explorerState.activeResourcesView !== undefined) {
+        return;
+      }
 
-        // if enough files have thumbnail urls available to retrieve a thumbnail from, boot into "gallery" view
-        // the user can toggle the view afterwards
-        if (
-          files.length > 0 &&
-          thumbnailUrls.length / files.length >= USE_GALLERY_VIEW_PERCENTAGE
-        ) {
-          setActiveResourcesView('gallery');
-        } else {
-          setActiveResourcesView('table');
-        }
+      if (!dataAvailable) {
+        return;
+      }
+
+      const files = resources.filter((resource) => resource.resourceType === RESOURCE_TYPE.FILE);
+      const thumbnailUrls = files
+        .map((file) => nativeHostRef.current.app.getThumbnailURLForResource(file))
+        .filter(check.isNonEmptyString);
+
+      /**
+       * If enough files have thumbnail urls available to retrieve a thumbnail from, boot into "gallery" view.
+       * The user can toggle the view afterwards
+       */
+      if (files.length > 0 && thumbnailUrls.length / files.length >= USE_GALLERY_VIEW_PERCENTAGE) {
+        setActiveResourcesView('gallery');
+      } else {
+        setActiveResourcesView('table');
       }
     },
-    [dataAvailable, resources, setActiveResourcesView],
+    [dataAvailable, explorerState.activeResourcesView, resources, setActiveResourcesView],
   );
 
   const resourcesWithTags = useEnrichResourcesWithTags(resources);

@@ -7,7 +7,7 @@ import { ExplorerOperationsContextProvider } from '@app/ui/explorer-context/Expl
 import { createSelectableContext } from '@app/ui/utils/react.util';
 
 type RenameHistoryKeys = string[];
-type ResourcesView = 'table' | 'gallery';
+type ResourcesView = undefined | 'table' | 'gallery';
 
 export type ExplorerState = {
   filterInput: string;
@@ -54,7 +54,7 @@ export const ExplorerContextProvider: React.FC<ExplorerContextProviderProps> = (
       keyOfResourceSelectionGotStartedWith: undefined,
     },
     keyOfResourceToRename: undefined,
-    activeResourcesView: 'table',
+    activeResourcesView: undefined,
   });
 
   const explorerStateUpdateFunctions: ExplorerStateUpdateFunctions = React.useMemo(
@@ -124,8 +124,6 @@ export const ExplorerContextProvider: React.FC<ExplorerContextProviderProps> = (
         explorerId={explorerId}
         isActiveExplorer={isActiveExplorer}
         explorerState={explorerState}
-        setKeysOfSelectedResources={explorerStateUpdateFunctions.setKeysOfSelectedResources}
-        setActiveResourcesView={explorerStateUpdateFunctions.setActiveResourcesView}
       >
         <ExplorerOperationsContextProvider>{children}</ExplorerOperationsContextProvider>
       </ExplorerDerivedValuesContextProvider>

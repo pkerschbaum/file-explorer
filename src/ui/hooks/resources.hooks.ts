@@ -50,12 +50,12 @@ export const useResourcesForUI = (explorerId: string): ResourcesLoadingResult =>
 
   const resourcesForUI = React.useMemo(
     () =>
-      resourcesToUse.map((resources) => {
-        const { resourceName, extension } = uriHelper.extractNameAndExtension(resources.uri);
+      resourcesToUse.map((resource) => {
+        const { resourceName, extension } = uriHelper.extractNameAndExtension(resource.uri);
 
         const resourceForUI: ResourceForUI = {
-          ...resources,
-          extension,
+          ...resource,
+          extension: resource.resourceType === RESOURCE_TYPE.FILE ? extension : undefined,
           name: resourceName,
           tags: [],
         };

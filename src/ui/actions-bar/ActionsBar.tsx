@@ -337,7 +337,7 @@ export const ActionsBar: React.FC = () => {
           handleRef={setActiveResourcesViewButtonHandleRef}
           onPress={() =>
             setActiveResourcesView((currentValue) => {
-              if (currentValue === 'table') {
+              if (currentValue === undefined || currentValue === 'table') {
                 return 'gallery';
               } else if (currentValue === 'gallery') {
                 return 'table';

@@ -89,5 +89,5 @@ const ResourcesViewContainer = styled(Box)<{ hide: boolean }>`
 
 const ResourcesView: React.FC = () => {
   const activeResourcesView = useActiveResourcesView();
-  return activeResourcesView === 'table' ? <ResourcesTable /> : <ResourcesGallery />;
+  return activeResourcesView === 'gallery' ? <ResourcesGallery /> : <ResourcesTable />;
 };

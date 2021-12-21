@@ -1,23 +1,13 @@
-import { KeyboardEvent } from '@react-types/shared';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 
-import { check } from '@app/base/utils/assert.util';
 import { formatter } from '@app/base/utils/formatter.util';
 import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
 import { startNativeFileDnD } from '@app/operations/app.operations';
 import { openResource } from '@app/operations/explorer.operations';
 import { removeTagsFromResources } from '@app/operations/resource.operations';
 import { commonStyles } from '@app/ui/common-styles';
-import {
-  Box,
-  Button,
-  Chip,
-  FocusScope,
-  Skeleton,
-  TextField,
-  useVirtual,
-} from '@app/ui/components-library';
+import { Box, Chip, Skeleton, TextField, useVirtual } from '@app/ui/components-library';
 import {
   DataCell,
   DataTable,
@@ -27,7 +17,6 @@ import {
   TableBody,
   TableHead,
 } from '@app/ui/components-library/data-table';
-import { KEY } from '@app/ui/constants';
 import {
   useChangeSelectionByClick,
   useExplorerId,
@@ -39,6 +28,7 @@ import {
   useDataAvailable,
 } from '@app/ui/explorer-context';
 import { ResourceIcon } from '@app/ui/resource-icon';
+import { ResourceRenameInput } from '@app/ui/resource-rename-input';
 
 const ROW_HEIGHT = 38;
 const ICON_SIZE = 24;
@@ -235,7 +225,7 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
         }
         resourceNameSlot={
           renameForResourceIsActive ? (
-            <RenameInput
+            <StyledResourceRenameInput
               resource={resourceForRow}
               onSubmit={(newName) => renameResource(resourceForRow, newName)}
               abortRename={abortRename}
@@ -384,73 +374,7 @@ const ResourceIconAndName = styled(Box)<{ fullWidth: boolean }>`
   display: flex;
 `;
 
-type RenameInputProps = {
-  resource: ResourceForUI;
-  onSubmit: (newName: string) => void;
-  abortRename: () => void;
-};
-
-const RenameInput: React.FC<RenameInputProps> = ({ resource, onSubmit, abortRename }) => {
-  const [value, setValue] = React.useState(formatter.resourceBasename(resource));
-
-  const inputIsValid = check.isNonEmptyString(value);
-
-  function handleSubmit() {
-    if (!inputIsValid) {
-      return;
-    }
-
-    onSubmit(value);
-  }
-
-  function abortOnEsc(e: KeyboardEvent) {
-    if (e.key === KEY.ESC) {
-      abortRename();
-    }
-  }
-
-  return (
-    <FocusScope contain autoFocus restoreFocus>
-      <RenameInputForm
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleSubmit();
-        }}
-      >
-        <TextField
-          aria-label="new name for resource"
-          value={value}
-          onChange={setValue}
-          onKeyDown={abortOnEsc}
-        />
-        <Button
-          buttonSize="sm"
-          isDisabled={!inputIsValid}
-          /* cannot use type="submit" because of https://github.com/adobe/react-spectrum/issues/1593 */
-          onPress={handleSubmit}
-          onKeyDown={abortOnEsc}
-        >
-          OK
-        </Button>
-        <Button buttonSize="sm" onPress={abortRename} onKeyDown={abortOnEsc}>
-          Abort
-        </Button>
-      </RenameInputForm>
-    </FocusScope>
-  );
-};
-
-const RenameInputForm = styled.form`
-  width: 100%;
-
-  display: flex;
-  align-items: stretch;
-  gap: var(--spacing-2);
-
-  & > ${Button} {
-    margin-block: var(--padding-button-md-block);
-  }
-
+const StyledResourceRenameInput = styled(ResourceRenameInput)`
   /* 
      The spacing between the TextField and the resource icon is evenly distributed across the 
      TextField container and the TextField input.
@@ -459,8 +383,6 @@ const RenameInputForm = styled.form`
   --padding-block-for-rename-textfield: 3px;
   & > ${TextField} {
     padding-left: calc(${ResourceNameFormattedSpacingFactor} * var(--spacing-1) - 1px);
-
-    width: 100%;
   }
 
   & > ${TextField} > input {
