@@ -44,6 +44,7 @@ type Shortcut = {
   keybindings?: Keybinding[];
   condition?: (e: WindowEventMap['keydown']) => boolean;
   handler: (e: WindowEventMap['keydown']) => void;
+  enableForRepeatedKeyboardEvent?: boolean;
 };
 type Keybinding = {
   key: KEY;
@@ -164,7 +165,13 @@ export const GlobalShortcutsContextProvider: React.FC<GlobalShortcutsContextProv
         };
 
         let matchingShortcut: Shortcut | undefined;
-        const registeredShortcuts = Array.from(shortcutsMapRef.current.values()).flat();
+        let registeredShortcuts = Array.from(shortcutsMapRef.current.values()).flat();
+        if (e.repeat) {
+          registeredShortcuts = registeredShortcuts.filter(
+            (shortcut) => shortcut.enableForRepeatedKeyboardEvent,
+          );
+        }
+
         for (const shortcut of registeredShortcuts) {
           let matches = true;
 
@@ -249,7 +256,7 @@ function shouldEventGetProcessed(
   e: WindowEventMap['keydown'] | WindowEventMap['keyup'],
   isFocusSomewhereVisible: boolean,
 ) {
-  return e.target instanceof HTMLElement && !e.repeat && !isFocusSomewhereVisible;
+  return e.target instanceof HTMLElement && !isFocusSomewhereVisible;
 }
 
 export type RegisterShortcutsResultMap<ActualShortcutMap extends ShortcutMap> = {

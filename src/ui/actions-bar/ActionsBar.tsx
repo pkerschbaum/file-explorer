@@ -232,6 +232,7 @@ export const ActionsBar: React.FC = () => {
         },
       ],
       handler: (e) => changeSelectionByKeyboard(e),
+      enableForRepeatedKeyboardEvent: true,
     },
     focusFilterInputShortcut: {
       condition: (e) =>
