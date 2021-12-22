@@ -5,8 +5,14 @@ import { uriHelper } from '@app/base/utils/uri-helper';
 import { useCwd, useIdOfFocusedExplorerPanel } from '@app/global-state/slices/explorers.hooks';
 import { ActionsBar } from '@app/ui/actions-bar';
 import { Box } from '@app/ui/components-library';
+import { KEY } from '@app/ui/constants';
 import { CwdBreadcrumbs } from '@app/ui/cwd-breadcrumbs';
-import { ExplorerContextProvider, useActiveResourcesView } from '@app/ui/explorer-context';
+import {
+  ExplorerContextProvider,
+  useActiveResourcesView,
+  useRegisterExplorerShortcuts,
+  useSelectAll,
+} from '@app/ui/explorer-context';
 import { ResourcesGallery } from '@app/ui/resources-gallery';
 import { ResourcesTable } from '@app/ui/resources-table';
 
@@ -89,5 +95,25 @@ const ResourcesViewContainer = styled(Box)<{ hide: boolean }>`
 
 const ResourcesView: React.FC = () => {
   const activeResourcesView = useActiveResourcesView();
+  const selectAll = useSelectAll();
+
+  useRegisterExplorerShortcuts({
+    selectAllShortcut: {
+      keybindings: [
+        {
+          key: KEY.A,
+          modifiers: {
+            ctrl: 'SET',
+            alt: 'NOT_SET',
+          },
+        },
+      ],
+      handler: (e) => {
+        e.preventDefault();
+        selectAll();
+      },
+    },
+  });
+
   return activeResourcesView === 'gallery' ? <ResourcesGallery /> : <ResourcesTable />;
 };

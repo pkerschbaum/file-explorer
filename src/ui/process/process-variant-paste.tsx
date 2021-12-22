@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-import { assertThat } from '@app/base/utils/assert.util';
+import { assertIsUnreachable } from '@app/base/utils/assert.util';
 import { byteSize } from '@app/base/utils/byte-size.util';
 import { formatter } from '@app/base/utils/formatter.util';
 import { numbers } from '@app/base/utils/numbers.util';
@@ -118,7 +118,7 @@ export function computeProcessCardPropsFromPasteProcess(
       break;
     }
     default: {
-      assertThat.isUnreachable(process);
+      assertIsUnreachable(process);
     }
   }
 
@@ -143,7 +143,7 @@ export function computeProcessCardPropsFromPasteProcess(
         ) : !process.pasteShouldMove ? (
           <ContentCopyOutlinedIcon />
         ) : (
-          assertThat.isUnreachable(process.pasteShouldMove)
+          assertIsUnreachable(process.pasteShouldMove)
         )}
         <DoubleArrowIcon />
       </>

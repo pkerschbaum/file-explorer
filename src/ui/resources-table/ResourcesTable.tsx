@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 
+import { assertIsUnreachable } from '@app/base/utils/assert.util';
 import { formatter } from '@app/base/utils/formatter.util';
 import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
 import { startNativeFileDnD } from '@app/operations/app.operations';
@@ -17,8 +18,9 @@ import {
   TableBody,
   TableHead,
 } from '@app/ui/components-library/data-table';
+import { KEY } from '@app/ui/constants';
 import {
-  useChangeSelectionByClick,
+  useChangeSelection,
   useExplorerId,
   useResourcesToShow,
   useKeyOfResourceToRename,
@@ -26,6 +28,8 @@ import {
   useSetKeyOfResourceToRename,
   useRenameResource,
   useDataAvailable,
+  useRegisterExplorerShortcuts,
+  useKeyOfLastSelectedResource,
 } from '@app/ui/explorer-context';
 import { ResourceIcon } from '@app/ui/resource-icon';
 import { ResourceRenameInput } from '@app/ui/resource-rename-input';
@@ -91,6 +95,66 @@ type ResourcesTableBodyProps = {
 const ResourcesTableBody: React.FC<ResourcesTableBodyProps> = ({ tableContainerRef }) => {
   const dataAvailable = useDataAvailable();
   const resourcesToShow = useResourcesToShow();
+  const changeSelection = useChangeSelection();
+  const keyOfLastSelectedResource = useKeyOfLastSelectedResource();
+  const idxOfLastSelectedResource = resourcesToShow.findIndex((resource) =>
+    keyOfLastSelectedResource?.includes(resource.key),
+  );
+
+  useRegisterExplorerShortcuts({
+    changeSelectionByKeyboardShortcut: {
+      keybindings: [
+        {
+          key: KEY.ARROW_UP,
+          modifiers: {
+            ctrl: 'NOT_SET',
+            alt: 'NOT_SET',
+          },
+        },
+        {
+          key: KEY.ARROW_DOWN,
+          modifiers: {
+            ctrl: 'NOT_SET',
+            alt: 'NOT_SET',
+          },
+        },
+        {
+          key: KEY.PAGE_UP,
+          modifiers: {
+            ctrl: 'NOT_SET',
+            alt: 'NOT_SET',
+          },
+        },
+        {
+          key: KEY.PAGE_DOWN,
+          modifiers: {
+            ctrl: 'NOT_SET',
+            alt: 'NOT_SET',
+          },
+        },
+      ],
+      handler: (e) => {
+        let idxOfResourceToSelect;
+        if (e.key === KEY.ARROW_UP) {
+          idxOfResourceToSelect = idxOfLastSelectedResource - 1;
+        } else if (e.key === KEY.ARROW_DOWN) {
+          idxOfResourceToSelect = idxOfLastSelectedResource + 1;
+        } else if (e.key === KEY.PAGE_UP) {
+          idxOfResourceToSelect = 0;
+        } else if (e.key === KEY.PAGE_DOWN) {
+          idxOfResourceToSelect = resourcesToShow.length - 1;
+        } else {
+          assertIsUnreachable();
+        }
+
+        changeSelection(idxOfResourceToSelect, {
+          ctrl: e.ctrlKey,
+          shift: e.shiftKey,
+        });
+      },
+      enableForRepeatedKeyboardEvent: true,
+    },
+  });
 
   return !dataAvailable ? (
     <SkeletonTableBody />
@@ -182,7 +246,7 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
   const explorerId = useExplorerId();
   const selectedShownResources = useSelectedShownResources();
   const renameResource = useRenameResource();
-  const changeSelectionByClick = useChangeSelectionByClick();
+  const changeSelection = useChangeSelection();
   const keyOfResourceToRename = useKeyOfResourceToRename();
   const setKeyOfResourceToRename = useSetKeyOfResourceToRename();
 
@@ -211,7 +275,12 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
         e.preventDefault();
         startNativeFileDnD(resourceForRow.uri);
       }}
-      onClick={(e) => changeSelectionByClick(e, resourceForRow, idxOfResourceForRow)}
+      onClick={(e) =>
+        changeSelection(idxOfResourceForRow, {
+          ctrl: e.ctrlKey,
+          shift: e.shiftKey,
+        })
+      }
       onDoubleClick={() => openResource(explorerId, resourceForRow)}
       isSelectable
       isSelected={resourceIsSelected}

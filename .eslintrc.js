@@ -78,7 +78,7 @@ module.exports = {
         ],
         pathGroupsExcludedImportTypes: ['builtin'],
         alphabetize: { order: 'asc', caseInsensitive: true },
-        'newlines-between': 'always-and-inside-groups',
+        'newlines-between': 'always',
       },
     ],
     'jsx-a11y/no-autofocus': 'off',

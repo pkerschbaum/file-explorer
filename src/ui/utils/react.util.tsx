@@ -136,7 +136,7 @@ export function createSelectableContext<ContextValue>(name: string) {
 /**
  * https://epicreact.dev/the-latest-ref-pattern-in-react/
  */
-export function useLatestValueRef<T>(value: T) {
+function useLatestValueRef<T>(value: T) {
   const valueRef = React.useRef<T>(value);
 
   React.useLayoutEffect(() => {

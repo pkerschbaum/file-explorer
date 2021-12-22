@@ -141,6 +141,15 @@ export function useKeyOfResourceSelectionGotStartedWith() {
   );
 }
 
+export function useKeyOfLastSelectedResource() {
+  return useExplorerStateSelector(
+    (explorerValues) =>
+      explorerValues.selection.keysOfSelectedResources[
+        explorerValues.selection.keysOfSelectedResources.length - 1
+      ],
+  );
+}
+
 export function useKeyOfResourceToRename() {
   return useExplorerStateSelector((explorerValues) => explorerValues.keyOfResourceToRename);
 }

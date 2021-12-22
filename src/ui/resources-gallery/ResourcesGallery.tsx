@@ -1,17 +1,21 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
+import invariant from 'tiny-invariant';
 
-import { check } from '@app/base/utils/assert.util';
+import { assertIsUnreachable, check } from '@app/base/utils/assert.util';
 import { formatter } from '@app/base/utils/formatter.util';
 import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
 import { startNativeFileDnD } from '@app/operations/app.operations';
 import { openResource } from '@app/operations/explorer.operations';
 import { commonStyles } from '@app/ui/common-styles';
 import { Box } from '@app/ui/components-library';
+import { KEY } from '@app/ui/constants';
 import {
-  useChangeSelectionByClick,
+  useChangeSelection,
   useExplorerId,
+  useKeyOfLastSelectedResource,
   useKeyOfResourceToRename,
+  useRegisterExplorerShortcuts,
   useRenameResource,
   useResourcesToShow,
   useSelectedShownResources,
@@ -21,18 +25,128 @@ import { ResourceIcon } from '@app/ui/resource-icon';
 import { ResourceRenameInput } from '@app/ui/resource-rename-input';
 
 export const ResourcesGallery: React.FC = () => {
+  const galleryRootRef = React.useRef<HTMLDivElement>(null);
+  const [countOfColumns, setCountOfColumns] = React.useState<number | undefined>();
+
   const resourcesToShow = useResourcesToShow();
+  const changeSelection = useChangeSelection();
+  const keyOfLastSelectedResource = useKeyOfLastSelectedResource();
+  const idxOfLastSelectedResource = resourcesToShow.findIndex((resource) =>
+    keyOfLastSelectedResource?.includes(resource.key),
+  );
+
+  React.useEffect(function determineCountOfColumnsOnMountAndAfterResize() {
+    invariant(galleryRootRef.current);
+    const galleryRootElem = galleryRootRef.current;
+
+    function computeAndSetCountOfColumns() {
+      // read computed grid columns (https://stackoverflow.com/a/66186894/1700319)
+      const computedStyle = window.getComputedStyle(galleryRootElem);
+      const computedColumns = computedStyle.getPropertyValue('grid-template-columns');
+      const countOfColumns = computedColumns.split(' ').length;
+      setCountOfColumns(countOfColumns);
+    }
+
+    computeAndSetCountOfColumns();
+
+    const resizeObserver = new ResizeObserver(computeAndSetCountOfColumns);
+    resizeObserver.observe(galleryRootElem);
+    return () => {
+      resizeObserver.unobserve(galleryRootElem);
+    };
+  }, []);
+
+  useRegisterExplorerShortcuts({
+    changeSelectionByKeyboardShortcut: {
+      keybindings: [
+        {
+          key: KEY.ARROW_LEFT,
+          modifiers: {
+            ctrl: 'NOT_SET',
+            alt: 'NOT_SET',
+          },
+        },
+        {
+          key: KEY.ARROW_RIGHT,
+          modifiers: {
+            ctrl: 'NOT_SET',
+            alt: 'NOT_SET',
+          },
+        },
+        {
+          key: KEY.ARROW_UP,
+          modifiers: {
+            ctrl: 'NOT_SET',
+            alt: 'NOT_SET',
+          },
+        },
+        {
+          key: KEY.ARROW_DOWN,
+          modifiers: {
+            ctrl: 'NOT_SET',
+            alt: 'NOT_SET',
+          },
+        },
+        {
+          key: KEY.PAGE_UP,
+          modifiers: {
+            ctrl: 'NOT_SET',
+            alt: 'NOT_SET',
+          },
+        },
+        {
+          key: KEY.PAGE_DOWN,
+          modifiers: {
+            ctrl: 'NOT_SET',
+            alt: 'NOT_SET',
+          },
+        },
+      ],
+      handler: (e) => {
+        invariant(countOfColumns !== undefined);
+
+        let idxOfResourceToSelect;
+        if (e.key === KEY.ARROW_LEFT) {
+          idxOfResourceToSelect = idxOfLastSelectedResource - 1;
+        } else if (e.key === KEY.ARROW_RIGHT) {
+          idxOfResourceToSelect = idxOfLastSelectedResource + 1;
+        } else if (e.key === KEY.ARROW_UP) {
+          idxOfResourceToSelect = idxOfLastSelectedResource - countOfColumns;
+          if (idxOfResourceToSelect < 0) {
+            idxOfResourceToSelect = 0;
+          }
+        } else if (e.key === KEY.ARROW_DOWN) {
+          idxOfResourceToSelect = idxOfLastSelectedResource + countOfColumns;
+          if (idxOfResourceToSelect >= resourcesToShow.length) {
+            idxOfResourceToSelect = resourcesToShow.length - 1;
+          }
+        } else if (e.key === KEY.PAGE_UP) {
+          idxOfResourceToSelect = 0;
+        } else if (e.key === KEY.PAGE_DOWN) {
+          idxOfResourceToSelect = resourcesToShow.length - 1;
+        } else {
+          assertIsUnreachable();
+        }
+
+        changeSelection(idxOfResourceToSelect, {
+          ctrl: e.ctrlKey,
+          shift: e.shiftKey,
+        });
+      },
+      enableForRepeatedKeyboardEvent: true,
+    },
+  });
 
   return (
-    <GalleryViewRoot>
+    <GalleryRoot ref={galleryRootRef}>
       {resourcesToShow.map((resource, idx) => (
         <ResourceTile key={resource.key} resourceForTile={resource} idxOfResource={idx} />
       ))}
-    </GalleryViewRoot>
+    </GalleryRoot>
   );
 };
 
-const GalleryViewRoot = styled(Box)`
+const GalleryRoot = styled(Box)`
   ${commonStyles.layout.flex.shrinkAndFitVertical}
 
   display: grid;
@@ -51,7 +165,7 @@ const ResourceTile: React.FC<ResourceTileProps> = ({ resourceForTile, idxOfResou
   const explorerId = useExplorerId();
   const selectedShownResources = useSelectedShownResources();
   const renameResource = useRenameResource();
-  const changeSelectionByClick = useChangeSelectionByClick();
+  const changeSelection = useChangeSelection();
   const keyOfResourceToRename = useKeyOfResourceToRename();
   const setKeyOfResourceToRename = useSetKeyOfResourceToRename();
 
@@ -72,7 +186,12 @@ const ResourceTile: React.FC<ResourceTileProps> = ({ resourceForTile, idxOfResou
         e.preventDefault();
         startNativeFileDnD(resourceForTile.uri);
       }}
-      onClick={(e) => changeSelectionByClick(e, resourceForTile, idxOfResource)}
+      onClick={(e) =>
+        changeSelection(idxOfResource, {
+          ctrl: e.ctrlKey,
+          shift: e.shiftKey,
+        })
+      }
       onDoubleClick={() => openResource(explorerId, resourceForTile)}
       styleProps={{ isSelectable: true, isSelected: resourceIsSelected }}
     >

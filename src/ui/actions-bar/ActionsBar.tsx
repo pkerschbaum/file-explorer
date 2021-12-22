@@ -28,7 +28,6 @@ import {
   useFilterInput,
   useSelectedShownResources,
   useSetFilterInput,
-  useChangeSelectionByKeyboard,
   useCopySelectedResources,
   useCreateFolderInExplorer,
   useCutSelectedResources,
@@ -39,7 +38,10 @@ import {
   useRegisterExplorerShortcuts,
   useSetActiveResourcesView,
 } from '@app/ui/explorer-context';
-import { DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED } from '@app/ui/GlobalShortcutsContext';
+import {
+  DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED,
+  ShortcutPriority,
+} from '@app/ui/GlobalShortcutsContext';
 import { useClipboardResources } from '@app/ui/hooks/clipboard-resources.hooks';
 
 export const ActionsBar: React.FC = () => {
@@ -55,7 +57,6 @@ export const ActionsBar: React.FC = () => {
   const triggerRenameForSelectedResources = useTriggerRenameForSelectedResources();
   const scheduleDeleteSelectedResources = useScheduleDeleteSelectedResources();
   const createFolderInExplorer = useCreateFolderInExplorer();
-  const changeSelectionByKeyboard = useChangeSelectionByKeyboard();
 
   const setActiveResourcesViewButtonHandleRef = React.useRef<ButtonHandle>(null);
   const openButtonHandleRef = React.useRef<ButtonHandle>(null);
@@ -166,7 +167,7 @@ export const ActionsBar: React.FC = () => {
         {
           key: KEY.DELETE,
           modifiers: {
-            ctrl: 'NOT_SET',
+            ctrl: 'SET',
             alt: 'NOT_SET',
           },
         },
@@ -193,59 +194,12 @@ export const ActionsBar: React.FC = () => {
         triggerCreateNewFolderButtonHandleRef.current.triggerSyntheticPress();
       },
     },
-    changeSelectionByKeyboardShortcut: {
-      keybindings: [
-        {
-          key: KEY.ARROW_UP,
-          modifiers: {
-            ctrl: 'NOT_SET',
-            alt: 'NOT_SET',
-          },
-        },
-        {
-          key: KEY.ARROW_DOWN,
-          modifiers: {
-            ctrl: 'NOT_SET',
-            alt: 'NOT_SET',
-          },
-        },
-        {
-          key: KEY.A,
-          modifiers: {
-            ctrl: 'SET',
-            alt: 'NOT_SET',
-          },
-        },
-        {
-          key: KEY.PAGE_UP,
-          modifiers: {
-            ctrl: 'NOT_SET',
-            alt: 'NOT_SET',
-          },
-        },
-        {
-          key: KEY.PAGE_DOWN,
-          modifiers: {
-            ctrl: 'NOT_SET',
-            alt: 'NOT_SET',
-          },
-        },
-      ],
-      handler: (e) => changeSelectionByKeyboard(e),
-      enableForRepeatedKeyboardEvent: true,
-    },
     focusFilterInputShortcut: {
-      condition: (e) =>
-        !e.altKey &&
-        !e.ctrlKey &&
-        !e.shiftKey &&
-        e.key !== KEY.TAB &&
-        e.key !== KEY.ESC &&
-        filterInputRef.current !== null,
+      priority: ShortcutPriority.LOW,
+      condition: (e) => !e.altKey && !e.ctrlKey && !e.shiftKey,
       handler: () => {
-        if (filterInputRef.current !== null) {
-          filterInputRef.current.focus();
-        }
+        invariant(filterInputRef.current);
+        filterInputRef.current.focus();
       },
     },
   });
