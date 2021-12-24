@@ -3,7 +3,6 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 import { check } from '@app/base/utils/assert.util';
-import { formatter } from '@app/base/utils/formatter.util';
 import { ResourceForUI } from '@app/domain/types';
 import { commonStyles } from '@app/ui/common-styles';
 import { Button, FocusScope, TextField } from '@app/ui/components-library';
@@ -22,7 +21,7 @@ export const ResourceRenameInput: React.FC<ResourceRenameInputProps> = ({
   abortRename,
   className,
 }) => {
-  const [value, setValue] = React.useState(formatter.resourceBasename(resource));
+  const [value, setValue] = React.useState(resource.basename);
 
   const inputIsValid = check.isNonEmptyString(value);
 

@@ -3,7 +3,7 @@ import { IFileStat } from '@pkerschbaum/code-oss-file-service/out/vs/platform/fi
 import { useQuery } from 'react-query';
 
 import { uriHelper } from '@app/base/utils/uri-helper';
-import { Resource, RESOURCE_TYPE } from '@app/domain/types';
+import { ResourceStat, RESOURCE_TYPE } from '@app/domain/types';
 import { QUERY_KEYS } from '@app/global-cache/query-keys';
 import { fileSystemRef, queryClientRef } from '@app/operations/global-modules';
 
@@ -72,7 +72,7 @@ export function setCachedResourcesOfDirectory(
   );
 }
 
-function mapFileStatToResource(resource: IFileStat): Resource {
+function mapFileStatToResource(resource: IFileStat): ResourceStat {
   const resourceType = resource.isDirectory
     ? RESOURCE_TYPE.DIRECTORY
     : resource.isSymbolicLink
@@ -83,8 +83,8 @@ function mapFileStatToResource(resource: IFileStat): Resource {
 
   return {
     key: uriHelper.getComparisonKey(resource.resource),
-    resourceType,
     uri: resource.resource.toJSON(),
+    resourceType,
     size: resource.size,
     mtime: resource.mtime,
     ctime: resource.ctime,

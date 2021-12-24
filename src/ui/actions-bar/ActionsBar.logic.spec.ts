@@ -2,7 +2,7 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { asyncUtils } from '@app/base/utils/async.util';
-import { ResourceUIDescription, uriHelper } from '@app/base/utils/uri-helper';
+import { uriHelper } from '@app/base/utils/uri-helper';
 import { createStoreInstance } from '@app/global-state/store';
 import { nativeHostRef, storeRef } from '@app/operations/global-modules';
 import { createQueryClient } from '@app/ui/Globals';
@@ -28,17 +28,10 @@ describe('ActionsBar [logic]', () => {
     // assert clipboard
     const resourcesInClipboard = nativeHostRef.current.clipboard.readResources();
     expect(resourcesInClipboard).toHaveLength(2);
-    const actualResource1 = uriHelper.extractNameAndExtension(resourcesInClipboard[0]);
-    const expectedResource1: ResourceUIDescription = {
-      resourceName: 'aa test folder',
-    };
-    expect(actualResource1).toMatchObject(expectedResource1);
-    const actualResource2 = uriHelper.extractNameAndExtension(resourcesInClipboard[1]);
-    const expectedResource2: ResourceUIDescription = {
-      resourceName: 'testfile1',
-      extension: '.txt',
-    };
-    expect(actualResource2).toMatchObject(expectedResource2);
+    const actualResource1Basename = uriHelper.extractBasename(resourcesInClipboard[0]);
+    expect(actualResource1Basename).toEqual('aa test folder');
+    const actualResource2Basename = uriHelper.extractBasename(resourcesInClipboard[1]);
+    expect(actualResource2Basename).toEqual('testfile1.txt');
 
     // assert that "pasteShouldMove" was set to "false" in global state
     expect(storeRef.current.getState().processesSlice.draftPasteState).not.toBeUndefined();
@@ -61,17 +54,10 @@ describe('ActionsBar [logic]', () => {
     // assert clipboard
     const resourcesInClipboard = nativeHostRef.current.clipboard.readResources();
     expect(resourcesInClipboard).toHaveLength(2);
-    const actualResource1 = uriHelper.extractNameAndExtension(resourcesInClipboard[0]);
-    const expectedResource1: ResourceUIDescription = {
-      resourceName: 'aa test folder',
-    };
-    expect(actualResource1).toMatchObject(expectedResource1);
-    const actualResource2 = uriHelper.extractNameAndExtension(resourcesInClipboard[1]);
-    const expectedResource2: ResourceUIDescription = {
-      resourceName: 'testfile1',
-      extension: '.txt',
-    };
-    expect(actualResource2).toMatchObject(expectedResource2);
+    const actualResource1Basename = uriHelper.extractBasename(resourcesInClipboard[0]);
+    expect(actualResource1Basename).toEqual('aa test folder');
+    const actualResource2Basename = uriHelper.extractBasename(resourcesInClipboard[1]);
+    expect(actualResource2Basename).toEqual('testfile1.txt');
 
     // assert that "pasteShouldMove" was set to "false" in global state
     expect(storeRef.current.getState().processesSlice.draftPasteState).not.toBeUndefined();
@@ -95,17 +81,10 @@ describe('ActionsBar [logic]', () => {
     // assert clipboard
     const resourcesInClipboard = nativeHostRef.current.clipboard.readResources();
     expect(resourcesInClipboard).toHaveLength(2);
-    const actualResource1 = uriHelper.extractNameAndExtension(resourcesInClipboard[0]);
-    const expectedResource1: ResourceUIDescription = {
-      resourceName: 'aa test folder',
-    };
-    expect(actualResource1).toMatchObject(expectedResource1);
-    const actualResource2 = uriHelper.extractNameAndExtension(resourcesInClipboard[1]);
-    const expectedResource2: ResourceUIDescription = {
-      resourceName: 'testfile1',
-      extension: '.txt',
-    };
-    expect(actualResource2).toMatchObject(expectedResource2);
+    const actualResource1Basename = uriHelper.extractBasename(resourcesInClipboard[0]);
+    expect(actualResource1Basename).toEqual('aa test folder');
+    const actualResource2Basename = uriHelper.extractBasename(resourcesInClipboard[1]);
+    expect(actualResource2Basename).toEqual('testfile1.txt');
 
     // assert that "pasteShouldMove" was set to "false" in global state
     expect(storeRef.current.getState().processesSlice.draftPasteState).not.toBeUndefined();
@@ -128,17 +107,10 @@ describe('ActionsBar [logic]', () => {
     // assert clipboard
     const resourcesInClipboard = nativeHostRef.current.clipboard.readResources();
     expect(resourcesInClipboard).toHaveLength(2);
-    const actualResource1 = uriHelper.extractNameAndExtension(resourcesInClipboard[0]);
-    const expectedResource1: ResourceUIDescription = {
-      resourceName: 'aa test folder',
-    };
-    expect(actualResource1).toMatchObject(expectedResource1);
-    const actualResource2 = uriHelper.extractNameAndExtension(resourcesInClipboard[1]);
-    const expectedResource2: ResourceUIDescription = {
-      resourceName: 'testfile1',
-      extension: '.txt',
-    };
-    expect(actualResource2).toMatchObject(expectedResource2);
+    const actualResource1Basename = uriHelper.extractBasename(resourcesInClipboard[0]);
+    expect(actualResource1Basename).toEqual('aa test folder');
+    const actualResource2Basename = uriHelper.extractBasename(resourcesInClipboard[1]);
+    expect(actualResource2Basename).toEqual('testfile1.txt');
 
     // assert that "pasteShouldMove" was set to "false" in global state
     expect(storeRef.current.getState().processesSlice.draftPasteState).not.toBeUndefined();

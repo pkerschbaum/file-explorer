@@ -204,7 +204,7 @@ const ResourceTile: React.FC<ResourceTileProps> = ({ resourceForTile, idxOfResou
             abortRename={abortRename}
           />
         ) : (
-          <NameFormatted>{formatter.resourceBasename(resourceForTile)}</NameFormatted>
+          <NameFormatted>{resourceForTile.basename}</NameFormatted>
         )}
         <SizeAndExtension>
           <SizeFormatted>
@@ -213,7 +213,7 @@ const ResourceTile: React.FC<ResourceTileProps> = ({ resourceForTile, idxOfResou
               formatter.bytes(resourceForTile.size)}
           </SizeFormatted>
           {check.isNonEmptyString(resourceForTile.extension) && (
-            <ExtensionFormatted>{formatter.resourceExtension(resourceForTile)}</ExtensionFormatted>
+            <ExtensionBadge>{formatter.resourceExtension(resourceForTile)}</ExtensionBadge>
           )}
         </SizeAndExtension>
       </ResourceDetails>
@@ -282,7 +282,7 @@ const SizeAndExtension = styled(Box)`
 
 const SizeFormatted = styled(Box)``;
 
-const ExtensionFormatted = styled(Box)`
+const ExtensionBadge = styled(Box)`
   padding-inline: var(--spacing-1);
 
   border-radius: var(--border-radius-2);

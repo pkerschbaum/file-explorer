@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
 import { assertIsUnreachable } from '@app/base/utils/assert.util';
-import { formatter } from '@app/base/utils/formatter.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { DeleteProcess as DeleteProcessType, DELETE_PROCESS_STATUS } from '@app/domain/types';
 import { removeProcess, runDeleteProcess } from '@app/operations/resource.operations';
@@ -97,21 +96,14 @@ export function computeProcessCardPropsFromDeleteProcess(
   return {
     labels: { container: 'Delete Process' },
     summaryIcon: <DeleteOutlinedIcon />,
-    summaryText: process.uris
-      .map((uri) => {
-        const { resourceName, extension } = uriHelper.extractNameAndExtension(uri);
-        const resourceLabel = formatter.resourceBasename({ name: resourceName, extension });
-        return resourceLabel;
-      })
-      .join(', '),
+    summaryText: process.uris.map((uri) => uriHelper.extractBasename(uri)).join(', '),
     details: (
       <>
         <ResourcesList>
           <Box>Files/Folders:</Box>
           {process.uris.map((uri) => {
-            const { resourceName, extension } = uriHelper.extractNameAndExtension(uri);
-            const resourceLabel = formatter.resourceBasename({ name: resourceName, extension });
-            return <ResourceBox key={uriHelper.getComparisonKey(uri)}>{resourceLabel}</ResourceBox>;
+            const basename = uriHelper.extractBasename(uri);
+            return <ResourceBox key={uriHelper.getComparisonKey(uri)}>{basename}</ResourceBox>;
           })}
         </ResourcesList>
 

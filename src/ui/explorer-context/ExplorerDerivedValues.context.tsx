@@ -83,9 +83,9 @@ export const ExplorerDerivedValuesContextProvider: React.FC<
       result = arrays
         .wrap(resourcesWithTags)
         .stableSort((a, b) => {
-          if (a.name.toLocaleLowerCase() < b.name.toLocaleLowerCase()) {
+          if (a.basename.toLocaleLowerCase() < b.basename.toLocaleLowerCase()) {
             return -1;
-          } else if (a.name.toLocaleLowerCase() > b.name.toLocaleLowerCase()) {
+          } else if (a.basename.toLocaleLowerCase() > b.basename.toLocaleLowerCase()) {
             return 1;
           }
           return 0;
@@ -106,7 +106,7 @@ export const ExplorerDerivedValuesContextProvider: React.FC<
       result = arrays
         .wrap(resourcesWithTags)
         .matchSort(explorerState.filterInput, {
-          keys: [(resource) => resource.name],
+          keys: [(resource) => resource.basename],
         })
         .getValue();
     }

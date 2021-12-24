@@ -4,8 +4,9 @@ import { check } from '@app/base/utils/assert.util';
 import { byteSize, ByteUnit } from '@app/base/utils/byte-size.util';
 import { numbers } from '@app/base/utils/numbers.util';
 import { i18n } from '@app/domain/i18n';
+import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
 
-export const formatter = { bytes, date, resourceBasename, resourceExtension, resourcePath };
+export const formatter = { bytes, date, resourceExtension, resourcePath };
 
 function bytes(numberOfBytes: number, options?: { unit: ByteUnit }): string {
   let unitToUse = options?.unit;
@@ -35,16 +36,11 @@ function date(unixTs: number): string {
   }).format(unixTs);
 }
 
-function resourceBasename(resource: { name: string; extension?: string }): string {
-  if (resource.extension === undefined) {
-    return resource.name;
-  }
-
-  return `${resource.name}${resource.extension}`;
-}
-
-function resourceExtension(resource: { extension?: string }): string {
-  if (check.isNullishOrEmptyString(resource.extension)) {
+function resourceExtension(resource: Pick<ResourceForUI, 'extension' | 'resourceType'>): string {
+  if (
+    resource.resourceType === RESOURCE_TYPE.DIRECTORY ||
+    check.isNullishOrEmptyString(resource.extension)
+  ) {
     return '';
   }
 

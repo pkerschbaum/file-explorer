@@ -108,10 +108,10 @@ export type DeleteProcess =
   | DeleteProcess_Success
   | DeleteProcess_Failure;
 
-export type Resource = {
+export type ResourceStat = {
   key: string;
-  resourceType: RESOURCE_TYPE;
   uri: UriComponents;
+  resourceType: RESOURCE_TYPE;
   size?: number;
   ctime?: number;
   mtime?: number;
@@ -138,8 +138,8 @@ export type AvailableTagIds = `tag-color-${
   | '10'}`;
 export type Tag = { id: TagId; name: string; colorId: AvailableTagIds };
 
-export type ResourceForUI = Resource & {
-  name: string;
+export type ResourceForUI = ResourceStat & {
+  basename: string;
   extension?: string;
   tags: Tag[];
 };

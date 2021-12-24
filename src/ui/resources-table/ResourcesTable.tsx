@@ -300,9 +300,7 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
               abortRename={abortRename}
             />
           ) : (
-            <ResourceNameFormatted>
-              {formatter.resourceBasename(resourceForRow)}
-            </ResourceNameFormatted>
+            <ResourceNameFormatted>{resourceForRow.basename}</ResourceNameFormatted>
           )
         }
         tagsSlot={

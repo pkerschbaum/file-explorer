@@ -159,14 +159,8 @@ export function computeProcessCardPropsFromPasteProcess(
         <ResourcesList>
           <Box>Files/Folders:</Box>
           {process.sourceUris.slice(0, 2).map((uri) => {
-            const { resourceName, extension } = uriHelper.extractNameAndExtension(uri);
-            const sourceResourceLabel = formatter.resourceBasename({
-              name: resourceName,
-              extension,
-            });
-            return (
-              <ResourceBox key={uriHelper.getComparisonKey(uri)}>{sourceResourceLabel}</ResourceBox>
-            );
+            const basename = uriHelper.extractBasename(uri);
+            return <ResourceBox key={uriHelper.getComparisonKey(uri)}>{basename}</ResourceBox>;
           })}
           {process.sourceUris.length > 2 && (
             <ResourceBox>+ {process.sourceUris.length - 2} files/folders</ResourceBox>

@@ -61,7 +61,7 @@ async function getThumbnail(url: string, fileService: IFileService): Promise<Buf
   const fileContentBuffer = Buffer.from(fileContent.value.buffer);
   const mimeTypeBasedOnContent = (await FileType.fromBuffer(fileContentBuffer))?.mime;
 
-  const { extension } = uriHelper.extractNameAndExtension(uri);
+  const extension = uriHelper.extractExtension(uri);
   const mimeTypeBasedOnExtension = check.isNullishOrEmptyString(extension)
     ? undefined
     : mime.getType(extension);
