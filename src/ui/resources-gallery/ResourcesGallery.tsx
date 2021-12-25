@@ -157,7 +157,7 @@ const GalleryRoot = styled(Box)`
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   grid-auto-rows: ${TILE_HEIGHT}px;
   grid-gap: var(--spacing-3);
-  overflow: auto;
+  overflow-y: scroll;
 `;
 
 type ResourceTileProps = {

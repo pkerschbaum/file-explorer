@@ -1,5 +1,5 @@
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import { app, protocol } from 'electron';
+import electron, { app, protocol } from 'electron';
 import FileType from 'file-type';
 import fs from 'fs';
 import mime from 'mime';
@@ -17,52 +17,35 @@ import {
 const DEFAULT_ERROR = {
   error: -2, // "A generic failure occurred." from https://source.chromium.org/chromium/chromium/src/+/master:net/base/net_error_list.h;l=32
 };
-const DEFAULT_HEADERS = {
-  'cache-control': 'max-age=3600', // cache for 1 hour
-};
 
 export function registerProtocols(): void {
   protocol.registerStreamProtocol(THUMBNAIL_PROTOCOL_SCHEME, (request, callback) => {
-    void getThumbnail(request.url)
-      .then(({ data, mimeType }) => {
-        callback({
-          data,
-          mimeType,
-          headers: DEFAULT_HEADERS,
-        });
-      })
+    void getThumbnail(request)
+      .then(callback)
       .catch(() => {
         callback(DEFAULT_ERROR);
       });
   });
   protocol.registerBufferProtocol(NATIVE_FILE_ICON_PROTOCOL_SCHEME, (request, callback) => {
-    void getNativeFileIcon(request.url)
-      .then(({ data, mimeType }) => {
-        callback({
-          data,
-          mimeType,
-          headers: DEFAULT_HEADERS,
-        });
-      })
+    void getNativeFileIcon(request)
+      .then(callback)
       .catch(() => {
         callback(DEFAULT_ERROR);
       });
   });
 }
 
-type StreamResult = {
+type ProtocolStreamResponse = electron.ProtocolResponse & {
   data: NodeJS.ReadableStream;
-  mimeType?: string;
 };
 
-type BufferResult = {
+type ProtocolBufferResponse = electron.ProtocolResponse & {
   data: Buffer;
-  mimeType?: string;
 };
 
 const THUMBNAIL_RESIZE_BLOCKLIST = ['image/svg+xml'];
-async function getThumbnail(url: string): Promise<StreamResult> {
-  const parsed = new URL(url);
+async function getThumbnail(request: electron.ProtocolRequest): Promise<ProtocolStreamResponse> {
+  const parsed = new URL(request.url);
   // property "pathname" has a leading slash --> remove that (https://developer.mozilla.org/en-US/docs/Web/API/URL/pathname)
   const path = parsed.pathname.substring(1);
   const uri = URI.parse(decodeURIComponent(path));
@@ -89,14 +72,26 @@ async function getThumbnail(url: string): Promise<StreamResult> {
   return {
     data: thumbnailStream,
     mimeType: finalMimeType,
+    headers: {
+      'cache-control': `max-age=${60 * 60 * 24}`, // cache for 1 day
+    },
   };
 }
 
-async function getNativeFileIcon(url: string): Promise<BufferResult> {
-  const uri = URI.parse(
-    decodeURIComponent(url.substring(`${NATIVE_FILE_ICON_PROTOCOL_SCHEME}:///`.length)),
-  );
+async function getNativeFileIcon(
+  request: electron.ProtocolRequest,
+): Promise<ProtocolBufferResponse> {
+  const parsed = new URL(request.url);
+  // property "pathname" has a leading slash --> remove that (https://developer.mozilla.org/en-US/docs/Web/API/URL/pathname)
+  const path = parsed.pathname.substring(1);
+  const uri = URI.parse(decodeURIComponent(path));
   const icon = await app.getFileIcon(uri.fsPath, { size: 'large' });
 
-  return { data: icon.toPNG(), mimeType: 'image/png' };
+  return {
+    data: icon.toPNG(),
+    mimeType: 'image/png',
+    headers: {
+      'cache-control': `max-age=${60 * 60}`, // cache for 1 hour
+    },
+  };
 }

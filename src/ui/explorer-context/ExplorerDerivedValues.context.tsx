@@ -3,7 +3,7 @@ import * as React from 'react';
 import { arrays } from '@app/base/utils/arrays.util';
 import { check } from '@app/base/utils/assert.util';
 import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
-import { nativeHostRef } from '@app/operations/global-modules';
+import { isResourceQualifiedForThumbnail } from '@app/operations/app.operations';
 import { useSetActiveResourcesView } from '@app/ui/explorer-context';
 import {
   ExplorerContextProviderProps,
@@ -51,15 +51,18 @@ export const ExplorerDerivedValuesContextProvider: React.FC<
       }
 
       const files = resources.filter((resource) => resource.resourceType === RESOURCE_TYPE.FILE);
-      const thumbnailUrls = files
-        .map((file) => nativeHostRef.current.app.getThumbnailURLForResource(file, 0))
-        .filter(check.isNonEmptyString);
+      const filesQualifiedForThumbnails = files.filter((file) =>
+        isResourceQualifiedForThumbnail(file),
+      );
 
       /**
-       * If enough files have thumbnail urls available to retrieve a thumbnail from, boot into "gallery" view.
+       * If enough files can get thumbnails, boot into "gallery" view.
        * The user can toggle the view afterwards
        */
-      if (files.length > 0 && thumbnailUrls.length / files.length >= USE_GALLERY_VIEW_PERCENTAGE) {
+      if (
+        files.length > 0 &&
+        filesQualifiedForThumbnails.length / files.length >= USE_GALLERY_VIEW_PERCENTAGE
+      ) {
         setActiveResourcesView('gallery');
       } else {
         setActiveResourcesView('table');

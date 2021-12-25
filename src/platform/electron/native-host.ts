@@ -1,6 +1,7 @@
 import { Emitter } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/event';
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import mime from 'mime';
+import invariant from 'tiny-invariant';
 
 import { check } from '@app/base/utils/assert.util';
 import { numbers } from '@app/base/utils/numbers.util';
@@ -22,38 +23,57 @@ export const createNativeHost = () => {
         const fsPath = await window.privileged.app.getPath(args);
         return URI.file(fsPath);
       },
-      getThumbnailURLForResource: (resource, height) => {
+      isResourceQualifiedForThumbnail: (resource) => {
         if (check.isNullishOrEmptyString(resource.extension)) {
-          return undefined;
+          return false;
         }
 
         const mimeType = mime.getType(resource.extension);
-        const isResourceQualifiedForThumbnail =
-          check.isNonEmptyString(mimeType) && THUMBNAIL_AVAILABLE_FOR_MIME_TYPE.includes(mimeType);
+        return (
+          check.isNonEmptyString(mimeType) && THUMBNAIL_AVAILABLE_FOR_MIME_TYPE.includes(mimeType)
+        );
+      },
+      getThumbnailURLForResource: (resource, height) => {
+        const isResourceQualifiedForThumbnailURL =
+          instance.app.isResourceQualifiedForThumbnail(resource) &&
+          check.isNotNullish(resource.mtime);
 
-        if (!isResourceQualifiedForThumbnail) {
+        if (!isResourceQualifiedForThumbnailURL) {
           return undefined;
         } else {
+          invariant(check.isNotNullish(resource.mtime));
           const url = new URL(
             `${THUMBNAIL_PROTOCOL_SCHEME}:///${encodeURIComponent(
               URI.from(resource.uri).toString(),
             )}`,
           );
+          // add mtime as search param so that the browser does not use its cache if the file changed
+          url.searchParams.set('mtime', numbers.toString(resource.mtime));
           url.searchParams.set('height', numbers.toString(height));
           return url.toString();
         }
       },
-      getNativeIconURLForResource: (resource) => {
+      isResourceQualifiedForNativeIcon: (resource) => {
         const extension = resource.extension;
-        const isResourceQualifiedForNativeIcon =
-          check.isNonEmptyString(extension) && USE_NATIVE_ICON_FOR_REGEX.test(extension);
+        return check.isNonEmptyString(extension) && USE_NATIVE_ICON_FOR_REGEX.test(extension);
+      },
+      getNativeIconURLForResource: (resource) => {
+        const isResourceQualifiedForNativeIconURL =
+          instance.app.isResourceQualifiedForNativeIcon(resource) &&
+          check.isNotNullish(resource.mtime);
 
-        if (!isResourceQualifiedForNativeIcon) {
+        if (!isResourceQualifiedForNativeIconURL) {
           return undefined;
         } else {
-          return `${NATIVE_FILE_ICON_PROTOCOL_SCHEME}:///${encodeURIComponent(
-            URI.from(resource.uri).toString(),
-          )}`;
+          invariant(check.isNotNullish(resource.mtime));
+          const url = new URL(
+            `${NATIVE_FILE_ICON_PROTOCOL_SCHEME}:///${encodeURIComponent(
+              URI.from(resource.uri).toString(),
+            )}`,
+          );
+          // add mtime as search param so that the browser does not use its cache if the file changed
+          url.searchParams.set('mtime', numbers.toString(resource.mtime));
+          return url.toString();
         }
       },
     },

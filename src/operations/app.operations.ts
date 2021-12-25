@@ -66,8 +66,16 @@ export async function getDefaultExplorerCwd(): Promise<UriComponents> {
   return await nativeHostRef.current.app.getPath({ name: 'home' });
 }
 
+export function isResourceQualifiedForThumbnail(resource: ResourceForUI) {
+  return nativeHostRef.current.app.isResourceQualifiedForThumbnail(resource);
+}
+
 export function getThumbnailURLForResource(resource: ResourceForUI, height: number) {
   return nativeHostRef.current.app.getThumbnailURLForResource(resource, height);
+}
+
+export function isResourceQualifiedForNativeIcon(resource: ResourceForUI) {
+  return nativeHostRef.current.app.isResourceQualifiedForNativeIcon(resource);
 }
 
 export function getNativeIconURLForResource(resource: ResourceForUI) {
