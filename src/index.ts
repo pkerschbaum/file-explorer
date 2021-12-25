@@ -1,5 +1,24 @@
+/* eslint-disable import/first, import/no-duplicates, import/order -- we want to register an handler for uncaught exceptions / unhandled rejections as soon as possible */
+import { app, dialog } from 'electron';
+import { serializeError } from 'serialize-error';
+
+function handleError(error: unknown) {
+  dialog.showErrorBox(
+    'Error',
+    `Unexpected error occurred. Application will shut down.\n\nError:\n${JSON.stringify(
+      serializeError(error),
+      null,
+      2,
+    )}`,
+  );
+  app.quit();
+}
+
+process.on('uncaughtException', handleError);
+process.on('unhandledRejection', handleError);
+
 import { isWindows } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/platform';
-import { app, BrowserWindow, protocol } from 'electron';
+import { BrowserWindow, protocol } from 'electron';
 import Store from 'electron-store';
 import invariant from 'tiny-invariant';
 

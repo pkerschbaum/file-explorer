@@ -271,6 +271,7 @@ module.exports = {
             allowedPatterns: [
               'dayjs',
               'mime',
+              'serialize-error',
               'tiny-invariant',
               /^@app.+/,
               /^@pkerschbaum\/code-oss-file-service/,
