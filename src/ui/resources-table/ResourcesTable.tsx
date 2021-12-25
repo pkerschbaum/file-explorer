@@ -1,5 +1,6 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
+import invariant from 'tiny-invariant';
 
 import { assertIsUnreachable } from '@app/base/utils/assert.util';
 import { formatter } from '@app/base/utils/formatter.util';
@@ -33,6 +34,7 @@ import {
 } from '@app/ui/explorer-context';
 import { ResourceIcon } from '@app/ui/resource-icon';
 import { ResourceRenameInput } from '@app/ui/resource-rename-input';
+import { usePrevious } from '@app/ui/utils/react.util';
 
 const ROW_HEIGHT = 38;
 const ICON_SIZE = 24;
@@ -134,6 +136,8 @@ const ResourcesTableBody: React.FC<ResourcesTableBodyProps> = ({ tableContainerR
         },
       ],
       handler: (e) => {
+        e.preventDefault();
+
         let idxOfResourceToSelect;
         if (e.key === KEY.ARROW_UP) {
           idxOfResourceToSelect = idxOfLastSelectedResource - 1;
@@ -243,6 +247,8 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
   idxOfResourceForRow,
   virtualRowStart,
 }) {
+  const rowRef = React.useRef<HTMLTableRowElement>(null);
+
   const explorerId = useExplorerId();
   const selectedShownResources = useSelectedShownResources();
   const renameResource = useRenameResource();
@@ -250,13 +256,27 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
   const keyOfResourceToRename = useKeyOfResourceToRename();
   const setKeyOfResourceToRename = useSetKeyOfResourceToRename();
 
+  const isResourceSelected = !!selectedShownResources.find(
+    (resource) => resource.key === resourceForRow.key,
+  );
+  const wasResourceSelectedLastRender = usePrevious(isResourceSelected);
+  const tileGotSelected = !wasResourceSelectedLastRender && isResourceSelected;
+
+  React.useEffect(
+    function scrollElementIntoViewOnSelection() {
+      invariant(rowRef.current);
+
+      if (tileGotSelected) {
+        rowRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+      }
+    },
+    [tileGotSelected],
+  );
+
   function abortRename() {
     setKeyOfResourceToRename(undefined);
   }
 
-  const resourceIsSelected = !!selectedShownResources.find(
-    (resource) => resource.key === resourceForRow.key,
-  );
   const renameForResourceIsActive = keyOfResourceToRename === resourceForRow.key;
   const rowStyleForVirtualization: RowProps['style'] =
     virtualRowStart === undefined
@@ -268,7 +288,8 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
         };
 
   return (
-    <Row
+    <ResourceRowRoot
+      ref={rowRef}
       data-window-keydownhandlers-enabled="true"
       draggable={!renameForResourceIsActive}
       onDragStart={(e) => {
@@ -283,7 +304,7 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
       }
       onDoubleClick={() => openResource(explorerId, resourceForRow)}
       isSelectable
-      isSelected={resourceIsSelected}
+      isSelected={isResourceSelected}
       style={rowStyleForVirtualization}
     >
       <ResourceRowContent
@@ -323,9 +344,14 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
         }
         mtimeSlot={resourceForRow.mtime !== undefined && formatter.date(resourceForRow.mtime)}
       />
-    </Row>
+    </ResourceRowRoot>
   );
 });
+
+const ResourceRowRoot = styled(Row)`
+  /* add scroll-margin-top so that "scrollIntoView" respects the sticky-positioned header */
+  scroll-margin-top: ${ROW_HEIGHT}px;
+`;
 
 const ResourceNameFormattedSpacingFactor = 1;
 

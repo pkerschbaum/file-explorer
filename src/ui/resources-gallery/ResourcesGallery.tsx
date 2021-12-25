@@ -23,6 +23,7 @@ import {
 } from '@app/ui/explorer-context';
 import { ResourceIcon } from '@app/ui/resource-icon';
 import { ResourceRenameInput } from '@app/ui/resource-rename-input';
+import { usePrevious } from '@app/ui/utils/react.util';
 
 export const ResourcesGallery: React.FC = () => {
   const galleryRootRef = React.useRef<HTMLDivElement>(null);
@@ -104,6 +105,7 @@ export const ResourcesGallery: React.FC = () => {
       ],
       handler: (e) => {
         invariant(countOfColumns !== undefined);
+        e.preventDefault();
 
         let idxOfResourceToSelect;
         if (e.key === KEY.ARROW_LEFT) {
@@ -162,6 +164,8 @@ type ResourceTileProps = {
 };
 
 const ResourceTile: React.FC<ResourceTileProps> = ({ resourceForTile, idxOfResource }) => {
+  const tileRef = React.useRef<HTMLDivElement>(null);
+
   const explorerId = useExplorerId();
   const selectedShownResources = useSelectedShownResources();
   const renameResource = useRenameResource();
@@ -169,17 +173,32 @@ const ResourceTile: React.FC<ResourceTileProps> = ({ resourceForTile, idxOfResou
   const keyOfResourceToRename = useKeyOfResourceToRename();
   const setKeyOfResourceToRename = useSetKeyOfResourceToRename();
 
+  const isResourceSelected = !!selectedShownResources.find(
+    (resource) => resource.key === resourceForTile.key,
+  );
+  const wasResourceSelectedLastRender = usePrevious(isResourceSelected);
+  const tileGotSelected = !wasResourceSelectedLastRender && isResourceSelected;
+
+  React.useEffect(
+    function scrollElementIntoViewOnSelection() {
+      invariant(tileRef.current);
+
+      if (tileGotSelected) {
+        tileRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+      }
+    },
+    [tileGotSelected],
+  );
+
   function abortRename() {
     setKeyOfResourceToRename(undefined);
   }
 
-  const resourceIsSelected = !!selectedShownResources.find(
-    (resource) => resource.key === resourceForTile.key,
-  );
   const renameForResourceIsActive = keyOfResourceToRename === resourceForTile.key;
 
   return (
     <ResourceTileRoot
+      ref={tileRef}
       data-window-keydownhandlers-enabled="true"
       draggable={!renameForResourceIsActive}
       onDragStart={(e) => {
@@ -193,7 +212,7 @@ const ResourceTile: React.FC<ResourceTileProps> = ({ resourceForTile, idxOfResou
         })
       }
       onDoubleClick={() => openResource(explorerId, resourceForTile)}
-      styleProps={{ isSelectable: true, isSelected: resourceIsSelected }}
+      styleProps={{ isSelectable: true, isSelected: isResourceSelected }}
     >
       <StyledResourceIcon resource={resourceForTile} />
       <ResourceDetails>
