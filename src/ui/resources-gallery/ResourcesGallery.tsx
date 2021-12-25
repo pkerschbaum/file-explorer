@@ -25,6 +25,8 @@ import { ResourceIcon } from '@app/ui/resource-icon';
 import { ResourceRenameInput } from '@app/ui/resource-rename-input';
 import { usePrevious } from '@app/ui/utils/react.util';
 
+const TILE_HEIGHT = 200;
+
 export const ResourcesGallery: React.FC = () => {
   const galleryRootRef = React.useRef<HTMLDivElement>(null);
   const [countOfColumns, setCountOfColumns] = React.useState<number | undefined>();
@@ -153,7 +155,7 @@ const GalleryRoot = styled(Box)`
 
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  grid-auto-rows: 200px;
+  grid-auto-rows: ${TILE_HEIGHT}px;
   grid-gap: var(--spacing-3);
   overflow: auto;
 `;
@@ -214,7 +216,7 @@ const ResourceTile: React.FC<ResourceTileProps> = ({ resourceForTile, idxOfResou
       onDoubleClick={() => openResource(explorerId, resourceForTile)}
       styleProps={{ isSelectable: true, isSelected: isResourceSelected }}
     >
-      <StyledResourceIcon resource={resourceForTile} />
+      <StyledResourceIcon resource={resourceForTile} height={TILE_HEIGHT} />
       <ResourceDetails>
         {renameForResourceIsActive ? (
           <ResourceRenameInput

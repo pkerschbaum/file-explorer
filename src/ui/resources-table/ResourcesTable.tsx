@@ -310,7 +310,7 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
       <ResourceRowContent
         iconSlot={
           <ResourceIconContainer>
-            <ResourceIcon resource={resourceForRow} />
+            <ResourceIcon resource={resourceForRow} height={ICON_SIZE} />
           </ResourceIconContainer>
         }
         resourceNameSlot={

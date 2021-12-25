@@ -1,10 +1,13 @@
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import { IFileService } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 import { app, protocol } from 'electron';
 import FileType from 'file-type';
+import fs from 'fs';
 import mime from 'mime';
+import sharp from 'sharp';
+import invariant from 'tiny-invariant';
 
 import { check } from '@app/base/utils/assert.util';
+import { numbers } from '@app/base/utils/numbers.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import {
   NATIVE_FILE_ICON_PROTOCOL_SCHEME,
@@ -18,9 +21,9 @@ const DEFAULT_HEADERS = {
   'cache-control': 'max-age=3600', // cache for 1 hour
 };
 
-export function registerProtocols(fileService: IFileService): void {
-  protocol.registerBufferProtocol(THUMBNAIL_PROTOCOL_SCHEME, (request, callback) => {
-    void getThumbnail(request.url, fileService)
+export function registerProtocols(): void {
+  protocol.registerStreamProtocol(THUMBNAIL_PROTOCOL_SCHEME, (request, callback) => {
+    void getThumbnail(request.url)
       .then(({ data, mimeType }) => {
         callback({
           data,
@@ -47,28 +50,45 @@ export function registerProtocols(fileService: IFileService): void {
   });
 }
 
+type StreamResult = {
+  data: NodeJS.ReadableStream;
+  mimeType?: string;
+};
+
 type BufferResult = {
   data: Buffer;
   mimeType?: string;
 };
 
-async function getThumbnail(url: string, fileService: IFileService): Promise<BufferResult> {
-  const uri = URI.parse(
-    decodeURIComponent(url.substring(`${THUMBNAIL_PROTOCOL_SCHEME}:///`.length)),
-  );
+const THUMBNAIL_RESIZE_BLOCKLIST = ['image/svg+xml'];
+async function getThumbnail(url: string): Promise<StreamResult> {
+  const parsed = new URL(url);
+  // property "pathname" has a leading slash --> remove that (https://developer.mozilla.org/en-US/docs/Web/API/URL/pathname)
+  const path = parsed.pathname.substring(1);
+  const uri = URI.parse(decodeURIComponent(path));
+  const requestedHeight = parsed.searchParams.get('height');
+  const parsedHeight = numbers.convert(requestedHeight);
+  invariant(parsedHeight !== undefined);
 
-  const fileContent = await fileService.readFile(uri);
-  const fileContentBuffer = Buffer.from(fileContent.value.buffer);
-  const mimeTypeBasedOnContent = (await FileType.fromBuffer(fileContentBuffer))?.mime;
-
+  const mimeTypeBasedOnContent = (await FileType.fromFile(uri.fsPath))?.mime;
   const extension = uriHelper.extractExtension(uri);
   const mimeTypeBasedOnExtension = check.isNullishOrEmptyString(extension)
     ? undefined
     : mime.getType(extension);
+  const finalMimeType = mimeTypeBasedOnContent ?? mimeTypeBasedOnExtension ?? undefined;
+
+  let thumbnailStream;
+  if (finalMimeType === undefined || THUMBNAIL_RESIZE_BLOCKLIST.includes(finalMimeType)) {
+    thumbnailStream = fs.createReadStream(uri.fsPath);
+  } else {
+    thumbnailStream = fs
+      .createReadStream(uri.fsPath)
+      .pipe(sharp().resize({ height: parsedHeight }));
+  }
 
   return {
-    data: fileContentBuffer,
-    mimeType: mimeTypeBasedOnContent ?? mimeTypeBasedOnExtension ?? undefined,
+    data: thumbnailStream,
+    mimeType: finalMimeType,
   };
 }
 

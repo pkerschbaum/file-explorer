@@ -3,6 +3,7 @@ import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import mime from 'mime';
 
 import { check } from '@app/base/utils/assert.util';
+import { numbers } from '@app/base/utils/numbers.util';
 import {
   NATIVE_FILE_ICON_PROTOCOL_SCHEME,
   THUMBNAIL_PROTOCOL_SCHEME,
@@ -21,7 +22,7 @@ export const createNativeHost = () => {
         const fsPath = await window.privileged.app.getPath(args);
         return URI.file(fsPath);
       },
-      getThumbnailURLForResource: (resource) => {
+      getThumbnailURLForResource: (resource, height) => {
         if (check.isNullishOrEmptyString(resource.extension)) {
           return undefined;
         }
@@ -33,9 +34,13 @@ export const createNativeHost = () => {
         if (!isResourceQualifiedForThumbnail) {
           return undefined;
         } else {
-          return `${THUMBNAIL_PROTOCOL_SCHEME}:///${encodeURIComponent(
-            URI.from(resource.uri).toString(),
-          )}`;
+          const url = new URL(
+            `${THUMBNAIL_PROTOCOL_SCHEME}:///${encodeURIComponent(
+              URI.from(resource.uri).toString(),
+            )}`,
+          );
+          url.searchParams.set('height', numbers.toString(height));
+          return url.toString();
         }
       },
       getNativeIconURLForResource: (resource) => {

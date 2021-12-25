@@ -226,7 +226,7 @@ module.exports = {
           },
           {
             target: /\/src\/platform\/electron\/protocol\/electron-main\/app.ts$/,
-            allowedPatterns: ['file-type'],
+            allowedPatterns: ['file-type', 'fs', 'sharp'],
           },
           {
             target: /\/src\/platform\/.+/,

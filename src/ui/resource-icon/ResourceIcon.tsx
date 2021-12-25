@@ -12,11 +12,13 @@ import { useThemeResourceIconClasses } from '@app/ui/hooks/resources.hooks';
 
 type ResourceIconProps = {
   resource: ResourceForUI;
+  height: number;
   className?: string;
 };
 
-export const ResourceIcon: React.FC<ResourceIconProps> = ({ resource, className }) => {
-  const thumbnailUrl = getThumbnailURLForResource(resource);
+export const ResourceIcon: React.FC<ResourceIconProps> = ({ resource, height, className }) => {
+  const scaledHeight = Math.floor(height * window.devicePixelRatio);
+  const thumbnailUrl = getThumbnailURLForResource(resource, scaledHeight);
   const nativeIconUrl = getNativeIconURLForResource(resource);
   const themeIconCssClasses = useThemeResourceIconClasses(resource);
 
@@ -39,7 +41,7 @@ export const ResourceIcon: React.FC<ResourceIconProps> = ({ resource, className 
   );
 
   return (
-    <IconWrapper className={classes}>
+    <IconWrapper className={classes} styleProps={{ height }}>
       {thumbnailLoadStatus !== 'NO_URL_GIVEN' && (
         <img
           src={thumbnailUrl}
@@ -72,23 +74,27 @@ export const ResourceIcon: React.FC<ResourceIconProps> = ({ resource, className 
   );
 };
 
-const iconStyles = css`
+type StyleProps = {
+  height: number;
+};
+
+const iconStyles = css<{ styleProps: StyleProps }>`
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
   max-width: 100%;
-  height: 100%;
+  height: ${({ styleProps }) => styleProps.height}px;
   max-height: 100%;
 `;
 
-const IconWrapper = styled(Box)`
+const IconWrapper = styled(Box)<{ styleProps: StyleProps }>`
   ${iconStyles}
 
   &::before {
     ${iconStyles}
 
-    background-size: 100% 100%;
+    background-size: 100% ${({ styleProps }) => styleProps.height}px;
     background-repeat: no-repeat;
   }
 `;

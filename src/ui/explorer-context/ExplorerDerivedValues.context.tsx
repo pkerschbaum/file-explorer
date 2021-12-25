@@ -52,7 +52,7 @@ export const ExplorerDerivedValuesContextProvider: React.FC<
 
       const files = resources.filter((resource) => resource.resourceType === RESOURCE_TYPE.FILE);
       const thumbnailUrls = files
-        .map((file) => nativeHostRef.current.app.getThumbnailURLForResource(file))
+        .map((file) => nativeHostRef.current.app.getThumbnailURLForResource(file, 0))
         .filter(check.isNonEmptyString);
 
       /**

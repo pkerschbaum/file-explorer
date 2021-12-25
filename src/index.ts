@@ -23,7 +23,6 @@ import Store from 'electron-store';
 import invariant from 'tiny-invariant';
 
 import { config } from '@app/config';
-import { bootstrapDiskFileService } from '@app/platform/electron/electron-preload/bootstrap-disk-file-service';
 import { registerListeners as registerAppListeners } from '@app/platform/electron/ipc/electron-main/app';
 import { registerListeners as registerFileDragStartListeners } from '@app/platform/electron/ipc/electron-main/file-drag-start';
 import { registerListeners as registerPersistentStoreListeners } from '@app/platform/electron/ipc/electron-main/persistent-store';
@@ -87,7 +86,6 @@ protocol.registerSchemesAsPrivileged([
 const store = new Store();
 const activeTheme: AvailableTheme =
   (store.store as StorageState).userState?.preferences.activeTheme ?? defaultTheme;
-const fileService = bootstrapDiskFileService();
 app.on('ready', () => {
   async function bootstrap() {
     if (config.isDevEnviroment && !process.argv.includes('--noDevServer')) {
@@ -103,7 +101,7 @@ app.on('ready', () => {
     registerWindowListeners(mainWindowRef);
 
     // register custom protocols
-    registerAppProtocols(fileService);
+    registerAppProtocols();
 
     // create and show window
     mainWindowRef.current = createMainWindow();
