@@ -15,6 +15,7 @@ import { AnimatePresence } from 'framer-motion';
 import * as React from 'react';
 import styled from 'styled-components';
 
+import { functions } from '@app/base/utils/functions.util';
 import { Box } from '@app/ui/components-library/Box';
 import { useFramerMotionAnimations } from '@app/ui/components-library/DesignTokenContext';
 import { FocusScope } from '@app/ui/components-library/FocusScope';
@@ -51,13 +52,26 @@ export function usePopover<TriggerHTMLElement extends HTMLElement>(
     props.triggerRef,
   );
 
-  const { overlayProps: positionProps } = useOverlayPosition({
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const { overlayProps: positionProps, updatePosition } = useOverlayPosition({
     targetRef: props.triggerRef,
     overlayRef: popoverRef,
     placement: props.popover?.placement ?? 'bottom',
     offset: 0,
     isOpen: state.isOpen,
   });
+
+  React.useEffect(
+    function updatePositionOnTargetMovement() {
+      if (props.triggerRef.current && state.isOpen) {
+        const throttledUpdatePosition = functions.throttle(updatePosition, 20);
+        const mutationObserver = new MutationObserver(throttledUpdatePosition);
+        mutationObserver.observe(props.triggerRef.current, { attributes: true });
+        return () => mutationObserver.disconnect();
+      }
+    },
+    [props.triggerRef, state.isOpen, updatePosition],
+  );
 
   return {
     triggerProps: triggerProps as AriaButtonProps<any>,
