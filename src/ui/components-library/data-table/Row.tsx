@@ -36,22 +36,22 @@ type StyleProps = RowProps;
 
 const RowRoot = styled.tr<{ styleProps: StyleProps }>`
   ${({ styleProps }) =>
-    styleProps.isSelected
-      ? css`
-          background-color: var(--color-bg-2);
-          &&:hover {
-            background-color: var(--color-bg-2);
-          }
-        `
-      : css`
-          background-color: var(--color-bg-0);
-        `};
-
-  ${({ styleProps }) =>
     styleProps.isSelectable &&
     css`
       &:hover {
         background-color: var(--color-bg-1);
       }
     `}
+
+  ${({ styleProps }) =>
+    styleProps.isSelected
+      ? css`
+          background-color: var(--color-bg-2);
+          &:hover {
+            background-color: var(--color-bg-2);
+          }
+        `
+      : css`
+          background-color: var(--color-bg-0);
+        `};
 `;

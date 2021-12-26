@@ -3,7 +3,7 @@ import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { screen } from '@testing-library/react';
 
 import { uriHelper } from '@app/base/utils/uri-helper';
-import { Resource } from '@app/domain/types';
+import { ResourceStat } from '@app/domain/types';
 import { QUERY_KEYS } from '@app/global-cache/query-keys';
 import { createStoreInstance } from '@app/global-state/store';
 import { fileSystemRef, queryClientRef } from '@app/operations/global-modules';
@@ -30,7 +30,7 @@ describe('Refresh resources of currently open directories if any change occurs i
       }),
     );
     expect(cacheEntriesForCwd).toHaveLength(1);
-    const initialCachedResourcesOfCwd = cacheEntriesForCwd[0].state.data as Resource[];
+    const initialCachedResourcesOfCwd = cacheEntriesForCwd[0].state.data as ResourceStat[];
 
     await fileSystemRef.current.createFolder(
       URI.parse(`${Schemas.inMemory}:///home/testdir/name-of-new-folder`),
@@ -46,7 +46,7 @@ describe('Refresh resources of currently open directories if any change occurs i
       }),
     );
     expect(cacheEntriesForCwd).toHaveLength(1);
-    const cachedResourcesOfCwd = cacheEntriesForCwd[0].state.data as Resource[];
+    const cachedResourcesOfCwd = cacheEntriesForCwd[0].state.data as ResourceStat[];
     expect(cachedResourcesOfCwd).toHaveLength(initialCachedResourcesOfCwd.length + 1);
   });
 });

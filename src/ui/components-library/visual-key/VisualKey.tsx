@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { assertThat } from '@app/base/utils/assert.util';
+import { assertIsUnreachable } from '@app/base/utils/assert.util';
 import { Box } from '@app/ui/components-library/Box';
 import { DESIGN_TOKENS } from '@app/ui/components-library/DesignTokenContext';
 
@@ -59,7 +59,7 @@ const VisualKeyRoot = styled(Box)<{ styleProps: StyleProps }>`
         return '3px';
       }
     } else {
-      assertThat.isUnreachable(styleProps);
+      assertIsUnreachable(styleProps);
     }
   }};
   padding-left: ${({ styleProps }) => {
@@ -72,7 +72,7 @@ const VisualKeyRoot = styled(Box)<{ styleProps: StyleProps }>`
         return '2px';
       }
     } else {
-      assertThat.isUnreachable(styleProps);
+      assertIsUnreachable(styleProps);
     }
   }};
   border-bottom: 3px solid rgba(0, 0, 0, 0.2);
@@ -94,10 +94,10 @@ const VisualKeyChild = styled(Box)<{ styleProps: StyleProps }>`
       } else if (styleProps.contentSize === 'sm') {
         return '70%';
       } else {
-        assertThat.isUnreachable(styleProps.contentSize);
+        assertIsUnreachable(styleProps.contentSize);
       }
     } else {
-      assertThat.isUnreachable(styleProps);
+      assertIsUnreachable(styleProps);
     }
   }};
   line-height: 1;

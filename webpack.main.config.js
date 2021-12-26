@@ -1,4 +1,5 @@
 const path = require('path');
+const plugins = require('./webpack.main.plugins');
 
 module.exports = {
   /**
@@ -10,6 +11,7 @@ module.exports = {
   module: {
     rules: require('./webpack.rules'),
   },
+  plugins,
   resolve: {
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
     alias: {
@@ -17,5 +19,14 @@ module.exports = {
       '@app-test': path.resolve(__dirname, './test'),
       '@app-storybook': path.resolve(__dirname, './storybook'),
     },
+  },
+  /**
+   * "sharp" does not get packaged correctly in this electron/electron-forge setup.
+   * That's why we define it as an external dependency (and copy the node module manually to the
+   * output folder, see webpack.main.plugins.js)
+   * @see https://github.com/lovell/sharp/issues/1951
+   */
+  externals: {
+    sharp: 'commonjs sharp',
   },
 };

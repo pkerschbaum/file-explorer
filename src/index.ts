@@ -1,5 +1,24 @@
+/* eslint-disable import/first, import/no-duplicates, import/order -- we want to register an handler for uncaught exceptions / unhandled rejections as soon as possible */
+import { app, dialog } from 'electron';
+import { serializeError } from 'serialize-error';
+
+function handleError(error: unknown) {
+  dialog.showErrorBox(
+    'Error',
+    `Unexpected error occurred. Application will shut down.\n\nError:\n${JSON.stringify(
+      serializeError(error),
+      null,
+      2,
+    )}`,
+  );
+  app.quit();
+}
+
+process.on('uncaughtException', handleError);
+process.on('unhandledRejection', handleError);
+
 import { isWindows } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/platform';
-import { app, BrowserWindow, protocol } from 'electron';
+import { BrowserWindow, protocol } from 'electron';
 import Store from 'electron-store';
 import invariant from 'tiny-invariant';
 
@@ -9,7 +28,10 @@ import { registerListeners as registerFileDragStartListeners } from '@app/platfo
 import { registerListeners as registerPersistentStoreListeners } from '@app/platform/electron/ipc/electron-main/persistent-store';
 import { registerListeners as registerShellListeners } from '@app/platform/electron/ipc/electron-main/shell';
 import { registerListeners as registerWindowListeners } from '@app/platform/electron/ipc/electron-main/window';
-import { NATIVE_FILE_ICON_PROTOCOL_SCHEME } from '@app/platform/electron/protocol/common/app';
+import {
+  NATIVE_FILE_ICON_PROTOCOL_SCHEME,
+  THUMBNAIL_PROTOCOL_SCHEME,
+} from '@app/platform/electron/protocol/common/app';
 import { registerProtocols as registerAppProtocols } from '@app/platform/electron/protocol/electron-main/app';
 import type { StorageState } from '@app/platform/persistent-storage.types';
 import { AvailableTheme, defaultTheme, THEMES } from '@app/ui/components-library';
@@ -48,8 +70,12 @@ if (!config.isDevEnviroment) {
   });
 }
 
-// Register native-file-icon protocol as privileged
+// Register some protocols as privileged
 protocol.registerSchemesAsPrivileged([
+  {
+    scheme: THUMBNAIL_PROTOCOL_SCHEME,
+    privileges: { bypassCSP: true },
+  },
   {
     scheme: NATIVE_FILE_ICON_PROTOCOL_SCHEME,
     privileges: { bypassCSP: true },

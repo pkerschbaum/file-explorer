@@ -2,6 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import invariant from 'tiny-invariant';
 
+import { assertIsUnreachable } from '@app/base/utils/assert.util';
 import { formatter } from '@app/base/utils/formatter.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { useDraftPasteState } from '@app/global-state/slices/processes.hooks';
@@ -20,13 +21,13 @@ import {
   TextField,
   Tooltip,
   useTooltip,
+  ViewComfyIcon,
 } from '@app/ui/components-library';
 import { KEY } from '@app/ui/constants';
 import {
   useFilterInput,
   useSelectedShownResources,
   useSetFilterInput,
-  useChangeSelectionByKeyboard,
   useCopySelectedResources,
   useCreateFolderInExplorer,
   useCutSelectedResources,
@@ -35,8 +36,12 @@ import {
   useScheduleDeleteSelectedResources,
   useTriggerRenameForSelectedResources,
   useRegisterExplorerShortcuts,
+  useSetActiveResourcesView,
 } from '@app/ui/explorer-context';
-import { DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED } from '@app/ui/GlobalShortcutsContext';
+import {
+  DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED,
+  ShortcutPriority,
+} from '@app/ui/GlobalShortcutsContext';
 import { useClipboardResources } from '@app/ui/hooks/clipboard-resources.hooks';
 
 export const ActionsBar: React.FC = () => {
@@ -44,6 +49,7 @@ export const ActionsBar: React.FC = () => {
 
   const selectedShownResources = useSelectedShownResources();
 
+  const setActiveResourcesView = useSetActiveResourcesView();
   const openSelectedResources = useOpenSelectedResources();
   const copySelectedResources = useCopySelectedResources();
   const cutSelectedResources = useCutSelectedResources();
@@ -51,8 +57,8 @@ export const ActionsBar: React.FC = () => {
   const triggerRenameForSelectedResources = useTriggerRenameForSelectedResources();
   const scheduleDeleteSelectedResources = useScheduleDeleteSelectedResources();
   const createFolderInExplorer = useCreateFolderInExplorer();
-  const changeSelectionByKeyboard = useChangeSelectionByKeyboard();
 
+  const setActiveResourcesViewButtonHandleRef = React.useRef<ButtonHandle>(null);
   const openButtonHandleRef = React.useRef<ButtonHandle>(null);
   const copyButtonHandleRef = React.useRef<ButtonHandle>(null);
   const cutButtonHandleRef = React.useRef<ButtonHandle>(null);
@@ -64,6 +70,21 @@ export const ActionsBar: React.FC = () => {
   const filterInputRef = React.useRef<HTMLInputElement>(null);
 
   const registerShortcutsResult = useRegisterExplorerShortcuts({
+    setActiveResourcesViewShortcut: {
+      keybindings: [
+        {
+          key: KEY.T,
+          modifiers: {
+            ctrl: 'SET',
+            alt: 'NOT_SET',
+          },
+        },
+      ],
+      handler: () => {
+        invariant(setActiveResourcesViewButtonHandleRef.current);
+        setActiveResourcesViewButtonHandleRef.current.triggerSyntheticPress();
+      },
+    },
     openShortcut: {
       keybindings: [
         {
@@ -146,7 +167,7 @@ export const ActionsBar: React.FC = () => {
         {
           key: KEY.DELETE,
           modifiers: {
-            ctrl: 'NOT_SET',
+            ctrl: 'SET',
             alt: 'NOT_SET',
           },
         },
@@ -173,58 +194,12 @@ export const ActionsBar: React.FC = () => {
         triggerCreateNewFolderButtonHandleRef.current.triggerSyntheticPress();
       },
     },
-    changeSelectionByKeyboardShortcut: {
-      keybindings: [
-        {
-          key: KEY.ARROW_UP,
-          modifiers: {
-            ctrl: 'NOT_SET',
-            alt: 'NOT_SET',
-          },
-        },
-        {
-          key: KEY.ARROW_DOWN,
-          modifiers: {
-            ctrl: 'NOT_SET',
-            alt: 'NOT_SET',
-          },
-        },
-        {
-          key: KEY.A,
-          modifiers: {
-            ctrl: 'SET',
-            alt: 'NOT_SET',
-          },
-        },
-        {
-          key: KEY.PAGE_UP,
-          modifiers: {
-            ctrl: 'NOT_SET',
-            alt: 'NOT_SET',
-          },
-        },
-        {
-          key: KEY.PAGE_DOWN,
-          modifiers: {
-            ctrl: 'NOT_SET',
-            alt: 'NOT_SET',
-          },
-        },
-      ],
-      handler: (e) => changeSelectionByKeyboard(e),
-    },
     focusFilterInputShortcut: {
-      condition: (e) =>
-        !e.altKey &&
-        !e.ctrlKey &&
-        !e.shiftKey &&
-        e.key !== KEY.TAB &&
-        e.key !== KEY.ESC &&
-        filterInputRef.current !== null,
+      priority: ShortcutPriority.LOW,
+      condition: (e) => !e.altKey && !e.ctrlKey && !e.shiftKey,
       handler: () => {
-        if (filterInputRef.current !== null) {
-          filterInputRef.current.focus();
-        }
+        invariant(filterInputRef.current);
+        filterInputRef.current.focus();
       },
     },
   });
@@ -313,6 +288,25 @@ export const ActionsBar: React.FC = () => {
           buttonEndIcon={registerShortcutsResult.triggerCreateNewFolderShortcut?.icon}
           onSubmit={createFolderInExplorer}
         />
+        <Button
+          handleRef={setActiveResourcesViewButtonHandleRef}
+          onPress={() =>
+            setActiveResourcesView((currentValue) => {
+              if (currentValue === undefined || currentValue === 'table') {
+                return 'gallery';
+              } else if (currentValue === 'gallery') {
+                return 'table';
+              } else {
+                assertIsUnreachable(currentValue);
+              }
+            })
+          }
+          startIcon={<ViewComfyIcon />}
+          endIcon={registerShortcutsResult.setActiveResourcesViewShortcut?.icon}
+          enableLayoutAnimation
+        >
+          Toggle View
+        </Button>
       </ActionBarButtons>
     </ActionBarContainer>
   );

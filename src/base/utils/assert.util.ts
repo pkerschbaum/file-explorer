@@ -1,11 +1,7 @@
 import { ObjectLiteral } from '@app/base/utils/types.util';
 
-export const assertThat = {
-  isUnreachable: assertIsUnreachable,
-};
-
 // https://www.typescriptlang.org/docs/handbook/2/narrowing.html#exhaustiveness-checking
-export function assertIsUnreachable(value: never): never {
+export function assertIsUnreachable(value?: never): never {
   // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
   throw new Error(`should be unreachable, but got here. value=${value}`);
 }

@@ -136,18 +136,18 @@ export function createSelectableContext<ContextValue>(name: string) {
 /**
  * https://epicreact.dev/the-latest-ref-pattern-in-react/
  */
-export function useLatestCallbackRef<T>(callback: T) {
-  const callbackRef = React.useRef<T>(callback);
+function useLatestValueRef<T>(value: T) {
+  const valueRef = React.useRef<T>(value);
 
   React.useLayoutEffect(() => {
-    callbackRef.current = callback;
+    valueRef.current = value;
   });
 
-  return callbackRef;
+  return valueRef;
 }
 
 export function useRunCallbackOnUnmount(callback: FunctionType<[], void>) {
-  const latestCallbackRef = useLatestCallbackRef(callback);
+  const latestCallbackRef = useLatestValueRef(callback);
   React.useEffect(() => {
     const latestCallback = latestCallbackRef.current;
     return () => latestCallback();

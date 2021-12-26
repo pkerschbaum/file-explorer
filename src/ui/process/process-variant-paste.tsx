@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-import { assertThat } from '@app/base/utils/assert.util';
+import { assertIsUnreachable } from '@app/base/utils/assert.util';
 import { byteSize } from '@app/base/utils/byte-size.util';
 import { formatter } from '@app/base/utils/formatter.util';
 import { numbers } from '@app/base/utils/numbers.util';
@@ -118,7 +118,7 @@ export function computeProcessCardPropsFromPasteProcess(
       break;
     }
     default: {
-      assertThat.isUnreachable(process);
+      assertIsUnreachable(process);
     }
   }
 
@@ -143,7 +143,7 @@ export function computeProcessCardPropsFromPasteProcess(
         ) : !process.pasteShouldMove ? (
           <ContentCopyOutlinedIcon />
         ) : (
-          assertThat.isUnreachable(process.pasteShouldMove)
+          assertIsUnreachable(process.pasteShouldMove)
         )}
         <DoubleArrowIcon />
       </>
@@ -159,14 +159,8 @@ export function computeProcessCardPropsFromPasteProcess(
         <ResourcesList>
           <Box>Files/Folders:</Box>
           {process.sourceUris.slice(0, 2).map((uri) => {
-            const { resourceName, extension } = uriHelper.extractNameAndExtension(uri);
-            const sourceResourceLabel = formatter.resourceBasename({
-              name: resourceName,
-              extension,
-            });
-            return (
-              <ResourceBox key={uriHelper.getComparisonKey(uri)}>{sourceResourceLabel}</ResourceBox>
-            );
+            const basename = uriHelper.extractBasename(uri);
+            return <ResourceBox key={uriHelper.getComparisonKey(uri)}>{basename}</ResourceBox>;
           })}
           {process.sourceUris.length > 2 && (
             <ResourceBox>+ {process.sourceUris.length - 2} files/folders</ResourceBox>

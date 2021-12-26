@@ -2,7 +2,7 @@ import * as resources from '@pkerschbaum/code-oss-file-service/out/vs/base/commo
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 
 import { formatter } from '@app/base/utils/formatter.util';
-import { Resource, RESOURCE_TYPE } from '@app/domain/types';
+import { ResourceStat, RESOURCE_TYPE } from '@app/domain/types';
 import {
   isResourcesOfDirectoryQueryKey,
   RESOURCES_OF_DIRECTORY_KEY_PREFIX,
@@ -38,7 +38,7 @@ function digestCacheNotifyEvent(cacheNotifyEvent: QueryCacheNotifyEvent) {
   ) {
     const queryKey = cacheNotifyEvent.query.queryKey;
     const directoryUri = URI.parse(queryKey[1].directoryId);
-    const queryData: Resource[] = cacheNotifyEvent.query.state.data;
+    const queryData: ResourceStat[] = cacheNotifyEvent.query.state.data;
     logger.group('RESOURCES_OF_DIRECTORY_QUERY_WITH_OBSERVERS_WAS_UPDATED');
 
     logger.debug(
@@ -58,7 +58,7 @@ function digestCacheNotifyEvent(cacheNotifyEvent: QueryCacheNotifyEvent) {
   }
 }
 
-async function doPreloadResources(directoryUri: URI, childrenOfDirectory: Resource[]) {
+async function doPreloadResources(directoryUri: URI, childrenOfDirectory: ResourceStat[]) {
   const parentDirectoryUri = URI.joinPath(directoryUri, '..');
   const subDirectoriesUris = childrenOfDirectory
     .filter((resource) => resource.resourceType === RESOURCE_TYPE.DIRECTORY)

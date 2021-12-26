@@ -78,7 +78,7 @@ module.exports = {
         ],
         pathGroupsExcludedImportTypes: ['builtin'],
         alphabetize: { order: 'asc', caseInsensitive: true },
-        'newlines-between': 'always-and-inside-groups',
+        'newlines-between': 'always',
       },
     ],
     'jsx-a11y/no-autofocus': 'off',
@@ -225,6 +225,10 @@ module.exports = {
             allowedPatterns: ['@testing-library/react', '@testing-library/user-event'],
           },
           {
+            target: /\/src\/platform\/electron\/protocol\/electron-main\/app.ts$/,
+            allowedPatterns: ['file-type', 'fs', 'sharp'],
+          },
+          {
             target: /\/src\/platform\/.+/,
             allowedPatterns: ['electron', 'electron-store'],
           },
@@ -266,6 +270,8 @@ module.exports = {
             target: /.+/,
             allowedPatterns: [
               'dayjs',
+              'mime',
+              'serialize-error',
               'tiny-invariant',
               /^@app.+/,
               /^@pkerschbaum\/code-oss-file-service/,

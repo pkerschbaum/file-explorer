@@ -7,7 +7,7 @@ import {
   ExplorerPanel,
   EXPLORER_ACTIONSBAR_GRID_AREA,
   EXPLORER_CWDBREADCRUMBS_GRID_AREA,
-  EXPLORER_RESOURCESTABLE_GRID_AREA,
+  EXPLORER_RESOURCESVIEW_GRID_AREA,
 } from '@app/ui/explorer-panel/ExplorerPanel';
 import { createQueryClient, Globals } from '@app/ui/Globals';
 
@@ -50,7 +50,7 @@ const ExplorerPanelGrid = styled(Box)`
   grid-template-areas:
     '${EXPLORER_CWDBREADCRUMBS_GRID_AREA}'
     '${EXPLORER_ACTIONSBAR_GRID_AREA}'
-    '${EXPLORER_RESOURCESTABLE_GRID_AREA}';
+    '${EXPLORER_RESOURCESVIEW_GRID_AREA}';
 `;
 
 export const DefaultCase = Template.bind({});

@@ -1,4 +1,4 @@
-import { assertThat } from '@app/base/utils/assert.util';
+import { assertIsUnreachable } from '@app/base/utils/assert.util';
 
 export const safe_process = (function safe_readVariable() {
   try {
@@ -40,4 +40,4 @@ export const typeOfActiveElectronProcess: ELECTRON_PROCESS_TYPE =
     ? ELECTRON_PROCESS_TYPE.MAIN
     : safe_process.type === 'worker'
     ? ELECTRON_PROCESS_TYPE.WORKER
-    : assertThat.isUnreachable(safe_process.type);
+    : assertIsUnreachable(safe_process.type);

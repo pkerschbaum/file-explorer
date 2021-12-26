@@ -27,6 +27,7 @@ import MuiKeyboardTabOutlinedIcon from '@mui/icons-material/KeyboardTabOutlined'
 import MuiLaunchOutlinedIcon from '@mui/icons-material/LaunchOutlined';
 import MuiMinimizeOutlinedIcon from '@mui/icons-material/MinimizeOutlined';
 import MuiSettingsIcon from '@mui/icons-material/Settings';
+import MuiViewComfyIcon from '@mui/icons-material/ViewComfy';
 import { motion } from 'framer-motion';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
@@ -166,4 +167,7 @@ export const RotatingAutorenewOutlinedIcon = styled(AutorenewOutlinedIcon)`
 `;
 export const SettingsIcon = styled((delegatedProps: Omit<IconProps, 'Component'>) => {
   return <Icon Component={MuiSettingsIcon} {...delegatedProps} />;
+})``;
+export const ViewComfyIcon = styled((delegatedProps: Omit<IconProps, 'Component'>) => {
+  return <Icon Component={MuiViewComfyIcon} {...delegatedProps} />;
 })``;

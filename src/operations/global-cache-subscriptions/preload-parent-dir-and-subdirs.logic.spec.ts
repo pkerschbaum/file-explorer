@@ -5,7 +5,7 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { uriHelper } from '@app/base/utils/uri-helper';
-import { Resource } from '@app/domain/types';
+import { ResourceStat } from '@app/domain/types';
 import { QUERY_KEYS } from '@app/global-cache/query-keys';
 import { createStoreInstance } from '@app/global-state/store';
 import { queryClientRef } from '@app/operations/global-modules';
@@ -30,7 +30,8 @@ describe('Preload of resources of parent directory and sub directories [logic]',
       }),
     );
     expect(cacheEntriesForParentDir).toHaveLength(1);
-    const cachedResourcesOfParentDirectory = cacheEntriesForParentDir[0].state.data as Resource[];
+    const cachedResourcesOfParentDirectory = cacheEntriesForParentDir[0].state
+      .data as ResourceStat[];
     expect(cachedResourcesOfParentDirectory).toHaveLength(1);
     expect(
       resources.isEqual(
@@ -78,7 +79,7 @@ describe('Preload of resources of parent directory and sub directories [logic]',
       );
     expect(cacheEntriesForSubDirLevel2AfterDirectorySwitch).toHaveLength(1);
     const cachedResourcesOfSubDirLevel2 = cacheEntriesForSubDirLevel2AfterDirectorySwitch[0].state
-      .data as Resource[];
+      .data as ResourceStat[];
     expect(cachedResourcesOfSubDirLevel2).toHaveLength(1);
     expect(
       resources.isEqual(

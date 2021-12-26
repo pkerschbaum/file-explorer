@@ -1,10 +1,12 @@
 import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 
+import { check } from '@app/base/utils/assert.util';
 import { byteSize, ByteUnit } from '@app/base/utils/byte-size.util';
 import { numbers } from '@app/base/utils/numbers.util';
 import { i18n } from '@app/domain/i18n';
+import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
 
-export const formatter = { bytes, date, resourceBasename, resourcePath };
+export const formatter = { bytes, date, resourceExtension, resourcePath };
 
 function bytes(numberOfBytes: number, options?: { unit: ByteUnit }): string {
   let unitToUse = options?.unit;
@@ -34,12 +36,15 @@ function date(unixTs: number): string {
   }).format(unixTs);
 }
 
-function resourceBasename(resource: { name: string; extension?: string }): string {
-  if (resource.extension === undefined) {
-    return resource.name;
+function resourceExtension(resource: Pick<ResourceForUI, 'extension' | 'resourceType'>): string {
+  if (
+    resource.resourceType === RESOURCE_TYPE.DIRECTORY ||
+    check.isNullishOrEmptyString(resource.extension)
+  ) {
+    return '';
   }
 
-  return `${resource.name}${resource.extension}`;
+  return resource.extension.substring(1).toUpperCase();
 }
 
 function resourcePath(resource: UriComponents): string {

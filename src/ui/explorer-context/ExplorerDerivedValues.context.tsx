@@ -3,13 +3,17 @@ import * as React from 'react';
 import { arrays } from '@app/base/utils/arrays.util';
 import { check } from '@app/base/utils/assert.util';
 import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
-import type {
+import { isResourceQualifiedForThumbnail } from '@app/operations/app.operations';
+import { useSetActiveResourcesView } from '@app/ui/explorer-context';
+import {
   ExplorerContextProviderProps,
   ExplorerState,
-  ExplorerStateUpdateFunctions,
+  useSetKeysOfSelectedResources,
 } from '@app/ui/explorer-context/ExplorerState.context';
 import { useEnrichResourcesWithTags, useResourcesForUI } from '@app/ui/hooks/resources.hooks';
 import { createSelectableContext, usePrevious } from '@app/ui/utils/react.util';
+
+const USE_GALLERY_VIEW_PERCENTAGE = 0.75;
 
 type ExplorerDerivedValuesContext = {
   explorerId: string;
@@ -26,13 +30,46 @@ const DerivedValuesContextProvider = selectableContext.Provider;
 
 type ExplorerDerivedValuesContextProviderProps = ExplorerContextProviderProps & {
   explorerState: ExplorerState;
-  setKeysOfSelectedResources: ExplorerStateUpdateFunctions['setKeysOfSelectedResources'];
 };
 
 export const ExplorerDerivedValuesContextProvider: React.FC<
   ExplorerDerivedValuesContextProviderProps
-> = ({ explorerState, setKeysOfSelectedResources, explorerId, isActiveExplorer, children }) => {
+> = ({ explorerState, explorerId, isActiveExplorer, children }) => {
+  const setKeysOfSelectedResources = useSetKeysOfSelectedResources();
+  const setActiveResourcesView = useSetActiveResourcesView();
+
   const { resources, dataAvailable } = useResourcesForUI(explorerId);
+
+  React.useEffect(
+    function setInitialResourcesViewAfterResourcesGotLoaded() {
+      if (explorerState.activeResourcesView !== undefined) {
+        return;
+      }
+
+      if (!dataAvailable) {
+        return;
+      }
+
+      const files = resources.filter((resource) => resource.resourceType === RESOURCE_TYPE.FILE);
+      const filesQualifiedForThumbnails = files.filter((file) =>
+        isResourceQualifiedForThumbnail(file),
+      );
+
+      /**
+       * If enough files can get thumbnails, boot into "gallery" view.
+       * The user can toggle the view afterwards
+       */
+      if (
+        files.length > 0 &&
+        filesQualifiedForThumbnails.length / files.length >= USE_GALLERY_VIEW_PERCENTAGE
+      ) {
+        setActiveResourcesView('gallery');
+      } else {
+        setActiveResourcesView('table');
+      }
+    },
+    [dataAvailable, explorerState.activeResourcesView, resources, setActiveResourcesView],
+  );
 
   const resourcesWithTags = useEnrichResourcesWithTags(resources);
 
@@ -49,9 +86,9 @@ export const ExplorerDerivedValuesContextProvider: React.FC<
       result = arrays
         .wrap(resourcesWithTags)
         .stableSort((a, b) => {
-          if (a.name.toLocaleLowerCase() < b.name.toLocaleLowerCase()) {
+          if (a.basename.toLocaleLowerCase() < b.basename.toLocaleLowerCase()) {
             return -1;
-          } else if (a.name.toLocaleLowerCase() > b.name.toLocaleLowerCase()) {
+          } else if (a.basename.toLocaleLowerCase() > b.basename.toLocaleLowerCase()) {
             return 1;
           }
           return 0;
@@ -72,7 +109,7 @@ export const ExplorerDerivedValuesContextProvider: React.FC<
       result = arrays
         .wrap(resourcesWithTags)
         .matchSort(explorerState.filterInput, {
-          keys: [(resource) => resource.name],
+          keys: [(resource) => resource.basename],
         })
         .getValue();
     }

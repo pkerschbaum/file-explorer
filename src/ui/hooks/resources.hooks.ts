@@ -4,7 +4,7 @@ import * as React from 'react';
 
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { config } from '@app/config';
-import { Resource, ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
+import { ResourceStat, ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
 import { useResourceIconClasses } from '@app/global-cache/resource-icons';
 import { useResources } from '@app/global-cache/resources';
 import { useCwd } from '@app/global-state/slices/explorers.hooks';
@@ -35,7 +35,7 @@ export const useResourcesForUI = (explorerId: string): ResourcesLoadingResult =>
   );
 
   let dataAvailable: boolean;
-  let resourcesToUse: Resource[];
+  let resourcesToUse: ResourceStat[];
   if (resourcesQueryWithMetadataData !== undefined) {
     dataAvailable = true;
     resourcesToUse = resourcesQueryWithMetadataData;
@@ -50,13 +50,14 @@ export const useResourcesForUI = (explorerId: string): ResourcesLoadingResult =>
 
   const resourcesForUI = React.useMemo(
     () =>
-      resourcesToUse.map((resources) => {
-        const { resourceName, extension } = uriHelper.extractNameAndExtension(resources.uri);
+      resourcesToUse.map((resource) => {
+        const basename = uriHelper.extractBasename(resource.uri);
+        const extension = uriHelper.extractExtension(resource.uri);
 
         const resourceForUI: ResourceForUI = {
-          ...resources,
+          ...resource,
+          basename,
           extension,
-          name: resourceName,
           tags: [],
         };
         return resourceForUI;

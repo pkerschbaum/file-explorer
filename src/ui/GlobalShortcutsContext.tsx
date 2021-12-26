@@ -44,6 +44,8 @@ type Shortcut = {
   keybindings?: Keybinding[];
   condition?: (e: WindowEventMap['keydown']) => boolean;
   handler: (e: WindowEventMap['keydown']) => void;
+  priority?: ShortcutPriority;
+  enableForRepeatedKeyboardEvent?: boolean;
 };
 type Keybinding = {
   key: KEY;
@@ -53,6 +55,17 @@ type Modifiers = {
   ctrl: 'SET' | 'NOT_SET';
   alt: 'SET' | 'NOT_SET';
 };
+export enum ShortcutPriority {
+  HIGH = 'HIGH',
+  BASELINE = 'BASELINE',
+  LOW = 'LOW',
+}
+const ShortcutPriorityOrdered = [
+  ShortcutPriority.HIGH,
+  ShortcutPriority.BASELINE,
+  ShortcutPriority.LOW,
+];
+
 type AddGlobalShortcuts = (shortcuts: Shortcut[]) => DisposeShortcuts;
 type DisposeShortcuts = () => void;
 
@@ -164,7 +177,21 @@ export const GlobalShortcutsContextProvider: React.FC<GlobalShortcutsContextProv
         };
 
         let matchingShortcut: Shortcut | undefined;
-        const registeredShortcuts = Array.from(shortcutsMapRef.current.values()).flat();
+        let registeredShortcuts = Array.from(shortcutsMapRef.current.values()).flat();
+        if (e.repeat) {
+          registeredShortcuts = registeredShortcuts.filter(
+            (shortcut) => shortcut.enableForRepeatedKeyboardEvent,
+          );
+        }
+        registeredShortcuts.sort(function sortByPriority(a, b) {
+          const priorityA = a.priority ?? ShortcutPriority.BASELINE;
+          const priorityB = b.priority ?? ShortcutPriority.BASELINE;
+
+          return (
+            ShortcutPriorityOrdered.indexOf(priorityA) - ShortcutPriorityOrdered.indexOf(priorityB)
+          );
+        });
+
         for (const shortcut of registeredShortcuts) {
           let matches = true;
 
@@ -249,7 +276,11 @@ function shouldEventGetProcessed(
   e: WindowEventMap['keydown'] | WindowEventMap['keyup'],
   isFocusSomewhereVisible: boolean,
 ) {
-  return e.target instanceof HTMLElement && !e.repeat && !isFocusSomewhereVisible;
+  return e.target instanceof HTMLElement && !isFocusSomewhereVisible && !isReservedKey(e.key);
+}
+
+function isReservedKey(key: string): boolean {
+  return key === KEY.TAB || key === KEY.ESC;
 }
 
 export type RegisterShortcutsResultMap<ActualShortcutMap extends ShortcutMap> = {

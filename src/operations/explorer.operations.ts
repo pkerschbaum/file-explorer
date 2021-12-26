@@ -12,7 +12,7 @@ import { CustomError } from '@app/base/custom-error';
 import { check } from '@app/base/utils/assert.util';
 import { formatter } from '@app/base/utils/formatter.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
-import { PASTE_PROCESS_STATUS } from '@app/domain/types';
+import { PASTE_PROCESS_STATUS, ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
 import { refreshResourcesOfDirectory } from '@app/global-cache/resources';
 import { actions as explorerActions } from '@app/global-state/slices/explorers.slice';
 import { actions as processesActions } from '@app/global-state/slices/processes.slice';
@@ -23,10 +23,18 @@ import {
   nativeHostRef,
   storeRef,
 } from '@app/operations/global-modules';
-import { executeCopyOrMove, resolveDeep } from '@app/operations/resource.operations';
+import { executeCopyOrMove, openFiles, resolveDeep } from '@app/operations/resource.operations';
 
 const UPDATE_INTERVAL_MS = 500;
 const logger = createLogger('explorer.hooks');
+
+export async function openResource(explorerId: string, resource: ResourceForUI) {
+  if (resource.resourceType === RESOURCE_TYPE.DIRECTORY) {
+    await changeDirectory(explorerId, URI.from(resource.uri));
+  } else {
+    await openFiles([resource.uri]);
+  }
+}
 
 export async function changeDirectory(explorerId: string, newDir: URI) {
   const stats = await fileSystemRef.current.resolve(newDir);

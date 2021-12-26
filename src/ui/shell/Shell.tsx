@@ -8,7 +8,7 @@ import {
   ExplorerPanel,
   EXPLORER_ACTIONSBAR_GRID_AREA,
   EXPLORER_CWDBREADCRUMBS_GRID_AREA,
-  EXPLORER_RESOURCESTABLE_GRID_AREA,
+  EXPLORER_RESOURCESVIEW_GRID_AREA,
 } from '@app/ui/explorer-panel/ExplorerPanel';
 import { ROOTCONTAINER_PADDING_FACTOR } from '@app/ui/shell/constants';
 import { ProcessesArea } from '@app/ui/shell/ProcessesArea';
@@ -69,7 +69,7 @@ const CUSTOM_TITLE_BAR_GRID_CONFIGURATION = css<{ userPreferencesSidebarOpen: bo
     'shell-tabs-and-processes ${EXPLORER_ACTIONSBAR_GRID_AREA} ${USER_PREFERENCES_BUTTON_GRID_AREA} ${({
       userPreferencesSidebarOpen,
     }) => userPreferencesSidebarOpen && USER_PREFERENCES_BUTTON_GRID_AREA}'
-    'shell-tabs-and-processes ${EXPLORER_RESOURCESTABLE_GRID_AREA} ${EXPLORER_RESOURCESTABLE_GRID_AREA} ${({
+    'shell-tabs-and-processes ${EXPLORER_RESOURCESVIEW_GRID_AREA} ${EXPLORER_RESOURCESVIEW_GRID_AREA} ${({
       userPreferencesSidebarOpen,
     }) => userPreferencesSidebarOpen && USER_PREFERENCES_SIDEBAR_GRID_AREA}';
 `;
@@ -83,7 +83,7 @@ const NON_CUSTOM_TITLE_BAR_GRID_CONFIGURATION = css<{ userPreferencesSidebarOpen
     'shell-tabs-and-processes ${EXPLORER_ACTIONSBAR_GRID_AREA} ${USER_PREFERENCES_BUTTON_GRID_AREA} ${({
       userPreferencesSidebarOpen,
     }) => userPreferencesSidebarOpen && USER_PREFERENCES_BUTTON_GRID_AREA}'
-    'shell-tabs-and-processes ${EXPLORER_RESOURCESTABLE_GRID_AREA} ${EXPLORER_RESOURCESTABLE_GRID_AREA} ${({
+    'shell-tabs-and-processes ${EXPLORER_RESOURCESVIEW_GRID_AREA} ${EXPLORER_RESOURCESVIEW_GRID_AREA} ${({
       userPreferencesSidebarOpen,
     }) => userPreferencesSidebarOpen && USER_PREFERENCES_SIDEBAR_GRID_AREA}';
 `;

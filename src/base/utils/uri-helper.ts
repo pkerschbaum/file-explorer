@@ -7,14 +7,10 @@ import { CustomError } from '@app/base/custom-error';
 import { arrays } from '@app/base/utils/arrays.util';
 import { check } from '@app/base/utils/assert.util';
 
-export type ResourceUIDescription = {
-  resourceName: string;
-  extension?: string;
-};
-
 export const uriHelper = {
   parseUri,
-  extractNameAndExtension,
+  extractBasename,
+  extractExtension,
   getComparisonKey,
   splitUriIntoSlugs,
   getDistinctParents,
@@ -30,19 +26,18 @@ function parseUri(scheme: string, path: string) {
   return scheme === Schemas.file ? URI.file(path) : URI.parse(`${scheme}://${path}`);
 }
 
-function extractNameAndExtension(uri: UriComponents): ResourceUIDescription {
-  let resourceName = resources.basename(URI.from(uri));
+function extractBasename(uri: UriComponents): string {
+  return resources.basename(URI.from(uri));
+}
+
+function extractExtension(uri: UriComponents): string | undefined {
   let extension: string | undefined = resources.extname(URI.from(uri));
 
   if (check.isEmptyString(extension)) {
     extension = undefined;
-  } else {
-    if (resourceName.endsWith(extension)) {
-      resourceName = resourceName.substring(0, resourceName.length - extension.length);
-    }
   }
 
-  return { resourceName, extension };
+  return extension;
 }
 
 function getComparisonKey(uri: UriComponents): string {

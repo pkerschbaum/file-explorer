@@ -1,23 +1,15 @@
-import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import { KeyboardEvent } from '@react-types/shared';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
+import invariant from 'tiny-invariant';
 
-import { check } from '@app/base/utils/assert.util';
+import { assertIsUnreachable } from '@app/base/utils/assert.util';
 import { formatter } from '@app/base/utils/formatter.util';
 import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
-import { getNativeIconURLForResource, startNativeFileDnD } from '@app/operations/app.operations';
-import { changeDirectory } from '@app/operations/explorer.operations';
-import { openFiles, removeTagsFromResources } from '@app/operations/resource.operations';
-import {
-  Box,
-  Button,
-  Chip,
-  FocusScope,
-  Skeleton,
-  TextField,
-  useVirtual,
-} from '@app/ui/components-library';
+import { startNativeFileDnD } from '@app/operations/app.operations';
+import { openResource } from '@app/operations/explorer.operations';
+import { removeTagsFromResources } from '@app/operations/resource.operations';
+import { commonStyles } from '@app/ui/common-styles';
+import { Box, Chip, Skeleton, TextField, useVirtual } from '@app/ui/components-library';
 import {
   DataCell,
   DataTable,
@@ -29,7 +21,7 @@ import {
 } from '@app/ui/components-library/data-table';
 import { KEY } from '@app/ui/constants';
 import {
-  useChangeSelectionByClick,
+  useChangeSelection,
   useExplorerId,
   useResourcesToShow,
   useKeyOfResourceToRename,
@@ -37,20 +29,22 @@ import {
   useSetKeyOfResourceToRename,
   useRenameResource,
   useDataAvailable,
+  useRegisterExplorerShortcuts,
+  useKeyOfLastSelectedResource,
 } from '@app/ui/explorer-context';
-import { useThemeResourceIconClasses } from '@app/ui/hooks/resources.hooks';
+import { ResourceIcon } from '@app/ui/resource-icon';
+import { ResourceRenameInput } from '@app/ui/resource-rename-input';
+import { usePrevious } from '@app/ui/utils/react.util';
 
 const ROW_HEIGHT = 38;
+const ICON_SIZE = 24;
 const VIRTUALIZE_TABLE_BODY_THRESHOLD = 1000;
 
 export const ResourcesTable: React.FC = () => {
   const tableContainerRef = React.useRef<HTMLDivElement>(null);
 
   return (
-    <DataTable
-      labels={{ table: 'Table of resources' }}
-      refs={{ tableContainer: tableContainerRef }}
-    >
+    <DataTable ref={tableContainerRef} labels={{ table: 'Table of resources' }}>
       <StyledTableHead>
         <Row>
           <NameHeadCell>Name</NameHeadCell>
@@ -103,6 +97,68 @@ type ResourcesTableBodyProps = {
 const ResourcesTableBody: React.FC<ResourcesTableBodyProps> = ({ tableContainerRef }) => {
   const dataAvailable = useDataAvailable();
   const resourcesToShow = useResourcesToShow();
+  const changeSelection = useChangeSelection();
+  const keyOfLastSelectedResource = useKeyOfLastSelectedResource();
+  const idxOfLastSelectedResource = resourcesToShow.findIndex((resource) =>
+    keyOfLastSelectedResource?.includes(resource.key),
+  );
+
+  useRegisterExplorerShortcuts({
+    changeSelectionByKeyboardShortcut: {
+      keybindings: [
+        {
+          key: KEY.ARROW_UP,
+          modifiers: {
+            ctrl: 'NOT_SET',
+            alt: 'NOT_SET',
+          },
+        },
+        {
+          key: KEY.ARROW_DOWN,
+          modifiers: {
+            ctrl: 'NOT_SET',
+            alt: 'NOT_SET',
+          },
+        },
+        {
+          key: KEY.PAGE_UP,
+          modifiers: {
+            ctrl: 'NOT_SET',
+            alt: 'NOT_SET',
+          },
+        },
+        {
+          key: KEY.PAGE_DOWN,
+          modifiers: {
+            ctrl: 'NOT_SET',
+            alt: 'NOT_SET',
+          },
+        },
+      ],
+      handler: (e) => {
+        e.preventDefault();
+
+        let idxOfResourceToSelect;
+        if (e.key === KEY.ARROW_UP) {
+          idxOfResourceToSelect = idxOfLastSelectedResource - 1;
+        } else if (e.key === KEY.ARROW_DOWN) {
+          idxOfResourceToSelect = idxOfLastSelectedResource + 1;
+        } else if (e.key === KEY.PAGE_UP) {
+          idxOfResourceToSelect = 0;
+        } else if (e.key === KEY.PAGE_DOWN) {
+          idxOfResourceToSelect = resourcesToShow.length - 1;
+        } else {
+          assertIsUnreachable();
+        }
+
+        changeSelection(idxOfResourceToSelect, {
+          ctrl: e.ctrlKey,
+          shift: e.shiftKey,
+        });
+      },
+      enableForRepeatedKeyboardEvent: true,
+    },
+  });
 
   return !dataAvailable ? (
     <SkeletonTableBody />
@@ -191,34 +247,36 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
   idxOfResourceForRow,
   virtualRowStart,
 }) {
+  const rowRef = React.useRef<HTMLTableRowElement>(null);
+
   const explorerId = useExplorerId();
   const selectedShownResources = useSelectedShownResources();
   const renameResource = useRenameResource();
-  const changeSelectionByClick = useChangeSelectionByClick();
+  const changeSelection = useChangeSelection();
   const keyOfResourceToRename = useKeyOfResourceToRename();
   const setKeyOfResourceToRename = useSetKeyOfResourceToRename();
 
-  const themeResourceIconClasses = useThemeResourceIconClasses(resourceForRow);
+  const isResourceSelected = !!selectedShownResources.find(
+    (resource) => resource.key === resourceForRow.key,
+  );
+  const wasResourceSelectedLastRender = usePrevious(isResourceSelected);
+  const tileGotSelected = !wasResourceSelectedLastRender && isResourceSelected;
 
-  const [nativeIconLoadStatus, setNativeIconLoadStatus] = React.useState<
-    'NOT_LOADED_YET' | 'SUCCESS' | 'ERROR'
-  >('NOT_LOADED_YET');
+  React.useEffect(
+    function scrollElementIntoViewOnSelection() {
+      invariant(rowRef.current);
 
-  async function openResource(resource: ResourceForUI) {
-    if (resource.resourceType === RESOURCE_TYPE.DIRECTORY) {
-      await changeDirectory(explorerId, URI.from(resource.uri));
-    } else {
-      await openFiles([resource.uri]);
-    }
-  }
+      if (tileGotSelected) {
+        rowRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+      }
+    },
+    [tileGotSelected],
+  );
 
   function abortRename() {
     setKeyOfResourceToRename(undefined);
   }
 
-  const resourceIsSelected = !!selectedShownResources.find(
-    (resource) => resource.key === resourceForRow.key,
-  );
   const renameForResourceIsActive = keyOfResourceToRename === resourceForRow.key;
   const rowStyleForVirtualization: RowProps['style'] =
     virtualRowStart === undefined
@@ -229,54 +287,41 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
           transform: `translateY(${virtualRowStart}px)`,
         };
 
-  const nativeIconUrl = getNativeIconURLForResource(resourceForRow);
-
   return (
-    <Row
+    <ResourceRowRoot
+      ref={rowRef}
       data-window-keydownhandlers-enabled="true"
       draggable={!renameForResourceIsActive}
       onDragStart={(e) => {
         e.preventDefault();
         startNativeFileDnD(resourceForRow.uri);
       }}
-      onClick={(e) => changeSelectionByClick(e, resourceForRow, idxOfResourceForRow)}
-      onDoubleClick={() => openResource(resourceForRow)}
+      onClick={(e) =>
+        changeSelection(idxOfResourceForRow, {
+          ctrl: e.ctrlKey,
+          shift: e.shiftKey,
+        })
+      }
+      onDoubleClick={() => openResource(explorerId, resourceForRow)}
       isSelectable
-      isSelected={resourceIsSelected}
+      isSelected={isResourceSelected}
       style={rowStyleForVirtualization}
     >
       <ResourceRowContent
         iconSlot={
-          <IconWrapper
-            className={nativeIconLoadStatus === 'SUCCESS' ? undefined : themeResourceIconClasses}
-          >
-            {check.isNonEmptyString(nativeIconUrl) &&
-              (nativeIconLoadStatus === 'NOT_LOADED_YET' || nativeIconLoadStatus === 'SUCCESS') && (
-                <img
-                  src={nativeIconUrl}
-                  alt="icon for resource"
-                  style={{ maxHeight: '100%' }}
-                  onLoad={() => {
-                    setNativeIconLoadStatus('SUCCESS');
-                  }}
-                  onError={() => {
-                    setNativeIconLoadStatus('ERROR');
-                  }}
-                />
-              )}
-          </IconWrapper>
+          <ResourceIconContainer>
+            <ResourceIcon resource={resourceForRow} height={ICON_SIZE} />
+          </ResourceIconContainer>
         }
         resourceNameSlot={
           renameForResourceIsActive ? (
-            <RenameInput
+            <StyledResourceRenameInput
               resource={resourceForRow}
               onSubmit={(newName) => renameResource(resourceForRow, newName)}
               abortRename={abortRename}
             />
           ) : (
-            <ResourceNameFormatted>
-              {formatter.resourceBasename(resourceForRow)}
-            </ResourceNameFormatted>
+            <ResourceNameFormatted>{resourceForRow.basename}</ResourceNameFormatted>
           )
         }
         tagsSlot={
@@ -299,9 +344,14 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
         }
         mtimeSlot={resourceForRow.mtime !== undefined && formatter.date(resourceForRow.mtime)}
       />
-    </Row>
+    </ResourceRowRoot>
   );
 });
+
+const ResourceRowRoot = styled(Row)`
+  /* add scroll-margin-top so that "scrollIntoView" respects the sticky-positioned header */
+  scroll-margin-top: ${ROW_HEIGHT}px;
+`;
 
 const ResourceNameFormattedSpacingFactor = 1;
 
@@ -309,30 +359,6 @@ const ResourceNameFormatted = styled(Box)`
   padding-left: calc(2 * ${ResourceNameFormattedSpacingFactor} * var(--spacing-1));
   display: flex;
   align-items: center;
-`;
-
-const iconStyles = css`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  max-width: 24px;
-  height: 100%;
-  max-height: 100%;
-`;
-
-const IconWrapper = styled(Box)`
-  padding-block: var(--padding-button-md-block);
-
-  ${iconStyles}
-
-  ::before {
-    ${iconStyles}
-
-    background-size: 24px 100%;
-    background-repeat: no-repeat;
-    -webkit-font-smoothing: antialiased;
-  }
 `;
 
 const SkeletonTableBody: React.FC = () => (
@@ -351,9 +377,9 @@ const SkeletonRow: React.FC<SkeletonRowProps> = ({ opacity }) => (
   <Row style={{ opacity }}>
     <ResourceRowContent
       iconSlot={
-        <IconWrapper>
+        <ResourceIconContainer>
           <Skeleton variant="rectangular" />
-        </IconWrapper>
+        </ResourceIconContainer>
       }
       resourceNameSlot={
         <ResourceNameFormatted>
@@ -365,6 +391,22 @@ const SkeletonRow: React.FC<SkeletonRowProps> = ({ opacity }) => (
     />
   </Row>
 );
+
+const ResourceIconContainer = styled(Box)`
+  width: ${ICON_SIZE}px;
+  max-width: ${ICON_SIZE}px;
+  height: 100%;
+  max-height: 100%;
+
+  padding-block: var(--padding-button-md-block);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  & > * {
+    ${commonStyles.layout.flex.shrinkAndFitVertical}
+  }
+`;
 
 type ResourceRowContentProps = {
   iconSlot: React.ReactNode;
@@ -425,73 +467,7 @@ const ResourceIconAndName = styled(Box)<{ fullWidth: boolean }>`
   display: flex;
 `;
 
-type RenameInputProps = {
-  resource: ResourceForUI;
-  onSubmit: (newName: string) => void;
-  abortRename: () => void;
-};
-
-const RenameInput: React.FC<RenameInputProps> = ({ resource, onSubmit, abortRename }) => {
-  const [value, setValue] = React.useState(formatter.resourceBasename(resource));
-
-  const inputIsValid = check.isNonEmptyString(value);
-
-  function handleSubmit() {
-    if (!inputIsValid) {
-      return;
-    }
-
-    onSubmit(value);
-  }
-
-  function abortOnEsc(e: KeyboardEvent) {
-    if (e.key === KEY.ESC) {
-      abortRename();
-    }
-  }
-
-  return (
-    <FocusScope contain autoFocus restoreFocus>
-      <RenameInputForm
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleSubmit();
-        }}
-      >
-        <TextField
-          aria-label="new name for resource"
-          value={value}
-          onChange={setValue}
-          onKeyDown={abortOnEsc}
-        />
-        <Button
-          buttonSize="sm"
-          isDisabled={!inputIsValid}
-          /* cannot use type="submit" because of https://github.com/adobe/react-spectrum/issues/1593 */
-          onPress={handleSubmit}
-          onKeyDown={abortOnEsc}
-        >
-          OK
-        </Button>
-        <Button buttonSize="sm" onPress={abortRename} onKeyDown={abortOnEsc}>
-          Abort
-        </Button>
-      </RenameInputForm>
-    </FocusScope>
-  );
-};
-
-const RenameInputForm = styled.form`
-  width: 100%;
-
-  display: flex;
-  align-items: stretch;
-  gap: var(--spacing-2);
-
-  & > ${Button} {
-    margin-block: var(--padding-button-md-block);
-  }
-
+const StyledResourceRenameInput = styled(ResourceRenameInput)`
   /* 
      The spacing between the TextField and the resource icon is evenly distributed across the 
      TextField container and the TextField input.
@@ -500,8 +476,6 @@ const RenameInputForm = styled.form`
   --padding-block-for-rename-textfield: 3px;
   & > ${TextField} {
     padding-left: calc(${ResourceNameFormattedSpacingFactor} * var(--spacing-1) - 1px);
-
-    width: 100%;
   }
 
   & > ${TextField} > input {
