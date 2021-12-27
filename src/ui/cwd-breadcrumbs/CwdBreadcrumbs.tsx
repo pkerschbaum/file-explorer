@@ -29,22 +29,22 @@ export const CwdBreadcrumbs: React.FC = () => {
   const explorerId = useExplorerId();
   const cwd = useCwd(explorerId);
 
-  const cwdSlugsWithFormatting = uriHelper.splitUriIntoSlugs(cwd);
+  const cwdSegmentsWithFormatting = uriHelper.splitUriIntoSegments(cwd);
 
   return (
     <Breadcrumbs>
-      {cwdSlugsWithFormatting.map((slug, idx) => {
-        const isLastSlug = idx === cwdSlugsWithFormatting.length - 1;
-        const isSecondToLastSlug = idx === cwdSlugsWithFormatting.length - 2;
+      {cwdSegmentsWithFormatting.map((segment, idx) => {
+        const isLastSegment = idx === cwdSegmentsWithFormatting.length - 1;
+        const isSecondToLastSegment = idx === cwdSegmentsWithFormatting.length - 2;
 
         return (
           <Breadcrumb
-            key={uriHelper.getComparisonKey(slug.uri)}
+            key={uriHelper.getComparisonKey(segment.uri)}
             explorerId={explorerId}
-            slugFormatted={slug.formatted}
-            isLastSlug={isLastSlug}
-            isSecondToLastSlug={isSecondToLastSlug}
-            changeDirectory={() => changeDirectory(explorerId, slug.uri)}
+            segmentFormatted={segment.formatted}
+            isLastSegment={isLastSegment}
+            isSecondToLastSegment={isSecondToLastSegment}
+            changeDirectory={() => changeDirectory(explorerId, segment.uri)}
           />
         );
       })}
@@ -54,17 +54,17 @@ export const CwdBreadcrumbs: React.FC = () => {
 
 type BreadcrumbProps = {
   explorerId: string;
-  slugFormatted: string;
-  isLastSlug: boolean;
-  isSecondToLastSlug: boolean;
+  segmentFormatted: string;
+  isLastSegment: boolean;
+  isSecondToLastSegment: boolean;
   changeDirectory: () => Promise<void>;
 };
 
 const Breadcrumb: React.FC<BreadcrumbProps> = ({
   explorerId,
-  slugFormatted,
-  isLastSlug,
-  isSecondToLastSlug,
+  segmentFormatted,
+  isLastSegment,
+  isSecondToLastSegment,
   changeDirectory,
 }) => {
   const buttonRef = React.useRef<HTMLButtonElement>(null);
@@ -72,7 +72,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
 
   const { itemProps } = useBreadcrumbItem({
     itemRef: buttonRef,
-    itemProps: { isCurrent: isLastSlug, elementType: 'button' },
+    itemProps: { isCurrent: isLastSegment, elementType: 'button' },
   });
 
   const { triggerProps: menuTriggerProps, menuInstance } = useMenu({
@@ -87,7 +87,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
 
   const registerShortcutsResult = useRegisterExplorerShortcuts({
     changeDirectoryShortcut: {
-      keybindings: isSecondToLastSlug
+      keybindings: isSecondToLastSegment
         ? [
             {
               key: KEY.ARROW_LEFT,
@@ -104,7 +104,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
       },
     },
     openCwdMenuShortcut: {
-      keybindings: isLastSlug
+      keybindings: isLastSegment
         ? [
             {
               key: KEY.ENTER,
@@ -126,13 +126,13 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
    * "auxclick" event is fired when the "back" button on a mouse (e.g. Logitech MX Master 2) is clicked.
    */
   useRegisterExplorerAuxclickHandler(
-    !isSecondToLastSlug
+    !isSecondToLastSegment
       ? []
       : [{ condition: (e) => e.button === MOUSE_BUTTONS.BACK, handler: changeDirectory }],
   );
 
   async function handleClick(e: PressEvent) {
-    if (isLastSlug) {
+    if (isLastSegment) {
       menuTriggerProps.onPress?.(e);
     } else {
       await changeDirectory();
@@ -140,13 +140,13 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
   }
 
   return (
-    <BreadcrumbItem isCurrent={isLastSlug}>
+    <BreadcrumbItem isCurrent={isLastSegment}>
       <BreadcrumbButton
         ref={buttonRef}
         handleRef={buttonHandleRef}
         onPress={handleClick}
         endIcon={
-          isLastSlug ? (
+          isLastSegment ? (
             <CwdActionsMenuTrigger>
               <KeyboardArrowDownOutlinedIcon fontSize="sm" />
               {registerShortcutsResult.changeDirectoryShortcut?.icon ??
@@ -159,13 +159,13 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
         }
         enableLayoutAnimation
         ariaButtonProps={menuTriggerProps}
-        /* do not set "aria-disabled" for the last slug */
+        /* do not set "aria-disabled" for the last segment */
         {...mergeProps(itemProps, { 'aria-disabled': false })}
       >
-        {slugFormatted}
+        {segmentFormatted}
       </BreadcrumbButton>
 
-      {isLastSlug && <CwdActionsMenu explorerId={explorerId} menuInstance={menuInstance} />}
+      {isLastSegment && <CwdActionsMenu explorerId={explorerId} menuInstance={menuInstance} />}
     </BreadcrumbItem>
   );
 };

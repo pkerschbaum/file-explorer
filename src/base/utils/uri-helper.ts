@@ -12,7 +12,7 @@ export const uriHelper = {
   extractBasename,
   extractExtension,
   getComparisonKey,
-  splitUriIntoSlugs,
+  splitUriIntoSegments,
   getDistinctParents,
 };
 
@@ -44,49 +44,49 @@ function getComparisonKey(uri: UriComponents): string {
   return resources.extUri.getComparisonKey(URI.from(uri));
 }
 
-function splitUriIntoSlugs(uri: UriComponents) {
-  // compute slugs of URI
-  let uriSlugs: URI[] = [URI.from(uri)];
-  let currentUriSlug = uriSlugs[0];
+function splitUriIntoSegments(uri: UriComponents) {
+  // compute segments of URI
+  let uriSegments: URI[] = [URI.from(uri)];
+  let currentUriSegment = uriSegments[0];
   let currentIteration = 1;
   // eslint-disable-next-line no-constant-condition
   while (true) {
     currentIteration++;
     if (currentIteration >= 100) {
-      throw new CustomError(`could not split URI into its slugs!`, {
+      throw new CustomError(`could not split URI into its segments!`, {
         currentIteration,
         uri,
       });
     }
 
-    const parentUriSlug = URI.joinPath(currentUriSlug, '..');
-    if (resources.isEqual(parentUriSlug, currentUriSlug)) {
+    const parentUriSegment = URI.joinPath(currentUriSegment, '..');
+    if (resources.isEqual(parentUriSegment, currentUriSegment)) {
       // reached the root of the URI --> stop
       break;
     }
 
-    currentUriSlug = parentUriSlug;
-    uriSlugs.push(currentUriSlug);
+    currentUriSegment = parentUriSegment;
+    uriSegments.push(currentUriSegment);
   }
-  uriSlugs = uriSlugs.reverse();
+  uriSegments = uriSegments.reverse();
 
-  const slugsWithFormatting = uriSlugs.map((uriSlug) => ({
-    uri: uriSlug,
-    formatted: resources.basename(uriSlug),
+  const segmentsWithFormatting = uriSegments.map((uriSegment) => ({
+    uri: uriSegment,
+    formatted: resources.basename(uriSegment),
   }));
 
-  // if the first slug is empty, it is the root directory of a unix system.
-  if (check.isEmptyString(slugsWithFormatting[0].formatted)) {
-    slugsWithFormatting[0].formatted = '<root>';
+  // if the first segment is empty, it is the root directory of a unix system.
+  if (check.isEmptyString(segmentsWithFormatting[0].formatted)) {
+    segmentsWithFormatting[0].formatted = '<root>';
   }
   // for windows, make drive letter upper case
   if (platform.isWindows) {
-    const driveLetterUpperCased = slugsWithFormatting[0].formatted[0].toLocaleUpperCase();
-    const remainingPart = slugsWithFormatting[0].formatted.slice(1);
-    slugsWithFormatting[0].formatted = `${driveLetterUpperCased}${remainingPart}`;
+    const driveLetterUpperCased = segmentsWithFormatting[0].formatted[0].toLocaleUpperCase();
+    const remainingPart = segmentsWithFormatting[0].formatted.slice(1);
+    segmentsWithFormatting[0].formatted = `${driveLetterUpperCased}${remainingPart}`;
   }
 
-  return slugsWithFormatting;
+  return segmentsWithFormatting;
 }
 
 function getDistinctParents(resources: UriComponents[]): UriComponents[] {

@@ -99,14 +99,14 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
           const isPrevExplorer = explorerIdx === explorerIdxPrevious;
           const isNextExplorer = explorerIdx === explorerIdxNext;
 
-          const uriSlugs = uriHelper.splitUriIntoSlugs(explorer.cwd);
-          const uriSlugToRender = uriSlugs[uriSlugs.length - 1];
+          const uriSegments = uriHelper.splitUriIntoSegments(explorer.cwd);
+          const uriSegmentToRender = uriSegments[uriSegments.length - 1];
 
           return (
             <Tab key={explorer.explorerId} value={explorer.explorerId}>
               <ExplorerTabContent
                 value={explorer.explorerId}
-                label={uriSlugToRender.formatted}
+                label={uriSegmentToRender.formatted}
                 buttonHandleRef={
                   isPrevExplorer
                     ? prevTabButtonHandleRef
