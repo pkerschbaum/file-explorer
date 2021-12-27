@@ -46,7 +46,7 @@ export function useMenu<TriggerHTMLElement extends HTMLElement>(
 ): UseMenuReturnType {
   const popoverRef = React.useRef<HTMLDivElement>(null);
 
-  const state = useMenuTriggerState(props.menu?.triggerProps ?? {});
+  const state = useMenuTriggerState({ ...props.menu?.triggerProps });
   const { menuTriggerProps, menuProps } = useMenuTrigger({}, state, props.triggerRef);
 
   // derive overlay placement from menu trigger props
@@ -123,7 +123,7 @@ function MenuPopupInner<T extends object>(props: MenuPopupProps<T>) {
   const { menuProps } = useReactAriaMenu<T>(
     {
       ...reactAriaProps,
-      autoFocus: menuPopupInstance.state.focusStrategy,
+      autoFocus: 'first',
     },
     state,
     menuRef,
@@ -134,7 +134,7 @@ function MenuPopupInner<T extends object>(props: MenuPopupProps<T>) {
   }
 
   return (
-    <Popover popoverInstance={menuPopupInstance.popoverInstance} hideBackdrop>
+    <Popover popoverInstance={menuPopupInstance.popoverInstance} disableAutoFocus hideBackdrop>
       <PopupPaper>
         <MenuContainer {...mergeProps(menuProps, menuPopupInstance.menuDomProps)} ref={menuRef}>
           {[...state.collection].map((item) => (
@@ -196,7 +196,9 @@ function MenuItem<T extends object>(props: MenuItemProps<T>) {
 
   return (
     <MenuItemRoot
-      {...mergeProps(menuItemProps, focusProps, itemDomProps)}
+      {...mergeProps(menuItemProps, focusProps, itemDomProps, {
+        className: isFocused ? 'focus-visible' : undefined,
+      })}
       ref={ref}
       styleProps={styleProps}
     >

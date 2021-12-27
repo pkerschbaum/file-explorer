@@ -9,7 +9,6 @@ import {
   Button,
   DeleteForeverOutlinedIcon,
   DeleteOutlinedIcon,
-  FocusScope,
   LinearProgress,
 } from '@app/ui/components-library';
 import type { ProcessVariantProps } from '@app/ui/process/Process';
@@ -42,11 +41,13 @@ const STATUS_META_INFOS: StatusMetaInfos = {
 export function computeProcessCardPropsFromDeleteProcess(
   process: DeleteProcessType,
 ): ProcessVariantProps {
+  let captureFocus = false;
   let contentToRender;
   switch (process.status) {
     case DELETE_PROCESS_STATUS.PENDING_FOR_USER_INPUT: {
+      captureFocus = true;
       contentToRender = (
-        <FocusScope contain autoFocus restoreFocus>
+        <>
           <Button
             onPress={() => runDeleteProcess(process.id, { useTrash: true })}
             startIcon={<DeleteOutlinedIcon />}
@@ -60,7 +61,7 @@ export function computeProcessCardPropsFromDeleteProcess(
             Delete permanently
           </Button>
           <Button onPress={() => removeProcess(process.id)}>Abort</Button>
-        </FocusScope>
+        </>
       );
       break;
     }
@@ -112,6 +113,7 @@ export function computeProcessCardPropsFromDeleteProcess(
     ),
     isBusy: processMeta.isBusy,
     isRemovable: processMeta.isRemovable,
+    captureFocus,
   };
 }
 

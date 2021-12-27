@@ -16,6 +16,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 import { functions } from '@app/base/utils/functions.util';
+import { Backdrop } from '@app/ui/components-library/Backdrop';
 import { Box } from '@app/ui/components-library/Box';
 import { useFramerMotionAnimations } from '@app/ui/components-library/DesignTokenContext';
 import { FocusScope } from '@app/ui/components-library/FocusScope';
@@ -90,6 +91,7 @@ type PopoverComponentProps = {
   children: React.ReactNode;
   popoverInstance: PopoverInstance;
   hideBackdrop?: boolean;
+  disableAutoFocus?: boolean;
 };
 
 export const Popover = styled((props: PopoverProps) => {
@@ -106,6 +108,7 @@ const PopoverInner = styled((props: PopoverProps) => {
     children,
     popoverInstance,
     hideBackdrop,
+    disableAutoFocus,
 
     /* other props */
     ...delegatedProps
@@ -128,33 +131,32 @@ const PopoverInner = styled((props: PopoverProps) => {
 
   const framerMotionAnimations = useFramerMotionAnimations();
 
+  const innerContent = (
+    <Box
+      {...mergeProps(
+        overlayProps,
+        dialogProps,
+        popoverInstance.popoverDomProps,
+        modalProps,
+        delegatedProps,
+      )}
+      {...framerMotionAnimations.fadeInOut}
+      ref={popoverInstance.popoverRef}
+    >
+      {children}
+      <DismissButton onDismiss={onClose} />
+    </Box>
+  );
+
   return (
     <OverlayContainer style={{ isolation: 'isolate' }}>
-      <FocusScope contain autoFocus restoreFocus>
-        {!hideBackdrop && (
-          <PopoverBackdrop onClick={onClose} {...framerMotionAnimations.fadeInOut} />
+      <FocusScope contain autoFocus={!disableAutoFocus} restoreFocus>
+        {hideBackdrop ? (
+          innerContent
+        ) : (
+          <Backdrop onBackdropClick={onClose}>{innerContent}</Backdrop>
         )}
-        <Box
-          {...mergeProps(
-            overlayProps,
-            dialogProps,
-            popoverInstance.popoverDomProps,
-            modalProps,
-            delegatedProps,
-          )}
-          {...framerMotionAnimations.fadeInOut}
-          ref={popoverInstance.popoverRef}
-        >
-          {children}
-          <DismissButton onDismiss={onClose} />
-        </Box>
       </FocusScope>
     </OverlayContainer>
   );
 })``;
-
-const PopoverBackdrop = styled(Box)`
-  position: absolute;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.34);
-`;

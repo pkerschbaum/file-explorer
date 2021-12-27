@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import { commonStyles } from '@app/ui/common-styles';
 import {
+  Backdrop,
   Box,
   ClearAllIcon,
   FocusScope,
@@ -17,6 +18,7 @@ export type ProcessCardProps = {
   details: React.ReactNode;
   isBusy: boolean;
   isRemovable: boolean;
+  captureFocus?: boolean;
   onRemove: () => void | Promise<void>;
   labels: { container: string };
   className?: string;
@@ -28,11 +30,14 @@ export const ProcessCard: React.FC<ProcessCardProps> = ({
   details,
   isBusy,
   isRemovable,
+  captureFocus,
   onRemove,
   labels,
   className,
 }) => {
-  return (
+  const renderFocusScope = isRemovable || captureFocus;
+
+  const innerContent = (
     <ProcessCardContainer aria-label={labels.container} className={className}>
       <SummarySection>
         <ProcessIconAndText>
@@ -43,28 +48,36 @@ export const ProcessCard: React.FC<ProcessCardProps> = ({
         {isBusy && <RotatingAutorenewOutlinedIcon fontSize="sm" />}
 
         {isRemovable && (
-          <FocusScope autoFocus restoreFocus>
-            <DiscardIconButton
-              size="sm"
-              aria-label="Discard card"
-              tooltipContent="Discard card"
-              onPress={onRemove}
-              disablePadding
-            >
-              <ClearAllIcon />
-            </DiscardIconButton>
-          </FocusScope>
+          <DiscardIconButton
+            size="sm"
+            aria-label="Discard card"
+            tooltipContent="Discard card"
+            onPress={onRemove}
+            disablePadding
+          >
+            <ClearAllIcon />
+          </DiscardIconButton>
         )}
       </SummarySection>
 
       <DetailsSection>{details}</DetailsSection>
     </ProcessCardContainer>
   );
+
+  return !renderFocusScope ? (
+    innerContent
+  ) : (
+    <FocusScope autoFocus restoreFocus contain>
+      <Backdrop>{innerContent}</Backdrop>
+    </FocusScope>
+  );
 };
 
 const ProcessCardContainer = styled(Paper)`
-  padding: var(--spacing-4);
+  /* relative positioning so that Backdrop is behind the card */
+  position: relative;
 
+  padding: var(--spacing-4);
   display: flex;
   flex-direction: column;
   gap: var(--spacing-4);

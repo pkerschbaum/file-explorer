@@ -1,3 +1,4 @@
+export * from '@app/ui/components-library/Backdrop';
 export * from '@app/ui/components-library/Box';
 export * from '@app/ui/components-library/Button';
 export * from '@app/ui/components-library/Breadcrumbs';
