@@ -5,6 +5,7 @@ import {
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { Query } from 'react-query';
 
+import { functions } from '@app/base/utils/functions.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import {
   isResourcesOfDirectoryQueryKey,
@@ -110,8 +111,12 @@ function addDirectoryWatcherIfNonePresent(
   if (directoryWatchers.get(comparisonKey) !== undefined) {
     logger.debug('directory watcher for the given directory is already present', { queryKey });
   } else {
-    logger.debug('no directory watcher present --> creating watcher...', { queryKey });
+    logger.debug('no directory watcher present --> creating (throttled) watcher...', { queryKey });
     const watcherDisposable = fileSystemRef.current.watch(directoryUri);
+    const throttledRefreshResourcesOfDirectory = functions.throttle(
+      refreshResourcesOfDirectory,
+      200,
+    );
     const didFilesChangeDisposable = fileSystemRef.current.onDidFilesChange((e) => {
       logger.debug(
         'did receive onDidFilesChange event --> checking if refreshing resources of directory is necessary...',
@@ -119,7 +124,7 @@ function addDirectoryWatcherIfNonePresent(
       );
       if (e.affects(directoryUri)) {
         logger.debug('refreshing of resources is necessary, trigger refresh...', { queryKey });
-        void refreshResourcesOfDirectory({ directory: directoryUri }, { active: true });
+        throttledRefreshResourcesOfDirectory({ directory: directoryUri }, { active: true });
       } else {
         logger.debug('refreshing of resources is not necessary, skipping.', { queryKey });
       }

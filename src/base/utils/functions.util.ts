@@ -22,7 +22,7 @@ function throttle<ThisType, Params extends any[]>(
         throttleActive = false;
         /**
          * If there was a function invocation which was discarded because throttle was active,
-         * execute that function invocation now.
+         * execute a "trailing call", i.e. execute that function invocation now.
          *
          * Imagine a popover "follows" a moving target by updating its position via a throttled
          * "updatePosition" function and a relatively high "limit" set. If we would not execute the
