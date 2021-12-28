@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
-import { uriHelper } from '@app/base/utils/uri-helper';
+import { formatter } from '@app/base/utils/formatter.util';
 import {
   ExplorerPanelEntry,
   useIdOfFocusedExplorerPanel,
@@ -47,7 +47,7 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
     explorerIdxPrevious === undefined ? undefined : explorersToShow[explorerIdxPrevious];
 
   async function duplicateFocusedExplorerPanel() {
-    await addExplorerPanel(focusedExplorer?.cwd);
+    await addExplorerPanel(focusedExplorer?.cwdSegments);
   }
 
   const registerShortcutsResult = useRegisterGlobalShortcuts({
@@ -99,14 +99,16 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
           const isPrevExplorer = explorerIdx === explorerIdxPrevious;
           const isNextExplorer = explorerIdx === explorerIdxNext;
 
-          const uriSegments = uriHelper.splitUriIntoSegments(explorer.cwd);
-          const uriSegmentToRender = uriSegments[uriSegments.length - 1];
+          const formattedUriSegments = formatter.uriSegments(
+            explorer.cwdSegments.map((segment) => segment.uri),
+          );
+          const formattedUriSegmentToRender = formattedUriSegments[formattedUriSegments.length - 1];
 
           return (
             <Tab key={explorer.explorerId} value={explorer.explorerId}>
               <ExplorerTabContent
                 value={explorer.explorerId}
-                label={uriSegmentToRender.formatted}
+                label={formattedUriSegmentToRender}
                 buttonHandleRef={
                   isPrevExplorer
                     ? prevTabButtonHandleRef

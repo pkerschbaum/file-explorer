@@ -35,23 +35,21 @@ export const ExplorerPanel = React.memo<ExplorerPanelProps>(function ExplorerPan
   const isActiveExplorer = explorerId === focusedExplorerId;
 
   return (
-    <>
-      <ExplorerContextProvider
-        key={uriHelper.getComparisonKey(cwd)}
-        explorerId={explorerId}
-        isActiveExplorer={isActiveExplorer}
-      >
-        <CwdBreadcrumbsContainer hide={!isActiveExplorer} customTitleBarUsed={customTitleBarUsed}>
-          <CwdBreadcrumbs />
-        </CwdBreadcrumbsContainer>
-        <ActionsBarContainer hide={!isActiveExplorer}>
-          <ActionsBar />
-        </ActionsBarContainer>
-        <ResourcesViewContainer hide={!isActiveExplorer}>
-          <ResourcesView />
-        </ResourcesViewContainer>
-      </ExplorerContextProvider>
-    </>
+    <ExplorerContextProvider
+      key={uriHelper.getComparisonKey(cwd)}
+      explorerId={explorerId}
+      isActiveExplorer={isActiveExplorer}
+    >
+      <CwdBreadcrumbsContainer hide={!isActiveExplorer} customTitleBarUsed={customTitleBarUsed}>
+        <CwdBreadcrumbs />
+      </CwdBreadcrumbsContainer>
+      <ActionsBarContainer hide={!isActiveExplorer}>
+        <ActionsBar />
+      </ActionsBarContainer>
+      <ResourcesViewContainer hide={!isActiveExplorer}>
+        <ResourcesView />
+      </ResourcesViewContainer>
+    </ExplorerContextProvider>
   );
 });
 

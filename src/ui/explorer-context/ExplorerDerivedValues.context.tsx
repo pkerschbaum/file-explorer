@@ -3,11 +3,11 @@ import * as React from 'react';
 import { arrays } from '@app/base/utils/arrays.util';
 import { check } from '@app/base/utils/assert.util';
 import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
+import * as globalStateHooks from '@app/global-state/slices/explorers.hooks';
 import { isResourceQualifiedForThumbnail } from '@app/operations/app.operations';
 import { useSetActiveResourcesView } from '@app/ui/explorer-context';
 import {
   ExplorerContextProviderProps,
-  ExplorerState,
   useSetKeysOfSelectedResources,
 } from '@app/ui/explorer-context/ExplorerState.context';
 import { useEnrichResourcesWithTags, useResourcesForUI } from '@app/ui/hooks/resources.hooks';
@@ -28,21 +28,23 @@ const selectableContext =
 const useExplorerDerivedValuesSelector = selectableContext.useContextSelector;
 const DerivedValuesContextProvider = selectableContext.Provider;
 
-type ExplorerDerivedValuesContextProviderProps = ExplorerContextProviderProps & {
-  explorerState: ExplorerState;
-};
+type ExplorerDerivedValuesContextProviderProps = ExplorerContextProviderProps;
 
 export const ExplorerDerivedValuesContextProvider: React.FC<
   ExplorerDerivedValuesContextProviderProps
-> = ({ explorerState, explorerId, isActiveExplorer, children }) => {
+> = ({ explorerId, isActiveExplorer, children }) => {
   const setKeysOfSelectedResources = useSetKeysOfSelectedResources();
   const setActiveResourcesView = useSetActiveResourcesView();
+
+  const filterInput = globalStateHooks.useFilterInput(explorerId);
+  const keysOfSelectedResources = globalStateHooks.useKeysOfSelectedResources(explorerId);
+  const activeResourcesView = globalStateHooks.useActiveResourcesView(explorerId);
 
   const { resources, dataAvailable } = useResourcesForUI(explorerId);
 
   React.useEffect(
     function setInitialResourcesViewAfterResourcesGotLoaded() {
-      if (explorerState.activeResourcesView !== undefined) {
+      if (activeResourcesView !== undefined) {
         return;
       }
 
@@ -68,7 +70,7 @@ export const ExplorerDerivedValuesContextProvider: React.FC<
         setActiveResourcesView('table');
       }
     },
-    [dataAvailable, explorerState.activeResourcesView, resources, setActiveResourcesView],
+    [dataAvailable, activeResourcesView, resources, setActiveResourcesView],
   );
 
   const resourcesWithTags = useEnrichResourcesWithTags(resources);
@@ -82,7 +84,7 @@ export const ExplorerDerivedValuesContextProvider: React.FC<
   const resourcesToShow: ResourceForUI[] = React.useMemo(() => {
     let result;
 
-    if (check.isEmptyString(explorerState.filterInput)) {
+    if (check.isEmptyString(filterInput)) {
       result = arrays
         .wrap(resourcesWithTags)
         .stableSort((a, b) => {
@@ -108,20 +110,20 @@ export const ExplorerDerivedValuesContextProvider: React.FC<
     } else {
       result = arrays
         .wrap(resourcesWithTags)
-        .matchSort(explorerState.filterInput, {
+        .matchSort(filterInput, {
           keys: [(resource) => resource.basename],
         })
         .getValue();
     }
 
     return result;
-  }, [explorerState.filterInput, resourcesWithTags]);
+  }, [filterInput, resourcesWithTags]);
 
   const { selectedShownResources, didApplySelectionFallback } = React.useMemo(() => {
     const result: ResourceForUI[] = [];
     let didApplySelectionFallback = false;
 
-    for (const renameHistoryKeys of explorerState.selection.keysOfSelectedResources) {
+    for (const renameHistoryKeys of keysOfSelectedResources) {
       for (const key of arrays.reverse(renameHistoryKeys)) {
         const resource = resourcesToShow.find((r) => r.key === key);
         if (resource) {
@@ -138,7 +140,7 @@ export const ExplorerDerivedValuesContextProvider: React.FC<
     }
 
     return { selectedShownResources: result, didApplySelectionFallback };
-  }, [explorerState.selection.keysOfSelectedResources, resourcesToShow]);
+  }, [keysOfSelectedResources, resourcesToShow]);
 
   /*
    * If selection fallback was applied  (i.e. "keysOfSelectedResources" did not match any currently
@@ -152,8 +154,8 @@ export const ExplorerDerivedValuesContextProvider: React.FC<
   }, [selectedShownResources, didApplySelectionFallback, setKeysOfSelectedResources]);
 
   // every time the filter input changes, reset selection
-  const prevFilterInput = usePrevious(explorerState.filterInput);
-  const filterInputChanged = explorerState.filterInput !== prevFilterInput;
+  const prevFilterInput = usePrevious(filterInput);
+  const filterInputChanged = filterInput !== prevFilterInput;
   React.useEffect(() => {
     if (filterInputChanged && resourcesToShow.length > 0) {
       setKeysOfSelectedResources([[resourcesToShow[0].key]]);
@@ -189,6 +191,36 @@ export function useResourcesToShow() {
 
 export function useDataAvailable() {
   return useExplorerDerivedValuesSelector((explorerValues) => explorerValues.dataAvailable);
+}
+
+export function useFilterInput() {
+  const explorerId = useExplorerId();
+  return globalStateHooks.useFilterInput(explorerId);
+}
+
+export function useKeysOfSelectedResources() {
+  const explorerId = useExplorerId();
+  return globalStateHooks.useKeysOfSelectedResources(explorerId);
+}
+
+export function useKeyOfResourceSelectionGotStartedWith() {
+  const explorerId = useExplorerId();
+  return globalStateHooks.useKeyOfResourceSelectionGotStartedWith(explorerId);
+}
+
+export function useKeyOfLastSelectedResource() {
+  const explorerId = useExplorerId();
+  return globalStateHooks.useKeyOfLastSelectedResource(explorerId);
+}
+
+export function useActiveResourcesView() {
+  const explorerId = useExplorerId();
+  return globalStateHooks.useActiveResourcesView(explorerId);
+}
+
+export function useScrollTop() {
+  const explorerId = useExplorerId();
+  return globalStateHooks.useScrollTop(explorerId);
 }
 
 export function useSelectedShownResources() {

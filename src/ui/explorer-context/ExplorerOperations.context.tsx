@@ -3,8 +3,8 @@ import * as React from 'react';
 
 import { arrays } from '@app/base/utils/arrays.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
-import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
-import { changeDirectory, createFolder, pasteResources } from '@app/operations/explorer.operations';
+import { ResourceForUI } from '@app/domain/types';
+import { createFolder, openResources, pasteResources } from '@app/operations/explorer.operations';
 import * as resourceOperations from '@app/operations/resource.operations';
 import {
   useExplorerId,
@@ -104,20 +104,10 @@ export const ExplorerOperationsContextProvider: React.FC<
   );
 
   const openSelectedResources: ExplorerOperationsContext['openSelectedResources'] =
-    React.useCallback(async () => {
-      if (
-        selectedShownResources.length === 1 &&
-        selectedShownResources[0].resourceType === RESOURCE_TYPE.DIRECTORY
-      ) {
-        await changeDirectory(explorerId, URI.from(selectedShownResources[0].uri));
-      } else {
-        await resourceOperations.openFiles(
-          selectedShownResources
-            .filter((selectedResource) => selectedResource.resourceType === RESOURCE_TYPE.FILE)
-            .map((selectedResource) => selectedResource.uri),
-        );
-      }
-    }, [explorerId, selectedShownResources]);
+    React.useCallback(
+      () => openResources(explorerId, selectedShownResources),
+      [explorerId, selectedShownResources],
+    );
 
   const scheduleDeleteSelectedResources: ExplorerOperationsContext['scheduleDeleteSelectedResources'] =
     React.useCallback(() => {

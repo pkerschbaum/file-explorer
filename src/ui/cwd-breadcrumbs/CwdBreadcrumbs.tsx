@@ -4,8 +4,9 @@ import * as React from 'react';
 import styled from 'styled-components';
 import invariant from 'tiny-invariant';
 
+import { formatter } from '@app/base/utils/formatter.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
-import { useCwd } from '@app/global-state/slices/explorers.hooks';
+import { useCwdSegments } from '@app/global-state/slices/explorers.hooks';
 import { changeDirectory } from '@app/operations/explorer.operations';
 import {
   ButtonHandle,
@@ -27,21 +28,21 @@ import {
 
 export const CwdBreadcrumbs: React.FC = () => {
   const explorerId = useExplorerId();
-  const cwd = useCwd(explorerId);
+  const cwdSegments = useCwdSegments(explorerId);
 
-  const cwdSegmentsWithFormatting = uriHelper.splitUriIntoSegments(cwd);
+  const formattedUriSegments = formatter.uriSegments(cwdSegments.map((segment) => segment.uri));
 
   return (
     <Breadcrumbs>
-      {cwdSegmentsWithFormatting.map((segment, idx) => {
-        const isLastSegment = idx === cwdSegmentsWithFormatting.length - 1;
-        const isSecondToLastSegment = idx === cwdSegmentsWithFormatting.length - 2;
+      {cwdSegments.map((segment, idx) => {
+        const isLastSegment = idx === formattedUriSegments.length - 1;
+        const isSecondToLastSegment = idx === formattedUriSegments.length - 2;
 
         return (
           <Breadcrumb
             key={uriHelper.getComparisonKey(segment.uri)}
             explorerId={explorerId}
-            segmentFormatted={segment.formatted}
+            segmentFormatted={formattedUriSegments[idx]}
             isLastSegment={isLastSegment}
             isSecondToLastSegment={isSecondToLastSegment}
             changeDirectory={() => changeDirectory(explorerId, segment.uri)}

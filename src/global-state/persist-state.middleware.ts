@@ -21,7 +21,7 @@ export const persistMiddleware = (store: any) => (next: any) => (action: Payload
 function mapStorageStateFromGlobalState(state: RootState): StorageState {
   return {
     activeExplorerPanels: Object.entries(state.explorersSlice.explorerPanels).map(
-      ([id, panel]) => ({ id, cwd: panel.cwd }),
+      ([id, panel]) => ({ id, cwdSegments: panel.cwdSegments }),
     ),
     focusedExplorerPanelId: state.explorersSlice.focusedExplorerPanelId,
     tagsState: state.tagsSlice,

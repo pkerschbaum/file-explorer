@@ -8,7 +8,11 @@ import { typedPath } from '@app/base/utils/types.util';
 import { loggerMiddleware } from '@app/global-state/logger.middleware';
 import { persistMiddleware } from '@app/global-state/persist-state.middleware';
 import { rootReducer } from '@app/global-state/reducers';
-import { ExplorersMap, generateExplorerId } from '@app/global-state/slices/explorers.slice';
+import {
+  computeCwdSegmentsStackFromUri,
+  ExplorersMap,
+  generateExplorerId,
+} from '@app/global-state/slices/explorers.slice';
 import { getDefaultExplorerCwd } from '@app/operations/app.operations';
 import { createLogger } from '@app/operations/create-logger';
 
@@ -42,7 +46,9 @@ export async function createStoreInstance(creationParams?: {
     logger.debug(`no explorer present --> add default explorer panel`);
     const cwdOfNewExplorer = await getDefaultExplorerCwd();
     const explorerId = generateExplorerId();
-    explorerPanels[explorerId] = { cwd: cwdOfNewExplorer };
+    explorerPanels[explorerId] = {
+      cwdSegments: computeCwdSegmentsStackFromUri(cwdOfNewExplorer),
+    };
   }
 
   if (

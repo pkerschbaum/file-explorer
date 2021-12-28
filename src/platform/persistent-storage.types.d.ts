@@ -1,5 +1,4 @@
-import { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-
+import { CwdSegment } from '@app/global-state/slices/explorers.slice';
 import { TagsState } from '@app/global-state/slices/tags.slice';
 import { UserState } from '@app/global-state/slices/user.slice';
 
@@ -9,7 +8,7 @@ export type PlatformPersistentStorage = {
 };
 
 export type StorageState = {
-  activeExplorerPanels?: Array<{ id: string; cwd: UriComponents }>;
+  activeExplorerPanels?: Array<{ id: string; cwdSegments: CwdSegment[] }>;
   focusedExplorerPanelId?: string;
   tagsState?: TagsState;
   userState?: UserState;
