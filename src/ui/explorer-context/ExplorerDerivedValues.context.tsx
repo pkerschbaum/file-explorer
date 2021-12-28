@@ -3,21 +3,21 @@ import * as React from 'react';
 import { arrays } from '@app/base/utils/arrays.util';
 import { check } from '@app/base/utils/assert.util';
 import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
-import * as globalStateHooks from '@app/global-state/slices/explorers.hooks';
 import { isResourceQualifiedForThumbnail } from '@app/operations/app.operations';
-import { useSetActiveResourcesView } from '@app/ui/explorer-context';
 import {
-  ExplorerContextProviderProps,
+  useActiveResourcesView,
+  useExplorerId,
+  useFilterInput,
+  useKeysOfSelectedResources,
+  useSetActiveResourcesView,
   useSetKeysOfSelectedResources,
-} from '@app/ui/explorer-context/ExplorerState.context';
+} from '@app/ui/explorer-context';
 import { useEnrichResourcesWithTags, useResourcesForUI } from '@app/ui/hooks/resources.hooks';
 import { createSelectableContext, usePrevious } from '@app/ui/utils/react.util';
 
 const USE_GALLERY_VIEW_PERCENTAGE = 0.75;
 
 type ExplorerDerivedValuesContext = {
-  explorerId: string;
-  isActiveExplorer: boolean;
   dataAvailable: boolean;
   resourcesToShow: ResourceForUI[];
   selectedShownResources: ResourceForUI[];
@@ -28,50 +28,21 @@ const selectableContext =
 const useExplorerDerivedValuesSelector = selectableContext.useContextSelector;
 const DerivedValuesContextProvider = selectableContext.Provider;
 
-type ExplorerDerivedValuesContextProviderProps = ExplorerContextProviderProps;
+type ExplorerDerivedValuesContextProviderProps = {
+  children: React.ReactNode;
+};
 
 export const ExplorerDerivedValuesContextProvider: React.FC<
   ExplorerDerivedValuesContextProviderProps
-> = ({ explorerId, isActiveExplorer, children }) => {
+> = ({ children }) => {
+  const explorerId = useExplorerId();
+  const filterInput = useFilterInput();
+  const keysOfSelectedResources = useKeysOfSelectedResources();
+  const activeResourcesView = useActiveResourcesView();
   const setKeysOfSelectedResources = useSetKeysOfSelectedResources();
   const setActiveResourcesView = useSetActiveResourcesView();
 
-  const filterInput = globalStateHooks.useFilterInput(explorerId);
-  const keysOfSelectedResources = globalStateHooks.useKeysOfSelectedResources(explorerId);
-  const activeResourcesView = globalStateHooks.useActiveResourcesView(explorerId);
-
   const { resources, dataAvailable } = useResourcesForUI(explorerId);
-
-  React.useEffect(
-    function setInitialResourcesViewAfterResourcesGotLoaded() {
-      if (activeResourcesView !== undefined) {
-        return;
-      }
-
-      if (!dataAvailable) {
-        return;
-      }
-
-      const files = resources.filter((resource) => resource.resourceType === RESOURCE_TYPE.FILE);
-      const filesQualifiedForThumbnails = files.filter((file) =>
-        isResourceQualifiedForThumbnail(file),
-      );
-
-      /**
-       * If enough files can get thumbnails, boot into "gallery" view.
-       * The user can toggle the view afterwards
-       */
-      if (
-        files.length > 0 &&
-        filesQualifiedForThumbnails.length / files.length >= USE_GALLERY_VIEW_PERCENTAGE
-      ) {
-        setActiveResourcesView('gallery');
-      } else {
-        setActiveResourcesView('table');
-      }
-    },
-    [dataAvailable, activeResourcesView, resources, setActiveResourcesView],
-  );
 
   const resourcesWithTags = useEnrichResourcesWithTags(resources);
 
@@ -162,11 +133,38 @@ export const ExplorerDerivedValuesContextProvider: React.FC<
     }
   }, [resourcesToShow, filterInputChanged, setKeysOfSelectedResources]);
 
+  // once we got resources loaded, determine and set the resource view mode which should be initially used
+  React.useEffect(() => {
+    if (activeResourcesView !== undefined) {
+      return;
+    }
+
+    if (!dataAvailable) {
+      return;
+    }
+
+    const files = resources.filter((resource) => resource.resourceType === RESOURCE_TYPE.FILE);
+    const filesQualifiedForThumbnails = files.filter((file) =>
+      isResourceQualifiedForThumbnail(file),
+    );
+
+    /**
+     * If enough files can get thumbnails, boot into "gallery" view.
+     * The user can toggle the view afterwards
+     */
+    if (
+      files.length > 0 &&
+      filesQualifiedForThumbnails.length / files.length >= USE_GALLERY_VIEW_PERCENTAGE
+    ) {
+      setActiveResourcesView('gallery');
+    } else {
+      setActiveResourcesView('table');
+    }
+  }, [dataAvailable, activeResourcesView, resources, setActiveResourcesView]);
+
   return (
     <DerivedValuesContextProvider
       value={{
-        explorerId,
-        isActiveExplorer,
         dataAvailable,
         resourcesToShow,
         selectedShownResources,
@@ -177,50 +175,12 @@ export const ExplorerDerivedValuesContextProvider: React.FC<
   );
 };
 
-export function useExplorerId() {
-  return useExplorerDerivedValuesSelector((explorerValues) => explorerValues.explorerId);
-}
-
-export function useIsActiveExplorer() {
-  return useExplorerDerivedValuesSelector((explorerValues) => explorerValues.isActiveExplorer);
-}
-
-export function useResourcesToShow() {
-  return useExplorerDerivedValuesSelector((explorerValues) => explorerValues.resourcesToShow);
-}
-
 export function useDataAvailable() {
   return useExplorerDerivedValuesSelector((explorerValues) => explorerValues.dataAvailable);
 }
 
-export function useFilterInput() {
-  const explorerId = useExplorerId();
-  return globalStateHooks.useFilterInput(explorerId);
-}
-
-export function useKeysOfSelectedResources() {
-  const explorerId = useExplorerId();
-  return globalStateHooks.useKeysOfSelectedResources(explorerId);
-}
-
-export function useKeyOfResourceSelectionGotStartedWith() {
-  const explorerId = useExplorerId();
-  return globalStateHooks.useKeyOfResourceSelectionGotStartedWith(explorerId);
-}
-
-export function useKeyOfLastSelectedResource() {
-  const explorerId = useExplorerId();
-  return globalStateHooks.useKeyOfLastSelectedResource(explorerId);
-}
-
-export function useActiveResourcesView() {
-  const explorerId = useExplorerId();
-  return globalStateHooks.useActiveResourcesView(explorerId);
-}
-
-export function useScrollTop() {
-  const explorerId = useExplorerId();
-  return globalStateHooks.useScrollTop(explorerId);
+export function useResourcesToShow() {
+  return useExplorerDerivedValuesSelector((explorerValues) => explorerValues.resourcesToShow);
 }
 
 export function useSelectedShownResources() {

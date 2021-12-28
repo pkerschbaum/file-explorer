@@ -1,8 +1,7 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 
-import { uriHelper } from '@app/base/utils/uri-helper';
-import { useCwd, useIdOfFocusedExplorerPanel } from '@app/global-state/slices/explorers.hooks';
+import { useIdOfFocusedExplorerPanel } from '@app/global-state/slices/explorers.hooks';
 import { ActionsBar } from '@app/ui/actions-bar';
 import { Box } from '@app/ui/components-library';
 import { KEY } from '@app/ui/constants';
@@ -29,17 +28,12 @@ export const ExplorerPanel = React.memo<ExplorerPanelProps>(function ExplorerPan
   explorerId,
   customTitleBarUsed,
 }) {
-  const cwd = useCwd(explorerId);
   const focusedExplorerId = useIdOfFocusedExplorerPanel();
 
   const isActiveExplorer = explorerId === focusedExplorerId;
 
   return (
-    <ExplorerContextProvider
-      key={uriHelper.getComparisonKey(cwd)}
-      explorerId={explorerId}
-      isActiveExplorer={isActiveExplorer}
-    >
+    <ExplorerContextProvider explorerId={explorerId}>
       <CwdBreadcrumbsContainer hide={!isActiveExplorer} customTitleBarUsed={customTitleBarUsed}>
         <CwdBreadcrumbs />
       </CwdBreadcrumbsContainer>

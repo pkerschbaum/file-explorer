@@ -288,17 +288,17 @@ export function setFilterInput(explorerId: string, newValue: string): void {
 
 export function setKeysOfSelectedResources(
   explorerId: string,
-  newKeysOrUpdateFn: RenameHistoryKeys[] | UpdateFn<RenameHistoryKeys[]>,
+  newValueOrUpdateFn: RenameHistoryKeys[] | UpdateFn<RenameHistoryKeys[]>,
 ): void {
   const currentSelection = extractCurrentSegmentFromExplorerPanel(
     storeRef.current.getState().explorersSlice.explorerPanels[explorerId],
   ).selection;
 
   let newValue;
-  if (typeof newKeysOrUpdateFn === 'function') {
-    newValue = newKeysOrUpdateFn(currentSelection.keysOfSelectedResources);
+  if (typeof newValueOrUpdateFn === 'function') {
+    newValue = newValueOrUpdateFn(currentSelection.keysOfSelectedResources);
   } else {
-    newValue = newKeysOrUpdateFn;
+    newValue = newValueOrUpdateFn;
   }
 
   dispatchRef.current(
