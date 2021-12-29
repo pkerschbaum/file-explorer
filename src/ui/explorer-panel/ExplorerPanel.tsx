@@ -31,25 +31,43 @@ export const ExplorerPanel = React.memo<ExplorerPanelProps>(function ExplorerPan
   const focusedExplorerId = useIdOfFocusedExplorerPanel();
 
   const isActiveExplorer = explorerId === focusedExplorerId;
+  const activeAnimationVariant = isActiveExplorer ? 'open' : 'closed';
 
   return (
     <ExplorerContextProvider explorerId={explorerId}>
-      <CwdBreadcrumbsContainer hide={!isActiveExplorer} customTitleBarUsed={customTitleBarUsed}>
+      <CwdBreadcrumbsContainer
+        variants={{
+          closed: { display: 'none' },
+          open: { display: 'block' },
+        }}
+        animate={activeAnimationVariant}
+        customTitleBarUsed={customTitleBarUsed}
+      >
         <CwdBreadcrumbs />
       </CwdBreadcrumbsContainer>
-      <ActionsBarContainer hide={!isActiveExplorer}>
+      <ActionsBarContainer
+        variants={{
+          closed: { display: 'none' },
+          open: { display: 'block' },
+        }}
+        animate={activeAnimationVariant}
+      >
         <ActionsBar />
       </ActionsBarContainer>
-      <ResourcesViewContainer hide={!isActiveExplorer}>
+      <ResourcesViewContainer
+        variants={{
+          closed: { display: 'none' },
+          open: { display: 'flex' },
+        }}
+        animate={activeAnimationVariant}
+      >
         <ResourcesView />
       </ResourcesViewContainer>
     </ExplorerContextProvider>
   );
 });
 
-const CwdBreadcrumbsContainer = styled(Box)<{ hide: boolean; customTitleBarUsed: boolean }>`
-  visibility: ${({ hide }) => (hide ? 'hidden' : undefined)};
-
+const CwdBreadcrumbsContainer = styled(Box)<{ customTitleBarUsed: boolean }>`
   /* If a custom title bar is used, overlap the CwdBreadcrumbs with the WindowDragRegion above it */
   ${({ customTitleBarUsed }) => {
     if (customTitleBarUsed) {
@@ -64,15 +82,11 @@ const CwdBreadcrumbsContainer = styled(Box)<{ hide: boolean; customTitleBarUsed:
   grid-area: ${EXPLORER_CWDBREADCRUMBS_GRID_AREA};
 `;
 
-const ActionsBarContainer = styled(Box)<{ hide: boolean }>`
-  visibility: ${({ hide }) => (hide ? 'hidden' : undefined)};
-
+const ActionsBarContainer = styled(Box)`
   grid-area: ${EXPLORER_ACTIONSBAR_GRID_AREA};
 `;
 
-const ResourcesViewContainer = styled(Box)<{ hide: boolean }>`
-  visibility: ${({ hide }) => (hide ? 'hidden' : undefined)};
-
+const ResourcesViewContainer = styled(Box)`
   grid-area: ${EXPLORER_RESOURCESVIEW_GRID_AREA};
   min-height: 0;
   height: 100%;
@@ -80,7 +94,6 @@ const ResourcesViewContainer = styled(Box)<{ hide: boolean }>`
 
   /* add some padding-top for optical alignment */
   padding-top: 1px;
-  display: flex;
   flex-direction: column;
   align-items: stretch;
 `;
