@@ -1,3 +1,5 @@
+import * as platform from '@pkerschbaum/code-oss-file-service/out/vs/base/common/platform';
+import * as resources from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
 import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 
 import { check } from '@app/base/utils/assert.util';
@@ -6,7 +8,7 @@ import { numbers } from '@app/base/utils/numbers.util';
 import { i18n } from '@app/domain/i18n';
 import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
 
-export const formatter = { bytes, date, resourceExtension, resourcePath };
+export const formatter = { bytes, date, resourceExtension, resourcePath, uriSegments };
 
 function bytes(numberOfBytes: number, options?: { unit: ByteUnit }): string {
   let unitToUse = options?.unit;
@@ -49,4 +51,21 @@ function resourceExtension(resource: Pick<ResourceForUI, 'extension' | 'resource
 
 function resourcePath(resource: UriComponents): string {
   return URI.from(resource).fsPath;
+}
+
+function uriSegments(segments: UriComponents[]): string[] {
+  const formattedSegments = segments.map((uriSegment) => resources.basename(URI.from(uriSegment)));
+
+  // if the first segment is empty, it is the root directory of a unix system.
+  if (check.isEmptyString(formattedSegments[0])) {
+    formattedSegments[0] = '<root>';
+  }
+  // for windows, make drive letter upper case
+  if (platform.isWindows) {
+    const driveLetterUpperCased = formattedSegments[0][0].toLocaleUpperCase();
+    const remainingPart = formattedSegments[0].slice(1);
+    formattedSegments[0] = `${driveLetterUpperCased}${remainingPart}`;
+  }
+
+  return formattedSegments;
 }

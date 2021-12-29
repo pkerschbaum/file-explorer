@@ -1,5 +1,4 @@
 import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
-import * as platform from '@pkerschbaum/code-oss-file-service/out/vs/base/common/platform';
 import * as resources from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
 import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 
@@ -44,7 +43,7 @@ function getComparisonKey(uri: UriComponents): string {
   return resources.extUri.getComparisonKey(URI.from(uri));
 }
 
-function splitUriIntoSegments(uri: UriComponents) {
+function splitUriIntoSegments(uri: UriComponents): UriComponents[] {
   // compute segments of URI
   let uriSegments: URI[] = [URI.from(uri)];
   let currentUriSegment = uriSegments[0];
@@ -70,23 +69,7 @@ function splitUriIntoSegments(uri: UriComponents) {
   }
   uriSegments = uriSegments.reverse();
 
-  const segmentsWithFormatting = uriSegments.map((uriSegment) => ({
-    uri: uriSegment,
-    formatted: resources.basename(uriSegment),
-  }));
-
-  // if the first segment is empty, it is the root directory of a unix system.
-  if (check.isEmptyString(segmentsWithFormatting[0].formatted)) {
-    segmentsWithFormatting[0].formatted = '<root>';
-  }
-  // for windows, make drive letter upper case
-  if (platform.isWindows) {
-    const driveLetterUpperCased = segmentsWithFormatting[0].formatted[0].toLocaleUpperCase();
-    const remainingPart = segmentsWithFormatting[0].formatted.slice(1);
-    segmentsWithFormatting[0].formatted = `${driveLetterUpperCased}${remainingPart}`;
-  }
-
-  return segmentsWithFormatting;
+  return uriSegments.map((uri) => uri.toJSON());
 }
 
 function getDistinctParents(resources: UriComponents[]): UriComponents[] {

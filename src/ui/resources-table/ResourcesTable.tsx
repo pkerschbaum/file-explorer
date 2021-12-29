@@ -6,7 +6,7 @@ import { assertIsUnreachable } from '@app/base/utils/assert.util';
 import { formatter } from '@app/base/utils/formatter.util';
 import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
 import { startNativeFileDnD } from '@app/operations/app.operations';
-import { openResource } from '@app/operations/explorer.operations';
+import { openResources } from '@app/operations/explorer.operations';
 import { removeTagsFromResources } from '@app/operations/resource.operations';
 import { commonStyles } from '@app/ui/common-styles';
 import { Box, Chip, Skeleton, TextField, useVirtual } from '@app/ui/components-library';
@@ -31,10 +31,12 @@ import {
   useDataAvailable,
   useRegisterExplorerShortcuts,
   useKeyOfLastSelectedResource,
+  useScrollTop,
+  useSetScrollTop,
 } from '@app/ui/explorer-context';
 import { ResourceIcon } from '@app/ui/resource-icon';
 import { ResourceRenameInput } from '@app/ui/resource-rename-input';
-import { usePrevious } from '@app/ui/utils/react.util';
+import { usePrevious, useRunCallbackOnMount, useThrottleFn } from '@app/ui/utils/react.util';
 
 const ROW_HEIGHT = 38;
 const ICON_SIZE = 24;
@@ -43,8 +45,21 @@ const VIRTUALIZE_TABLE_BODY_THRESHOLD = 1000;
 export const ResourcesTable: React.FC = () => {
   const tableContainerRef = React.useRef<HTMLDivElement>(null);
 
+  const scrollTop = useScrollTop();
+  const setScrollTop = useSetScrollTop();
+  const throttledSetScrollTop = useThrottleFn(setScrollTop, 200);
+
+  useRunCallbackOnMount(function setInitialScrollTop() {
+    invariant(tableContainerRef.current);
+    tableContainerRef.current.scrollTop = scrollTop;
+  });
+
   return (
-    <DataTable ref={tableContainerRef} labels={{ table: 'Table of resources' }}>
+    <DataTable
+      ref={tableContainerRef}
+      labels={{ table: 'Table of resources' }}
+      onScroll={(e) => throttledSetScrollTop(e.currentTarget.scrollTop)}
+    >
       <StyledTableHead>
         <Row>
           <NameHeadCell>Name</NameHeadCell>
@@ -302,7 +317,7 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
           shift: e.shiftKey,
         })
       }
-      onDoubleClick={() => openResource(explorerId, resourceForRow)}
+      onDoubleClick={() => openResources(explorerId, [resourceForRow])}
       isSelectable
       isSelected={isResourceSelected}
       style={rowStyleForVirtualization}

@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import invariant from 'tiny-invariant';
 
-import { assertIsUnreachable } from '@app/base/utils/assert.util';
+import { assertIsUnreachable, check } from '@app/base/utils/assert.util';
 import { formatter } from '@app/base/utils/formatter.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { useDraftPasteState } from '@app/global-state/slices/processes.hooks';
@@ -326,6 +326,7 @@ const FilterInput: React.FC<FilterInputProps> = ({ filterInputRef }) => {
       inputProps={DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED.datasetAttr}
       placeholder="Filter"
       aria-label="Filter"
+      autoFocus={check.isNonEmptyString(filterInput)}
       value={filterInput}
       onChange={(newValue) => {
         const trimmedValue = newValue.trimStart();

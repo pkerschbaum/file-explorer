@@ -4,20 +4,20 @@ import { arrays } from '@app/base/utils/arrays.util';
 import { check } from '@app/base/utils/assert.util';
 import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
 import { isResourceQualifiedForThumbnail } from '@app/operations/app.operations';
-import { useSetActiveResourcesView } from '@app/ui/explorer-context';
 import {
-  ExplorerContextProviderProps,
-  ExplorerState,
+  useActiveResourcesView,
+  useExplorerId,
+  useFilterInput,
+  useKeysOfSelectedResources,
+  useSetActiveResourcesView,
   useSetKeysOfSelectedResources,
-} from '@app/ui/explorer-context/ExplorerState.context';
+} from '@app/ui/explorer-context';
 import { useEnrichResourcesWithTags, useResourcesForUI } from '@app/ui/hooks/resources.hooks';
 import { createSelectableContext, usePrevious } from '@app/ui/utils/react.util';
 
 const USE_GALLERY_VIEW_PERCENTAGE = 0.75;
 
 type ExplorerDerivedValuesContext = {
-  explorerId: string;
-  isActiveExplorer: boolean;
   dataAvailable: boolean;
   resourcesToShow: ResourceForUI[];
   selectedShownResources: ResourceForUI[];
@@ -28,48 +28,21 @@ const selectableContext =
 const useExplorerDerivedValuesSelector = selectableContext.useContextSelector;
 const DerivedValuesContextProvider = selectableContext.Provider;
 
-type ExplorerDerivedValuesContextProviderProps = ExplorerContextProviderProps & {
-  explorerState: ExplorerState;
+type ExplorerDerivedValuesContextProviderProps = {
+  children: React.ReactNode;
 };
 
 export const ExplorerDerivedValuesContextProvider: React.FC<
   ExplorerDerivedValuesContextProviderProps
-> = ({ explorerState, explorerId, isActiveExplorer, children }) => {
+> = ({ children }) => {
+  const explorerId = useExplorerId();
+  const filterInput = useFilterInput();
+  const keysOfSelectedResources = useKeysOfSelectedResources();
+  const activeResourcesView = useActiveResourcesView();
   const setKeysOfSelectedResources = useSetKeysOfSelectedResources();
   const setActiveResourcesView = useSetActiveResourcesView();
 
   const { resources, dataAvailable } = useResourcesForUI(explorerId);
-
-  React.useEffect(
-    function setInitialResourcesViewAfterResourcesGotLoaded() {
-      if (explorerState.activeResourcesView !== undefined) {
-        return;
-      }
-
-      if (!dataAvailable) {
-        return;
-      }
-
-      const files = resources.filter((resource) => resource.resourceType === RESOURCE_TYPE.FILE);
-      const filesQualifiedForThumbnails = files.filter((file) =>
-        isResourceQualifiedForThumbnail(file),
-      );
-
-      /**
-       * If enough files can get thumbnails, boot into "gallery" view.
-       * The user can toggle the view afterwards
-       */
-      if (
-        files.length > 0 &&
-        filesQualifiedForThumbnails.length / files.length >= USE_GALLERY_VIEW_PERCENTAGE
-      ) {
-        setActiveResourcesView('gallery');
-      } else {
-        setActiveResourcesView('table');
-      }
-    },
-    [dataAvailable, explorerState.activeResourcesView, resources, setActiveResourcesView],
-  );
 
   const resourcesWithTags = useEnrichResourcesWithTags(resources);
 
@@ -82,7 +55,7 @@ export const ExplorerDerivedValuesContextProvider: React.FC<
   const resourcesToShow: ResourceForUI[] = React.useMemo(() => {
     let result;
 
-    if (check.isEmptyString(explorerState.filterInput)) {
+    if (check.isEmptyString(filterInput)) {
       result = arrays
         .wrap(resourcesWithTags)
         .stableSort((a, b) => {
@@ -108,20 +81,20 @@ export const ExplorerDerivedValuesContextProvider: React.FC<
     } else {
       result = arrays
         .wrap(resourcesWithTags)
-        .matchSort(explorerState.filterInput, {
+        .matchSort(filterInput, {
           keys: [(resource) => resource.basename],
         })
         .getValue();
     }
 
     return result;
-  }, [explorerState.filterInput, resourcesWithTags]);
+  }, [filterInput, resourcesWithTags]);
 
   const { selectedShownResources, didApplySelectionFallback } = React.useMemo(() => {
     const result: ResourceForUI[] = [];
     let didApplySelectionFallback = false;
 
-    for (const renameHistoryKeys of explorerState.selection.keysOfSelectedResources) {
+    for (const renameHistoryKeys of keysOfSelectedResources) {
       for (const key of arrays.reverse(renameHistoryKeys)) {
         const resource = resourcesToShow.find((r) => r.key === key);
         if (resource) {
@@ -138,7 +111,7 @@ export const ExplorerDerivedValuesContextProvider: React.FC<
     }
 
     return { selectedShownResources: result, didApplySelectionFallback };
-  }, [explorerState.selection.keysOfSelectedResources, resourcesToShow]);
+  }, [keysOfSelectedResources, resourcesToShow]);
 
   /*
    * If selection fallback was applied  (i.e. "keysOfSelectedResources" did not match any currently
@@ -152,19 +125,46 @@ export const ExplorerDerivedValuesContextProvider: React.FC<
   }, [selectedShownResources, didApplySelectionFallback, setKeysOfSelectedResources]);
 
   // every time the filter input changes, reset selection
-  const prevFilterInput = usePrevious(explorerState.filterInput);
-  const filterInputChanged = explorerState.filterInput !== prevFilterInput;
+  const prevFilterInput = usePrevious(filterInput);
+  const filterInputChanged = filterInput !== prevFilterInput;
   React.useEffect(() => {
     if (filterInputChanged && resourcesToShow.length > 0) {
       setKeysOfSelectedResources([[resourcesToShow[0].key]]);
     }
   }, [resourcesToShow, filterInputChanged, setKeysOfSelectedResources]);
 
+  // once we got resources loaded, determine and set the resource view mode which should be initially used
+  React.useEffect(() => {
+    if (activeResourcesView !== undefined) {
+      return;
+    }
+
+    if (!dataAvailable) {
+      return;
+    }
+
+    const files = resources.filter((resource) => resource.resourceType === RESOURCE_TYPE.FILE);
+    const filesQualifiedForThumbnails = files.filter((file) =>
+      isResourceQualifiedForThumbnail(file),
+    );
+
+    /**
+     * If enough files can get thumbnails, boot into "gallery" view.
+     * The user can toggle the view afterwards
+     */
+    if (
+      files.length > 0 &&
+      filesQualifiedForThumbnails.length / files.length >= USE_GALLERY_VIEW_PERCENTAGE
+    ) {
+      setActiveResourcesView('gallery');
+    } else {
+      setActiveResourcesView('table');
+    }
+  }, [dataAvailable, activeResourcesView, resources, setActiveResourcesView]);
+
   return (
     <DerivedValuesContextProvider
       value={{
-        explorerId,
-        isActiveExplorer,
         dataAvailable,
         resourcesToShow,
         selectedShownResources,
@@ -175,20 +175,12 @@ export const ExplorerDerivedValuesContextProvider: React.FC<
   );
 };
 
-export function useExplorerId() {
-  return useExplorerDerivedValuesSelector((explorerValues) => explorerValues.explorerId);
-}
-
-export function useIsActiveExplorer() {
-  return useExplorerDerivedValuesSelector((explorerValues) => explorerValues.isActiveExplorer);
+export function useDataAvailable() {
+  return useExplorerDerivedValuesSelector((explorerValues) => explorerValues.dataAvailable);
 }
 
 export function useResourcesToShow() {
   return useExplorerDerivedValuesSelector((explorerValues) => explorerValues.resourcesToShow);
-}
-
-export function useDataAvailable() {
-  return useExplorerDerivedValuesSelector((explorerValues) => explorerValues.dataAvailable);
 }
 
 export function useSelectedShownResources() {

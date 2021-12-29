@@ -23,7 +23,6 @@ const Template: ComponentStory<typeof ResourcesGallery> = (args, { loaded }) => 
   <ExplorerContextProvider
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     explorerId={(loaded.store as RootStore).getState().explorersSlice.focusedExplorerPanelId!}
-    isActiveExplorer
   >
     <ResourcesGallery {...args} />
   </ExplorerContextProvider>

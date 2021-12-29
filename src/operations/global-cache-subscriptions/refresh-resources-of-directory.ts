@@ -113,7 +113,7 @@ function addDirectoryWatcherIfNonePresent(
   } else {
     logger.debug('no directory watcher present --> creating (throttled) watcher...', { queryKey });
     const watcherDisposable = fileSystemRef.current.watch(directoryUri);
-    const throttledRefreshResourcesOfDirectory = functions.throttle(
+    const [throttledRefreshResourcesOfDirectory] = functions.throttle(
       refreshResourcesOfDirectory,
       200,
     );

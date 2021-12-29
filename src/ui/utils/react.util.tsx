@@ -2,6 +2,7 @@ import { Event } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/eve
 import * as React from 'react';
 import * as useContextSelectorLib from 'use-context-selector';
 
+import { functions } from '@app/base/utils/functions.util';
 import { FunctionType } from '@app/base/utils/types.util';
 
 export type EventHandler<E extends keyof WindowEventMap> = {
@@ -30,9 +31,9 @@ export function useWindowEvent<E extends keyof WindowEventMap>(
   }, [event, eventHandlers]);
 }
 
-// https://reactjs.org/docs/hooks-faq.html#how-to-get-the-previous-props-or-state
+// based on https://reactjs.org/docs/hooks-faq.html#how-to-get-the-previous-props-or-state
 export function usePrevious<T>(value: T) {
-  const ref = React.useRef<T>();
+  const ref = React.useRef(value);
   React.useEffect(() => {
     ref.current = value;
   });
@@ -78,6 +79,25 @@ export function useRerenderOnEventFire<T>(event: Event<T>, shouldRerender: (valu
     },
     [event, shouldRerender],
   );
+}
+
+export function useThrottleFn<ThisType, Params extends any[]>(
+  fn: (this: ThisType, ...params: Params) => unknown,
+  limit: number,
+) {
+  const [throttledFn, finishTrailingCall] = React.useMemo(
+    () => functions.throttle(fn, limit),
+    [fn, limit],
+  );
+
+  React.useEffect(
+    function finishTrailingCallOnUnmount() {
+      return () => finishTrailingCall();
+    },
+    [finishTrailingCall],
+  );
+
+  return throttledFn;
 }
 
 const SYMBOL_CONTEXT_NOT_FOUND = Symbol('ContextNotFound');
@@ -144,6 +164,14 @@ function useLatestValueRef<T>(value: T) {
   });
 
   return valueRef;
+}
+
+export function useRunCallbackOnMount(callback: FunctionType<[], void>) {
+  const latestCallbackRef = useLatestValueRef(callback);
+  React.useEffect(() => {
+    const latestCallback = latestCallbackRef.current;
+    latestCallback();
+  }, [latestCallbackRef]);
 }
 
 export function useRunCallbackOnUnmount(callback: FunctionType<[], void>) {

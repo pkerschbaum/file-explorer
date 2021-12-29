@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { Box, IconButton, SettingsIcon } from '@app/ui/components-library';
 
-export const USER_PREFERENCES_BUTTON_GRID_AREA = 'shell-app-settings-button';
+export const USER_PREFERENCES_SETTINGS_BUTTON_GRID_AREA = 'shell-app-settings-button';
 
 type UserPreferencesButtonProps = {
   userPreferencesSidebarOpen: boolean;
@@ -32,7 +32,7 @@ export const UserPreferencesButton: React.FC<UserPreferencesButtonProps> = ({
 };
 
 const UserPreferencesButtonContainer = styled(Box)`
-  grid-area: ${USER_PREFERENCES_BUTTON_GRID_AREA};
+  grid-area: ${USER_PREFERENCES_SETTINGS_BUTTON_GRID_AREA};
 
   display: flex;
   justify-content: flex-end;

@@ -12,9 +12,17 @@ import { CustomError } from '@app/base/custom-error';
 import { check } from '@app/base/utils/assert.util';
 import { formatter } from '@app/base/utils/formatter.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
-import { PASTE_PROCESS_STATUS, ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
+import { PASTE_PROCESS_STATUS, ResourceForUI, RESOURCE_TYPE, UpdateFn } from '@app/domain/types';
 import { refreshResourcesOfDirectory } from '@app/global-cache/resources';
-import { actions as explorerActions } from '@app/global-state/slices/explorers.slice';
+import {
+  extractCurrentSegmentFromExplorerPanel,
+  extractCwdFromExplorerPanel,
+} from '@app/global-state/slices/explorers.hooks';
+import {
+  actions as explorerActions,
+  RenameHistoryKeys,
+  ResourcesView,
+} from '@app/global-state/slices/explorers.slice';
 import { actions as processesActions } from '@app/global-state/slices/processes.slice';
 import { createLogger } from '@app/operations/create-logger';
 import {
@@ -28,16 +36,20 @@ import { executeCopyOrMove, openFiles, resolveDeep } from '@app/operations/resou
 const UPDATE_INTERVAL_MS = 500;
 const logger = createLogger('explorer.hooks');
 
-export async function openResource(explorerId: string, resource: ResourceForUI) {
-  if (resource.resourceType === RESOURCE_TYPE.DIRECTORY) {
-    await changeDirectory(explorerId, URI.from(resource.uri));
+export async function openResources(explorerId: string, resources: ResourceForUI[]) {
+  if (resources.length === 1 && resources[0].resourceType === RESOURCE_TYPE.DIRECTORY) {
+    await changeDirectory(explorerId, URI.from(resources[0].uri));
   } else {
-    await openFiles([resource.uri]);
+    await openFiles(
+      resources
+        .filter((resource) => resource.resourceType === RESOURCE_TYPE.FILE)
+        .map((resource) => resource.uri),
+    );
   }
 }
 
-export async function changeDirectory(explorerId: string, newDir: URI) {
-  const stats = await fileSystemRef.current.resolve(newDir);
+export async function changeDirectory(explorerId: string, newDir: UriComponents) {
+  const stats = await fileSystemRef.current.resolve(URI.from(newDir));
   if (!stats.isDirectory) {
     throw Error(
       `could not change directory, reason: uri is not a valid directory. uri: ${formatter.resourcePath(
@@ -47,9 +59,8 @@ export async function changeDirectory(explorerId: string, newDir: URI) {
   }
 
   // change to the new directory and refresh resources of that directory
-  const newCwd = newDir.toJSON();
-  dispatchRef.current(explorerActions.changeCwd({ explorerId, newCwd }));
-  await refreshResourcesOfDirectory({ directory: newCwd });
+  dispatchRef.current(explorerActions.changeCwd({ explorerId, newCwd: newDir }));
+  await refreshResourcesOfDirectory({ directory: newDir });
 }
 
 export async function pasteResources(explorerId: string) {
@@ -61,7 +72,9 @@ export async function pasteResources(explorerId: string) {
     return;
   }
 
-  const cwd = storeRef.current.getState().explorersSlice.explorerPanels[explorerId].cwd;
+  const cwd = extractCwdFromExplorerPanel(
+    storeRef.current.getState().explorersSlice.explorerPanels[explorerId],
+  );
   const destinationFolder = URI.from(cwd);
   const destinationFolderStat = await fileSystemRef.current.resolve(destinationFolder);
   const id = uuid.generateUuid();
@@ -250,7 +263,9 @@ export async function pasteResources(explorerId: string) {
 }
 
 export async function createFolder(explorerId: string, folderName: string) {
-  const cwd = storeRef.current.getState().explorersSlice.explorerPanels[explorerId].cwd;
+  const cwd = extractCwdFromExplorerPanel(
+    storeRef.current.getState().explorersSlice.explorerPanels[explorerId],
+  );
   const folderUri = URI.joinPath(URI.from(cwd), folderName);
   await fileSystemRef.current.createFolder(folderUri);
 
@@ -259,8 +274,69 @@ export async function createFolder(explorerId: string, folderName: string) {
 }
 
 export async function revealCwdInOSExplorer(explorerId: string) {
-  const cwd = storeRef.current.getState().explorersSlice.explorerPanels[explorerId].cwd;
+  const cwd = extractCwdFromExplorerPanel(
+    storeRef.current.getState().explorersSlice.explorerPanels[explorerId],
+  );
   await nativeHostRef.current.shell.revealResourcesInOS([cwd]);
+}
+
+export function setFilterInput(explorerId: string, newValue: string): void {
+  dispatchRef.current(
+    explorerActions.updateCurrentCwdSegment({ explorerId, filterInput: newValue }),
+  );
+}
+
+export function setKeysOfSelectedResources(
+  explorerId: string,
+  newValueOrUpdateFn: RenameHistoryKeys[] | UpdateFn<RenameHistoryKeys[]>,
+): void {
+  const currentSelection = extractCurrentSegmentFromExplorerPanel(
+    storeRef.current.getState().explorersSlice.explorerPanels[explorerId],
+  ).selection;
+
+  let newValue;
+  if (typeof newValueOrUpdateFn === 'function') {
+    newValue = newValueOrUpdateFn(currentSelection.keysOfSelectedResources);
+  } else {
+    newValue = newValueOrUpdateFn;
+  }
+
+  dispatchRef.current(
+    explorerActions.updateCurrentCwdSegment({
+      explorerId,
+      selection: {
+        keysOfSelectedResources: newValue,
+        keyOfResourceSelectionGotStartedWith:
+          newValue.length === 1
+            ? newValue[0]
+            : currentSelection.keyOfResourceSelectionGotStartedWith,
+      },
+    }),
+  );
+}
+
+export function setActiveResourcesView(
+  explorerId: string,
+  newValueOrUpdateFn: ResourcesView | UpdateFn<ResourcesView>,
+): void {
+  const currentValue = extractCurrentSegmentFromExplorerPanel(
+    storeRef.current.getState().explorersSlice.explorerPanels[explorerId],
+  ).activeResourcesView;
+
+  let newValue;
+  if (typeof newValueOrUpdateFn === 'function') {
+    newValue = newValueOrUpdateFn(currentValue);
+  } else {
+    newValue = newValueOrUpdateFn;
+  }
+
+  dispatchRef.current(
+    explorerActions.updateCurrentCwdSegment({ explorerId, activeResourcesView: newValue }),
+  );
+}
+
+export function setScrollTop(explorerId: string, newValue: undefined | number): void {
+  dispatchRef.current(explorerActions.updateCurrentCwdSegment({ explorerId, scrollTop: newValue }));
 }
 
 function findValidPasteTarget(

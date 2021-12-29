@@ -65,10 +65,16 @@ export function usePopover<TriggerHTMLElement extends HTMLElement>(
   React.useEffect(
     function updatePositionOnTargetMovement() {
       if (props.triggerRef.current && state.isOpen) {
-        const throttledUpdatePosition = functions.throttle(updatePosition, 20);
+        const [throttledUpdatePosition, finishTrailingFnCall] = functions.throttle(
+          updatePosition,
+          20,
+        );
         const mutationObserver = new MutationObserver(throttledUpdatePosition);
         mutationObserver.observe(props.triggerRef.current, { attributes: true });
-        return () => mutationObserver.disconnect();
+        return () => {
+          mutationObserver.disconnect();
+          finishTrailingFnCall();
+        };
       }
     },
     [props.triggerRef, state.isOpen, updatePosition],
