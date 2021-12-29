@@ -157,4 +157,22 @@ describe('Shell [visual]', () => {
     cy.get('body').type('{ctrl}c');
     cy.document().matchImageSnapshot(`${getTestTitle()}_1_ctrl-and-c-pressed`);
   });
+
+  it('navigating down and up the file system should restore resources view state (filter, selection, ...)', () => {
+    const storybookIdToVisit = deriveIdFromMetadataAndExportName(
+      metadata,
+      varToString({ SimpleCase }),
+    );
+    bootstrap({ storybookIdToVisit });
+
+    cy.findByRole('textbox', { name: /Filter/i }).type('test folder');
+    cy.get('body').type('{downarrow}');
+    cy.document().matchImageSnapshot(`${getTestTitle()}_1_filter-and-selection-was-applied`);
+
+    cy.get('body').type('{enter}');
+    cy.document().matchImageSnapshot(`${getTestTitle()}_2_navigated-down`);
+
+    cy.get('body').type('{alt}{leftarrow}');
+    cy.document().matchImageSnapshot(`${getTestTitle()}_3_navigated-up-and-restored-state`);
+  });
 });

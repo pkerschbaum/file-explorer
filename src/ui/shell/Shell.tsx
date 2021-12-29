@@ -17,7 +17,7 @@ import { TitleBar, TITLE_BAR_GRID_AREA } from '@app/ui/shell/TitleBar';
 import {
   UserPreferencesButton,
   UserPreferencesSidebar,
-  USER_PREFERENCES_BUTTON_GRID_AREA,
+  USER_PREFERENCES_SETTINGS_BUTTON_GRID_AREA,
   USER_PREFERENCES_SIDEBAR_GRID_AREA,
 } from '@app/ui/user-preferences';
 
@@ -63,12 +63,12 @@ const CUSTOM_TITLE_BAR_GRID_CONFIGURATION = css<{ userPreferencesSidebarOpen: bo
     '${TITLE_BAR_GRID_AREA} ${TITLE_BAR_GRID_AREA} ${TITLE_BAR_GRID_AREA} ${({
       userPreferencesSidebarOpen,
     }) => userPreferencesSidebarOpen && TITLE_BAR_GRID_AREA}'
-    'shell-tabs-and-processes ${EXPLORER_CWDBREADCRUMBS_GRID_AREA} ${USER_PREFERENCES_BUTTON_GRID_AREA} ${({
+    'shell-tabs-and-processes ${EXPLORER_CWDBREADCRUMBS_GRID_AREA} ${USER_PREFERENCES_SETTINGS_BUTTON_GRID_AREA} ${({
       userPreferencesSidebarOpen,
-    }) => userPreferencesSidebarOpen && USER_PREFERENCES_BUTTON_GRID_AREA}'
-    'shell-tabs-and-processes ${EXPLORER_ACTIONSBAR_GRID_AREA} ${USER_PREFERENCES_BUTTON_GRID_AREA} ${({
+    }) => userPreferencesSidebarOpen && USER_PREFERENCES_SETTINGS_BUTTON_GRID_AREA}'
+    'shell-tabs-and-processes ${EXPLORER_ACTIONSBAR_GRID_AREA} ${USER_PREFERENCES_SETTINGS_BUTTON_GRID_AREA} ${({
       userPreferencesSidebarOpen,
-    }) => userPreferencesSidebarOpen && USER_PREFERENCES_BUTTON_GRID_AREA}'
+    }) => userPreferencesSidebarOpen && USER_PREFERENCES_SETTINGS_BUTTON_GRID_AREA}'
     'shell-tabs-and-processes ${EXPLORER_RESOURCESVIEW_GRID_AREA} ${EXPLORER_RESOURCESVIEW_GRID_AREA} ${({
       userPreferencesSidebarOpen,
     }) => userPreferencesSidebarOpen && USER_PREFERENCES_SIDEBAR_GRID_AREA}';
@@ -77,12 +77,12 @@ const CUSTOM_TITLE_BAR_GRID_CONFIGURATION = css<{ userPreferencesSidebarOpen: bo
 const NON_CUSTOM_TITLE_BAR_GRID_CONFIGURATION = css<{ userPreferencesSidebarOpen: boolean }>`
   grid-template-rows: max-content max-content 1fr max-content;
   grid-template-areas:
-    'shell-tabs-and-processes ${EXPLORER_CWDBREADCRUMBS_GRID_AREA} ${USER_PREFERENCES_BUTTON_GRID_AREA} ${({
+    'shell-tabs-and-processes ${EXPLORER_CWDBREADCRUMBS_GRID_AREA} ${USER_PREFERENCES_SETTINGS_BUTTON_GRID_AREA} ${({
       userPreferencesSidebarOpen,
-    }) => userPreferencesSidebarOpen && USER_PREFERENCES_BUTTON_GRID_AREA}'
-    'shell-tabs-and-processes ${EXPLORER_ACTIONSBAR_GRID_AREA} ${USER_PREFERENCES_BUTTON_GRID_AREA} ${({
+    }) => userPreferencesSidebarOpen && USER_PREFERENCES_SETTINGS_BUTTON_GRID_AREA}'
+    'shell-tabs-and-processes ${EXPLORER_ACTIONSBAR_GRID_AREA} ${USER_PREFERENCES_SETTINGS_BUTTON_GRID_AREA} ${({
       userPreferencesSidebarOpen,
-    }) => userPreferencesSidebarOpen && USER_PREFERENCES_BUTTON_GRID_AREA}'
+    }) => userPreferencesSidebarOpen && USER_PREFERENCES_SETTINGS_BUTTON_GRID_AREA}'
     'shell-tabs-and-processes ${EXPLORER_RESOURCESVIEW_GRID_AREA} ${EXPLORER_RESOURCESVIEW_GRID_AREA} ${({
       userPreferencesSidebarOpen,
     }) => userPreferencesSidebarOpen && USER_PREFERENCES_SIDEBAR_GRID_AREA}';
