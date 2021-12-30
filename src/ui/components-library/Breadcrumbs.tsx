@@ -66,7 +66,11 @@ export const BreadcrumbItem = styled((props: BreadcrumbItemProps) => {
   return (
     <>
       <BreadcrumbRoot {...delegatedProps}>{children}</BreadcrumbRoot>
-      {!isCurrent && <BreadcrumbSeparator aria-hidden="true">/</BreadcrumbSeparator>}
+      {!isCurrent && (
+        <BreadcrumbSeparator aria-hidden="true" layout>
+          /
+        </BreadcrumbSeparator>
+      )}
     </>
   );
 })``;

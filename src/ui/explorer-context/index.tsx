@@ -1,5 +1,3 @@
-import { uriHelper } from '@app/base/utils/uri-helper';
-import { useCwd } from '@app/global-state/slices/explorers.hooks';
 import { ExplorerDerivedValuesContextProvider } from '@app/ui/explorer-context/ExplorerDerivedValues.context';
 import { ExplorerOperationsContextProvider } from '@app/ui/explorer-context/ExplorerOperations.context';
 import { ExplorerRootContextProvider } from '@app/ui/explorer-context/ExplorerRoot.context';
@@ -18,16 +16,12 @@ type ExplorerContextProviderProps = {
 export const ExplorerContextProvider: React.FC<ExplorerContextProviderProps> = ({
   explorerId,
   children,
-}) => {
-  const cwd = useCwd(explorerId);
-
-  return (
-    <ExplorerRootContextProvider explorerId={explorerId}>
-      <ExplorerStateContextProvider key={uriHelper.getComparisonKey(cwd)}>
-        <ExplorerDerivedValuesContextProvider>
-          <ExplorerOperationsContextProvider>{children}</ExplorerOperationsContextProvider>
-        </ExplorerDerivedValuesContextProvider>
-      </ExplorerStateContextProvider>
-    </ExplorerRootContextProvider>
-  );
-};
+}) => (
+  <ExplorerRootContextProvider explorerId={explorerId}>
+    <ExplorerStateContextProvider>
+      <ExplorerDerivedValuesContextProvider>
+        <ExplorerOperationsContextProvider>{children}</ExplorerOperationsContextProvider>
+      </ExplorerDerivedValuesContextProvider>
+    </ExplorerStateContextProvider>
+  </ExplorerRootContextProvider>
+);

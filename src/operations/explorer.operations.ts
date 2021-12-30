@@ -48,19 +48,19 @@ export async function openResources(explorerId: string, resources: ResourceForUI
   }
 }
 
-export async function changeDirectory(explorerId: string, newDir: UriComponents) {
-  const stats = await fileSystemRef.current.resolve(URI.from(newDir));
+export async function changeDirectory(explorerId: string, newCwd: UriComponents) {
+  const stats = await fileSystemRef.current.resolve(URI.from(newCwd));
   if (!stats.isDirectory) {
     throw Error(
       `could not change directory, reason: uri is not a valid directory. uri: ${formatter.resourcePath(
-        newDir,
+        newCwd,
       )}`,
     );
   }
 
   // change to the new directory and refresh resources of that directory
-  dispatchRef.current(explorerActions.changeCwd({ explorerId, newCwd: newDir }));
-  await refreshResourcesOfDirectory({ directory: newDir });
+  dispatchRef.current(explorerActions.changeCwd({ explorerId, newCwd }));
+  await refreshResourcesOfDirectory({ directory: newCwd });
 }
 
 export async function pasteResources(explorerId: string) {

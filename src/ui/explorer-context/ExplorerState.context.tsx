@@ -2,6 +2,8 @@ import * as React from 'react';
 import { useImmer } from 'use-immer';
 
 import { UpdateFn } from '@app/domain/types';
+import { useCwd } from '@app/global-state/slices/explorers.hooks';
+import { useExplorerId } from '@app/ui/explorer-context/ExplorerRoot.context';
 import { createSelectableContext } from '@app/ui/utils/react.util';
 
 export type ExplorerState = {
@@ -24,12 +26,23 @@ type ExplorerContextProviderProps = {
   children: React.ReactNode;
 };
 
+const INITIAL_STATE = {
+  keyOfResourceToRename: undefined,
+};
 export const ExplorerStateContextProvider: React.FC<ExplorerContextProviderProps> = ({
   children,
 }) => {
-  const [explorerState, updateExplorerState] = useImmer<ExplorerState>({
-    keyOfResourceToRename: undefined,
-  });
+  const [explorerState, updateExplorerState] = useImmer<ExplorerState>(INITIAL_STATE);
+
+  const explorerId = useExplorerId();
+  const cwd = useCwd(explorerId);
+
+  React.useLayoutEffect(
+    function resetStateOnCwdChange() {
+      updateExplorerState(INITIAL_STATE);
+    },
+    [cwd, updateExplorerState],
+  );
 
   const explorerStateUpdateFunctions: ExplorerStateUpdateFunctions = React.useMemo(
     () => ({
