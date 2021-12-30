@@ -2,8 +2,9 @@ import * as React from 'react';
 import { useImmer } from 'use-immer';
 
 import { UpdateFn } from '@app/domain/types';
-import { useCwd } from '@app/global-state/slices/explorers.hooks';
-import { useExplorerId } from '@app/ui/explorer-context/ExplorerRoot.context';
+import { useSegmentUri } from '@app/global-state/slices/explorers.hooks';
+import { useSegmentIdx } from '@app/ui/explorer-context/ExplorerRoot.context';
+import { useExplorerId } from '@app/ui/explorer-panel/ExplorerPanel';
 import { createSelectableContext } from '@app/ui/utils/react.util';
 
 export type ExplorerState = {
@@ -35,13 +36,14 @@ export const ExplorerStateContextProvider: React.FC<ExplorerContextProviderProps
   const [explorerState, updateExplorerState] = useImmer<ExplorerState>(INITIAL_STATE);
 
   const explorerId = useExplorerId();
-  const cwd = useCwd(explorerId);
+  const segmentIdx = useSegmentIdx();
+  const segmentUri = useSegmentUri(explorerId, segmentIdx);
 
   React.useLayoutEffect(
-    function resetStateOnCwdChange() {
+    function resetStateOnUriChange() {
       updateExplorerState(INITIAL_STATE);
     },
-    [cwd, updateExplorerState],
+    [segmentUri, updateExplorerState],
   );
 
   const explorerStateUpdateFunctions: ExplorerStateUpdateFunctions = React.useMemo(

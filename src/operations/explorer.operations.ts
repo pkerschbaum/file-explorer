@@ -14,10 +14,7 @@ import { formatter } from '@app/base/utils/formatter.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { PASTE_PROCESS_STATUS, ResourceForUI, RESOURCE_TYPE, UpdateFn } from '@app/domain/types';
 import { refreshResourcesOfDirectory } from '@app/global-cache/resources';
-import {
-  extractCurrentSegmentFromExplorerPanel,
-  extractCwdFromExplorerPanel,
-} from '@app/global-state/slices/explorers.hooks';
+import { extractCwdFromExplorerPanel } from '@app/global-state/slices/explorers.hooks';
 import {
   actions as explorerActions,
   RenameHistoryKeys,
@@ -280,19 +277,20 @@ export async function revealCwdInOSExplorer(explorerId: string) {
   await nativeHostRef.current.shell.revealResourcesInOS([cwd]);
 }
 
-export function setFilterInput(explorerId: string, newValue: string): void {
+export function setFilterInput(explorerId: string, segmentIdx: number, newValue: string): void {
   dispatchRef.current(
-    explorerActions.updateCurrentCwdSegment({ explorerId, filterInput: newValue }),
+    explorerActions.updateCwdSegment({ explorerId, segmentIdx, filterInput: newValue }),
   );
 }
 
 export function setKeysOfSelectedResources(
   explorerId: string,
+  segmentIdx: number,
   newValueOrUpdateFn: RenameHistoryKeys[] | UpdateFn<RenameHistoryKeys[]>,
 ): void {
-  const currentSelection = extractCurrentSegmentFromExplorerPanel(
-    storeRef.current.getState().explorersSlice.explorerPanels[explorerId],
-  ).selection;
+  const currentSelection =
+    storeRef.current.getState().explorersSlice.explorerPanels[explorerId].cwdSegments[segmentIdx]
+      .selection;
 
   let newValue;
   if (typeof newValueOrUpdateFn === 'function') {
@@ -302,8 +300,9 @@ export function setKeysOfSelectedResources(
   }
 
   dispatchRef.current(
-    explorerActions.updateCurrentCwdSegment({
+    explorerActions.updateCwdSegment({
       explorerId,
+      segmentIdx,
       selection: {
         keysOfSelectedResources: newValue,
         keyOfResourceSelectionGotStartedWith:
@@ -317,11 +316,12 @@ export function setKeysOfSelectedResources(
 
 export function setActiveResourcesView(
   explorerId: string,
+  segmentIdx: number,
   newValueOrUpdateFn: ResourcesView | UpdateFn<ResourcesView>,
 ): void {
-  const currentValue = extractCurrentSegmentFromExplorerPanel(
-    storeRef.current.getState().explorersSlice.explorerPanels[explorerId],
-  ).activeResourcesView;
+  const currentValue =
+    storeRef.current.getState().explorersSlice.explorerPanels[explorerId].cwdSegments[segmentIdx]
+      .activeResourcesView;
 
   let newValue;
   if (typeof newValueOrUpdateFn === 'function') {
@@ -331,12 +331,18 @@ export function setActiveResourcesView(
   }
 
   dispatchRef.current(
-    explorerActions.updateCurrentCwdSegment({ explorerId, activeResourcesView: newValue }),
+    explorerActions.updateCwdSegment({ explorerId, segmentIdx, activeResourcesView: newValue }),
   );
 }
 
-export function setScrollTop(explorerId: string, newValue: undefined | number): void {
-  dispatchRef.current(explorerActions.updateCurrentCwdSegment({ explorerId, scrollTop: newValue }));
+export function setScrollTop(
+  explorerId: string,
+  segmentIdx: number,
+  newValue: undefined | number,
+): void {
+  dispatchRef.current(
+    explorerActions.updateCwdSegment({ explorerId, segmentIdx, scrollTop: newValue }),
+  );
 }
 
 function findValidPasteTarget(

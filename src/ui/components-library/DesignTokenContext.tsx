@@ -191,6 +191,12 @@ const ANIMATIONS = {
       opacity: 1;
     }
   `,
+  ripple: keyframes`
+    to {
+      transform: scale(4);
+      opacity: 0;
+    }
+  `,
 };
 type FramerMotionAnimationNames = 'fadeInOut';
 type FramerMotionAnimations = {
@@ -284,6 +290,7 @@ export const DesignTokenProvider: React.FC = ({ children }) => {
           normal none running ${ANIMATIONS.moveLeftToRight1};
         --animation-move-left-to-right-2: 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) 1.15s infinite
           normal none running ${ANIMATIONS.moveLeftToRight2};
+        --animation-ripple: 500ms linear ${ANIMATIONS.ripple};
       `;
     } else {
       animations = css`
@@ -291,6 +298,7 @@ export const DesignTokenProvider: React.FC = ({ children }) => {
         --animation-pulsate: none;
         --animation-move-left-to-right-1: none;
         --animation-move-left-to-right-2: none;
+        --animation-ripple: none;
       `;
     }
 

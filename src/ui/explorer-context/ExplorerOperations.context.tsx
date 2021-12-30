@@ -7,7 +7,7 @@ import { ResourceForUI } from '@app/domain/types';
 import { createFolder, openResources, pasteResources } from '@app/operations/explorer.operations';
 import * as resourceOperations from '@app/operations/resource.operations';
 import {
-  useExplorerId,
+  useIsActiveCwdSegment,
   useIsActiveExplorer,
   useKeyOfResourceSelectionGotStartedWith,
   useResourcesToShow,
@@ -15,6 +15,7 @@ import {
   useSetKeyOfResourceToRename,
   useSetKeysOfSelectedResources,
 } from '@app/ui/explorer-context';
+import { useExplorerId } from '@app/ui/explorer-panel/ExplorerPanel';
 import {
   ShortcutMap,
   useRegisterGlobalShortcuts,
@@ -248,14 +249,16 @@ export function useSelectAll() {
   return useExplorerOperationsSelector((actions) => actions.selectAll);
 }
 
-export function useRegisterExplorerShortcuts<ActualShortcutMap extends ShortcutMap>(
+export function useRegisterCwdSegmentShortcuts<ActualShortcutMap extends ShortcutMap>(
   shortcutMap: ActualShortcutMap,
 ): Partial<RegisterShortcutsResultMap<ActualShortcutMap>> {
   const isActiveExplorer = useIsActiveExplorer();
-  return useRegisterGlobalShortcuts(!isActiveExplorer ? {} : shortcutMap);
+  const isActiveCwdSegment = useIsActiveCwdSegment();
+  return useRegisterGlobalShortcuts(isActiveExplorer && isActiveCwdSegment ? shortcutMap : {});
 }
 
-export function useRegisterExplorerAuxclickHandler(eventHandlers: EventHandler<'auxclick'>[]) {
+export function useRegisterCwdSegmentAuxclickHandler(eventHandlers: EventHandler<'auxclick'>[]) {
   const isActiveExplorer = useIsActiveExplorer();
-  useWindowEvent('auxclick', !isActiveExplorer ? [] : eventHandlers);
+  const isActiveCwdSegment = useIsActiveCwdSegment();
+  useWindowEvent('auxclick', isActiveExplorer && isActiveCwdSegment ? eventHandlers : []);
 }

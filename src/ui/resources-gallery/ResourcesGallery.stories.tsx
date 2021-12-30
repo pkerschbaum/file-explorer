@@ -1,7 +1,9 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react';
+import invariant from 'tiny-invariant';
 
 import { createStoreInstance, RootStore } from '@app/global-state/store';
 import { ExplorerContextProvider } from '@app/ui/explorer-context';
+import { ExplorerRootContextProvider } from '@app/ui/explorer-panel/ExplorerPanel';
 import { createQueryClient, Globals } from '@app/ui/Globals';
 import { ResourcesGallery } from '@app/ui/resources-gallery';
 
@@ -19,14 +21,21 @@ export default {
   ],
 } as ComponentMeta<typeof ResourcesGallery>;
 
-const Template: ComponentStory<typeof ResourcesGallery> = (args, { loaded }) => (
-  <ExplorerContextProvider
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    explorerId={(loaded.store as RootStore).getState().explorersSlice.focusedExplorerPanelId!}
-  >
-    <ResourcesGallery {...args} />
-  </ExplorerContextProvider>
-);
+const Template: ComponentStory<typeof ResourcesGallery> = (args, { loaded }) => {
+  const globalState = (loaded.store as RootStore).getState();
+  const explorerId = globalState.explorersSlice.focusedExplorerPanelId;
+  invariant(explorerId);
+  const currentSegmentIdx =
+    globalState.explorersSlice.explorerPanels[explorerId].cwdSegments.length - 1;
+
+  return (
+    <ExplorerRootContextProvider value={{ explorerId }}>
+      <ExplorerContextProvider segmentIdx={currentSegmentIdx}>
+        <ResourcesGallery {...args} />
+      </ExplorerContextProvider>
+    </ExplorerRootContextProvider>
+  );
+};
 
 export const DefaultCase = Template.bind({});
 DefaultCase.loaders = [

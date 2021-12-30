@@ -3,15 +3,17 @@ import * as React from 'react';
 import { arrays } from '@app/base/utils/arrays.util';
 import { check } from '@app/base/utils/assert.util';
 import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
+import { useSegmentUri } from '@app/global-state/slices/explorers.hooks';
 import { isResourceQualifiedForThumbnail } from '@app/operations/app.operations';
 import {
   useActiveResourcesView,
-  useExplorerId,
   useFilterInput,
   useKeysOfSelectedResources,
+  useSegmentIdx,
   useSetActiveResourcesView,
   useSetKeysOfSelectedResources,
 } from '@app/ui/explorer-context';
+import { useExplorerId } from '@app/ui/explorer-panel/ExplorerPanel';
 import { useEnrichResourcesWithTags, useResourcesForUI } from '@app/ui/hooks/resources.hooks';
 import { createSelectableContext, usePrevious } from '@app/ui/utils/react.util';
 
@@ -36,13 +38,16 @@ export const ExplorerDerivedValuesContextProvider: React.FC<
   ExplorerDerivedValuesContextProviderProps
 > = ({ children }) => {
   const explorerId = useExplorerId();
+  const segmentIdx = useSegmentIdx();
+
+  const uri = useSegmentUri(explorerId, segmentIdx);
   const filterInput = useFilterInput();
   const keysOfSelectedResources = useKeysOfSelectedResources();
   const activeResourcesView = useActiveResourcesView();
   const setKeysOfSelectedResources = useSetKeysOfSelectedResources();
   const setActiveResourcesView = useSetActiveResourcesView();
 
-  const { resources, dataAvailable } = useResourcesForUI(explorerId);
+  const { resources, dataAvailable } = useResourcesForUI(uri);
 
   const resourcesWithTags = useEnrichResourcesWithTags(resources);
 

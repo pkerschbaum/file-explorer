@@ -1,23 +1,30 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 
-import { useIdOfFocusedExplorerPanel } from '@app/global-state/slices/explorers.hooks';
+import { uriHelper } from '@app/base/utils/uri-helper';
+import {
+  useCwdSegments,
+  useIdOfFocusedExplorerPanel,
+} from '@app/global-state/slices/explorers.hooks';
 import { ActionsBar } from '@app/ui/actions-bar';
 import { Box } from '@app/ui/components-library';
-import { KEY } from '@app/ui/constants';
 import { CwdBreadcrumbs } from '@app/ui/cwd-breadcrumbs';
-import {
-  ExplorerContextProvider,
-  useActiveResourcesView,
-  useRegisterExplorerShortcuts,
-  useSelectAll,
-} from '@app/ui/explorer-context';
+import { ExplorerContextProvider, useActiveResourcesView } from '@app/ui/explorer-context';
 import { ResourcesGallery } from '@app/ui/resources-gallery';
 import { ResourcesTable } from '@app/ui/resources-table';
+import { createContext } from '@app/ui/utils/react.util';
 
 export const EXPLORER_CWDBREADCRUMBS_GRID_AREA = 'shell-explorer-cwd-breadcrumbs';
 export const EXPLORER_ACTIONSBAR_GRID_AREA = 'shell-explorer-actions-bar';
 export const EXPLORER_RESOURCESVIEW_GRID_AREA = 'shell-explorer-resources-view';
+
+const explorerRootContext = createContext<{ explorerId: string }>('ExplorerRootContext');
+const useExplorerRootContext = explorerRootContext.useContextValue;
+export const ExplorerRootContextProvider = explorerRootContext.Provider;
+
+export function useExplorerId() {
+  return useExplorerRootContext().explorerId;
+}
 
 type ExplorerPanelProps = {
   explorerId: string;
@@ -28,13 +35,14 @@ export const ExplorerPanel = React.memo<ExplorerPanelProps>(function ExplorerPan
   explorerId,
   customTitleBarUsed,
 }) {
+  const cwdSegments = useCwdSegments(explorerId);
   const focusedExplorerId = useIdOfFocusedExplorerPanel();
 
   const isActiveExplorer = explorerId === focusedExplorerId;
   const activeAnimationVariant = isActiveExplorer ? 'open' : 'closed';
 
   return (
-    <ExplorerContextProvider explorerId={explorerId}>
+    <ExplorerRootContextProvider value={{ explorerId }}>
       <CwdBreadcrumbsContainer
         variants={{
           closed: { display: 'none' },
@@ -45,25 +53,37 @@ export const ExplorerPanel = React.memo<ExplorerPanelProps>(function ExplorerPan
       >
         <CwdBreadcrumbs />
       </CwdBreadcrumbsContainer>
-      <ActionsBarContainer
-        variants={{
-          closed: { display: 'none' },
-          open: { display: 'block' },
-        }}
-        animate={activeAnimationVariant}
-      >
-        <ActionsBar />
-      </ActionsBarContainer>
-      <ResourcesViewContainer
-        variants={{
-          closed: { display: 'none' },
-          open: { display: 'flex' },
-        }}
-        animate={activeAnimationVariant}
-      >
-        <ResourcesView />
-      </ResourcesViewContainer>
-    </ExplorerContextProvider>
+
+      {cwdSegments.map((segment, idx) => {
+        const isLastSegment = idx === cwdSegments.length - 1;
+
+        return (
+          <ExplorerContextProvider key={uriHelper.getComparisonKey(segment.uri)} segmentIdx={idx}>
+            {isLastSegment && (
+              <ActionsBarContainer
+                variants={{
+                  closed: { display: 'none' },
+                  open: { display: 'block' },
+                }}
+                animate={activeAnimationVariant}
+              >
+                <ActionsBar />
+              </ActionsBarContainer>
+            )}
+
+            <ResourcesViewContainer
+              variants={{
+                closed: { display: 'none' },
+                open: { display: 'flex' },
+              }}
+              animate={activeAnimationVariant}
+            >
+              <ResourcesView />
+            </ResourcesViewContainer>
+          </ExplorerContextProvider>
+        );
+      })}
+    </ExplorerRootContextProvider>
   );
 });
 
@@ -96,29 +116,13 @@ const ResourcesViewContainer = styled(Box)`
   padding-top: 1px;
   flex-direction: column;
   align-items: stretch;
+
+  /* hide overflow for folder navigation animations */
+  overflow: hidden;
 `;
 
 const ResourcesView: React.FC = () => {
   const activeResourcesView = useActiveResourcesView();
-  const selectAll = useSelectAll();
-
-  useRegisterExplorerShortcuts({
-    selectAllShortcut: {
-      keybindings: [
-        {
-          key: KEY.A,
-          modifiers: {
-            ctrl: 'SET',
-            alt: 'NOT_SET',
-          },
-        },
-      ],
-      handler: (e) => {
-        e.preventDefault();
-        selectAll();
-      },
-    },
-  });
 
   return activeResourcesView === 'gallery' ? <ResourcesGallery /> : <ResourcesTable />;
 };

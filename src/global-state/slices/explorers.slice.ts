@@ -43,8 +43,10 @@ type RemoveExplorerPayload = {
   explorerId: string;
 };
 
-type UpdateCurrentCwdSegmentPayload = {
+type UpdateCwdSegmentPayload = {
   explorerId: string;
+  segmentIdx: number;
+
   filterInput?: string;
   selection?: {
     keysOfSelectedResources?: RenameHistoryKeys[];
@@ -71,9 +73,7 @@ export const actions = {
   addExplorer: createAction<AddExplorerPayload>('EXPLORER_ADDED'),
   markExplorerForRemoval: createAction<RemoveExplorerPayload>('EXPLORER_MARKED_FOR_REMOVAL'),
   removeExplorer: createAction<RemoveExplorerPayload>('EXPLORER_REMOVED'),
-  updateCurrentCwdSegment: createAction<UpdateCurrentCwdSegmentPayload>(
-    'CURRENT_CWD_SEGMENT_UPDATED',
-  ),
+  updateCwdSegment: createAction<UpdateCwdSegmentPayload>('CWD_SEGMENT_UPDATED'),
   changeCwd: createAction<ChangeCwdPayload>('CWD_CHANGED'),
   changeFocusedExplorer: createAction<ChangeFocusedExplorerPayload>('FOCUSED_EXPLORER_CHANGED'),
 };
@@ -116,8 +116,8 @@ export const reducer = createReducer(INITIAL_STATE, (builder) =>
 
       delete state.explorerPanels[explorerId];
     })
-    .addCase(actions.updateCurrentCwdSegment, (state, action) => {
-      const { explorerId, ...updateData } = action.payload;
+    .addCase(actions.updateCwdSegment, (state, action) => {
+      const { explorerId, segmentIdx, ...updateData } = action.payload;
 
       if (!isExplorerIdPresent(state, explorerId)) {
         throw new Error(
@@ -126,40 +126,37 @@ export const reducer = createReducer(INITIAL_STATE, (builder) =>
         );
       }
 
-      const currentCwdSegment =
-        state.explorerPanels[explorerId].cwdSegments[
-          state.explorerPanels[explorerId].cwdSegments.length - 1
-        ];
+      const cwdSegmentToUpdate = state.explorerPanels[explorerId].cwdSegments[segmentIdx];
       if (check.isNotNullish(updateData.filterInput)) {
-        currentCwdSegment.filterInput = updateData.filterInput;
+        cwdSegmentToUpdate.filterInput = updateData.filterInput;
       }
       if (
         check.isNotNullish(updateData.selection) &&
         check.isNotNullish(updateData.selection.keysOfSelectedResources)
       ) {
-        currentCwdSegment.selection.keysOfSelectedResources =
+        cwdSegmentToUpdate.selection.keysOfSelectedResources =
           updateData.selection.keysOfSelectedResources;
       }
       if (
         check.isNotNullish(updateData.selection) &&
         check.isNotNullish(updateData.selection.keyOfResourceSelectionGotStartedWith)
       ) {
-        currentCwdSegment.selection.keyOfResourceSelectionGotStartedWith =
+        cwdSegmentToUpdate.selection.keyOfResourceSelectionGotStartedWith =
           updateData.selection.keyOfResourceSelectionGotStartedWith;
       }
       if (check.isNotNullish(updateData.activeResourcesView)) {
-        const currentResourcesView = currentCwdSegment.activeResourcesView ?? 'table';
+        const currentResourcesView = cwdSegmentToUpdate.activeResourcesView ?? 'table';
         const newResourcesView = updateData.activeResourcesView;
 
-        currentCwdSegment.activeResourcesView = newResourcesView;
+        cwdSegmentToUpdate.activeResourcesView = newResourcesView;
 
         // reset scrollTop on active resources change
         if (currentResourcesView !== newResourcesView) {
-          currentCwdSegment.scrollTop = 0;
+          cwdSegmentToUpdate.scrollTop = 0;
         }
       }
       if (check.isNotNullish(updateData.scrollTop)) {
-        currentCwdSegment.scrollTop = updateData.scrollTop;
+        cwdSegmentToUpdate.scrollTop = updateData.scrollTop;
       }
     })
     .addCase(actions.changeCwd, (state, action) => {

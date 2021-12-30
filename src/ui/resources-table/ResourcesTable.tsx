@@ -22,18 +22,18 @@ import {
 import { KEY } from '@app/ui/constants';
 import {
   useChangeSelection,
-  useExplorerId,
   useResourcesToShow,
   useKeyOfResourceToRename,
   useSelectedShownResources,
   useSetKeyOfResourceToRename,
   useRenameResource,
   useDataAvailable,
-  useRegisterExplorerShortcuts,
+  useRegisterCwdSegmentShortcuts,
   useKeyOfLastSelectedResource,
   useScrollTop,
   useSetScrollTop,
 } from '@app/ui/explorer-context';
+import { useExplorerId } from '@app/ui/explorer-panel/ExplorerPanel';
 import { ResourceIcon } from '@app/ui/resource-icon';
 import { ResourceRenameInput } from '@app/ui/resource-rename-input';
 import { usePrevious, useRunCallbackOnMount, useThrottleFn } from '@app/ui/utils/react.util';
@@ -118,7 +118,7 @@ const ResourcesTableBody: React.FC<ResourcesTableBodyProps> = ({ tableContainerR
     keyOfLastSelectedResource?.includes(resource.key),
   );
 
-  useRegisterExplorerShortcuts({
+  useRegisterCwdSegmentShortcuts({
     changeSelectionByKeyboardShortcut: {
       keybindings: [
         {
