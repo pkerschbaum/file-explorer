@@ -1,3 +1,5 @@
+import invariant from 'tiny-invariant';
+
 import { ExplorerPanel } from '@app/global-state/slices/explorers.slice';
 import { useSelector } from '@app/global-state/store';
 
@@ -14,7 +16,9 @@ export const useExplorerPanels: () => ExplorerPanelEntry[] = () =>
   );
 
 export const useCwdSegments = (explorerId: string) =>
-  useSelector((state) => state.explorersSlice.explorerPanels[explorerId].cwdSegments);
+  useSelector((state) => state.explorersSlice.explorerPanels[explorerId].cwdSegments).filter(
+    (segment) => !segment.markedForRemoval,
+  );
 
 export const useCwd = (explorerId: string) =>
   useSelector((state) => {
@@ -68,7 +72,14 @@ export const useScrollTop = (explorerId: string, segmentIdx: number) =>
 export const useIdOfFocusedExplorerPanel = () =>
   useSelector((state) => state.explorersSlice.focusedExplorerPanelId);
 
-export function extractCwdFromExplorerPanel(explorerPanel: ExplorerPanel) {
+export function extractCwdSegmentsFromExplorerPanel(explorerPanel: ExplorerPanel) {
   const { cwdSegments } = explorerPanel;
-  return cwdSegments[cwdSegments.length - 1].uri;
+  return cwdSegments.filter((segment) => !segment.markedForRemoval);
+}
+
+export function extractCwdFromExplorerPanel(explorerPanel: ExplorerPanel) {
+  const cwdSegments = extractCwdSegmentsFromExplorerPanel(explorerPanel);
+  const newestSegmentNotScheduledToRemove = cwdSegments[cwdSegments.length - 1];
+  invariant(newestSegmentNotScheduledToRemove);
+  return newestSegmentNotScheduledToRemove.uri;
 }

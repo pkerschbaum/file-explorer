@@ -7,7 +7,7 @@ import { objects } from '@app/base/utils/objects.util';
 import { ResourceForUI } from '@app/domain/types';
 import {
   actions,
-  computeCwdSegmentsStackFromUri,
+  computeCwdSegmentsFromUri,
   CwdSegment,
   generateExplorerId,
 } from '@app/global-state/slices/explorers.slice';
@@ -26,7 +26,7 @@ export async function addExplorerPanel(cwdSegmentsToClone?: CwdSegment[]) {
         { uri: formatter.resourcePath(defaultExplorerCwd) },
       );
     }
-    cwdSegmentsOfNewExplorer = computeCwdSegmentsStackFromUri(await getDefaultExplorerCwd());
+    cwdSegmentsOfNewExplorer = computeCwdSegmentsFromUri(await getDefaultExplorerCwd());
   }
 
   const explorerId = generateExplorerId();

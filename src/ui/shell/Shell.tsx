@@ -28,7 +28,7 @@ export const Shell: React.FC = () => {
 
   const explorerPanels = useExplorerPanels();
 
-  const explorersToShow = explorerPanels.filter((explorer) => !explorer.scheduledToRemove);
+  const explorersToShow = explorerPanels.filter((explorer) => !explorer.markedForRemoval);
 
   return (
     <RootContainer userPreferencesSidebarOpen={userPreferencesSidebarOpen}>

@@ -6,7 +6,7 @@ import { numbers } from '@app/base/utils/numbers.util';
 import { PASTE_PROCESS_STATUS, RESOURCE_TYPE } from '@app/domain/types';
 import {
   actions as explorerActions,
-  computeCwdSegmentsStackFromUri,
+  computeCwdSegmentsFromUri,
 } from '@app/global-state/slices/explorers.slice';
 import { createStoreInstance } from '@app/global-state/store';
 import { getDefaultExplorerCwd } from '@app/operations/app.operations';
@@ -82,19 +82,19 @@ export const MultipleTabs = Template.bind({});
     store.dispatch(
       explorerActions.addExplorer({
         explorerId: 'panel-1',
-        cwdSegments: computeCwdSegmentsStackFromUri(cwd),
+        cwdSegments: computeCwdSegmentsFromUri(cwd),
       }),
     );
     store.dispatch(
       explorerActions.addExplorer({
         explorerId: 'panel-2',
-        cwdSegments: computeCwdSegmentsStackFromUri(cwd),
+        cwdSegments: computeCwdSegmentsFromUri(cwd),
       }),
     );
     store.dispatch(
       explorerActions.addExplorer({
         explorerId: 'panel-3',
-        cwdSegments: computeCwdSegmentsStackFromUri(cwd),
+        cwdSegments: computeCwdSegmentsFromUri(cwd),
       }),
     );
     store.dispatch(explorerActions.changeFocusedExplorer({ explorerId: 'panel-2' }));

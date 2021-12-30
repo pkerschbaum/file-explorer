@@ -1,11 +1,11 @@
+import { HTMLMotionProps, motion } from 'framer-motion';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 
+import { ReactMotionProps } from '@app/ui/components-library/utils';
+
 export type RowProps = RowComponentProps &
-  Omit<
-    React.ComponentPropsWithoutRef<'tr'> & React.RefAttributes<HTMLTableRowElement>,
-    keyof RowComponentProps
-  >;
+  Omit<ReactMotionProps<'tr', HTMLTableRowElement>, keyof RowComponentProps>;
 
 type RowComponentProps = {
   isSelectable?: boolean;
@@ -25,7 +25,7 @@ export const Row = styled(
     } = props;
 
     return (
-      <RowRoot {...delegatedProps} ref={ref} styleProps={props}>
+      <RowRoot {...(delegatedProps as HTMLMotionProps<'tr'>)} ref={ref} styleProps={props}>
         {children}
       </RowRoot>
     );
@@ -34,7 +34,7 @@ export const Row = styled(
 
 type StyleProps = RowProps;
 
-const RowRoot = styled.tr<{ styleProps: StyleProps }>`
+const RowRoot = styled(motion.tr)<{ styleProps: StyleProps }>`
   ${({ styleProps }) =>
     styleProps.isSelectable &&
     css`

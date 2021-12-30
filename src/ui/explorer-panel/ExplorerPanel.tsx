@@ -1,3 +1,4 @@
+import { AnimatePresence } from 'framer-motion';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 
@@ -54,35 +55,37 @@ export const ExplorerPanel = React.memo<ExplorerPanelProps>(function ExplorerPan
         <CwdBreadcrumbs />
       </CwdBreadcrumbsContainer>
 
-      {cwdSegments.map((segment, idx) => {
-        const isLastSegment = idx === cwdSegments.length - 1;
+      <AnimatePresence initial={false}>
+        {cwdSegments.map((segment, idx) => {
+          const isLastSegment = idx === cwdSegments.length - 1;
 
-        return (
-          <ExplorerContextProvider key={uriHelper.getComparisonKey(segment.uri)} segmentIdx={idx}>
-            {isLastSegment && (
-              <ActionsBarContainer
+          return (
+            <ExplorerContextProvider key={uriHelper.getComparisonKey(segment.uri)} segmentIdx={idx}>
+              {isLastSegment && (
+                <ActionsBarContainer
+                  variants={{
+                    closed: { display: 'none' },
+                    open: { display: 'block' },
+                  }}
+                  animate={activeAnimationVariant}
+                >
+                  <ActionsBar />
+                </ActionsBarContainer>
+              )}
+
+              <ResourcesViewContainer
                 variants={{
                   closed: { display: 'none' },
-                  open: { display: 'block' },
+                  open: { display: 'flex' },
                 }}
                 animate={activeAnimationVariant}
               >
-                <ActionsBar />
-              </ActionsBarContainer>
-            )}
-
-            <ResourcesViewContainer
-              variants={{
-                closed: { display: 'none' },
-                open: { display: 'flex' },
-              }}
-              animate={activeAnimationVariant}
-            >
-              <ResourcesView />
-            </ResourcesViewContainer>
-          </ExplorerContextProvider>
-        );
-      })}
+                <ResourcesView />
+              </ResourcesViewContainer>
+            </ExplorerContextProvider>
+          );
+        })}
+      </AnimatePresence>
     </ExplorerRootContextProvider>
   );
 });
@@ -111,11 +114,13 @@ const ResourcesViewContainer = styled(Box)`
   min-height: 0;
   height: 100%;
   max-height: 100%;
+  z-index: 0;
+
+  display: flex;
+  flex-direction: column;
 
   /* add some padding-top for optical alignment */
   padding-top: 1px;
-  flex-direction: column;
-  align-items: stretch;
 
   /* hide overflow for folder navigation animations */
   overflow: hidden;
@@ -124,5 +129,21 @@ const ResourcesViewContainer = styled(Box)`
 const ResourcesView: React.FC = () => {
   const activeResourcesView = useActiveResourcesView();
 
-  return activeResourcesView === 'gallery' ? <ResourcesGallery /> : <ResourcesTable />;
+  return (
+    <ResourcesViewSlideBox
+      initial={{ x: '100%' }}
+      animate={{ x: 0 }}
+      exit={{ x: '100%' }}
+      transition={{ ease: 'easeOut', duration: 0.5 }}
+    >
+      {activeResourcesView === 'gallery' ? <ResourcesGallery /> : <ResourcesTable />}
+    </ResourcesViewSlideBox>
+  );
 };
+
+const ResourcesViewSlideBox = styled(Box)`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-bg-0);
+`;

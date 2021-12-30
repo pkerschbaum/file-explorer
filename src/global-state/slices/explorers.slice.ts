@@ -17,11 +17,12 @@ export type ExplorersMap = {
 
 export type ExplorerPanel = {
   cwdSegments: CwdSegment[];
-  scheduledToRemove?: boolean;
+  markedForRemoval?: boolean;
 };
 
 export type CwdSegment = {
   uri: UriComponents;
+
   filterInput: string;
   selection: {
     keysOfSelectedResources: RenameHistoryKeys[];
@@ -29,6 +30,8 @@ export type CwdSegment = {
   };
   activeResourcesView: ResourcesView;
   scrollTop: number;
+
+  markedForRemoval?: boolean;
 };
 
 export type RenameHistoryKeys = string[];
@@ -97,14 +100,14 @@ export const reducer = createReducer(INITIAL_STATE, (builder) =>
     .addCase(actions.markExplorerForRemoval, (state, action) => {
       const { explorerId } = action.payload;
 
-      state.explorerPanels[explorerId].scheduledToRemove = true;
+      state.explorerPanels[explorerId].markedForRemoval = true;
 
       if (explorerId === state.focusedExplorerPanelId) {
         // focused explorer got removed --> focus another explorer
 
         const activeExplorer = Object.entries(state.explorerPanels)
           .map(([explorerId, value]) => ({ explorerId, ...value }))
-          .find((explorer) => !explorer.scheduledToRemove);
+          .find((explorer) => !explorer.markedForRemoval);
 
         if (activeExplorer !== undefined) {
           state.focusedExplorerPanelId = activeExplorer.explorerId;
@@ -169,21 +172,36 @@ export const reducer = createReducer(INITIAL_STATE, (builder) =>
         );
       }
 
-      const currentCwdSegmentsStack = state.explorerPanels[explorerId].cwdSegments;
-      const newCwdSegmentsStack = computeCwdSegmentsStackFromUri(newCwd);
-      for (let idx = 0; idx < newCwdSegmentsStack.length; idx++) {
+      const currentCwdSegments = state.explorerPanels[explorerId].cwdSegments;
+      const newCwdSegments = computeCwdSegmentsFromUri(newCwd);
+      const maxSegmentsLength = Math.max(currentCwdSegments.length, newCwdSegments.length);
+      for (let idx = 0; idx < maxSegmentsLength; idx++) {
+        /**
+         * Copy old segment if the uri of the old segment is equal to the uri of the new segment (and
+         * the segment is not marked for removal) in order to keep the state of the old segments.
+         */
         if (
-          currentCwdSegmentsStack.length > idx &&
+          currentCwdSegments.length > idx &&
+          !currentCwdSegments[idx].markedForRemoval &&
+          newCwdSegments.length > idx &&
           resources.isEqual(
-            URI.from(currentCwdSegmentsStack[idx].uri),
-            URI.from(newCwdSegmentsStack[idx].uri),
+            URI.from(currentCwdSegments[idx].uri),
+            URI.from(newCwdSegments[idx].uri),
           )
         ) {
-          newCwdSegmentsStack[idx] = currentCwdSegmentsStack[idx];
+          newCwdSegments[idx] = currentCwdSegments[idx];
+        }
+
+        // If any segments in the current cwd are left, copy them with markedForRemoval set to true
+        if (currentCwdSegments.length > idx && idx >= newCwdSegments.length) {
+          newCwdSegments.push({
+            ...currentCwdSegments[idx],
+            markedForRemoval: true,
+          });
         }
       }
 
-      state.explorerPanels[explorerId].cwdSegments = newCwdSegmentsStack;
+      state.explorerPanels[explorerId].cwdSegments = newCwdSegments;
     })
     .addCase(actions.changeFocusedExplorer, (state, action) => {
       const { explorerId } = action.payload;
@@ -203,7 +221,7 @@ export function generateExplorerId() {
   return uuid.generateUuid();
 }
 
-export function computeCwdSegmentsStackFromUri(uri: UriComponents): CwdSegment[] {
+export function computeCwdSegmentsFromUri(uri: UriComponents): CwdSegment[] {
   return uriHelper.splitUriIntoSegments(uri).map((uriSegment) => ({
     uri: uriSegment,
     filterInput: '',

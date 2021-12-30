@@ -2,6 +2,7 @@ import { IFileStatWithMetadata } from '@pkerschbaum/code-oss-file-service/out/vs
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 import invariant from 'tiny-invariant';
 
+import { extractCwdSegmentsFromExplorerPanel } from '@app/global-state/slices/explorers.hooks';
 import { createStoreInstance, RootStore } from '@app/global-state/store';
 import { fileSystemRef } from '@app/operations/global-modules';
 import { ExplorerContextProvider } from '@app/ui/explorer-context';
@@ -28,7 +29,8 @@ const Template: ComponentStory<typeof ResourcesTable> = (args, { loaded }) => {
   const explorerId = globalState.explorersSlice.focusedExplorerPanelId;
   invariant(explorerId);
   const currentSegmentIdx =
-    globalState.explorersSlice.explorerPanels[explorerId].cwdSegments.length - 1;
+    extractCwdSegmentsFromExplorerPanel(globalState.explorersSlice.explorerPanels[explorerId])
+      .length - 1;
 
   return (
     <ExplorerRootContextProvider value={{ explorerId }}>

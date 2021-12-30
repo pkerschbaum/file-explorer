@@ -2,7 +2,7 @@ import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { computeCwdSegmentsStackFromUri } from '@app/global-state/slices/explorers.slice';
+import { computeCwdSegmentsFromUri } from '@app/global-state/slices/explorers.slice';
 import { createStoreInstance } from '@app/global-state/store';
 import { getDefaultExplorerCwd } from '@app/operations/app.operations';
 import { createQueryClient } from '@app/ui/Globals';
@@ -19,13 +19,11 @@ describe('TabsArea [logic]', () => {
         explorersSlice: {
           explorerPanels: {
             'panel-1': {
-              cwdSegments: computeCwdSegmentsStackFromUri(
-                URI.joinPath(URI.from(cwd), '..').toJSON(),
-              ),
+              cwdSegments: computeCwdSegmentsFromUri(URI.joinPath(URI.from(cwd), '..').toJSON()),
             },
-            'panel-2': { cwdSegments: computeCwdSegmentsStackFromUri(cwd) },
+            'panel-2': { cwdSegments: computeCwdSegmentsFromUri(cwd) },
             'panel-3': {
-              cwdSegments: computeCwdSegmentsStackFromUri(
+              cwdSegments: computeCwdSegmentsFromUri(
                 URI.joinPath(URI.from(cwd), 'test-folder').toJSON(),
               ),
             },
@@ -62,13 +60,11 @@ describe('TabsArea [logic]', () => {
         explorersSlice: {
           explorerPanels: {
             'panel-1': {
-              cwdSegments: computeCwdSegmentsStackFromUri(
-                URI.joinPath(URI.from(cwd), '..').toJSON(),
-              ),
+              cwdSegments: computeCwdSegmentsFromUri(URI.joinPath(URI.from(cwd), '..').toJSON()),
             },
-            'panel-2': { cwdSegments: computeCwdSegmentsStackFromUri(cwd) },
+            'panel-2': { cwdSegments: computeCwdSegmentsFromUri(cwd) },
             'panel-3': {
-              cwdSegments: computeCwdSegmentsStackFromUri(
+              cwdSegments: computeCwdSegmentsFromUri(
                 URI.joinPath(URI.from(cwd), 'test-folder').toJSON(),
               ),
             },

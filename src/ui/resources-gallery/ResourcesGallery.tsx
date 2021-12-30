@@ -12,10 +12,9 @@ import { Box } from '@app/ui/components-library';
 import { KEY } from '@app/ui/constants';
 import {
   useChangeSelection,
-  useExplorerId,
   useKeyOfLastSelectedResource,
   useKeyOfResourceToRename,
-  useRegisterExplorerShortcuts,
+  useRegisterCwdSegmentShortcuts,
   useRenameResource,
   useResourcesToShow,
   useScrollTop,
@@ -23,6 +22,7 @@ import {
   useSetKeyOfResourceToRename,
   useSetScrollTop,
 } from '@app/ui/explorer-context';
+import { useExplorerId } from '@app/ui/explorer-panel/ExplorerPanel';
 import { ResourceIcon } from '@app/ui/resource-icon';
 import { ResourceRenameInput } from '@app/ui/resource-rename-input';
 import { usePrevious, useRunCallbackOnMount, useThrottleFn } from '@app/ui/utils/react.util';
@@ -70,7 +70,7 @@ export const ResourcesGallery: React.FC = () => {
   const idxOfLastSelectedResource = resourcesToShow.findIndex((resource) =>
     keyOfLastSelectedResource?.includes(resource.key),
   );
-  useRegisterExplorerShortcuts({
+  useRegisterCwdSegmentShortcuts({
     changeSelectionByKeyboardShortcut: {
       keybindings: [
         {
