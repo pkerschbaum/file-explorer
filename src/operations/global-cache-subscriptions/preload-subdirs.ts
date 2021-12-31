@@ -1,4 +1,3 @@
-import * as resources from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 
 import { formatter } from '@app/base/utils/formatter.util';
@@ -18,9 +17,9 @@ import type {
 } from '@app/operations/global-cache-subscriptions/setup-subscriptions';
 import { fileSystemRef } from '@app/operations/global-modules';
 
-const logger = createLogger('preload-parent-dir-and-subdirs');
+const logger = createLogger('preload-subdirs');
 
-export function createPreloadParentDirAndSubdirsSubscription(): QueryCacheSubscription {
+export function createPreloadSubdirsSubscription(): QueryCacheSubscription {
   const subscription = {
     digestCacheNotifyEvent,
   };
@@ -43,42 +42,27 @@ function digestCacheNotifyEvent(cacheNotifyEvent: QueryCacheNotifyEvent) {
 
     logger.debug(
       `data for a ${RESOURCES_OF_DIRECTORY_KEY_PREFIX} query with at least one observer was updated ` +
-        `--> preload contents of parent directory and sub directories...`,
+        `--> preload contents of sub directories...`,
       { queryKey },
     );
 
     requestIdleCallback(() => {
-      logger.debug(`preloading resources of parent and sub directories...`, {
+      logger.debug(`preloading resources of sub directories...`, {
         uriContentsGetPreloadedFor: formatter.resourcePath(directoryUri),
       });
-      void doPreloadResources(directoryUri, queryData);
+      void doPreloadResources(queryData);
     });
 
     logger.groupEnd();
   }
 }
 
-async function doPreloadResources(directoryUri: URI, childrenOfDirectory: ResourceStat[]) {
-  const parentDirectoryUri = URI.joinPath(directoryUri, '..');
+async function doPreloadResources(childrenOfDirectory: ResourceStat[]) {
   const subDirectoriesUris = childrenOfDirectory
     .filter((resource) => resource.resourceType === RESOURCE_TYPE.DIRECTORY)
     .map((resource) => resource.uri);
 
-  let allDirectoriesUris;
-  if (resources.isEqual(directoryUri, parentDirectoryUri)) {
-    logger.debug(
-      `no parent directory could be determined present --> only preload sub directories...`,
-      {
-        uriContentsGetPreloadedFor: formatter.resourcePath(directoryUri),
-        computedParentDirectoryUri: formatter.resourcePath(parentDirectoryUri),
-      },
-    );
-    allDirectoriesUris = subDirectoriesUris;
-  } else {
-    allDirectoriesUris = [parentDirectoryUri, ...subDirectoriesUris];
-  }
-
-  const allDirectoriesWithoutAlreadyCachedData = allDirectoriesUris.filter((uri) => {
+  const allDirectoriesWithoutAlreadyCachedData = subDirectoriesUris.filter((uri) => {
     const cachedQueryData = getCachedResourcesOfDirectory(uri);
     if (cachedQueryData) {
       logger.debug(`some data is already cached --> skip preloading of resources of directory.`, {
