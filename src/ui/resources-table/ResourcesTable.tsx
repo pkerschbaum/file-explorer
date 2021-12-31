@@ -1,3 +1,4 @@
+import { AnimatePresence, Target } from 'framer-motion';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 import invariant from 'tiny-invariant';
@@ -9,13 +10,20 @@ import { startNativeFileDnD } from '@app/operations/app.operations';
 import { openResources } from '@app/operations/explorer.operations';
 import { removeTagsFromResources } from '@app/operations/resource.operations';
 import { commonStyles } from '@app/ui/common-styles';
-import { Box, Chip, Skeleton, TextField, useVirtual } from '@app/ui/components-library';
+import {
+  Box,
+  Chip,
+  componentLibraryUtils,
+  Skeleton,
+  TextField,
+  useFramerMotionAnimations,
+  useVirtual,
+} from '@app/ui/components-library';
 import {
   DataCell,
   DataTable,
   HeadCell,
   Row,
-  RowProps,
   TableBody,
   TableHead,
 } from '@app/ui/components-library/data-table';
@@ -190,13 +198,15 @@ type EagerTableBodyProps = {
 
 const EagerTableBody: React.FC<EagerTableBodyProps> = ({ resourcesToShow }) => (
   <TableBody>
-    {resourcesToShow.map((resourceToShow, index) => (
-      <ResourceRow
-        key={resourceToShow.key}
-        resourceForRow={resourceToShow}
-        idxOfResourceForRow={index}
-      />
-    ))}
+    <AnimatePresence>
+      {resourcesToShow.map((resourceToShow, index) => (
+        <ResourceRow
+          key={resourceToShow.key}
+          resource={resourceToShow}
+          idxOfResourceForRow={index}
+        />
+      ))}
+    </AnimatePresence>
   </TableBody>
 );
 
@@ -242,7 +252,7 @@ const VirtualizedTableBody: React.FC<VirtualizedTableBodyProps> = ({
       {rowVirtualizer.virtualItems.map((virtualRow) => (
         <ResourceRow
           key={virtualRow.key}
-          resourceForRow={resourcesToShow[virtualRow.index]}
+          resource={resourcesToShow[virtualRow.index]}
           idxOfResourceForRow={virtualRow.index}
           virtualRowStart={virtualRow.start}
         />
@@ -252,13 +262,13 @@ const VirtualizedTableBody: React.FC<VirtualizedTableBodyProps> = ({
 };
 
 type ResourceRowProps = {
-  resourceForRow: ResourceForUI;
+  resource: ResourceForUI;
   idxOfResourceForRow: number;
   virtualRowStart?: number;
 };
 
 const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
-  resourceForRow,
+  resource,
   idxOfResourceForRow,
   virtualRowStart,
 }) {
@@ -272,7 +282,7 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
   const setKeyOfResourceToRename = useSetKeyOfResourceToRename();
 
   const isResourceSelected = !!selectedShownResources.find(
-    (resource) => resource.key === resourceForRow.key,
+    (selectedResource) => selectedResource.key === resource.key,
   );
   const wasResourceSelectedLastRender = usePrevious(isResourceSelected);
   const tileGotSelected = !wasResourceSelectedLastRender && isResourceSelected;
@@ -292,24 +302,40 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
     setKeyOfResourceToRename(undefined);
   }
 
-  const renameForResourceIsActive = keyOfResourceToRename === resourceForRow.key;
-  const rowStyleForVirtualization: RowProps['style'] =
+  const renameForResourceIsActive = keyOfResourceToRename === resource.key;
+
+  const rowStyleForVirtualization: Target =
     virtualRowStart === undefined
-      ? undefined
+      ? {}
       : {
           position: 'absolute',
           width: '100%',
           transform: `translateY(${virtualRowStart}px)`,
         };
+  const isAnimationAllowed = componentLibraryUtils.useIsAnimationAllowed();
+  const framerMotionAnimations = useFramerMotionAnimations();
+  const animations = !isAnimationAllowed
+    ? {
+        initial: rowStyleForVirtualization,
+        animate: rowStyleForVirtualization,
+        exit: rowStyleForVirtualization,
+      }
+    : ({
+        initial: { ...framerMotionAnimations.fadeInOut.initial, ...rowStyleForVirtualization },
+        animate: { ...framerMotionAnimations.fadeInOut.animate, ...rowStyleForVirtualization },
+        exit: { ...framerMotionAnimations.fadeInOut.exit, ...rowStyleForVirtualization },
+        layout: 'position',
+      } as const);
 
   return (
     <ResourceRowRoot
       ref={rowRef}
       data-window-keydownhandlers-enabled="true"
+      {...animations}
       draggable={!renameForResourceIsActive}
       onDragStart={(e) => {
         e.preventDefault();
-        startNativeFileDnD(resourceForRow.uri);
+        startNativeFileDnD(resource.uri);
       }}
       onClick={(e) =>
         changeSelection(idxOfResourceForRow, {
@@ -317,47 +343,46 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
           shift: e.shiftKey,
         })
       }
-      onDoubleClick={() => openResources(explorerId, [resourceForRow])}
+      onDoubleClick={() => openResources(explorerId, [resource])}
       isSelectable
       isSelected={isResourceSelected}
-      style={rowStyleForVirtualization}
     >
       <ResourceRowContent
         iconSlot={
           <ResourceIconContainer>
-            <ResourceIcon resource={resourceForRow} height={ICON_SIZE} />
+            <ResourceIcon resource={resource} height={ICON_SIZE} />
           </ResourceIconContainer>
         }
         resourceNameSlot={
           renameForResourceIsActive ? (
             <StyledResourceRenameInput
-              resource={resourceForRow}
-              onSubmit={(newName) => renameResource(resourceForRow, newName)}
+              resource={resource}
+              onSubmit={(newName) => renameResource(resource, newName)}
               abortRename={abortRename}
             />
           ) : (
-            <ResourceNameFormatted>{resourceForRow.basename}</ResourceNameFormatted>
+            <ResourceNameFormatted>{resource.basename}</ResourceNameFormatted>
           )
         }
         tagsSlot={
           renameForResourceIsActive
             ? undefined
-            : resourceForRow.tags.map((tag) => (
+            : resource.tags.map((tag) => (
                 <Chip
                   key={tag.id}
                   style={{ backgroundColor: `var(--color-tags-${tag.colorId})` }}
                   label={tag.name}
-                  onDelete={() => removeTagsFromResources([resourceForRow.uri], [tag.id])}
+                  onDelete={() => removeTagsFromResources([resource.uri], [tag.id])}
                   deleteTooltipContent="Remove tag"
                 />
               ))
         }
         sizeSlot={
-          resourceForRow.resourceType === RESOURCE_TYPE.FILE &&
-          resourceForRow.size !== undefined &&
-          formatter.bytes(resourceForRow.size)
+          resource.resourceType === RESOURCE_TYPE.FILE &&
+          resource.size !== undefined &&
+          formatter.bytes(resource.size)
         }
-        mtimeSlot={resourceForRow.mtime !== undefined && formatter.date(resourceForRow.mtime)}
+        mtimeSlot={resource.mtime !== undefined && formatter.date(resource.mtime)}
       />
     </ResourceRowRoot>
   );

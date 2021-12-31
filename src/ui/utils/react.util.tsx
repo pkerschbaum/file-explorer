@@ -40,7 +40,7 @@ export function usePrevious<T>(value: T) {
   return ref.current;
 }
 
-// https://usehooks.com/useDebounce/
+// based on https://usehooks.com/useDebounce/
 export function useDebounce<T>(value: T, delay: number): T {
   // State and setters for debounced value
   const [debouncedValue, setDebouncedValue] = React.useState(value);
@@ -65,22 +65,6 @@ export function useDebounce<T>(value: T, delay: number): T {
   return debouncedValue;
 }
 
-export function useRerenderOnEventFire<T>(event: Event<T>, shouldRerender: (value: T) => boolean) {
-  const [, setCurrentVal] = React.useState(0);
-
-  React.useEffect(
-    function triggerRrenderIfNecessary() {
-      const disposable = event((value) => {
-        if (shouldRerender(value)) {
-          setCurrentVal((oldVal) => oldVal + 1);
-        }
-      });
-      return () => disposable.dispose();
-    },
-    [event, shouldRerender],
-  );
-}
-
 export function useThrottleFn<ThisType, Params extends any[]>(
   fn: (this: ThisType, ...params: Params) => unknown,
   limit: number,
@@ -98,6 +82,22 @@ export function useThrottleFn<ThisType, Params extends any[]>(
   );
 
   return throttledFn;
+}
+
+export function useRerenderOnEventFire<T>(event: Event<T>, shouldRerender: (value: T) => boolean) {
+  const [, setCurrentVal] = React.useState(0);
+
+  React.useEffect(
+    function triggerRrenderIfNecessary() {
+      const disposable = event((value) => {
+        if (shouldRerender(value)) {
+          setCurrentVal((oldVal) => oldVal + 1);
+        }
+      });
+      return () => disposable.dispose();
+    },
+    [event, shouldRerender],
+  );
 }
 
 const SYMBOL_CONTEXT_NOT_FOUND = Symbol('ContextNotFound');

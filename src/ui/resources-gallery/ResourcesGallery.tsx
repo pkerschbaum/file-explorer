@@ -8,7 +8,7 @@ import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
 import { startNativeFileDnD } from '@app/operations/app.operations';
 import { openResources } from '@app/operations/explorer.operations';
 import { commonStyles } from '@app/ui/common-styles';
-import { Box } from '@app/ui/components-library';
+import { Box, componentLibraryUtils, useFramerMotionAnimations } from '@app/ui/components-library';
 import { KEY } from '@app/ui/constants';
 import {
   useChangeSelection,
@@ -158,7 +158,7 @@ export const ResourcesGallery: React.FC = () => {
       onScroll={(e) => throttledSetScrollTop(e.currentTarget.scrollTop)}
     >
       {resourcesToShow.map((resource, idx) => (
-        <ResourceTile key={resource.key} resourceForTile={resource} idxOfResource={idx} />
+        <ResourceTile key={resource.key} resource={resource} idxOfResource={idx} />
       ))}
     </GalleryRoot>
   );
@@ -175,11 +175,11 @@ const GalleryRoot = styled(Box)`
 `;
 
 type ResourceTileProps = {
-  resourceForTile: ResourceForUI;
+  resource: ResourceForUI;
   idxOfResource: number;
 };
 
-const ResourceTile: React.FC<ResourceTileProps> = ({ resourceForTile, idxOfResource }) => {
+const ResourceTile: React.FC<ResourceTileProps> = ({ resource, idxOfResource }) => {
   const tileRef = React.useRef<HTMLDivElement>(null);
 
   const explorerId = useExplorerId();
@@ -190,7 +190,7 @@ const ResourceTile: React.FC<ResourceTileProps> = ({ resourceForTile, idxOfResou
   const setKeyOfResourceToRename = useSetKeyOfResourceToRename();
 
   const isResourceSelected = !!selectedShownResources.find(
-    (resource) => resource.key === resourceForTile.key,
+    (selectedResource) => selectedResource.key === resource.key,
   );
   const wasResourceSelectedLastRender = usePrevious(isResourceSelected);
   const tileGotSelected = !wasResourceSelectedLastRender && isResourceSelected;
@@ -209,17 +209,28 @@ const ResourceTile: React.FC<ResourceTileProps> = ({ resourceForTile, idxOfResou
   function abortRename() {
     setKeyOfResourceToRename(undefined);
   }
+  const renameForResourceIsActive = keyOfResourceToRename === resource.key;
 
-  const renameForResourceIsActive = keyOfResourceToRename === resourceForTile.key;
+  const isAnimationAllowed = componentLibraryUtils.useIsAnimationAllowed();
+  const framerMotionAnimations = useFramerMotionAnimations();
+  const animations = !isAnimationAllowed
+    ? {}
+    : ({
+        initial: framerMotionAnimations.fadeInOut.initial,
+        animate: framerMotionAnimations.fadeInOut.animate,
+        exit: framerMotionAnimations.fadeInOut.exit,
+        layout: 'position',
+      } as const);
 
   return (
     <ResourceTileRoot
       ref={tileRef}
       data-window-keydownhandlers-enabled="true"
+      {...animations}
       draggable={!renameForResourceIsActive}
       onDragStart={(e) => {
         e.preventDefault();
-        startNativeFileDnD(resourceForTile.uri);
+        startNativeFileDnD(resource.uri);
       }}
       onClick={(e) =>
         changeSelection(idxOfResource, {
@@ -227,28 +238,28 @@ const ResourceTile: React.FC<ResourceTileProps> = ({ resourceForTile, idxOfResou
           shift: e.shiftKey,
         })
       }
-      onDoubleClick={() => openResources(explorerId, [resourceForTile])}
+      onDoubleClick={() => openResources(explorerId, [resource])}
       styleProps={{ isSelectable: true, isSelected: isResourceSelected }}
     >
-      <StyledResourceIcon resource={resourceForTile} height={TILE_HEIGHT} />
+      <StyledResourceIcon resource={resource} height={TILE_HEIGHT} />
       <ResourceDetails>
         {renameForResourceIsActive ? (
           <ResourceRenameInput
-            resource={resourceForTile}
-            onSubmit={(newName) => renameResource(resourceForTile, newName)}
+            resource={resource}
+            onSubmit={(newName) => renameResource(resource, newName)}
             abortRename={abortRename}
           />
         ) : (
-          <NameFormatted>{resourceForTile.basename}</NameFormatted>
+          <NameFormatted>{resource.basename}</NameFormatted>
         )}
         <SizeAndExtension>
           <SizeFormatted>
-            {resourceForTile.resourceType === RESOURCE_TYPE.FILE &&
-              resourceForTile.size !== undefined &&
-              formatter.bytes(resourceForTile.size)}
+            {resource.resourceType === RESOURCE_TYPE.FILE &&
+              resource.size !== undefined &&
+              formatter.bytes(resource.size)}
           </SizeFormatted>
-          {check.isNonEmptyString(resourceForTile.extension) && (
-            <ExtensionBadge>{formatter.resourceExtension(resourceForTile)}</ExtensionBadge>
+          {check.isNonEmptyString(resource.extension) && (
+            <ExtensionBadge>{formatter.resourceExtension(resource)}</ExtensionBadge>
           )}
         </SizeAndExtension>
       </ResourceDetails>
