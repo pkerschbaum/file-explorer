@@ -20,10 +20,10 @@ import {
 import { KEY, MOUSE_BUTTONS } from '@app/ui/constants';
 import { CwdActionsMenu } from '@app/ui/cwd-breadcrumbs/CwdActionsMenu';
 import {
+  useExplorerId,
   useRegisterExplorerAuxclickHandler,
   useRegisterExplorerShortcuts,
-} from '@app/ui/cwd-segment-context';
-import { useExplorerId } from '@app/ui/explorer-panel/ExplorerPanel';
+} from '@app/ui/explorer-context';
 
 export const CwdBreadcrumbs: React.FC = () => {
   const explorerId = useExplorerId();

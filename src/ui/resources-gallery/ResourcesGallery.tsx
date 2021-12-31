@@ -22,7 +22,7 @@ import {
   useSetKeyOfResourceToRename,
   useSetScrollTop,
 } from '@app/ui/cwd-segment-context';
-import { useExplorerId } from '@app/ui/explorer-panel/ExplorerPanel';
+import { useExplorerId } from '@app/ui/explorer-context';
 import { ResourceIcon } from '@app/ui/resource-icon';
 import { ResourceRenameInput } from '@app/ui/resource-rename-input';
 import { usePrevious, useRunCallbackOnMount, useThrottleFn } from '@app/ui/utils/react.util';

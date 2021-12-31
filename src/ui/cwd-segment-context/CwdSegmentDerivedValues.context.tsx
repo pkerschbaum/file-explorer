@@ -13,7 +13,7 @@ import {
   useSetActiveResourcesView,
   useSetKeysOfSelectedResources,
 } from '@app/ui/cwd-segment-context';
-import { useExplorerId } from '@app/ui/explorer-panel/ExplorerPanel';
+import { useExplorerId } from '@app/ui/explorer-context';
 import { useEnrichResourcesWithTags, useResourcesForUI } from '@app/ui/hooks/resources.hooks';
 import { createSelectableContext, usePrevious } from '@app/ui/utils/react.util';
 

@@ -4,7 +4,7 @@ import { useImmer } from 'use-immer';
 import { UpdateFn } from '@app/domain/types';
 import { useSegmentUri } from '@app/global-state/slices/explorers.hooks';
 import { useSegmentIdx } from '@app/ui/cwd-segment-context/CwdSegmentRoot.context';
-import { useExplorerId } from '@app/ui/explorer-panel/ExplorerPanel';
+import { useExplorerId } from '@app/ui/explorer-context';
 import { createSelectableContext } from '@app/ui/utils/react.util';
 
 export type CwdSegmentState = {

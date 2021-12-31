@@ -7,7 +7,7 @@ import {
   setActiveResourcesView,
   setScrollTop,
 } from '@app/operations/explorer.operations';
-import { useExplorerId } from '@app/ui/explorer-panel/ExplorerPanel';
+import { useExplorerId } from '@app/ui/explorer-context';
 import { createContext } from '@app/ui/utils/react.util';
 
 type CwdSegmentRootContext = { segmentIdx: number };

@@ -11,21 +11,13 @@ import { ActionsBar } from '@app/ui/actions-bar';
 import { Box } from '@app/ui/components-library';
 import { CwdBreadcrumbs } from '@app/ui/cwd-breadcrumbs';
 import { CwdSegmentContextProvider, useActiveResourcesView } from '@app/ui/cwd-segment-context';
+import { ExplorerContextProvider } from '@app/ui/explorer-context';
 import { ResourcesGallery } from '@app/ui/resources-gallery';
 import { ResourcesTable } from '@app/ui/resources-table';
-import { createContext } from '@app/ui/utils/react.util';
 
 export const EXPLORER_CWDBREADCRUMBS_GRID_AREA = 'shell-explorer-cwd-breadcrumbs';
 export const EXPLORER_ACTIONSBAR_GRID_AREA = 'shell-explorer-actions-bar';
 export const EXPLORER_RESOURCESVIEW_GRID_AREA = 'shell-explorer-resources-view';
-
-const explorerRootContext = createContext<{ explorerId: string }>('ExplorerRootContext');
-const useExplorerRootContext = explorerRootContext.useContextValue;
-export const ExplorerRootContextProvider = explorerRootContext.Provider;
-
-export function useExplorerId() {
-  return useExplorerRootContext().explorerId;
-}
 
 type ExplorerPanelProps = {
   explorerId: string;
@@ -43,7 +35,7 @@ export const ExplorerPanel = React.memo<ExplorerPanelProps>(function ExplorerPan
   const activeAnimationVariant = isActiveExplorer ? 'open' : 'closed';
 
   return (
-    <ExplorerRootContextProvider value={{ explorerId }}>
+    <ExplorerContextProvider explorerId={explorerId}>
       <CwdBreadcrumbsContainer
         variants={{
           closed: { display: 'none' },
@@ -89,7 +81,7 @@ export const ExplorerPanel = React.memo<ExplorerPanelProps>(function ExplorerPan
           );
         })}
       </AnimatePresence>
-    </ExplorerRootContextProvider>
+    </ExplorerContextProvider>
   );
 });
 

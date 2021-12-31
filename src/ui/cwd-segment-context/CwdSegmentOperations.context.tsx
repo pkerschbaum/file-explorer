@@ -8,14 +8,13 @@ import { createFolder, openResources, pasteResources } from '@app/operations/exp
 import * as resourceOperations from '@app/operations/resource.operations';
 import {
   useIsActiveCwdSegment,
-  useIsActiveExplorer,
   useKeyOfResourceSelectionGotStartedWith,
   useResourcesToShow,
   useSelectedShownResources,
   useSetKeyOfResourceToRename,
   useSetKeysOfSelectedResources,
 } from '@app/ui/cwd-segment-context';
-import { useExplorerId } from '@app/ui/explorer-panel/ExplorerPanel';
+import { useExplorerId, useIsActiveExplorer } from '@app/ui/explorer-context';
 import {
   ShortcutMap,
   useRegisterGlobalShortcuts,

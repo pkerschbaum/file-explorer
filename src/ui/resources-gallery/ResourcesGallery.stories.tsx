@@ -4,7 +4,7 @@ import invariant from 'tiny-invariant';
 import { extractCwdSegmentsFromExplorerPanel } from '@app/global-state/slices/explorers.hooks';
 import { createStoreInstance, RootStore } from '@app/global-state/store';
 import { CwdSegmentContextProvider } from '@app/ui/cwd-segment-context';
-import { ExplorerRootContextProvider } from '@app/ui/explorer-panel/ExplorerPanel';
+import { ExplorerContextProvider } from '@app/ui/explorer-context';
 import { createQueryClient, Globals } from '@app/ui/Globals';
 import { ResourcesGallery } from '@app/ui/resources-gallery';
 
@@ -31,11 +31,11 @@ const Template: ComponentStory<typeof ResourcesGallery> = (args, { loaded }) => 
       .length - 1;
 
   return (
-    <ExplorerRootContextProvider value={{ explorerId }}>
+    <ExplorerContextProvider explorerId={explorerId}>
       <CwdSegmentContextProvider segmentIdx={currentSegmentIdx}>
         <ResourcesGallery {...args} />
       </CwdSegmentContextProvider>
-    </ExplorerRootContextProvider>
+    </ExplorerContextProvider>
   );
 };
 

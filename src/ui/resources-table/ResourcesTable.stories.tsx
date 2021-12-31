@@ -6,7 +6,7 @@ import { extractCwdSegmentsFromExplorerPanel } from '@app/global-state/slices/ex
 import { createStoreInstance, RootStore } from '@app/global-state/store';
 import { fileSystemRef } from '@app/operations/global-modules';
 import { CwdSegmentContextProvider } from '@app/ui/cwd-segment-context';
-import { ExplorerRootContextProvider } from '@app/ui/explorer-panel/ExplorerPanel';
+import { ExplorerContextProvider } from '@app/ui/explorer-context';
 import { createQueryClient, Globals } from '@app/ui/Globals';
 import { ResourcesTable } from '@app/ui/resources-table';
 
@@ -33,11 +33,11 @@ const Template: ComponentStory<typeof ResourcesTable> = (args, { loaded }) => {
       .length - 1;
 
   return (
-    <ExplorerRootContextProvider value={{ explorerId }}>
+    <ExplorerContextProvider explorerId={explorerId}>
       <CwdSegmentContextProvider segmentIdx={currentSegmentIdx}>
         <ResourcesTable {...args} />
       </CwdSegmentContextProvider>
-    </ExplorerRootContextProvider>
+    </ExplorerContextProvider>
   );
 };
 
