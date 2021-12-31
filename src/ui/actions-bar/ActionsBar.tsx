@@ -38,7 +38,7 @@ import {
   useRegisterCwdSegmentShortcuts,
   useSetActiveResourcesView,
   useSelectAll,
-} from '@app/ui/explorer-context';
+} from '@app/ui/cwd-segment-context';
 import {
   DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED,
   ShortcutPriority,

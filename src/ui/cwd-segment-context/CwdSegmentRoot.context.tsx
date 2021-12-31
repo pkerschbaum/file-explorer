@@ -10,18 +10,18 @@ import {
 import { useExplorerId } from '@app/ui/explorer-panel/ExplorerPanel';
 import { createContext } from '@app/ui/utils/react.util';
 
-type ExplorerRootContext = { segmentIdx: number };
+type CwdSegmentRootContext = { segmentIdx: number };
 
-const explorerRootContext = createContext<ExplorerRootContext>('ExplorerRoot');
-const useExplorerRootContext = explorerRootContext.useContextValue;
-const RootContextProvider = explorerRootContext.Provider;
+const cwdSegmentRootContext = createContext<CwdSegmentRootContext>('CwdSegmentRoot');
+const useCwdSegmentRootContext = cwdSegmentRootContext.useContextValue;
+const RootContextProvider = cwdSegmentRootContext.Provider;
 
-type ExplorerRootContextProviderProps = {
+type CwdSegmentRootContextProviderProps = {
   segmentIdx: number;
   children: React.ReactNode;
 };
 
-export const ExplorerRootContextProvider: React.FC<ExplorerRootContextProviderProps> = ({
+export const CwdSegmentRootContextProvider: React.FC<CwdSegmentRootContextProviderProps> = ({
   segmentIdx,
   children,
 }) => (
@@ -35,7 +35,7 @@ export const ExplorerRootContextProvider: React.FC<ExplorerRootContextProviderPr
 );
 
 export function useSegmentIdx() {
-  return useExplorerRootContext().segmentIdx;
+  return useCwdSegmentRootContext().segmentIdx;
 }
 
 export function useIsActiveCwdSegment() {

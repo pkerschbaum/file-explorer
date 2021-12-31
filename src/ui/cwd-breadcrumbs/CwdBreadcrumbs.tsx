@@ -22,7 +22,7 @@ import { CwdActionsMenu } from '@app/ui/cwd-breadcrumbs/CwdActionsMenu';
 import {
   useRegisterExplorerAuxclickHandler,
   useRegisterExplorerShortcuts,
-} from '@app/ui/explorer-context';
+} from '@app/ui/cwd-segment-context';
 import { useExplorerId } from '@app/ui/explorer-panel/ExplorerPanel';
 
 export const CwdBreadcrumbs: React.FC = () => {

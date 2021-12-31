@@ -10,7 +10,7 @@ import {
 import { ActionsBar } from '@app/ui/actions-bar';
 import { Box } from '@app/ui/components-library';
 import { CwdBreadcrumbs } from '@app/ui/cwd-breadcrumbs';
-import { ExplorerContextProvider, useActiveResourcesView } from '@app/ui/explorer-context';
+import { CwdSegmentContextProvider, useActiveResourcesView } from '@app/ui/cwd-segment-context';
 import { ResourcesGallery } from '@app/ui/resources-gallery';
 import { ResourcesTable } from '@app/ui/resources-table';
 import { createContext } from '@app/ui/utils/react.util';
@@ -60,7 +60,10 @@ export const ExplorerPanel = React.memo<ExplorerPanelProps>(function ExplorerPan
           const isLastSegment = idx === cwdSegments.length - 1;
 
           return (
-            <ExplorerContextProvider key={uriHelper.getComparisonKey(segment.uri)} segmentIdx={idx}>
+            <CwdSegmentContextProvider
+              key={uriHelper.getComparisonKey(segment.uri)}
+              segmentIdx={idx}
+            >
               {isLastSegment && (
                 <ActionsBarContainer
                   variants={{
@@ -82,7 +85,7 @@ export const ExplorerPanel = React.memo<ExplorerPanelProps>(function ExplorerPan
               >
                 <ResourcesView />
               </ResourcesViewContainer>
-            </ExplorerContextProvider>
+            </CwdSegmentContextProvider>
           );
         })}
       </AnimatePresence>

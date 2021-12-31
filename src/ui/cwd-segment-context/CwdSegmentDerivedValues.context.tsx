@@ -12,30 +12,30 @@ import {
   useSegmentIdx,
   useSetActiveResourcesView,
   useSetKeysOfSelectedResources,
-} from '@app/ui/explorer-context';
+} from '@app/ui/cwd-segment-context';
 import { useExplorerId } from '@app/ui/explorer-panel/ExplorerPanel';
 import { useEnrichResourcesWithTags, useResourcesForUI } from '@app/ui/hooks/resources.hooks';
 import { createSelectableContext, usePrevious } from '@app/ui/utils/react.util';
 
 const USE_GALLERY_VIEW_PERCENTAGE = 0.75;
 
-type ExplorerDerivedValuesContext = {
+type CwdSegmentDerivedValuesContext = {
   dataAvailable: boolean;
   resourcesToShow: ResourceForUI[];
   selectedShownResources: ResourceForUI[];
 };
 
 const selectableContext =
-  createSelectableContext<ExplorerDerivedValuesContext>('ExplorerDerivedValues');
-const useExplorerDerivedValuesSelector = selectableContext.useContextSelector;
+  createSelectableContext<CwdSegmentDerivedValuesContext>('CwdSegmentDerivedValues');
+const useCwdSegmentDerivedValuesSelector = selectableContext.useContextSelector;
 const DerivedValuesContextProvider = selectableContext.Provider;
 
-type ExplorerDerivedValuesContextProviderProps = {
+type CwdSegmentDerivedValuesContextProviderProps = {
   children: React.ReactNode;
 };
 
-export const ExplorerDerivedValuesContextProvider: React.FC<
-  ExplorerDerivedValuesContextProviderProps
+export const CwdSegmentDerivedValuesContextProvider: React.FC<
+  CwdSegmentDerivedValuesContextProviderProps
 > = ({ children }) => {
   const explorerId = useExplorerId();
   const segmentIdx = useSegmentIdx();
@@ -181,15 +181,15 @@ export const ExplorerDerivedValuesContextProvider: React.FC<
 };
 
 export function useDataAvailable() {
-  return useExplorerDerivedValuesSelector((explorerValues) => explorerValues.dataAvailable);
+  return useCwdSegmentDerivedValuesSelector((explorerValues) => explorerValues.dataAvailable);
 }
 
 export function useResourcesToShow() {
-  return useExplorerDerivedValuesSelector((explorerValues) => explorerValues.resourcesToShow);
+  return useCwdSegmentDerivedValuesSelector((explorerValues) => explorerValues.resourcesToShow);
 }
 
 export function useSelectedShownResources() {
-  return useExplorerDerivedValuesSelector(
+  return useCwdSegmentDerivedValuesSelector(
     (explorerValues) => explorerValues.selectedShownResources,
   );
 }

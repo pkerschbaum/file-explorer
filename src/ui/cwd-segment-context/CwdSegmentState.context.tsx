@@ -3,37 +3,37 @@ import { useImmer } from 'use-immer';
 
 import { UpdateFn } from '@app/domain/types';
 import { useSegmentUri } from '@app/global-state/slices/explorers.hooks';
-import { useSegmentIdx } from '@app/ui/explorer-context/ExplorerRoot.context';
+import { useSegmentIdx } from '@app/ui/cwd-segment-context/CwdSegmentRoot.context';
 import { useExplorerId } from '@app/ui/explorer-panel/ExplorerPanel';
 import { createSelectableContext } from '@app/ui/utils/react.util';
 
-export type ExplorerState = {
+export type CwdSegmentState = {
   keyOfResourceToRename: string | undefined;
 };
 
-export type ExplorerStateUpdateFunctions = {
+export type CwdSegmentStateUpdateFunctions = {
   setKeyOfResourceToRename: (
     newKeysOrUpdateFn: string | undefined | UpdateFn<string | undefined>,
   ) => void;
 };
 
-type ExplorerStateContext = ExplorerState & ExplorerStateUpdateFunctions;
+type CwdSegmentStateContext = CwdSegmentState & CwdSegmentStateUpdateFunctions;
 
-const selectableContext = createSelectableContext<ExplorerStateContext>('ExplorerState');
-const useExplorerStateSelector = selectableContext.useContextSelector;
+const selectableContext = createSelectableContext<CwdSegmentStateContext>('CwdSegmentState');
+const useCwdSegmentStateSelector = selectableContext.useContextSelector;
 const StateContextProvider = selectableContext.Provider;
 
-type ExplorerContextProviderProps = {
+type CwdSegmentContextProviderProps = {
   children: React.ReactNode;
 };
 
 const INITIAL_STATE = {
   keyOfResourceToRename: undefined,
 };
-export const ExplorerStateContextProvider: React.FC<ExplorerContextProviderProps> = ({
+export const CwdSegmentStateContextProvider: React.FC<CwdSegmentContextProviderProps> = ({
   children,
 }) => {
-  const [explorerState, updateExplorerState] = useImmer<ExplorerState>(INITIAL_STATE);
+  const [explorerState, updateExplorerState] = useImmer<CwdSegmentState>(INITIAL_STATE);
 
   const explorerId = useExplorerId();
   const segmentIdx = useSegmentIdx();
@@ -46,7 +46,7 @@ export const ExplorerStateContextProvider: React.FC<ExplorerContextProviderProps
     [segmentUri, updateExplorerState],
   );
 
-  const explorerStateUpdateFunctions: ExplorerStateUpdateFunctions = React.useMemo(
+  const explorerStateUpdateFunctions: CwdSegmentStateUpdateFunctions = React.useMemo(
     () => ({
       setKeyOfResourceToRename: (newValueOrUpdateFn) => {
         updateExplorerState((draft) => {
@@ -77,9 +77,9 @@ export const ExplorerStateContextProvider: React.FC<ExplorerContextProviderProps
 };
 
 export function useKeyOfResourceToRename() {
-  return useExplorerStateSelector((explorerValues) => explorerValues.keyOfResourceToRename);
+  return useCwdSegmentStateSelector((explorerValues) => explorerValues.keyOfResourceToRename);
 }
 
 export function useSetKeyOfResourceToRename() {
-  return useExplorerStateSelector((explorerValues) => explorerValues.setKeyOfResourceToRename);
+  return useCwdSegmentStateSelector((explorerValues) => explorerValues.setKeyOfResourceToRename);
 }

@@ -40,7 +40,7 @@ import {
   useKeyOfLastSelectedResource,
   useScrollTop,
   useSetScrollTop,
-} from '@app/ui/explorer-context';
+} from '@app/ui/cwd-segment-context';
 import { useExplorerId } from '@app/ui/explorer-panel/ExplorerPanel';
 import { ResourceIcon } from '@app/ui/resource-icon';
 import { ResourceRenameInput } from '@app/ui/resource-rename-input';
