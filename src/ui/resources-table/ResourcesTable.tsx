@@ -44,7 +44,7 @@ import {
 import { useExplorerId } from '@app/ui/explorer-context';
 import { ResourceIcon } from '@app/ui/resource-icon';
 import { ResourceRenameInput } from '@app/ui/resource-rename-input';
-import { usePrevious, useRunCallbackOnMount, useThrottleFn } from '@app/ui/utils/react.util';
+import { usePrevious, useRunCallbackOnMount, useDebounceFn } from '@app/ui/utils/react.util';
 
 const ROW_HEIGHT = 38;
 const ICON_SIZE = 24;
@@ -55,7 +55,7 @@ export const ResourcesTable: React.FC = () => {
 
   const scrollTop = useScrollTop();
   const setScrollTop = useSetScrollTop();
-  const throttledSetScrollTop = useThrottleFn(setScrollTop, 200);
+  const debouncedSetScrollTop = useDebounceFn(setScrollTop, 200);
 
   useRunCallbackOnMount(function setInitialScrollTop() {
     invariant(tableContainerRef.current);
@@ -66,7 +66,7 @@ export const ResourcesTable: React.FC = () => {
     <DataTable
       ref={tableContainerRef}
       labels={{ table: 'Table of resources' }}
-      onScroll={(e) => throttledSetScrollTop(e.currentTarget.scrollTop)}
+      onScroll={(e) => debouncedSetScrollTop(e.currentTarget.scrollTop)}
     >
       <StyledTableHead>
         <Row>

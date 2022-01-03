@@ -41,7 +41,7 @@ export function usePrevious<T>(value: T) {
 }
 
 // based on https://usehooks.com/useDebounce/
-export function useDebounce<T>(value: T, delay: number): T {
+export function useDebouncedValue<T>(value: T, delay: number): T {
   // State and setters for debounced value
   const [debouncedValue, setDebouncedValue] = React.useState(value);
 
@@ -65,20 +65,39 @@ export function useDebounce<T>(value: T, delay: number): T {
   return debouncedValue;
 }
 
+export function useDebounceFn<ThisType, Params extends any[]>(
+  fn: (this: ThisType, ...params: Params) => unknown,
+  limit: number,
+) {
+  const [debouncedFn, runAndClearScheduledFnInvocation] = React.useMemo(
+    () => functions.debounce(fn, limit),
+    [fn, limit],
+  );
+
+  React.useEffect(
+    function finishDebounceOnUnmount() {
+      return () => runAndClearScheduledFnInvocation();
+    },
+    [runAndClearScheduledFnInvocation],
+  );
+
+  return debouncedFn;
+}
+
 export function useThrottleFn<ThisType, Params extends any[]>(
   fn: (this: ThisType, ...params: Params) => unknown,
   limit: number,
 ) {
-  const [throttledFn, finishTrailingCall] = React.useMemo(
+  const [throttledFn, finishThrottleWindowAndExecuteTrailingCall] = React.useMemo(
     () => functions.throttle(fn, limit),
     [fn, limit],
   );
 
   React.useEffect(
-    function finishTrailingCallOnUnmount() {
-      return () => finishTrailingCall();
+    function finishThrottleOnUnmount() {
+      return () => finishThrottleWindowAndExecuteTrailingCall();
     },
-    [finishTrailingCall],
+    [finishThrottleWindowAndExecuteTrailingCall],
   );
 
   return throttledFn;

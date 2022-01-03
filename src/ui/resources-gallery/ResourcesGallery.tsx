@@ -25,7 +25,7 @@ import {
 import { useExplorerId } from '@app/ui/explorer-context';
 import { ResourceIcon } from '@app/ui/resource-icon';
 import { ResourceRenameInput } from '@app/ui/resource-rename-input';
-import { usePrevious, useRunCallbackOnMount, useThrottleFn } from '@app/ui/utils/react.util';
+import { useDebounceFn, usePrevious, useRunCallbackOnMount } from '@app/ui/utils/react.util';
 
 const TILE_HEIGHT = 200;
 
@@ -39,7 +39,7 @@ export const ResourcesGallery: React.FC = () => {
   const scrollTop = useScrollTop();
 
   const setScrollTop = useSetScrollTop();
-  const throttledSetScrollTop = useThrottleFn(setScrollTop, 200);
+  const debouncedSetScrollTop = useDebounceFn(setScrollTop, 200);
 
   useRunCallbackOnMount(function setInitialScrollTop() {
     invariant(galleryRootRef.current);
@@ -155,7 +155,7 @@ export const ResourcesGallery: React.FC = () => {
   return (
     <GalleryRoot
       ref={galleryRootRef}
-      onScroll={(e) => throttledSetScrollTop(e.currentTarget.scrollTop)}
+      onScroll={(e) => debouncedSetScrollTop(e.currentTarget.scrollTop)}
     >
       {resourcesToShow.map((resource, idx) => (
         <ResourceTile key={resource.key} resource={resource} idxOfResource={idx} />

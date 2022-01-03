@@ -1,24 +1,73 @@
+import invariant from 'tiny-invariant';
+
 export const functions = {
   noop,
+  debounce,
   throttle,
 };
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 function noop() {}
 
+type DebounceResult<ThisType, Params extends any[]> = [
+  (this: ThisType, ...params: Params) => unknown,
+  () => void,
+];
+
+function debounce<ThisType, Params extends any[]>(
+  fn: (this: ThisType, ...params: Params) => unknown,
+  limit: number,
+): DebounceResult<ThisType, Params> {
+  let lastFnInvocation: undefined | (() => void) = undefined;
+  let scheduledTimeoutId: undefined | NodeJS.Timeout = undefined;
+
+  function runAndClearScheduledFnInvocation() {
+    if (!scheduledTimeoutId) {
+      return;
+    }
+    clearTimeout(scheduledTimeoutId);
+    scheduledTimeoutId = undefined;
+
+    invariant(lastFnInvocation);
+    try {
+      lastFnInvocation();
+    } finally {
+      lastFnInvocation = undefined;
+    }
+  }
+
+  const debouncedFunction = function (this: ThisType, ...params: Params): void {
+    if (scheduledTimeoutId) {
+      clearTimeout(scheduledTimeoutId);
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const that = this;
+    lastFnInvocation = () => fn.apply(that, params);
+    scheduledTimeoutId = setTimeout(runAndClearScheduledFnInvocation, limit);
+  };
+
+  return [debouncedFunction, runAndClearScheduledFnInvocation];
+}
+
+type ThrottleResult<ThisType, Params extends any[]> = [
+  (this: ThisType, ...params: Params) => unknown,
+  () => void,
+];
+
 // based on "non-configurable version" from https://stackoverflow.com/a/27078401/1700319
 function throttle<ThisType, Params extends any[]>(
   fn: (this: ThisType, ...params: Params) => unknown,
   limit: number,
-) {
-  let scheduledTimeoutId: NodeJS.Timeout | undefined = undefined;
-  let paramsOflastDiscardedInvocation: undefined | { that: ThisType; params: Params };
+): ThrottleResult<ThisType, Params> {
+  let lastDiscardedFnInvocation: undefined | (() => void) = undefined;
+  let scheduledTimeoutId: undefined | NodeJS.Timeout = undefined;
 
-  function runTimeout() {
-    if (scheduledTimeoutId === undefined) {
+  function finishThrottleWindowAndExecuteTrailingCall() {
+    if (!scheduledTimeoutId) {
       return;
     }
-
+    clearTimeout(scheduledTimeoutId);
     scheduledTimeoutId = undefined;
 
     /**
@@ -31,21 +80,28 @@ function throttle<ThisType, Params extends any[]>(
      * popover in its final position (after the target stopped moving) would not execute -
      * the popover would just "hang" in a wrong position.
      */
-    if (paramsOflastDiscardedInvocation) {
-      fn.apply(paramsOflastDiscardedInvocation.that, paramsOflastDiscardedInvocation.params);
+    if (lastDiscardedFnInvocation) {
+      try {
+        lastDiscardedFnInvocation();
+      } finally {
+        lastDiscardedFnInvocation = undefined;
+      }
     }
   }
 
   const throttledFunction = function (this: ThisType, ...params: Params): void {
-    if (scheduledTimeoutId === undefined) {
-      scheduledTimeoutId = setTimeout(runTimeout, limit);
-      fn.apply(this, params);
+    if (!scheduledTimeoutId) {
+      try {
+        fn.apply(this, params);
+      } finally {
+        scheduledTimeoutId = setTimeout(finishThrottleWindowAndExecuteTrailingCall, limit);
+      }
     } else {
-      paramsOflastDiscardedInvocation = { that: this, params };
+      // eslint-disable-next-line @typescript-eslint/no-this-alias
+      const that = this;
+      lastDiscardedFnInvocation = () => fn.apply(that, params);
     }
   };
 
-  const finishTrailingFnCall = runTimeout;
-
-  return [throttledFunction, finishTrailingFnCall] as const;
+  return [throttledFunction, finishThrottleWindowAndExecuteTrailingCall];
 }
