@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Query, QueryCache } from 'react-query';
 
 import { check } from '@app/base/utils/assert.util';
-import { createPreloadSubdirsSubscription } from '@app/operations/global-cache-subscriptions/preload-subdirs';
 import { createRefreshResourcesOfDirectorySubscription } from '@app/operations/global-cache-subscriptions/refresh-resources-of-directory';
 import { queryClientRef } from '@app/operations/global-modules';
 
@@ -22,20 +21,16 @@ export function useGlobalCacheSubscriptions() {
   React.useEffect(() => {
     // instantiate subscriptions
     const refreshResourcesOfDirectorySubscription = createRefreshResourcesOfDirectorySubscription();
-    const preloadParentDirAndSubdirsSubscription = createPreloadSubdirsSubscription();
 
     const allDigestExistingQueryFunctions = [
       refreshResourcesOfDirectorySubscription.subscription.digestExistingQuery,
-      preloadParentDirAndSubdirsSubscription.subscription.digestExistingQuery,
     ].filter(check.isNotNullish);
     const allDigestCacheNotifyEventFunctions = [
       refreshResourcesOfDirectorySubscription.subscription.digestCacheNotifyEvent,
-      preloadParentDirAndSubdirsSubscription.subscription.digestCacheNotifyEvent,
     ].filter(check.isNotNullish);
-    const allDisposeFunctions = [
-      refreshResourcesOfDirectorySubscription.dispose,
-      preloadParentDirAndSubdirsSubscription.dispose,
-    ].filter(check.isNotNullish);
+    const allDisposeFunctions = [refreshResourcesOfDirectorySubscription.dispose].filter(
+      check.isNotNullish,
+    );
 
     // run "digestExistingQuery" for all currently existing queries
     const allQueries = queryClientRef.current.getQueryCache().findAll();

@@ -1,3 +1,5 @@
+import { useHover } from '@react-aria/interactions';
+import { mergeProps } from '@react-aria/utils';
 import { AnimatePresence } from 'framer-motion';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
@@ -9,7 +11,10 @@ import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
 import { REASON_FOR_SELECTION_CHANGE } from '@app/global-state/slices/explorers.slice';
 import { startNativeFileDnD } from '@app/operations/app.operations';
 import { openResources } from '@app/operations/explorer.operations';
-import { removeTagsFromResources } from '@app/operations/resource.operations';
+import {
+  removeTagsFromResources,
+  triggerPreloadContentsOfResource,
+} from '@app/operations/resource.operations';
 import { commonStyles } from '@app/ui/common-styles';
 import {
   Box,
@@ -288,9 +293,23 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
   const keyOfResourceToRename = useKeyOfResourceToRename();
   const setKeyOfResourceToRename = useSetKeyOfResourceToRename();
 
+  const { hoverProps } = useHover({
+    onHoverStart: () => triggerPreloadContentsOfResource(resource),
+  });
+
   const isResourceSelected = !!selectedShownResources.find(
     (selectedResource) => selectedResource.key === resource.key,
   );
+
+  React.useEffect(
+    function triggerPreloadOnSelection() {
+      if (isResourceSelected) {
+        triggerPreloadContentsOfResource(resource);
+      }
+    },
+    [isResourceSelected, resource],
+  );
+
   const wasResourceSelectedLastRender = usePrevious(isResourceSelected);
   const tileGotSelected = !wasResourceSelectedLastRender && isResourceSelected;
 
@@ -340,20 +359,21 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
       data-window-keydownhandlers-enabled="true"
       {...animations}
       draggable={!renameForResourceIsActive}
-      onDragStart={(e) => {
-        e.preventDefault();
-        startNativeFileDnD(resource.uri);
-      }}
-      onClick={(e) =>
-        changeSelection(idxOfResourceForRow, {
-          ctrl: e.ctrlKey,
-          shift: e.shiftKey,
-        })
-      }
-      onDoubleClick={() => openResources(explorerId, [resource])}
       isSelectable
       isSelected={isResourceSelected}
       style={rowStyleForVirtualization}
+      {...mergeProps(hoverProps, {
+        onDragStart: (e: React.DragEvent<HTMLTableRowElement>) => {
+          e.preventDefault();
+          startNativeFileDnD(resource.uri);
+        },
+        onClick: (e: React.MouseEvent<HTMLTableRowElement>) =>
+          changeSelection(idxOfResourceForRow, {
+            ctrl: e.ctrlKey,
+            shift: e.shiftKey,
+          }),
+        onDoubleClick: () => openResources(explorerId, [resource]),
+      })}
     >
       <ResourceRowContent
         iconSlot={

@@ -179,7 +179,7 @@ module.exports = {
             target: /\/src\/ui\/(?!components-library)/,
             forbiddenPatterns: [
               {
-                pattern: /^(?:@react-aria(?!\/utils)|@react-stately)/,
+                pattern: /^(?:@react-aria(?!\/utils|\/interactions)|@react-stately)/,
                 errorMessage:
                   "Don't import from @react-aria or @react-stately directly. Implement reusable components in the component library (@app/ui/component-library).",
               },
@@ -215,6 +215,7 @@ module.exports = {
               'use-context-selector',
               'use-immer',
               /^@mui\/utils/,
+              /^@react-aria\/interactions/,
               /^@react-aria\/utils/,
               /^@react-types/,
               /^@rooks\//,

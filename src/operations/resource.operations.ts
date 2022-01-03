@@ -5,6 +5,7 @@ import * as uuid from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uui
 import { IFileStatWithMetadata } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 
 import { CustomError } from '@app/base/custom-error';
+import { formatter } from '@app/base/utils/formatter.util';
 import { objects } from '@app/base/utils/objects.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import {
@@ -14,8 +15,14 @@ import {
   ResourcesToTags,
   PROCESS_TYPE,
   Tag,
+  ResourceStat,
+  RESOURCE_TYPE,
 } from '@app/domain/types';
-import { refreshResourcesOfDirectory } from '@app/global-cache/resources';
+import {
+  getCachedResourcesOfDirectory,
+  refreshResourcesOfDirectory,
+  setCachedResourcesOfDirectory,
+} from '@app/global-cache/resources';
 import { mapProcess } from '@app/global-state/slices/processes.hooks';
 import { actions } from '@app/global-state/slices/processes.slice';
 import { actions as tagsSliceActions } from '@app/global-state/slices/tags.slice';
@@ -303,5 +310,58 @@ export async function executeCopyOrMove({
     void Promise.all(
       distinctParents.map((directory) => refreshResourcesOfDirectory({ directory })),
     );
+  }
+}
+
+export function triggerPreloadContentsOfResource(resource: ResourceStat) {
+  requestIdleCallback(() => void doPreloadContentsOfResource(resource));
+}
+
+async function doPreloadContentsOfResource(resource: ResourceStat) {
+  const formattedResource = formatter.resourcePath(resource.uri);
+
+  logger.debug(`preloading contents of resource...`, {
+    resourceContentsGetPreloadedFor: formattedResource,
+  });
+
+  if (resource.resourceType !== RESOURCE_TYPE.DIRECTORY) {
+    logger.debug(`resource is no directory --> skipping.`, {
+      resourceContentsGetPreloadedFor: formattedResource,
+    });
+    return;
+  }
+
+  const uri = resource.uri;
+
+  let cachedQueryData = getCachedResourcesOfDirectory(uri);
+  if (cachedQueryData) {
+    logger.debug(`some data is already cached --> skip preloading of resources of directory.`, {
+      directory: formatter.resourcePath(uri),
+    });
+    return;
+  }
+
+  logger.debug(`fetching resources of directory...`, { directory: formattedResource });
+
+  const fetchArgs = {
+    directory: uri,
+    resolveMetadata: false,
+  };
+  const statsWithMetadata = await fileSystemRef.current.resolve(URI.from(fetchArgs.directory), {
+    resolveMetadata: fetchArgs.resolveMetadata,
+  });
+
+  cachedQueryData = getCachedResourcesOfDirectory(fetchArgs.directory);
+  if (cachedQueryData) {
+    logger.debug(
+      `in the meantime, some data for this query got loaded ` +
+        `--> fetched resources will not be stored so that existing data is not altered.`,
+      { directory: formattedResource },
+    );
+    return;
+  } else {
+    logger.debug(`fetched resources, caching them...`, { directory: formattedResource });
+    setCachedResourcesOfDirectory(fetchArgs, statsWithMetadata.children ?? []);
+    logger.debug(`fetched resources got cached.`, { directory: formattedResource });
   }
 }
