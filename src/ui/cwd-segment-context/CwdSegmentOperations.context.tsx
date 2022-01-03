@@ -4,6 +4,7 @@ import * as React from 'react';
 import { arrays } from '@app/base/utils/arrays.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { ResourceForUI } from '@app/domain/types';
+import { REASON_FOR_SELECTION_CHANGE } from '@app/global-state/slices/explorers.slice';
 import { createFolder, openResources, pasteResources } from '@app/operations/explorer.operations';
 import * as resourceOperations from '@app/operations/resource.operations';
 import {
@@ -13,6 +14,7 @@ import {
   useSelectedShownResources,
   useSetKeyOfResourceToRename,
   useSetKeysOfSelectedResources,
+  useSetReasonForLastSelectionChange,
 } from '@app/ui/cwd-segment-context';
 import { useExplorerId, useIsActiveExplorer } from '@app/ui/explorer-context';
 import {
@@ -49,6 +51,7 @@ export const CwdSegmentOperationsContextProvider: React.FC<
 > = ({ children }) => {
   const explorerId = useExplorerId();
   const resourcesToShow = useResourcesToShow();
+  const setReasonForLastSelectionChange = useSetReasonForLastSelectionChange();
   const setKeysOfSelectedResources = useSetKeysOfSelectedResources();
   const selectedShownResources = useSelectedShownResources();
   const keyOfResourceSelectionGotStartedWith = useKeyOfResourceSelectionGotStartedWith();
@@ -85,6 +88,7 @@ export const CwdSegmentOperationsContextProvider: React.FC<
   const renameResource: CwdSegmentOperationsContext['renameResource'] = React.useCallback(
     async (resourceToRename, newBaseName) => {
       const uriToRenameTo = URI.joinPath(URI.from(resourceToRename.uri), '..', newBaseName);
+      setReasonForLastSelectionChange(REASON_FOR_SELECTION_CHANGE.USER_CHANGED_SELECTION);
       setKeysOfSelectedResources((currentKeysOfSelectedResources) => {
         const oldKeyOfRenamedResource = uriHelper.getComparisonKey(resourceToRename.uri);
         const newKeyOfRenamedResource = uriHelper.getComparisonKey(uriToRenameTo);
@@ -101,7 +105,7 @@ export const CwdSegmentOperationsContextProvider: React.FC<
       await resourceOperations.renameResource(resourceToRename.uri, uriToRenameTo);
       setKeyOfResourceToRename(undefined);
     },
-    [setKeyOfResourceToRename, setKeysOfSelectedResources],
+    [setKeyOfResourceToRename, setKeysOfSelectedResources, setReasonForLastSelectionChange],
   );
 
   const openSelectedResources: CwdSegmentOperationsContext['openSelectedResources'] =
@@ -131,6 +135,7 @@ export const CwdSegmentOperationsContextProvider: React.FC<
         (selectedResource) => selectedResource.key === resource.key,
       );
       function selectResources(resources: ResourceForUI[]) {
+        setReasonForLastSelectionChange(REASON_FOR_SELECTION_CHANGE.USER_CHANGED_SELECTION);
         setKeysOfSelectedResources(resources.map((resource) => [resource.key]));
       }
 
@@ -182,12 +187,14 @@ export const CwdSegmentOperationsContextProvider: React.FC<
       resourcesToShow,
       selectedShownResources,
       setKeysOfSelectedResources,
+      setReasonForLastSelectionChange,
     ],
   );
 
   const selectAll: CwdSegmentOperationsContext['selectAll'] = React.useCallback(() => {
+    setReasonForLastSelectionChange(REASON_FOR_SELECTION_CHANGE.USER_CHANGED_SELECTION);
     setKeysOfSelectedResources(resourcesToShow.map((resource) => [resource.key]));
-  }, [resourcesToShow, setKeysOfSelectedResources]);
+  }, [resourcesToShow, setKeysOfSelectedResources, setReasonForLastSelectionChange]);
 
   return (
     <OperationsContextProvider

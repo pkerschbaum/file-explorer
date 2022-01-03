@@ -35,6 +35,13 @@ export const useFilterInput = (explorerId: string, segmentIdx: number) =>
     (state) => state.explorersSlice.explorerPanels[explorerId].cwdSegments[segmentIdx].filterInput,
   );
 
+export const useReasonForLastSelectionChange = (explorerId: string, segmentIdx: number) =>
+  useSelector(
+    (state) =>
+      state.explorersSlice.explorerPanels[explorerId].cwdSegments[segmentIdx].selection
+        .reasonForLastSelectionChange,
+  );
+
 export const useKeysOfSelectedResources = (explorerId: string, segmentIdx: number) =>
   useSelector(
     (state) =>

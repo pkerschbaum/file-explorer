@@ -1,11 +1,16 @@
 import { UpdateFn } from '@app/domain/types';
 import * as globalStateHooks from '@app/global-state/slices/explorers.hooks';
-import { RenameHistoryKeys, ResourcesView } from '@app/global-state/slices/explorers.slice';
+import {
+  REASON_FOR_SELECTION_CHANGE,
+  RenameHistoryKeys,
+  ResourcesView,
+} from '@app/global-state/slices/explorers.slice';
 import {
   setFilterInput,
   setKeysOfSelectedResources,
   setActiveResourcesView,
   setScrollTop,
+  setReasonForLastSelectionChange,
 } from '@app/operations/explorer.operations';
 import { useExplorerId } from '@app/ui/explorer-context';
 import { createContext } from '@app/ui/utils/react.util';
@@ -51,6 +56,12 @@ export function useFilterInput() {
   return globalStateHooks.useFilterInput(explorerId, segmentIdx);
 }
 
+export function useReasonForLastSelectionChange() {
+  const explorerId = useExplorerId();
+  const segmentIdx = useSegmentIdx();
+  return globalStateHooks.useReasonForLastSelectionChange(explorerId, segmentIdx);
+}
+
 export function useKeysOfSelectedResources() {
   const explorerId = useExplorerId();
   const segmentIdx = useSegmentIdx();
@@ -85,6 +96,17 @@ export function useSetFilterInput() {
   const explorerId = useExplorerId();
   const segmentIdx = useSegmentIdx();
   return (newValue: string) => setFilterInput(explorerId, segmentIdx, newValue);
+}
+
+export function useSetReasonForLastSelectionChange() {
+  const explorerId = useExplorerId();
+  const segmentIdx = useSegmentIdx();
+  return (
+    newValueOrUpdateFn:
+      | REASON_FOR_SELECTION_CHANGE
+      | undefined
+      | UpdateFn<REASON_FOR_SELECTION_CHANGE | undefined>,
+  ) => setReasonForLastSelectionChange(explorerId, segmentIdx, newValueOrUpdateFn);
 }
 
 export function useSetKeysOfSelectedResources() {

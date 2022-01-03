@@ -6,6 +6,7 @@ import invariant from 'tiny-invariant';
 import { assertIsUnreachable } from '@app/base/utils/assert.util';
 import { formatter } from '@app/base/utils/formatter.util';
 import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
+import { REASON_FOR_SELECTION_CHANGE } from '@app/global-state/slices/explorers.slice';
 import { startNativeFileDnD } from '@app/operations/app.operations';
 import { openResources } from '@app/operations/explorer.operations';
 import { removeTagsFromResources } from '@app/operations/resource.operations';
@@ -40,6 +41,7 @@ import {
   useKeyOfLastSelectedResource,
   useScrollTop,
   useSetScrollTop,
+  useReasonForLastSelectionChange,
 } from '@app/ui/cwd-segment-context';
 import { useExplorerId } from '@app/ui/explorer-context';
 import { ResourceIcon } from '@app/ui/resource-icon';
@@ -276,6 +278,7 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
 
   const explorerId = useExplorerId();
   const selectedShownResources = useSelectedShownResources();
+  const reasonForLastSelectionChange = useReasonForLastSelectionChange();
   const renameResource = useRenameResource();
   const changeSelection = useChangeSelection();
   const keyOfResourceToRename = useKeyOfResourceToRename();
@@ -288,14 +291,17 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
   const tileGotSelected = !wasResourceSelectedLastRender && isResourceSelected;
 
   React.useEffect(
-    function scrollElementIntoViewOnSelection() {
+    function scrollElementIntoViewOnUserSelection() {
       invariant(rowRef.current);
 
-      if (tileGotSelected) {
+      if (
+        tileGotSelected &&
+        reasonForLastSelectionChange === REASON_FOR_SELECTION_CHANGE.USER_CHANGED_SELECTION
+      ) {
         rowRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
       }
     },
-    [tileGotSelected],
+    [reasonForLastSelectionChange, tileGotSelected],
   );
 
   function abortRename() {

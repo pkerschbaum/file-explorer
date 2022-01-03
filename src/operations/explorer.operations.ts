@@ -17,6 +17,7 @@ import { refreshResourcesOfDirectory } from '@app/global-cache/resources';
 import { extractCwdFromExplorerPanel } from '@app/global-state/slices/explorers.hooks';
 import {
   actions as explorerActions,
+  REASON_FOR_SELECTION_CHANGE,
   RenameHistoryKeys,
   ResourcesView,
 } from '@app/global-state/slices/explorers.slice';
@@ -281,6 +282,36 @@ export async function revealCwdInOSExplorer(explorerId: string) {
 export function setFilterInput(explorerId: string, segmentIdx: number, newValue: string): void {
   dispatchRef.current(
     explorerActions.updateCwdSegment({ explorerId, segmentIdx, filterInput: newValue }),
+  );
+}
+
+export function setReasonForLastSelectionChange(
+  explorerId: string,
+  segmentIdx: number,
+  newValueOrUpdateFn:
+    | REASON_FOR_SELECTION_CHANGE
+    | undefined
+    | UpdateFn<REASON_FOR_SELECTION_CHANGE | undefined>,
+): void {
+  const currentValue =
+    storeRef.current.getState().explorersSlice.explorerPanels[explorerId].cwdSegments[segmentIdx]
+      .selection.reasonForLastSelectionChange;
+
+  let newValue;
+  if (typeof newValueOrUpdateFn === 'function') {
+    newValue = newValueOrUpdateFn(currentValue);
+  } else {
+    newValue = newValueOrUpdateFn;
+  }
+
+  dispatchRef.current(
+    explorerActions.updateCwdSegment({
+      explorerId,
+      segmentIdx,
+      selection: {
+        reasonForLastSelectionChange: newValue,
+      },
+    }),
   );
 }
 

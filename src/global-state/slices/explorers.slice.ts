@@ -25,6 +25,7 @@ export type CwdSegment = {
 
   filterInput: string;
   selection: {
+    reasonForLastSelectionChange?: REASON_FOR_SELECTION_CHANGE;
     keysOfSelectedResources: RenameHistoryKeys[];
     keyOfResourceSelectionGotStartedWith: RenameHistoryKeys | undefined;
   };
@@ -33,6 +34,11 @@ export type CwdSegment = {
 
   markedForRemoval?: boolean;
 };
+
+export enum REASON_FOR_SELECTION_CHANGE {
+  USER_CHANGED_SELECTION = 'USER_CHANGED_SELECTION',
+  RESET = 'RESET',
+}
 
 export type RenameHistoryKeys = string[];
 export type ResourcesView = undefined | 'table' | 'gallery';
@@ -52,6 +58,7 @@ type UpdateCwdSegmentPayload = {
 
   filterInput?: string;
   selection?: {
+    reasonForLastSelectionChange?: REASON_FOR_SELECTION_CHANGE;
     keysOfSelectedResources?: RenameHistoryKeys[];
     keyOfResourceSelectionGotStartedWith?: RenameHistoryKeys | undefined;
   };
@@ -132,6 +139,13 @@ export const reducer = createReducer(INITIAL_STATE, (builder) =>
       const cwdSegmentToUpdate = state.explorerPanels[explorerId].cwdSegments[segmentIdx];
       if (check.isNotNullish(updateData.filterInput)) {
         cwdSegmentToUpdate.filterInput = updateData.filterInput;
+      }
+      if (
+        check.isNotNullish(updateData.selection) &&
+        check.isNotNullish(updateData.selection.reasonForLastSelectionChange)
+      ) {
+        cwdSegmentToUpdate.selection.reasonForLastSelectionChange =
+          updateData.selection.reasonForLastSelectionChange;
       }
       if (
         check.isNotNullish(updateData.selection) &&

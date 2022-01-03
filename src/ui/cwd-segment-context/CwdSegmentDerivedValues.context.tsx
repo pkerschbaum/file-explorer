@@ -4,6 +4,7 @@ import { arrays } from '@app/base/utils/arrays.util';
 import { check } from '@app/base/utils/assert.util';
 import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
 import { useSegmentUri } from '@app/global-state/slices/explorers.hooks';
+import { REASON_FOR_SELECTION_CHANGE } from '@app/global-state/slices/explorers.slice';
 import { isResourceQualifiedForThumbnail } from '@app/operations/app.operations';
 import {
   useActiveResourcesView,
@@ -12,6 +13,7 @@ import {
   useSegmentIdx,
   useSetActiveResourcesView,
   useSetKeysOfSelectedResources,
+  useSetReasonForLastSelectionChange,
 } from '@app/ui/cwd-segment-context';
 import { useExplorerId } from '@app/ui/explorer-context';
 import { useEnrichResourcesWithTags, useResourcesForUI } from '@app/ui/hooks/resources.hooks';
@@ -44,6 +46,7 @@ export const CwdSegmentDerivedValuesContextProvider: React.FC<
   const debouncedFilterInput = useDebouncedValue(useFilterInput(), 50);
   const keysOfSelectedResources = useKeysOfSelectedResources();
   const activeResourcesView = useActiveResourcesView();
+  const setReasonForLastSelectionChange = useSetReasonForLastSelectionChange();
   const setKeysOfSelectedResources = useSetKeysOfSelectedResources();
   const setActiveResourcesView = useSetActiveResourcesView();
 
@@ -125,18 +128,30 @@ export const CwdSegmentDerivedValuesContextProvider: React.FC<
    */
   React.useEffect(() => {
     if (didApplySelectionFallback) {
+      setReasonForLastSelectionChange(REASON_FOR_SELECTION_CHANGE.RESET);
       setKeysOfSelectedResources(selectedShownResources.map((resource) => [resource.key]));
     }
-  }, [selectedShownResources, didApplySelectionFallback, setKeysOfSelectedResources]);
+  }, [
+    didApplySelectionFallback,
+    selectedShownResources,
+    setKeysOfSelectedResources,
+    setReasonForLastSelectionChange,
+  ]);
 
   // every time the filter input changes, reset selection
   const prevFilterInput = usePrevious(debouncedFilterInput);
   const filterInputChanged = debouncedFilterInput !== prevFilterInput;
   React.useEffect(() => {
     if (filterInputChanged && resourcesToShow.length > 0) {
+      setReasonForLastSelectionChange(REASON_FOR_SELECTION_CHANGE.RESET);
       setKeysOfSelectedResources([[resourcesToShow[0].key]]);
     }
-  }, [resourcesToShow, filterInputChanged, setKeysOfSelectedResources]);
+  }, [
+    filterInputChanged,
+    resourcesToShow,
+    setKeysOfSelectedResources,
+    setReasonForLastSelectionChange,
+  ]);
 
   // once we got resources loaded, determine and set the resource view mode which should be initially used
   React.useEffect(() => {
