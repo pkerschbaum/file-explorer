@@ -40,7 +40,7 @@
     "@mui/styled-engine": "npm:@mui/styled-engine-sc@^5.1.0",
     "@mui/utils": "^5.2.3",
     "@pkerschbaum/code-oss-file-icon-theme": "^3.1.0",
-    "@pkerschbaum/code-oss-file-service": "^1.62.0",
+    "@pkerschbaum/code-oss-file-service": "^1.64.0",
     "@react-aria/breadcrumbs": "^3.1.5",
     "@react-aria/button": "^3.3.4",
     "@react-aria/dialog": "^3.1.4",

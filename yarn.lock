@@ -2135,10 +2135,10 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
-"@parcel/watcher@2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@parcel/watcher/-/watcher-2.0.0.tgz#ebe992a4838b35c3da9a568eb95a71cb26ddf551"
-  integrity sha512-ByalKmRRXNNAhwZ0X1r0XeIhh1jG8zgdlvjgHk9ZV3YxiersEGNQkwew+RfqJbIL4gOJfvC2ey6lg5kaeRainw==
+"@parcel/watcher@2.0.5":
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/@parcel/watcher/-/watcher-2.0.5.tgz#f913a54e1601b0aac972803829b0eece48de215b"
+  integrity sha512-x0hUbjv891omnkcHD7ZOhiyyUqUUR6MNjq89JhEI3BxppeKWAm6NPQsqqRrAkCJBogdT/o/My21sXtTI9rJIsw==
   dependencies:
     node-addon-api "^3.2.1"
     node-gyp-build "^4.3.0"
@@ -2151,15 +2151,14 @@
     css.escape "^1.5.1"
     vscode-nls "^5.0.0"
 
-"@pkerschbaum/code-oss-file-service@^1.62.0":
-  version "1.62.0"
-  resolved "https://registry.yarnpkg.com/@pkerschbaum/code-oss-file-service/-/code-oss-file-service-1.62.0.tgz#8ee1060ed02e884c59ba95fbc91894c9f610a55b"
-  integrity sha512-gQQM7rPEu8g+iI3upXYYIngRPotaHXNunF8INKeme3b1533MCZIIkJpuMwrgfWGHcUl4DjBhS2AzRkb4zUnK3A==
+"@pkerschbaum/code-oss-file-service@^1.64.0":
+  version "1.64.0"
+  resolved "https://registry.yarnpkg.com/@pkerschbaum/code-oss-file-service/-/code-oss-file-service-1.64.0.tgz#6cf448efeabef43a599125f291614338811d826a"
+  integrity sha512-cBqwIx5u3GrQ92N5ziWy804Av1e+Nn2tP3SP0g9tr2JzLkWFHa4DMfjoSD3aUnboOkXdhoa8eG0nhTRIy8/pog==
   dependencies:
-    "@parcel/watcher" "2.0.0"
+    "@parcel/watcher" "2.0.5"
     graceful-fs "4.2.8"
     vscode-nls "^5.0.0"
-    vscode-nsfw "2.1.8"
 
 "@pkerschbaum/cypress-image-snapshot@^1.0.1":
   version "1.0.1"
@@ -16676,13 +16675,6 @@ vscode-nls@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/vscode-nls/-/vscode-nls-5.0.0.tgz#99f0da0bd9ea7cda44e565a74c54b1f2bc257840"
   integrity sha512-u0Lw+IYlgbEJFF6/qAqG2d1jQmJl0eyAGJHoAJqr2HT4M2BNuQYSEiSE75f52pXHSJm8AlTjnLLbBFPrdz2hpA==
-
-vscode-nsfw@2.1.8:
-  version "2.1.8"
-  resolved "https://registry.yarnpkg.com/vscode-nsfw/-/vscode-nsfw-2.1.8.tgz#88f5e56b22b2fd0be582e73eb1158ea8257f6c6c"
-  integrity sha512-tFnxPIuM65czw/Kjz8KXD88fIJtnCjzQ0ighS0a1yasVv6jKkANAlGffiOitTLMkDjvFCY8OyP6xjarTkpu/VQ==
-  dependencies:
-    node-addon-api "^4.2.0"
 
 vscode-uri@^2.1.2:
   version "2.1.2"
