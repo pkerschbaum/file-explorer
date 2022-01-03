@@ -8,7 +8,7 @@ import {
   useIdOfFocusedExplorerPanel,
 } from '@app/global-state/slices/explorers.hooks';
 import { ActionsBar } from '@app/ui/actions-bar';
-import { Box } from '@app/ui/components-library';
+import { Box, componentLibraryUtils } from '@app/ui/components-library';
 import { CwdBreadcrumbs } from '@app/ui/cwd-breadcrumbs';
 import { CwdSegmentContextProvider, useActiveResourcesView } from '@app/ui/cwd-segment-context';
 import { ExplorerContextProvider } from '@app/ui/explorer-context';
@@ -63,6 +63,7 @@ export const ExplorerPanel = React.memo<ExplorerPanelProps>(function ExplorerPan
                     open: { display: 'block' },
                   }}
                   animate={activeAnimationVariant}
+                  exit="closed"
                 >
                   <ActionsBar />
                 </ActionsBarContainer>
@@ -74,6 +75,7 @@ export const ExplorerPanel = React.memo<ExplorerPanelProps>(function ExplorerPan
                   open: { display: 'flex' },
                 }}
                 animate={activeAnimationVariant}
+                aria-hidden={!isLastSegment}
               >
                 <ResourcesView />
               </ResourcesViewContainer>
@@ -123,14 +125,18 @@ const ResourcesViewContainer = styled(Box)`
 
 const ResourcesView: React.FC = () => {
   const activeResourcesView = useActiveResourcesView();
+  const isAnimationAllowed = componentLibraryUtils.useIsAnimationAllowed();
+  const animations = !isAnimationAllowed
+    ? {}
+    : ({
+        initial: { x: '100%' },
+        animate: { x: 0 },
+        exit: { x: '100%' },
+        transition: { ease: 'easeOut', duration: 0.5 },
+      } as const);
 
   return (
-    <ResourcesViewSlideBox
-      initial={{ x: '100%' }}
-      animate={{ x: 0 }}
-      exit={{ x: '100%' }}
-      transition={{ ease: 'easeOut', duration: 0.5 }}
-    >
+    <ResourcesViewSlideBox {...animations}>
       {activeResourcesView === 'gallery' ? <ResourcesGallery /> : <ResourcesTable />}
     </ResourcesViewSlideBox>
   );

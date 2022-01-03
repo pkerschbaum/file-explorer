@@ -1,4 +1,4 @@
-import { AnimatePresence, Target } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 import invariant from 'tiny-invariant';
@@ -234,8 +234,11 @@ const VirtualizedTableBody: React.FC<VirtualizedTableBodyProps> = ({
   return (
     <TableBody
       style={{
-        position: 'relative',
         /**
+         * Change position to "relative" for two reasons:
+         * 1) The table body should be a containing block for the absolutely positioned virtualized rows.
+         * 2) The table body must be moved up below the sticky header row (see explanation below).
+         *
          * Because of paddingStart set to ROW_HEIGHT, react-virtual thinks it must move all rows
          * down by ROW_HEIGHT pixels. This is not the case - the <tbody> element is already below the
          * sticky header row, so there is no need to move the rows further down.
@@ -247,6 +250,7 @@ const VirtualizedTableBody: React.FC<VirtualizedTableBodyProps> = ({
          * We also have to reduce the height by the paddingStart because react-virtual does include
          * it in the calculated total size.
          */
+        position: 'relative',
         top: -ROW_HEIGHT,
         height: `${rowVirtualizer.totalSize - ROW_HEIGHT}px`,
       }}
@@ -310,28 +314,25 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
 
   const renameForResourceIsActive = keyOfResourceToRename === resource.key;
 
-  const rowStyleForVirtualization: Target =
+  const rowStyleForVirtualization: undefined | React.CSSProperties =
     virtualRowStart === undefined
-      ? {}
+      ? undefined
       : {
           position: 'absolute',
           width: '100%',
-          transform: `translateY(${virtualRowStart}px)`,
+          top: `${virtualRowStart}px`,
         };
   const isAnimationAllowed = componentLibraryUtils.useIsAnimationAllowed();
   const framerMotionAnimations = useFramerMotionAnimations();
-  const animations = !isAnimationAllowed
-    ? {
-        initial: rowStyleForVirtualization,
-        animate: rowStyleForVirtualization,
-        exit: rowStyleForVirtualization,
-      }
-    : ({
-        initial: { ...framerMotionAnimations.fadeInOut.initial, ...rowStyleForVirtualization },
-        animate: { ...framerMotionAnimations.fadeInOut.animate, ...rowStyleForVirtualization },
-        exit: { ...framerMotionAnimations.fadeInOut.exit, ...rowStyleForVirtualization },
-        layout: 'position',
-      } as const);
+  const animations =
+    !isAnimationAllowed || rowStyleForVirtualization
+      ? {}
+      : ({
+          initial: { ...framerMotionAnimations.fadeInOut.initial },
+          animate: { ...framerMotionAnimations.fadeInOut.animate },
+          exit: { ...framerMotionAnimations.fadeInOut.exit },
+          layout: 'position',
+        } as const);
 
   return (
     <ResourceRowRoot
@@ -352,6 +353,7 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
       onDoubleClick={() => openResources(explorerId, [resource])}
       isSelectable
       isSelected={isResourceSelected}
+      style={rowStyleForVirtualization}
     >
       <ResourceRowContent
         iconSlot={
