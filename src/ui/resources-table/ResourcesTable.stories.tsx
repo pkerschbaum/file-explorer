@@ -1,8 +1,11 @@
 import { IFileStatWithMetadata } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 import { ComponentMeta, ComponentStory } from '@storybook/react';
+import invariant from 'tiny-invariant';
 
+import { extractCwdSegmentsFromExplorerPanel } from '@app/global-state/slices/explorers.hooks';
 import { createStoreInstance, RootStore } from '@app/global-state/store';
 import { fileSystemRef } from '@app/operations/global-modules';
+import { CwdSegmentContextProvider } from '@app/ui/cwd-segment-context';
 import { ExplorerContextProvider } from '@app/ui/explorer-context';
 import { createQueryClient, Globals } from '@app/ui/Globals';
 import { ResourcesTable } from '@app/ui/resources-table';
@@ -21,14 +24,22 @@ export default {
   ],
 } as ComponentMeta<typeof ResourcesTable>;
 
-const Template: ComponentStory<typeof ResourcesTable> = (args, { loaded }) => (
-  <ExplorerContextProvider
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    explorerId={(loaded.store as RootStore).getState().explorersSlice.focusedExplorerPanelId!}
-  >
-    <ResourcesTable {...args} />
-  </ExplorerContextProvider>
-);
+const Template: ComponentStory<typeof ResourcesTable> = (args, { loaded }) => {
+  const globalState = (loaded.store as RootStore).getState();
+  const explorerId = globalState.explorersSlice.focusedExplorerPanelId;
+  invariant(explorerId);
+  const currentSegmentIdx =
+    extractCwdSegmentsFromExplorerPanel(globalState.explorersSlice.explorerPanels[explorerId])
+      .length - 1;
+
+  return (
+    <ExplorerContextProvider explorerId={explorerId}>
+      <CwdSegmentContextProvider segmentIdx={currentSegmentIdx}>
+        <ResourcesTable {...args} />
+      </CwdSegmentContextProvider>
+    </ExplorerContextProvider>
+  );
+};
 
 export const DefaultCase = Template.bind({});
 DefaultCase.loaders = [

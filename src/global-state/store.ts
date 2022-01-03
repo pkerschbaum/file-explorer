@@ -9,7 +9,7 @@ import { loggerMiddleware } from '@app/global-state/logger.middleware';
 import { persistMiddleware } from '@app/global-state/persist-state.middleware';
 import { rootReducer } from '@app/global-state/reducers';
 import {
-  computeCwdSegmentsStackFromUri,
+  computeCwdSegmentsFromUri,
   ExplorersMap,
   generateExplorerId,
 } from '@app/global-state/slices/explorers.slice';
@@ -47,7 +47,7 @@ export async function createStoreInstance(creationParams?: {
     const cwdOfNewExplorer = await getDefaultExplorerCwd();
     const explorerId = generateExplorerId();
     explorerPanels[explorerId] = {
-      cwdSegments: computeCwdSegmentsStackFromUri(cwdOfNewExplorer),
+      cwdSegments: computeCwdSegmentsFromUri(cwdOfNewExplorer),
     };
   }
 

@@ -3,7 +3,7 @@ import { mergeProps, useObjectRef } from '@react-aria/utils';
 import { AriaButtonProps } from '@react-types/button';
 import { motion } from 'framer-motion';
 import * as React from 'react';
-import styled, { css, keyframes } from 'styled-components';
+import styled, { css } from 'styled-components';
 import invariant from 'tiny-invariant';
 
 import { Box } from '@app/ui/components-library/Box';
@@ -283,36 +283,28 @@ type TouchRippleHandle = {
 };
 
 const TouchRipple: React.FC<TouchRippleProps> = ({ handleRef }) => {
-  const touchRippleRef = React.useRef<HTMLSpanElement>(null);
+  const [isAnimating, setIsAnimating] = React.useState(false);
 
   React.useImperativeHandle(
     handleRef,
     () => ({
-      trigger: () => {
-        invariant(touchRippleRef.current);
-
-        // trigger animation (https://stackoverflow.com/a/45036752/1700319)
-        touchRippleRef.current.style.animation = 'none';
-        touchRippleRef.current.offsetHeight;
-        touchRippleRef.current.style.animation = '';
-        touchRippleRef.current.style.animationDuration = '500ms';
-      },
+      trigger: () => setIsAnimating(true),
     }),
     [],
   );
 
-  return <TouchRippleSpan ref={touchRippleRef} />;
+  return (
+    <TouchRippleSpan
+      styleProps={{ animating: isAnimating }}
+      onAnimationEnd={() => setIsAnimating(false)}
+    />
+  );
 };
 
-const ripple = keyframes`
-  to {
-    transform: scale(4);
-    opacity: 0;
-  }
-`;
+type TouchRippleStyleProps = { animating: boolean };
 
 // taken from https://css-tricks.com/how-to-recreate-the-ripple-effect-of-material-design-buttons/#react
-const TouchRippleSpan = styled.span`
+const TouchRippleSpan = styled.span<{ styleProps: TouchRippleStyleProps }>`
   position: absolute;
   height: calc(3 * 1em);
   width: calc(3 * 1em);
@@ -320,9 +312,10 @@ const TouchRippleSpan = styled.span`
   border-radius: 50%;
   background-color: var(--color-darken-3);
   transform: scale(0);
-  /* 
-     Animation duration is initially set to 0s so that the animation does not run on mount.
-     The animation duration will be set in the TouchRipple component when the animation should be triggered.
-   */
-  animation: ${ripple} 0s linear;
+
+  ${({ styleProps }) =>
+    styleProps.animating &&
+    css`
+      animation: var(--animation-ripple);
+    `}
 `;

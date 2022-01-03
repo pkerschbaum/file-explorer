@@ -4,17 +4,19 @@ import * as React from 'react';
 import { arrays } from '@app/base/utils/arrays.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { ResourceForUI } from '@app/domain/types';
+import { REASON_FOR_SELECTION_CHANGE } from '@app/global-state/slices/explorers.slice';
 import { createFolder, openResources, pasteResources } from '@app/operations/explorer.operations';
 import * as resourceOperations from '@app/operations/resource.operations';
 import {
-  useExplorerId,
-  useIsActiveExplorer,
+  useIsActiveCwdSegment,
   useKeyOfResourceSelectionGotStartedWith,
   useResourcesToShow,
   useSelectedShownResources,
   useSetKeyOfResourceToRename,
   useSetKeysOfSelectedResources,
-} from '@app/ui/explorer-context';
+  useSetReasonForLastSelectionChange,
+} from '@app/ui/cwd-segment-context';
+import { useExplorerId, useIsActiveExplorer } from '@app/ui/explorer-context';
 import {
   ShortcutMap,
   useRegisterGlobalShortcuts,
@@ -22,7 +24,7 @@ import {
 } from '@app/ui/GlobalShortcutsContext';
 import { createSelectableContext, EventHandler, useWindowEvent } from '@app/ui/utils/react.util';
 
-type ExplorerOperationsContext = {
+type CwdSegmentOperationsContext = {
   copySelectedResources: () => void;
   cutSelectedResources: () => void;
   pasteResourcesIntoExplorer: () => Promise<void>;
@@ -35,19 +37,21 @@ type ExplorerOperationsContext = {
   selectAll: () => void;
 };
 
-const selectableContext = createSelectableContext<ExplorerOperationsContext>('ExplorerOperations');
-const useExplorerOperationsSelector = selectableContext.useContextSelector;
+const selectableContext =
+  createSelectableContext<CwdSegmentOperationsContext>('CwdSegmentOperations');
+const useCwdSegmentOperationsSelector = selectableContext.useContextSelector;
 const OperationsContextProvider = selectableContext.Provider;
 
-type ExplorerOperationsContextProviderProps = {
+type CwdSegmentOperationsContextProviderProps = {
   children: React.ReactNode;
 };
 
-export const ExplorerOperationsContextProvider: React.FC<
-  ExplorerOperationsContextProviderProps
+export const CwdSegmentOperationsContextProvider: React.FC<
+  CwdSegmentOperationsContextProviderProps
 > = ({ children }) => {
   const explorerId = useExplorerId();
   const resourcesToShow = useResourcesToShow();
+  const setReasonForLastSelectionChange = useSetReasonForLastSelectionChange();
   const setKeysOfSelectedResources = useSetKeysOfSelectedResources();
   const selectedShownResources = useSelectedShownResources();
   const keyOfResourceSelectionGotStartedWith = useKeyOfResourceSelectionGotStartedWith();
@@ -64,10 +68,10 @@ export const ExplorerOperationsContextProvider: React.FC<
     };
   }, [selectedShownResources]);
 
-  const pasteResourcesIntoExplorer: ExplorerOperationsContext['pasteResourcesIntoExplorer'] =
+  const pasteResourcesIntoExplorer: CwdSegmentOperationsContext['pasteResourcesIntoExplorer'] =
     React.useCallback(() => pasteResources(explorerId), [explorerId]);
 
-  const triggerRenameForSelectedResources: ExplorerOperationsContext['triggerRenameForSelectedResources'] =
+  const triggerRenameForSelectedResources: CwdSegmentOperationsContext['triggerRenameForSelectedResources'] =
     React.useCallback(() => {
       setKeyOfResourceToRename((currentKeyOfResourceToRename) => {
         if (selectedShownResources.length !== 1) {
@@ -81,9 +85,10 @@ export const ExplorerOperationsContextProvider: React.FC<
       });
     }, [selectedShownResources, setKeyOfResourceToRename]);
 
-  const renameResource: ExplorerOperationsContext['renameResource'] = React.useCallback(
+  const renameResource: CwdSegmentOperationsContext['renameResource'] = React.useCallback(
     async (resourceToRename, newBaseName) => {
       const uriToRenameTo = URI.joinPath(URI.from(resourceToRename.uri), '..', newBaseName);
+      setReasonForLastSelectionChange(REASON_FOR_SELECTION_CHANGE.USER_CHANGED_SELECTION);
       setKeysOfSelectedResources((currentKeysOfSelectedResources) => {
         const oldKeyOfRenamedResource = uriHelper.getComparisonKey(resourceToRename.uri);
         const newKeyOfRenamedResource = uriHelper.getComparisonKey(uriToRenameTo);
@@ -100,26 +105,26 @@ export const ExplorerOperationsContextProvider: React.FC<
       await resourceOperations.renameResource(resourceToRename.uri, uriToRenameTo);
       setKeyOfResourceToRename(undefined);
     },
-    [setKeyOfResourceToRename, setKeysOfSelectedResources],
+    [setKeyOfResourceToRename, setKeysOfSelectedResources, setReasonForLastSelectionChange],
   );
 
-  const openSelectedResources: ExplorerOperationsContext['openSelectedResources'] =
+  const openSelectedResources: CwdSegmentOperationsContext['openSelectedResources'] =
     React.useCallback(
       () => openResources(explorerId, selectedShownResources),
       [explorerId, selectedShownResources],
     );
 
-  const scheduleDeleteSelectedResources: ExplorerOperationsContext['scheduleDeleteSelectedResources'] =
+  const scheduleDeleteSelectedResources: CwdSegmentOperationsContext['scheduleDeleteSelectedResources'] =
     React.useCallback(() => {
       resourceOperations.scheduleMoveResourcesToTrash(
         selectedShownResources.map((resource) => resource.uri),
       );
     }, [selectedShownResources]);
 
-  const createFolderInExplorer: ExplorerOperationsContext['createFolderInExplorer'] =
+  const createFolderInExplorer: CwdSegmentOperationsContext['createFolderInExplorer'] =
     React.useCallback((folderName) => createFolder(explorerId, folderName), [explorerId]);
 
-  const changeSelection: ExplorerOperationsContext['changeSelection'] = React.useCallback(
+  const changeSelection: CwdSegmentOperationsContext['changeSelection'] = React.useCallback(
     (idxOfResource, modifiers) => {
       if (idxOfResource < 0 || idxOfResource >= resourcesToShow.length) {
         return;
@@ -130,6 +135,7 @@ export const ExplorerOperationsContextProvider: React.FC<
         (selectedResource) => selectedResource.key === resource.key,
       );
       function selectResources(resources: ResourceForUI[]) {
+        setReasonForLastSelectionChange(REASON_FOR_SELECTION_CHANGE.USER_CHANGED_SELECTION);
         setKeysOfSelectedResources(resources.map((resource) => [resource.key]));
       }
 
@@ -181,12 +187,14 @@ export const ExplorerOperationsContextProvider: React.FC<
       resourcesToShow,
       selectedShownResources,
       setKeysOfSelectedResources,
+      setReasonForLastSelectionChange,
     ],
   );
 
-  const selectAll: ExplorerOperationsContext['selectAll'] = React.useCallback(() => {
+  const selectAll: CwdSegmentOperationsContext['selectAll'] = React.useCallback(() => {
+    setReasonForLastSelectionChange(REASON_FOR_SELECTION_CHANGE.USER_CHANGED_SELECTION);
     setKeysOfSelectedResources(resourcesToShow.map((resource) => [resource.key]));
-  }, [resourcesToShow, setKeysOfSelectedResources]);
+  }, [resourcesToShow, setKeysOfSelectedResources, setReasonForLastSelectionChange]);
 
   return (
     <OperationsContextProvider
@@ -209,53 +217,55 @@ export const ExplorerOperationsContextProvider: React.FC<
 };
 
 export function useCopySelectedResources() {
-  return useExplorerOperationsSelector((actions) => actions.copySelectedResources);
+  return useCwdSegmentOperationsSelector((actions) => actions.copySelectedResources);
 }
 
 export function useCutSelectedResources() {
-  return useExplorerOperationsSelector((actions) => actions.cutSelectedResources);
+  return useCwdSegmentOperationsSelector((actions) => actions.cutSelectedResources);
 }
 
 export function usePasteResourcesIntoExplorer() {
-  return useExplorerOperationsSelector((actions) => actions.pasteResourcesIntoExplorer);
+  return useCwdSegmentOperationsSelector((actions) => actions.pasteResourcesIntoExplorer);
 }
 
 export function useTriggerRenameForSelectedResources() {
-  return useExplorerOperationsSelector((actions) => actions.triggerRenameForSelectedResources);
+  return useCwdSegmentOperationsSelector((actions) => actions.triggerRenameForSelectedResources);
 }
 
 export function useRenameResource() {
-  return useExplorerOperationsSelector((actions) => actions.renameResource);
+  return useCwdSegmentOperationsSelector((actions) => actions.renameResource);
 }
 
 export function useOpenSelectedResources() {
-  return useExplorerOperationsSelector((actions) => actions.openSelectedResources);
+  return useCwdSegmentOperationsSelector((actions) => actions.openSelectedResources);
 }
 
 export function useScheduleDeleteSelectedResources() {
-  return useExplorerOperationsSelector((actions) => actions.scheduleDeleteSelectedResources);
+  return useCwdSegmentOperationsSelector((actions) => actions.scheduleDeleteSelectedResources);
 }
 
 export function useCreateFolderInExplorer() {
-  return useExplorerOperationsSelector((actions) => actions.createFolderInExplorer);
+  return useCwdSegmentOperationsSelector((actions) => actions.createFolderInExplorer);
 }
 
 export function useChangeSelection() {
-  return useExplorerOperationsSelector((actions) => actions.changeSelection);
+  return useCwdSegmentOperationsSelector((actions) => actions.changeSelection);
 }
 
 export function useSelectAll() {
-  return useExplorerOperationsSelector((actions) => actions.selectAll);
+  return useCwdSegmentOperationsSelector((actions) => actions.selectAll);
 }
 
-export function useRegisterExplorerShortcuts<ActualShortcutMap extends ShortcutMap>(
+export function useRegisterCwdSegmentShortcuts<ActualShortcutMap extends ShortcutMap>(
   shortcutMap: ActualShortcutMap,
 ): Partial<RegisterShortcutsResultMap<ActualShortcutMap>> {
   const isActiveExplorer = useIsActiveExplorer();
-  return useRegisterGlobalShortcuts(!isActiveExplorer ? {} : shortcutMap);
+  const isActiveCwdSegment = useIsActiveCwdSegment();
+  return useRegisterGlobalShortcuts(isActiveExplorer && isActiveCwdSegment ? shortcutMap : {});
 }
 
-export function useRegisterExplorerAuxclickHandler(eventHandlers: EventHandler<'auxclick'>[]) {
+export function useRegisterCwdSegmentAuxclickHandler(eventHandlers: EventHandler<'auxclick'>[]) {
   const isActiveExplorer = useIsActiveExplorer();
-  useWindowEvent('auxclick', !isActiveExplorer ? [] : eventHandlers);
+  const isActiveCwdSegment = useIsActiveCwdSegment();
+  useWindowEvent('auxclick', isActiveExplorer && isActiveCwdSegment ? eventHandlers : []);
 }

@@ -1,6 +1,6 @@
 import { createTheme, Theme } from '@mui/material';
 import * as d3 from 'd3-color';
-import { MotionProps } from 'framer-motion';
+import { MotionProps, Target } from 'framer-motion';
 import * as React from 'react';
 import {
   createGlobalStyle,
@@ -191,13 +191,21 @@ const ANIMATIONS = {
       opacity: 1;
     }
   `,
+  ripple: keyframes`
+    to {
+      transform: scale(4);
+      opacity: 0;
+    }
+  `,
 };
+
 type FramerMotionAnimationNames = 'fadeInOut';
 type FramerMotionAnimations = {
-  [animationName in FramerMotionAnimationNames]: Pick<
-    MotionProps,
-    'initial' | 'animate' | 'exit' | 'transition'
-  >;
+  [animationName in FramerMotionAnimationNames]: Pick<MotionProps, 'transition'> & {
+    initial: Target;
+    animate: Target;
+    exit: Target;
+  };
 };
 const FRAMER_MOTION_ANIMATIONS: FramerMotionAnimations = {
   fadeInOut: {
@@ -208,7 +216,12 @@ const FRAMER_MOTION_ANIMATIONS: FramerMotionAnimations = {
   },
 };
 const FRAMER_MOTION_ANIMATIONS_DISABLED: FramerMotionAnimations = {
-  fadeInOut: {},
+  fadeInOut: {
+    initial: { opacity: 0 },
+    animate: { opacity: 1 },
+    transition: { duration: 0 },
+    exit: { opacity: 0 },
+  },
 };
 
 export function useFramerMotionAnimations(): FramerMotionAnimations {
@@ -284,6 +297,7 @@ export const DesignTokenProvider: React.FC = ({ children }) => {
           normal none running ${ANIMATIONS.moveLeftToRight1};
         --animation-move-left-to-right-2: 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) 1.15s infinite
           normal none running ${ANIMATIONS.moveLeftToRight2};
+        --animation-ripple: 500ms linear ${ANIMATIONS.ripple};
       `;
     } else {
       animations = css`
@@ -291,6 +305,7 @@ export const DesignTokenProvider: React.FC = ({ children }) => {
         --animation-pulsate: none;
         --animation-move-left-to-right-1: none;
         --animation-move-left-to-right-2: none;
+        --animation-ripple: none;
       `;
     }
 

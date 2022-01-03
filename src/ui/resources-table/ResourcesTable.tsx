@@ -1,3 +1,4 @@
+import { AnimatePresence } from 'framer-motion';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 import invariant from 'tiny-invariant';
@@ -5,38 +6,47 @@ import invariant from 'tiny-invariant';
 import { assertIsUnreachable } from '@app/base/utils/assert.util';
 import { formatter } from '@app/base/utils/formatter.util';
 import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
+import { REASON_FOR_SELECTION_CHANGE } from '@app/global-state/slices/explorers.slice';
 import { startNativeFileDnD } from '@app/operations/app.operations';
 import { openResources } from '@app/operations/explorer.operations';
 import { removeTagsFromResources } from '@app/operations/resource.operations';
 import { commonStyles } from '@app/ui/common-styles';
-import { Box, Chip, Skeleton, TextField, useVirtual } from '@app/ui/components-library';
+import {
+  Box,
+  Chip,
+  componentLibraryUtils,
+  Skeleton,
+  TextField,
+  useFramerMotionAnimations,
+  useVirtual,
+} from '@app/ui/components-library';
 import {
   DataCell,
   DataTable,
   HeadCell,
   Row,
-  RowProps,
   TableBody,
   TableHead,
 } from '@app/ui/components-library/data-table';
 import { KEY } from '@app/ui/constants';
 import {
   useChangeSelection,
-  useExplorerId,
   useResourcesToShow,
   useKeyOfResourceToRename,
   useSelectedShownResources,
   useSetKeyOfResourceToRename,
   useRenameResource,
   useDataAvailable,
-  useRegisterExplorerShortcuts,
+  useRegisterCwdSegmentShortcuts,
   useKeyOfLastSelectedResource,
   useScrollTop,
   useSetScrollTop,
-} from '@app/ui/explorer-context';
+  useReasonForLastSelectionChange,
+} from '@app/ui/cwd-segment-context';
+import { useExplorerId } from '@app/ui/explorer-context';
 import { ResourceIcon } from '@app/ui/resource-icon';
 import { ResourceRenameInput } from '@app/ui/resource-rename-input';
-import { usePrevious, useRunCallbackOnMount, useThrottleFn } from '@app/ui/utils/react.util';
+import { usePrevious, useRunCallbackOnMount, useDebounceFn } from '@app/ui/utils/react.util';
 
 const ROW_HEIGHT = 38;
 const ICON_SIZE = 24;
@@ -47,7 +57,7 @@ export const ResourcesTable: React.FC = () => {
 
   const scrollTop = useScrollTop();
   const setScrollTop = useSetScrollTop();
-  const throttledSetScrollTop = useThrottleFn(setScrollTop, 200);
+  const debouncedSetScrollTop = useDebounceFn(setScrollTop, 200);
 
   useRunCallbackOnMount(function setInitialScrollTop() {
     invariant(tableContainerRef.current);
@@ -58,7 +68,7 @@ export const ResourcesTable: React.FC = () => {
     <DataTable
       ref={tableContainerRef}
       labels={{ table: 'Table of resources' }}
-      onScroll={(e) => throttledSetScrollTop(e.currentTarget.scrollTop)}
+      onScroll={(e) => debouncedSetScrollTop(e.currentTarget.scrollTop)}
     >
       <StyledTableHead>
         <Row>
@@ -118,7 +128,7 @@ const ResourcesTableBody: React.FC<ResourcesTableBodyProps> = ({ tableContainerR
     keyOfLastSelectedResource?.includes(resource.key),
   );
 
-  useRegisterExplorerShortcuts({
+  useRegisterCwdSegmentShortcuts({
     changeSelectionByKeyboardShortcut: {
       keybindings: [
         {
@@ -190,13 +200,15 @@ type EagerTableBodyProps = {
 
 const EagerTableBody: React.FC<EagerTableBodyProps> = ({ resourcesToShow }) => (
   <TableBody>
-    {resourcesToShow.map((resourceToShow, index) => (
-      <ResourceRow
-        key={resourceToShow.key}
-        resourceForRow={resourceToShow}
-        idxOfResourceForRow={index}
-      />
-    ))}
+    <AnimatePresence>
+      {resourcesToShow.map((resourceToShow, index) => (
+        <ResourceRow
+          key={resourceToShow.key}
+          resource={resourceToShow}
+          idxOfResourceForRow={index}
+        />
+      ))}
+    </AnimatePresence>
   </TableBody>
 );
 
@@ -222,8 +234,11 @@ const VirtualizedTableBody: React.FC<VirtualizedTableBodyProps> = ({
   return (
     <TableBody
       style={{
-        position: 'relative',
         /**
+         * Change position to "relative" for two reasons:
+         * 1) The table body should be a containing block for the absolutely positioned virtualized rows.
+         * 2) The table body must be moved up below the sticky header row (see explanation below).
+         *
          * Because of paddingStart set to ROW_HEIGHT, react-virtual thinks it must move all rows
          * down by ROW_HEIGHT pixels. This is not the case - the <tbody> element is already below the
          * sticky header row, so there is no need to move the rows further down.
@@ -235,6 +250,7 @@ const VirtualizedTableBody: React.FC<VirtualizedTableBodyProps> = ({
          * We also have to reduce the height by the paddingStart because react-virtual does include
          * it in the calculated total size.
          */
+        position: 'relative',
         top: -ROW_HEIGHT,
         height: `${rowVirtualizer.totalSize - ROW_HEIGHT}px`,
       }}
@@ -242,7 +258,7 @@ const VirtualizedTableBody: React.FC<VirtualizedTableBodyProps> = ({
       {rowVirtualizer.virtualItems.map((virtualRow) => (
         <ResourceRow
           key={virtualRow.key}
-          resourceForRow={resourcesToShow[virtualRow.index]}
+          resource={resourcesToShow[virtualRow.index]}
           idxOfResourceForRow={virtualRow.index}
           virtualRowStart={virtualRow.start}
         />
@@ -252,13 +268,13 @@ const VirtualizedTableBody: React.FC<VirtualizedTableBodyProps> = ({
 };
 
 type ResourceRowProps = {
-  resourceForRow: ResourceForUI;
+  resource: ResourceForUI;
   idxOfResourceForRow: number;
   virtualRowStart?: number;
 };
 
 const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
-  resourceForRow,
+  resource,
   idxOfResourceForRow,
   virtualRowStart,
 }) {
@@ -266,50 +282,67 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
 
   const explorerId = useExplorerId();
   const selectedShownResources = useSelectedShownResources();
+  const reasonForLastSelectionChange = useReasonForLastSelectionChange();
   const renameResource = useRenameResource();
   const changeSelection = useChangeSelection();
   const keyOfResourceToRename = useKeyOfResourceToRename();
   const setKeyOfResourceToRename = useSetKeyOfResourceToRename();
 
   const isResourceSelected = !!selectedShownResources.find(
-    (resource) => resource.key === resourceForRow.key,
+    (selectedResource) => selectedResource.key === resource.key,
   );
   const wasResourceSelectedLastRender = usePrevious(isResourceSelected);
   const tileGotSelected = !wasResourceSelectedLastRender && isResourceSelected;
 
   React.useEffect(
-    function scrollElementIntoViewOnSelection() {
+    function scrollElementIntoViewOnUserSelection() {
       invariant(rowRef.current);
 
-      if (tileGotSelected) {
+      if (
+        tileGotSelected &&
+        reasonForLastSelectionChange === REASON_FOR_SELECTION_CHANGE.USER_CHANGED_SELECTION
+      ) {
         rowRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
       }
     },
-    [tileGotSelected],
+    [reasonForLastSelectionChange, tileGotSelected],
   );
 
   function abortRename() {
     setKeyOfResourceToRename(undefined);
   }
 
-  const renameForResourceIsActive = keyOfResourceToRename === resourceForRow.key;
-  const rowStyleForVirtualization: RowProps['style'] =
+  const renameForResourceIsActive = keyOfResourceToRename === resource.key;
+
+  const rowStyleForVirtualization: undefined | React.CSSProperties =
     virtualRowStart === undefined
       ? undefined
       : {
           position: 'absolute',
           width: '100%',
-          transform: `translateY(${virtualRowStart}px)`,
+          top: `${virtualRowStart}px`,
         };
+  const isAnimationAllowed = componentLibraryUtils.useIsAnimationAllowed();
+  const framerMotionAnimations = useFramerMotionAnimations();
+  const animations =
+    !isAnimationAllowed || rowStyleForVirtualization
+      ? {}
+      : ({
+          initial: { ...framerMotionAnimations.fadeInOut.initial },
+          animate: { ...framerMotionAnimations.fadeInOut.animate },
+          exit: { ...framerMotionAnimations.fadeInOut.exit },
+          layout: 'position',
+        } as const);
 
   return (
     <ResourceRowRoot
       ref={rowRef}
       data-window-keydownhandlers-enabled="true"
+      {...animations}
       draggable={!renameForResourceIsActive}
       onDragStart={(e) => {
         e.preventDefault();
-        startNativeFileDnD(resourceForRow.uri);
+        startNativeFileDnD(resource.uri);
       }}
       onClick={(e) =>
         changeSelection(idxOfResourceForRow, {
@@ -317,7 +350,7 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
           shift: e.shiftKey,
         })
       }
-      onDoubleClick={() => openResources(explorerId, [resourceForRow])}
+      onDoubleClick={() => openResources(explorerId, [resource])}
       isSelectable
       isSelected={isResourceSelected}
       style={rowStyleForVirtualization}
@@ -325,39 +358,39 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
       <ResourceRowContent
         iconSlot={
           <ResourceIconContainer>
-            <ResourceIcon resource={resourceForRow} height={ICON_SIZE} />
+            <ResourceIcon resource={resource} height={ICON_SIZE} />
           </ResourceIconContainer>
         }
         resourceNameSlot={
           renameForResourceIsActive ? (
             <StyledResourceRenameInput
-              resource={resourceForRow}
-              onSubmit={(newName) => renameResource(resourceForRow, newName)}
+              resource={resource}
+              onSubmit={(newName) => renameResource(resource, newName)}
               abortRename={abortRename}
             />
           ) : (
-            <ResourceNameFormatted>{resourceForRow.basename}</ResourceNameFormatted>
+            <ResourceNameFormatted>{resource.basename}</ResourceNameFormatted>
           )
         }
         tagsSlot={
           renameForResourceIsActive
             ? undefined
-            : resourceForRow.tags.map((tag) => (
+            : resource.tags.map((tag) => (
                 <Chip
                   key={tag.id}
                   style={{ backgroundColor: `var(--color-tags-${tag.colorId})` }}
                   label={tag.name}
-                  onDelete={() => removeTagsFromResources([resourceForRow.uri], [tag.id])}
+                  onDelete={() => removeTagsFromResources([resource.uri], [tag.id])}
                   deleteTooltipContent="Remove tag"
                 />
               ))
         }
         sizeSlot={
-          resourceForRow.resourceType === RESOURCE_TYPE.FILE &&
-          resourceForRow.size !== undefined &&
-          formatter.bytes(resourceForRow.size)
+          resource.resourceType === RESOURCE_TYPE.FILE &&
+          resource.size !== undefined &&
+          formatter.bytes(resource.size)
         }
-        mtimeSlot={resourceForRow.mtime !== undefined && formatter.date(resourceForRow.mtime)}
+        mtimeSlot={resource.mtime !== undefined && formatter.date(resource.mtime)}
       />
     </ResourceRowRoot>
   );

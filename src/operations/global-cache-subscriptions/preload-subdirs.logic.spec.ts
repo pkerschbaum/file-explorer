@@ -14,7 +14,7 @@ import { createQueryClient } from '@app/ui/Globals';
 import { initializeFakePlatformModules } from '@app-test/utils/fake-platform-modules';
 import { renderApp } from '@app-test/utils/render-app';
 
-describe('Preload of resources of parent directory and sub directories [logic]', () => {
+describe('Preload of resources of sub directories [logic]', () => {
   it('For the initial current working directory and when switching the CWD, resources should get preloaded', async () => {
     await initializeFakePlatformModules();
     const store = await createStoreInstance();
@@ -23,23 +23,7 @@ describe('Preload of resources of parent directory and sub directories [logic]',
 
     await screen.findByRole('row', { name: /zz test folder/i });
 
-    // assert successful preload of parent directory and...
-    const cacheEntriesForParentDir = queryClientRef.current.getQueryCache().findAll(
-      QUERY_KEYS.RESOURCES_OF_DIRECTORY({
-        directoryId: uriHelper.getComparisonKey(URI.parse(`${Schemas.inMemory}:///home`).toJSON()),
-      }),
-    );
-    expect(cacheEntriesForParentDir).toHaveLength(1);
-    const cachedResourcesOfParentDirectory = cacheEntriesForParentDir[0].state
-      .data as ResourceStat[];
-    expect(cachedResourcesOfParentDirectory).toHaveLength(1);
-    expect(
-      resources.isEqual(
-        URI.from(cachedResourcesOfParentDirectory[0].uri),
-        URI.parse(`${Schemas.inMemory}:///home/testdir`),
-      ),
-    ).toBeTruthy();
-    // ...one level of sub directories
+    // assert successful preload of one level of sub directories
     const cacheEntriesForSubDirLevel1 = queryClientRef.current.getQueryCache().findAll(
       QUERY_KEYS.RESOURCES_OF_DIRECTORY({
         directoryId: uriHelper.getComparisonKey(

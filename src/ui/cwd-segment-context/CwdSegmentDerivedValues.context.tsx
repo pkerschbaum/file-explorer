@@ -3,46 +3,54 @@ import * as React from 'react';
 import { arrays } from '@app/base/utils/arrays.util';
 import { check } from '@app/base/utils/assert.util';
 import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
+import { useSegmentUri } from '@app/global-state/slices/explorers.hooks';
+import { REASON_FOR_SELECTION_CHANGE } from '@app/global-state/slices/explorers.slice';
 import { isResourceQualifiedForThumbnail } from '@app/operations/app.operations';
 import {
   useActiveResourcesView,
-  useExplorerId,
   useFilterInput,
   useKeysOfSelectedResources,
+  useSegmentIdx,
   useSetActiveResourcesView,
   useSetKeysOfSelectedResources,
-} from '@app/ui/explorer-context';
+  useSetReasonForLastSelectionChange,
+} from '@app/ui/cwd-segment-context';
+import { useExplorerId } from '@app/ui/explorer-context';
 import { useEnrichResourcesWithTags, useResourcesForUI } from '@app/ui/hooks/resources.hooks';
-import { createSelectableContext, usePrevious } from '@app/ui/utils/react.util';
+import { createSelectableContext, useDebouncedValue, usePrevious } from '@app/ui/utils/react.util';
 
 const USE_GALLERY_VIEW_PERCENTAGE = 0.75;
 
-type ExplorerDerivedValuesContext = {
+type CwdSegmentDerivedValuesContext = {
   dataAvailable: boolean;
   resourcesToShow: ResourceForUI[];
   selectedShownResources: ResourceForUI[];
 };
 
 const selectableContext =
-  createSelectableContext<ExplorerDerivedValuesContext>('ExplorerDerivedValues');
-const useExplorerDerivedValuesSelector = selectableContext.useContextSelector;
+  createSelectableContext<CwdSegmentDerivedValuesContext>('CwdSegmentDerivedValues');
+const useCwdSegmentDerivedValuesSelector = selectableContext.useContextSelector;
 const DerivedValuesContextProvider = selectableContext.Provider;
 
-type ExplorerDerivedValuesContextProviderProps = {
+type CwdSegmentDerivedValuesContextProviderProps = {
   children: React.ReactNode;
 };
 
-export const ExplorerDerivedValuesContextProvider: React.FC<
-  ExplorerDerivedValuesContextProviderProps
+export const CwdSegmentDerivedValuesContextProvider: React.FC<
+  CwdSegmentDerivedValuesContextProviderProps
 > = ({ children }) => {
   const explorerId = useExplorerId();
-  const filterInput = useFilterInput();
+  const segmentIdx = useSegmentIdx();
+
+  const uri = useSegmentUri(explorerId, segmentIdx);
+  const debouncedFilterInput = useDebouncedValue(useFilterInput(), 50);
   const keysOfSelectedResources = useKeysOfSelectedResources();
   const activeResourcesView = useActiveResourcesView();
+  const setReasonForLastSelectionChange = useSetReasonForLastSelectionChange();
   const setKeysOfSelectedResources = useSetKeysOfSelectedResources();
   const setActiveResourcesView = useSetActiveResourcesView();
 
-  const { resources, dataAvailable } = useResourcesForUI(explorerId);
+  const { resources, dataAvailable } = useResourcesForUI(uri);
 
   const resourcesWithTags = useEnrichResourcesWithTags(resources);
 
@@ -55,7 +63,7 @@ export const ExplorerDerivedValuesContextProvider: React.FC<
   const resourcesToShow: ResourceForUI[] = React.useMemo(() => {
     let result;
 
-    if (check.isEmptyString(filterInput)) {
+    if (check.isEmptyString(debouncedFilterInput)) {
       result = arrays
         .wrap(resourcesWithTags)
         .stableSort((a, b) => {
@@ -81,14 +89,14 @@ export const ExplorerDerivedValuesContextProvider: React.FC<
     } else {
       result = arrays
         .wrap(resourcesWithTags)
-        .matchSort(filterInput, {
+        .matchSort(debouncedFilterInput, {
           keys: [(resource) => resource.basename],
         })
         .getValue();
     }
 
     return result;
-  }, [filterInput, resourcesWithTags]);
+  }, [debouncedFilterInput, resourcesWithTags]);
 
   const { selectedShownResources, didApplySelectionFallback } = React.useMemo(() => {
     const result: ResourceForUI[] = [];
@@ -120,18 +128,30 @@ export const ExplorerDerivedValuesContextProvider: React.FC<
    */
   React.useEffect(() => {
     if (didApplySelectionFallback) {
+      setReasonForLastSelectionChange(REASON_FOR_SELECTION_CHANGE.RESET);
       setKeysOfSelectedResources(selectedShownResources.map((resource) => [resource.key]));
     }
-  }, [selectedShownResources, didApplySelectionFallback, setKeysOfSelectedResources]);
+  }, [
+    didApplySelectionFallback,
+    selectedShownResources,
+    setKeysOfSelectedResources,
+    setReasonForLastSelectionChange,
+  ]);
 
   // every time the filter input changes, reset selection
-  const prevFilterInput = usePrevious(filterInput);
-  const filterInputChanged = filterInput !== prevFilterInput;
+  const prevFilterInput = usePrevious(debouncedFilterInput);
+  const filterInputChanged = debouncedFilterInput !== prevFilterInput;
   React.useEffect(() => {
     if (filterInputChanged && resourcesToShow.length > 0) {
+      setReasonForLastSelectionChange(REASON_FOR_SELECTION_CHANGE.RESET);
       setKeysOfSelectedResources([[resourcesToShow[0].key]]);
     }
-  }, [resourcesToShow, filterInputChanged, setKeysOfSelectedResources]);
+  }, [
+    filterInputChanged,
+    resourcesToShow,
+    setKeysOfSelectedResources,
+    setReasonForLastSelectionChange,
+  ]);
 
   // once we got resources loaded, determine and set the resource view mode which should be initially used
   React.useEffect(() => {
@@ -176,15 +196,15 @@ export const ExplorerDerivedValuesContextProvider: React.FC<
 };
 
 export function useDataAvailable() {
-  return useExplorerDerivedValuesSelector((explorerValues) => explorerValues.dataAvailable);
+  return useCwdSegmentDerivedValuesSelector((explorerValues) => explorerValues.dataAvailable);
 }
 
 export function useResourcesToShow() {
-  return useExplorerDerivedValuesSelector((explorerValues) => explorerValues.resourcesToShow);
+  return useCwdSegmentDerivedValuesSelector((explorerValues) => explorerValues.resourcesToShow);
 }
 
 export function useSelectedShownResources() {
-  return useExplorerDerivedValuesSelector(
+  return useCwdSegmentDerivedValuesSelector(
     (explorerValues) => explorerValues.selectedShownResources,
   );
 }

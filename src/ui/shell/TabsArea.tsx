@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { formatter } from '@app/base/utils/formatter.util';
 import {
   ExplorerPanelEntry,
+  extractCwdSegmentsFromExplorerPanel,
   useIdOfFocusedExplorerPanel,
 } from '@app/global-state/slices/explorers.hooks';
 import {
@@ -47,7 +48,9 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
     explorerIdxPrevious === undefined ? undefined : explorersToShow[explorerIdxPrevious];
 
   async function duplicateFocusedExplorerPanel() {
-    await addExplorerPanel(focusedExplorer?.cwdSegments);
+    await addExplorerPanel(
+      focusedExplorer ? extractCwdSegmentsFromExplorerPanel(focusedExplorer) : undefined,
+    );
   }
 
   const registerShortcutsResult = useRegisterGlobalShortcuts({
@@ -100,7 +103,7 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
           const isNextExplorer = explorerIdx === explorerIdxNext;
 
           const formattedUriSegments = formatter.uriSegments(
-            explorer.cwdSegments.map((segment) => segment.uri),
+            extractCwdSegmentsFromExplorerPanel(explorer).map((segment) => segment.uri),
           );
           const formattedUriSegmentToRender = formattedUriSegments[formattedUriSegments.length - 1];
 

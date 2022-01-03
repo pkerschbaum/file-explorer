@@ -17,19 +17,28 @@ export type ExplorersMap = {
 
 export type ExplorerPanel = {
   cwdSegments: CwdSegment[];
-  scheduledToRemove?: boolean;
+  markedForRemoval?: boolean;
 };
 
 export type CwdSegment = {
   uri: UriComponents;
+
   filterInput: string;
   selection: {
+    reasonForLastSelectionChange?: REASON_FOR_SELECTION_CHANGE;
     keysOfSelectedResources: RenameHistoryKeys[];
     keyOfResourceSelectionGotStartedWith: RenameHistoryKeys | undefined;
   };
   activeResourcesView: ResourcesView;
   scrollTop: number;
+
+  markedForRemoval?: boolean;
 };
+
+export enum REASON_FOR_SELECTION_CHANGE {
+  USER_CHANGED_SELECTION = 'USER_CHANGED_SELECTION',
+  RESET = 'RESET',
+}
 
 export type RenameHistoryKeys = string[];
 export type ResourcesView = undefined | 'table' | 'gallery';
@@ -43,10 +52,13 @@ type RemoveExplorerPayload = {
   explorerId: string;
 };
 
-type UpdateCurrentCwdSegmentPayload = {
+type UpdateCwdSegmentPayload = {
   explorerId: string;
+  segmentIdx: number;
+
   filterInput?: string;
   selection?: {
+    reasonForLastSelectionChange?: REASON_FOR_SELECTION_CHANGE;
     keysOfSelectedResources?: RenameHistoryKeys[];
     keyOfResourceSelectionGotStartedWith?: RenameHistoryKeys | undefined;
   };
@@ -71,9 +83,7 @@ export const actions = {
   addExplorer: createAction<AddExplorerPayload>('EXPLORER_ADDED'),
   markExplorerForRemoval: createAction<RemoveExplorerPayload>('EXPLORER_MARKED_FOR_REMOVAL'),
   removeExplorer: createAction<RemoveExplorerPayload>('EXPLORER_REMOVED'),
-  updateCurrentCwdSegment: createAction<UpdateCurrentCwdSegmentPayload>(
-    'CURRENT_CWD_SEGMENT_UPDATED',
-  ),
+  updateCwdSegment: createAction<UpdateCwdSegmentPayload>('CWD_SEGMENT_UPDATED'),
   changeCwd: createAction<ChangeCwdPayload>('CWD_CHANGED'),
   changeFocusedExplorer: createAction<ChangeFocusedExplorerPayload>('FOCUSED_EXPLORER_CHANGED'),
 };
@@ -97,14 +107,14 @@ export const reducer = createReducer(INITIAL_STATE, (builder) =>
     .addCase(actions.markExplorerForRemoval, (state, action) => {
       const { explorerId } = action.payload;
 
-      state.explorerPanels[explorerId].scheduledToRemove = true;
+      state.explorerPanels[explorerId].markedForRemoval = true;
 
       if (explorerId === state.focusedExplorerPanelId) {
         // focused explorer got removed --> focus another explorer
 
         const activeExplorer = Object.entries(state.explorerPanels)
           .map(([explorerId, value]) => ({ explorerId, ...value }))
-          .find((explorer) => !explorer.scheduledToRemove);
+          .find((explorer) => !explorer.markedForRemoval);
 
         if (activeExplorer !== undefined) {
           state.focusedExplorerPanelId = activeExplorer.explorerId;
@@ -116,8 +126,8 @@ export const reducer = createReducer(INITIAL_STATE, (builder) =>
 
       delete state.explorerPanels[explorerId];
     })
-    .addCase(actions.updateCurrentCwdSegment, (state, action) => {
-      const { explorerId, ...updateData } = action.payload;
+    .addCase(actions.updateCwdSegment, (state, action) => {
+      const { explorerId, segmentIdx, ...updateData } = action.payload;
 
       if (!isExplorerIdPresent(state, explorerId)) {
         throw new Error(
@@ -126,40 +136,44 @@ export const reducer = createReducer(INITIAL_STATE, (builder) =>
         );
       }
 
-      const currentCwdSegment =
-        state.explorerPanels[explorerId].cwdSegments[
-          state.explorerPanels[explorerId].cwdSegments.length - 1
-        ];
+      const cwdSegmentToUpdate = state.explorerPanels[explorerId].cwdSegments[segmentIdx];
       if (check.isNotNullish(updateData.filterInput)) {
-        currentCwdSegment.filterInput = updateData.filterInput;
+        cwdSegmentToUpdate.filterInput = updateData.filterInput;
+      }
+      if (
+        check.isNotNullish(updateData.selection) &&
+        check.isNotNullish(updateData.selection.reasonForLastSelectionChange)
+      ) {
+        cwdSegmentToUpdate.selection.reasonForLastSelectionChange =
+          updateData.selection.reasonForLastSelectionChange;
       }
       if (
         check.isNotNullish(updateData.selection) &&
         check.isNotNullish(updateData.selection.keysOfSelectedResources)
       ) {
-        currentCwdSegment.selection.keysOfSelectedResources =
+        cwdSegmentToUpdate.selection.keysOfSelectedResources =
           updateData.selection.keysOfSelectedResources;
       }
       if (
         check.isNotNullish(updateData.selection) &&
         check.isNotNullish(updateData.selection.keyOfResourceSelectionGotStartedWith)
       ) {
-        currentCwdSegment.selection.keyOfResourceSelectionGotStartedWith =
+        cwdSegmentToUpdate.selection.keyOfResourceSelectionGotStartedWith =
           updateData.selection.keyOfResourceSelectionGotStartedWith;
       }
       if (check.isNotNullish(updateData.activeResourcesView)) {
-        const currentResourcesView = currentCwdSegment.activeResourcesView ?? 'table';
+        const currentResourcesView = cwdSegmentToUpdate.activeResourcesView ?? 'table';
         const newResourcesView = updateData.activeResourcesView;
 
-        currentCwdSegment.activeResourcesView = newResourcesView;
+        cwdSegmentToUpdate.activeResourcesView = newResourcesView;
 
         // reset scrollTop on active resources change
         if (currentResourcesView !== newResourcesView) {
-          currentCwdSegment.scrollTop = 0;
+          cwdSegmentToUpdate.scrollTop = 0;
         }
       }
       if (check.isNotNullish(updateData.scrollTop)) {
-        currentCwdSegment.scrollTop = updateData.scrollTop;
+        cwdSegmentToUpdate.scrollTop = updateData.scrollTop;
       }
     })
     .addCase(actions.changeCwd, (state, action) => {
@@ -172,21 +186,36 @@ export const reducer = createReducer(INITIAL_STATE, (builder) =>
         );
       }
 
-      const currentCwdSegmentsStack = state.explorerPanels[explorerId].cwdSegments;
-      const newCwdSegmentsStack = computeCwdSegmentsStackFromUri(newCwd);
-      for (let idx = 0; idx < newCwdSegmentsStack.length; idx++) {
+      const currentCwdSegments = state.explorerPanels[explorerId].cwdSegments;
+      const newCwdSegments = computeCwdSegmentsFromUri(newCwd);
+      const maxSegmentsLength = Math.max(currentCwdSegments.length, newCwdSegments.length);
+      for (let idx = 0; idx < maxSegmentsLength; idx++) {
+        /**
+         * Copy old segment if the uri of the old segment is equal to the uri of the new segment (and
+         * the segment is not marked for removal) in order to keep the state of the old segments.
+         */
         if (
-          currentCwdSegmentsStack.length > idx &&
+          currentCwdSegments.length > idx &&
+          !currentCwdSegments[idx].markedForRemoval &&
+          newCwdSegments.length > idx &&
           resources.isEqual(
-            URI.from(currentCwdSegmentsStack[idx].uri),
-            URI.from(newCwdSegmentsStack[idx].uri),
+            URI.from(currentCwdSegments[idx].uri),
+            URI.from(newCwdSegments[idx].uri),
           )
         ) {
-          newCwdSegmentsStack[idx] = currentCwdSegmentsStack[idx];
+          newCwdSegments[idx] = currentCwdSegments[idx];
+        }
+
+        // If any segments in the current cwd are left, copy them with markedForRemoval set to true
+        if (currentCwdSegments.length > idx && idx >= newCwdSegments.length) {
+          newCwdSegments.push({
+            ...currentCwdSegments[idx],
+            markedForRemoval: true,
+          });
         }
       }
 
-      state.explorerPanels[explorerId].cwdSegments = newCwdSegmentsStack;
+      state.explorerPanels[explorerId].cwdSegments = newCwdSegments;
     })
     .addCase(actions.changeFocusedExplorer, (state, action) => {
       const { explorerId } = action.payload;
@@ -206,7 +235,7 @@ export function generateExplorerId() {
   return uuid.generateUuid();
 }
 
-export function computeCwdSegmentsStackFromUri(uri: UriComponents): CwdSegment[] {
+export function computeCwdSegmentsFromUri(uri: UriComponents): CwdSegment[] {
   return uriHelper.splitUriIntoSegments(uri).map((uriSegment) => ({
     uri: uriSegment,
     filterInput: '',

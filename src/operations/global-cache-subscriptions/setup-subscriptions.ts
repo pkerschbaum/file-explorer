@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Query, QueryCache } from 'react-query';
 
 import { check } from '@app/base/utils/assert.util';
-import { createPreloadParentDirAndSubdirsSubscription } from '@app/operations/global-cache-subscriptions/preload-parent-dir-and-subdirs';
+import { createPreloadSubdirsSubscription } from '@app/operations/global-cache-subscriptions/preload-subdirs';
 import { createRefreshResourcesOfDirectorySubscription } from '@app/operations/global-cache-subscriptions/refresh-resources-of-directory';
 import { queryClientRef } from '@app/operations/global-modules';
 
@@ -22,7 +22,7 @@ export function useGlobalCacheSubscriptions() {
   React.useEffect(() => {
     // instantiate subscriptions
     const refreshResourcesOfDirectorySubscription = createRefreshResourcesOfDirectorySubscription();
-    const preloadParentDirAndSubdirsSubscription = createPreloadParentDirAndSubdirsSubscription();
+    const preloadParentDirAndSubdirsSubscription = createPreloadSubdirsSubscription();
 
     const allDigestExistingQueryFunctions = [
       refreshResourcesOfDirectorySubscription.subscription.digestExistingQuery,

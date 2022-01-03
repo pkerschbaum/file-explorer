@@ -1,17 +1,17 @@
+import { AnimatePresence } from 'framer-motion';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 
-import { useIdOfFocusedExplorerPanel } from '@app/global-state/slices/explorers.hooks';
-import { ActionsBar } from '@app/ui/actions-bar';
-import { Box } from '@app/ui/components-library';
-import { KEY } from '@app/ui/constants';
-import { CwdBreadcrumbs } from '@app/ui/cwd-breadcrumbs';
+import { uriHelper } from '@app/base/utils/uri-helper';
 import {
-  ExplorerContextProvider,
-  useActiveResourcesView,
-  useRegisterExplorerShortcuts,
-  useSelectAll,
-} from '@app/ui/explorer-context';
+  useCwdSegments,
+  useIdOfFocusedExplorerPanel,
+} from '@app/global-state/slices/explorers.hooks';
+import { ActionsBar } from '@app/ui/actions-bar';
+import { Box, componentLibraryUtils } from '@app/ui/components-library';
+import { CwdBreadcrumbs } from '@app/ui/cwd-breadcrumbs';
+import { CwdSegmentContextProvider, useActiveResourcesView } from '@app/ui/cwd-segment-context';
+import { ExplorerContextProvider } from '@app/ui/explorer-context';
 import { ResourcesGallery } from '@app/ui/resources-gallery';
 import { ResourcesTable } from '@app/ui/resources-table';
 
@@ -28,6 +28,7 @@ export const ExplorerPanel = React.memo<ExplorerPanelProps>(function ExplorerPan
   explorerId,
   customTitleBarUsed,
 }) {
+  const cwdSegments = useCwdSegments(explorerId);
   const focusedExplorerId = useIdOfFocusedExplorerPanel();
 
   const isActiveExplorer = explorerId === focusedExplorerId;
@@ -45,24 +46,43 @@ export const ExplorerPanel = React.memo<ExplorerPanelProps>(function ExplorerPan
       >
         <CwdBreadcrumbs />
       </CwdBreadcrumbsContainer>
-      <ActionsBarContainer
-        variants={{
-          closed: { display: 'none' },
-          open: { display: 'block' },
-        }}
-        animate={activeAnimationVariant}
-      >
-        <ActionsBar />
-      </ActionsBarContainer>
-      <ResourcesViewContainer
-        variants={{
-          closed: { display: 'none' },
-          open: { display: 'flex' },
-        }}
-        animate={activeAnimationVariant}
-      >
-        <ResourcesView />
-      </ResourcesViewContainer>
+
+      <AnimatePresence initial={false}>
+        {cwdSegments.map((segment, idx) => {
+          const isLastSegment = idx === cwdSegments.length - 1;
+
+          return (
+            <CwdSegmentContextProvider
+              key={uriHelper.getComparisonKey(segment.uri)}
+              segmentIdx={idx}
+            >
+              {isLastSegment && (
+                <ActionsBarContainer
+                  variants={{
+                    closed: { display: 'none' },
+                    open: { display: 'block' },
+                  }}
+                  animate={activeAnimationVariant}
+                  exit="closed"
+                >
+                  <ActionsBar />
+                </ActionsBarContainer>
+              )}
+
+              <ResourcesViewContainer
+                variants={{
+                  closed: { display: 'none' },
+                  open: { display: 'flex' },
+                }}
+                animate={activeAnimationVariant}
+                aria-hidden={!isLastSegment}
+              >
+                <ResourcesView />
+              </ResourcesViewContainer>
+            </CwdSegmentContextProvider>
+          );
+        })}
+      </AnimatePresence>
     </ExplorerContextProvider>
   );
 });
@@ -91,34 +111,40 @@ const ResourcesViewContainer = styled(Box)`
   min-height: 0;
   height: 100%;
   max-height: 100%;
+  z-index: 0;
+
+  display: flex;
+  flex-direction: column;
 
   /* add some padding-top for optical alignment */
   padding-top: 1px;
-  flex-direction: column;
-  align-items: stretch;
+
+  /* hide overflow for folder navigation animations */
+  overflow: hidden;
 `;
 
 const ResourcesView: React.FC = () => {
   const activeResourcesView = useActiveResourcesView();
-  const selectAll = useSelectAll();
+  const isAnimationAllowed = componentLibraryUtils.useIsAnimationAllowed();
+  const animations = !isAnimationAllowed
+    ? {}
+    : ({
+        initial: { x: '100%' },
+        animate: { x: 0 },
+        exit: { x: '100%' },
+        transition: { ease: 'easeOut', duration: 0.5 },
+      } as const);
 
-  useRegisterExplorerShortcuts({
-    selectAllShortcut: {
-      keybindings: [
-        {
-          key: KEY.A,
-          modifiers: {
-            ctrl: 'SET',
-            alt: 'NOT_SET',
-          },
-        },
-      ],
-      handler: (e) => {
-        e.preventDefault();
-        selectAll();
-      },
-    },
-  });
-
-  return activeResourcesView === 'gallery' ? <ResourcesGallery /> : <ResourcesTable />;
+  return (
+    <ResourcesViewSlideBox {...animations}>
+      {activeResourcesView === 'gallery' ? <ResourcesGallery /> : <ResourcesTable />}
+    </ResourcesViewSlideBox>
+  );
 };
+
+const ResourcesViewSlideBox = styled(Box)`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-bg-0);
+`;

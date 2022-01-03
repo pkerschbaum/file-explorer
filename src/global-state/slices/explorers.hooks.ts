@@ -1,3 +1,5 @@
+import invariant from 'tiny-invariant';
+
 import { ExplorerPanel } from '@app/global-state/slices/explorers.slice';
 import { useSelector } from '@app/global-state/store';
 
@@ -14,65 +16,77 @@ export const useExplorerPanels: () => ExplorerPanelEntry[] = () =>
   );
 
 export const useCwdSegments = (explorerId: string) =>
-  useSelector((state) => state.explorersSlice.explorerPanels[explorerId].cwdSegments);
+  useSelector((state) => state.explorersSlice.explorerPanels[explorerId].cwdSegments).filter(
+    (segment) => !segment.markedForRemoval,
+  );
 
 export const useCwd = (explorerId: string) =>
-  useSelector((state) =>
-    extractCwdFromExplorerPanel(state.explorersSlice.explorerPanels[explorerId]),
+  useSelector((state) => {
+    return extractCwdFromExplorerPanel(state.explorersSlice.explorerPanels[explorerId]);
+  });
+
+export const useSegmentUri = (explorerId: string, segmentIdx: number) =>
+  useSelector(
+    (state) => state.explorersSlice.explorerPanels[explorerId].cwdSegments[segmentIdx].uri,
   );
 
-export const useFilterInput = (explorerId: string) =>
+export const useFilterInput = (explorerId: string, segmentIdx: number) =>
+  useSelector(
+    (state) => state.explorersSlice.explorerPanels[explorerId].cwdSegments[segmentIdx].filterInput,
+  );
+
+export const useReasonForLastSelectionChange = (explorerId: string, segmentIdx: number) =>
   useSelector(
     (state) =>
-      extractCurrentSegmentFromExplorerPanel(state.explorersSlice.explorerPanels[explorerId])
-        .filterInput,
+      state.explorersSlice.explorerPanels[explorerId].cwdSegments[segmentIdx].selection
+        .reasonForLastSelectionChange,
   );
 
-export const useKeysOfSelectedResources = (explorerId: string) =>
+export const useKeysOfSelectedResources = (explorerId: string, segmentIdx: number) =>
   useSelector(
     (state) =>
-      extractCurrentSegmentFromExplorerPanel(state.explorersSlice.explorerPanels[explorerId])
-        .selection.keysOfSelectedResources,
+      state.explorersSlice.explorerPanels[explorerId].cwdSegments[segmentIdx].selection
+        .keysOfSelectedResources,
   );
 
-export const useKeyOfResourceSelectionGotStartedWith = (explorerId: string) =>
+export const useKeyOfResourceSelectionGotStartedWith = (explorerId: string, segmentIdx: number) =>
   useSelector(
     (state) =>
-      extractCurrentSegmentFromExplorerPanel(state.explorersSlice.explorerPanels[explorerId])
-        .selection.keyOfResourceSelectionGotStartedWith,
+      state.explorersSlice.explorerPanels[explorerId].cwdSegments[segmentIdx].selection
+        .keyOfResourceSelectionGotStartedWith,
   );
 
-export const useKeyOfLastSelectedResource = (explorerId: string) => {
+export const useKeyOfLastSelectedResource = (explorerId: string, segmentIdx: number) => {
   return useSelector((state) => {
-    const keysOfSelectedResources = extractCurrentSegmentFromExplorerPanel(
-      state.explorersSlice.explorerPanels[explorerId],
-    ).selection.keysOfSelectedResources;
+    const keysOfSelectedResources =
+      state.explorersSlice.explorerPanels[explorerId].cwdSegments[segmentIdx].selection
+        .keysOfSelectedResources;
     return keysOfSelectedResources[keysOfSelectedResources.length - 1];
   });
 };
 
-export const useActiveResourcesView = (explorerId: string) =>
+export const useActiveResourcesView = (explorerId: string, segmentIdx: number) =>
   useSelector(
     (state) =>
-      extractCurrentSegmentFromExplorerPanel(state.explorersSlice.explorerPanels[explorerId])
-        .activeResourcesView,
+      state.explorersSlice.explorerPanels[explorerId].cwdSegments[segmentIdx].activeResourcesView,
   );
 
-export const useScrollTop = (explorerId: string) =>
+export const useScrollTop = (explorerId: string, segmentIdx: number) =>
   useSelector(
-    (state) =>
-      extractCurrentSegmentFromExplorerPanel(state.explorersSlice.explorerPanels[explorerId])
-        .scrollTop,
+    (state) => state.explorersSlice.explorerPanels[explorerId].cwdSegments[segmentIdx].scrollTop,
   );
 
 export const useIdOfFocusedExplorerPanel = () =>
   useSelector((state) => state.explorersSlice.focusedExplorerPanelId);
 
-export function extractCurrentSegmentFromExplorerPanel(explorerPanel: ExplorerPanel) {
-  const { cwdSegments: cwdSegmentsStack } = explorerPanel;
-  return cwdSegmentsStack[cwdSegmentsStack.length - 1];
+export function extractCwdSegmentsFromExplorerPanel(explorerPanel: ExplorerPanel) {
+  const { cwdSegments } = explorerPanel;
+  return cwdSegments.filter((segment) => !segment.markedForRemoval);
 }
 
 export function extractCwdFromExplorerPanel(explorerPanel: ExplorerPanel) {
-  return extractCurrentSegmentFromExplorerPanel(explorerPanel).uri;
+  const cwdSegments = extractCwdSegmentsFromExplorerPanel(explorerPanel);
+  const newestSegmentNotScheduledToRemove = cwdSegments[cwdSegments.length - 1];
+  invariant(newestSegmentNotScheduledToRemove);
+  return newestSegmentNotScheduledToRemove.uri;
 }

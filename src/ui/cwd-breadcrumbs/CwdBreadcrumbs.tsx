@@ -1,5 +1,4 @@
 import { mergeProps } from '@react-aria/utils';
-import { PressEvent } from '@react-types/shared';
 import * as React from 'react';
 import styled from 'styled-components';
 import invariant from 'tiny-invariant';
@@ -73,7 +72,16 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
 
   const { itemProps } = useBreadcrumbItem({
     itemRef: buttonRef,
-    itemProps: { isCurrent: isLastSegment, elementType: 'button' },
+    itemProps: {
+      isCurrent: isLastSegment,
+      elementType: 'button',
+      onPress: !isLastSegment ? changeDirectory : undefined,
+      onPressEnd: () => {
+        invariant(buttonRef.current);
+        // workaround: undo focus which is set by react-aria interactions usePress
+        buttonRef.current.blur();
+      },
+    },
   });
 
   const { triggerProps: menuTriggerProps, menuInstance } = useMenu({
@@ -132,20 +140,11 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
       : [{ condition: (e) => e.button === MOUSE_BUTTONS.BACK, handler: changeDirectory }],
   );
 
-  async function handleClick(e: PressEvent) {
-    if (isLastSegment) {
-      menuTriggerProps.onPress?.(e);
-    } else {
-      await changeDirectory();
-    }
-  }
-
   return (
     <BreadcrumbItem isCurrent={isLastSegment}>
       <BreadcrumbButton
         ref={buttonRef}
         handleRef={buttonHandleRef}
-        onPress={handleClick}
         endIcon={
           isLastSegment ? (
             <CwdActionsMenuTrigger>
@@ -159,7 +158,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
           )
         }
         enableLayoutAnimation
-        ariaButtonProps={menuTriggerProps}
+        ariaButtonProps={isLastSegment ? menuTriggerProps : undefined}
         /* do not set "aria-disabled" for the last segment */
         {...mergeProps(itemProps, { 'aria-disabled': false })}
       >

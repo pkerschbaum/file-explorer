@@ -35,9 +35,10 @@ import {
   usePasteResourcesIntoExplorer,
   useScheduleDeleteSelectedResources,
   useTriggerRenameForSelectedResources,
-  useRegisterExplorerShortcuts,
+  useRegisterCwdSegmentShortcuts,
   useSetActiveResourcesView,
-} from '@app/ui/explorer-context';
+  useSelectAll,
+} from '@app/ui/cwd-segment-context';
 import {
   DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED,
   ShortcutPriority,
@@ -49,6 +50,7 @@ export const ActionsBar: React.FC = () => {
 
   const selectedShownResources = useSelectedShownResources();
 
+  const selectAll = useSelectAll();
   const setActiveResourcesView = useSetActiveResourcesView();
   const openSelectedResources = useOpenSelectedResources();
   const copySelectedResources = useCopySelectedResources();
@@ -69,7 +71,22 @@ export const ActionsBar: React.FC = () => {
 
   const filterInputRef = React.useRef<HTMLInputElement>(null);
 
-  const registerShortcutsResult = useRegisterExplorerShortcuts({
+  const registerShortcutsResult = useRegisterCwdSegmentShortcuts({
+    selectAllShortcut: {
+      keybindings: [
+        {
+          key: KEY.A,
+          modifiers: {
+            ctrl: 'SET',
+            alt: 'NOT_SET',
+          },
+        },
+      ],
+      handler: (e) => {
+        e.preventDefault();
+        selectAll();
+      },
+    },
     setActiveResourcesViewShortcut: {
       keybindings: [
         {

@@ -7,7 +7,6 @@ import { config } from '@app/config';
 import { ResourceStat, ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
 import { useResourceIconClasses } from '@app/global-cache/resource-icons';
 import { useResources } from '@app/global-cache/resources';
-import { useCwd } from '@app/global-state/slices/explorers.hooks';
 import { useResourcesToTags } from '@app/global-state/slices/tags.hooks';
 import { createLogger } from '@app/operations/create-logger';
 import { getTagsOfResource } from '@app/operations/resource.operations';
@@ -23,14 +22,13 @@ type ResourcesLoadingResult =
       dataAvailable: true;
       resources: ResourceForUI[];
     };
-export const useResourcesForUI = (explorerId: string): ResourcesLoadingResult => {
-  const cwd = useCwd(explorerId);
+export const useResourcesForUI = (uri: UriComponents): ResourcesLoadingResult => {
   const { data: resourcesQueryWithMetadataData } = useResources({
-    directory: cwd,
+    directory: uri,
     resolveMetadata: true,
   });
   const { data: filesQueryWithoutMetadataData } = useResources(
-    { directory: cwd, resolveMetadata: false },
+    { directory: uri, resolveMetadata: false },
     { enabled: resourcesQueryWithMetadataData === undefined },
   );
 
