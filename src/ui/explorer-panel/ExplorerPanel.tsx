@@ -1,4 +1,4 @@
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence, Transition, Variants } from 'framer-motion';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 
@@ -140,14 +140,31 @@ const ResourcesViewContainer = styled(Box)`
 const ResourcesView: React.FC = () => {
   const activeResourcesView = useActiveResourcesView();
   const isAnimationAllowed = componentLibraryUtils.useIsAnimationAllowed();
-  const animations = !isAnimationAllowed
+  const variants = {
+    closed: { x: '100%' },
+    center: {
+      x: 0,
+      transitionEnd: {
+        // workaround to fix trailing transform (https://github.com/framer/motion/issues/823#issuecomment-719582943)
+        x: 0,
+      },
+    },
+  };
+  const animations: {
+    variants?: Variants;
+    initial?: keyof typeof variants;
+    animate?: keyof typeof variants;
+    exit?: keyof typeof variants;
+    transition?: Transition;
+  } = !isAnimationAllowed
     ? {}
-    : ({
-        initial: { x: '100%' },
-        animate: { x: 0 },
-        exit: { x: '100%' },
+    : {
+        variants,
+        initial: 'closed',
+        animate: 'center',
+        exit: 'closed',
         transition: { ease: 'easeOut', duration: 0.5 },
-      } as const);
+      };
 
   return (
     <ResourcesViewSlideBox {...animations}>
