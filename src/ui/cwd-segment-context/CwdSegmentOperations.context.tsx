@@ -22,7 +22,12 @@ import {
   useRegisterGlobalShortcuts,
   RegisterShortcutsResultMap,
 } from '@app/ui/GlobalShortcutsContext';
-import { createSelectableContext, EventHandler, useWindowEvent } from '@app/ui/utils/react.util';
+import {
+  createContext,
+  EventHandler,
+  useLatestValueRef,
+  useWindowEvent,
+} from '@app/ui/utils/react.util';
 
 type CwdSegmentOperationsContext = {
   copySelectedResources: () => void;
@@ -38,8 +43,8 @@ type CwdSegmentOperationsContext = {
 };
 
 const selectableContext =
-  createSelectableContext<CwdSegmentOperationsContext>('CwdSegmentOperations');
-const useCwdSegmentOperationsSelector = selectableContext.useContextSelector;
+  createContext<React.MutableRefObject<CwdSegmentOperationsContext>>('CwdSegmentOperations');
+const useCwdSegmentOperationsValue = selectableContext.useContextValue;
 const OperationsContextProvider = selectableContext.Provider;
 
 type CwdSegmentOperationsContextProviderProps = {
@@ -196,64 +201,72 @@ export const CwdSegmentOperationsContextProvider: React.FC<
     setKeysOfSelectedResources(resourcesToShow.map((resource) => [resource.key]));
   }, [resourcesToShow, setKeysOfSelectedResources, setReasonForLastSelectionChange]);
 
+  const latestOperationsRef = useLatestValueRef({
+    copySelectedResources,
+    cutSelectedResources,
+    pasteResourcesIntoExplorer,
+    triggerRenameForSelectedResources,
+    renameResource,
+    openSelectedResources,
+    scheduleDeleteSelectedResources,
+    createFolderInExplorer,
+    changeSelection,
+    selectAll,
+  });
+
   return (
-    <OperationsContextProvider
-      value={{
-        copySelectedResources,
-        cutSelectedResources,
-        pasteResourcesIntoExplorer,
-        triggerRenameForSelectedResources,
-        renameResource,
-        openSelectedResources,
-        scheduleDeleteSelectedResources,
-        createFolderInExplorer,
-        changeSelection,
-        selectAll,
-      }}
-    >
-      {children}
-    </OperationsContextProvider>
+    <OperationsContextProvider value={latestOperationsRef}>{children}</OperationsContextProvider>
   );
 };
 
-export function useCopySelectedResources() {
-  return useCwdSegmentOperationsSelector((actions) => actions.copySelectedResources);
+export function useCopySelectedResources(): CwdSegmentOperationsContext['copySelectedResources'] {
+  const operationsRef = useCwdSegmentOperationsValue();
+  return (...params) => operationsRef.current.copySelectedResources(...params);
 }
 
-export function useCutSelectedResources() {
-  return useCwdSegmentOperationsSelector((actions) => actions.cutSelectedResources);
+export function useCutSelectedResources(): CwdSegmentOperationsContext['cutSelectedResources'] {
+  const operationsRef = useCwdSegmentOperationsValue();
+  return (...params) => operationsRef.current.cutSelectedResources(...params);
 }
 
-export function usePasteResourcesIntoExplorer() {
-  return useCwdSegmentOperationsSelector((actions) => actions.pasteResourcesIntoExplorer);
+export function usePasteResourcesIntoExplorer(): CwdSegmentOperationsContext['pasteResourcesIntoExplorer'] {
+  const operationsRef = useCwdSegmentOperationsValue();
+  return (...params) => operationsRef.current.pasteResourcesIntoExplorer(...params);
 }
 
-export function useTriggerRenameForSelectedResources() {
-  return useCwdSegmentOperationsSelector((actions) => actions.triggerRenameForSelectedResources);
+export function useTriggerRenameForSelectedResources(): CwdSegmentOperationsContext['triggerRenameForSelectedResources'] {
+  const operationsRef = useCwdSegmentOperationsValue();
+  return (...params) => operationsRef.current.triggerRenameForSelectedResources(...params);
 }
 
-export function useRenameResource() {
-  return useCwdSegmentOperationsSelector((actions) => actions.renameResource);
+export function useRenameResource(): CwdSegmentOperationsContext['renameResource'] {
+  const operationsRef = useCwdSegmentOperationsValue();
+  return (...params) => operationsRef.current.renameResource(...params);
 }
 
-export function useOpenSelectedResources() {
-  return useCwdSegmentOperationsSelector((actions) => actions.openSelectedResources);
+export function useOpenSelectedResources(): CwdSegmentOperationsContext['openSelectedResources'] {
+  const operationsRef = useCwdSegmentOperationsValue();
+  return (...params) => operationsRef.current.openSelectedResources(...params);
 }
 
-export function useScheduleDeleteSelectedResources() {
-  return useCwdSegmentOperationsSelector((actions) => actions.scheduleDeleteSelectedResources);
+export function useScheduleDeleteSelectedResources(): CwdSegmentOperationsContext['scheduleDeleteSelectedResources'] {
+  const operationsRef = useCwdSegmentOperationsValue();
+  return (...params) => operationsRef.current.scheduleDeleteSelectedResources(...params);
 }
 
-export function useCreateFolderInExplorer() {
-  return useCwdSegmentOperationsSelector((actions) => actions.createFolderInExplorer);
+export function useCreateFolderInExplorer(): CwdSegmentOperationsContext['createFolderInExplorer'] {
+  const operationsRef = useCwdSegmentOperationsValue();
+  return (...params) => operationsRef.current.createFolderInExplorer(...params);
 }
 
-export function useChangeSelection() {
-  return useCwdSegmentOperationsSelector((actions) => actions.changeSelection);
+export function useChangeSelection(): CwdSegmentOperationsContext['changeSelection'] {
+  const operationsRef = useCwdSegmentOperationsValue();
+  return (...params) => operationsRef.current.changeSelection(...params);
 }
 
-export function useSelectAll() {
-  return useCwdSegmentOperationsSelector((actions) => actions.selectAll);
+export function useSelectAll(): CwdSegmentOperationsContext['selectAll'] {
+  const operationsRef = useCwdSegmentOperationsValue();
+  return (...params) => operationsRef.current.selectAll(...params);
 }
 
 export function useRegisterCwdSegmentShortcuts<ActualShortcutMap extends ShortcutMap>(

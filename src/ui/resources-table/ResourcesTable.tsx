@@ -38,7 +38,6 @@ import {
   useChangeSelection,
   useResourcesToShow,
   useKeyOfResourceToRename,
-  useSelectedShownResources,
   useSetKeyOfResourceToRename,
   useRenameResource,
   useDataAvailable,
@@ -47,6 +46,7 @@ import {
   useScrollTop,
   useSetScrollTop,
   useReasonForLastSelectionChange,
+  useIsResourceSelected,
 } from '@app/ui/cwd-segment-context';
 import { useExplorerId } from '@app/ui/explorer-context';
 import { ResourceIcon } from '@app/ui/resource-icon';
@@ -286,7 +286,7 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
   const rowRef = React.useRef<HTMLTableRowElement>(null);
 
   const explorerId = useExplorerId();
-  const selectedShownResources = useSelectedShownResources();
+  const isResourceSelected = useIsResourceSelected(resource.key);
   const reasonForLastSelectionChange = useReasonForLastSelectionChange();
   const renameResource = useRenameResource();
   const changeSelection = useChangeSelection();
@@ -296,10 +296,6 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
   const { hoverProps } = useHover({
     onHoverStart: () => triggerPreloadContentsOfResource(resource),
   });
-
-  const isResourceSelected = !!selectedShownResources.find(
-    (selectedResource) => selectedResource.key === resource.key,
-  );
 
   React.useEffect(
     function triggerPreloadOnSelection() {

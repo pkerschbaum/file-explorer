@@ -56,29 +56,10 @@ export const ExplorerPanel = React.memo<ExplorerPanelProps>(function ExplorerPan
               key={uriHelper.getComparisonKey(segment.uri)}
               segmentIdx={idx}
             >
-              {isLastSegment && (
-                <ActionsBarContainer
-                  variants={{
-                    closed: { display: 'none' },
-                    open: { display: 'block' },
-                  }}
-                  animate={activeAnimationVariant}
-                  exit="closed"
-                >
-                  <ActionsBar />
-                </ActionsBarContainer>
-              )}
-
-              <ResourcesViewContainer
-                variants={{
-                  closed: { display: 'none' },
-                  open: { display: 'flex' },
-                }}
-                animate={activeAnimationVariant}
-                aria-hidden={!isLastSegment}
-              >
-                <ResourcesView />
-              </ResourcesViewContainer>
+              <ActionsBarAndResourcesView
+                isLastSegment={isLastSegment}
+                activeAnimationVariant={activeAnimationVariant}
+              />
             </CwdSegmentContextProvider>
           );
         })}
@@ -101,6 +82,39 @@ const CwdBreadcrumbsContainer = styled(Box)<{ customTitleBarUsed: boolean }>`
   width: fit-content;
   grid-area: ${EXPLORER_CWDBREADCRUMBS_GRID_AREA};
 `;
+
+const ActionsBarAndResourcesView = React.memo<{
+  isLastSegment: boolean;
+  activeAnimationVariant: string;
+}>(function ActionBarAndResourcesView({ isLastSegment, activeAnimationVariant }) {
+  return (
+    <>
+      {isLastSegment && (
+        <ActionsBarContainer
+          variants={{
+            closed: { display: 'none' },
+            open: { display: 'block' },
+          }}
+          animate={activeAnimationVariant}
+          exit="closed"
+        >
+          <ActionsBar />
+        </ActionsBarContainer>
+      )}
+
+      <ResourcesViewContainer
+        variants={{
+          closed: { display: 'none' },
+          open: { display: 'flex' },
+        }}
+        animate={activeAnimationVariant}
+        aria-hidden={!isLastSegment}
+      >
+        <ResourcesView />
+      </ResourcesViewContainer>
+    </>
+  );
+});
 
 const ActionsBarContainer = styled(Box)`
   grid-area: ${EXPLORER_ACTIONSBAR_GRID_AREA};

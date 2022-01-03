@@ -208,3 +208,12 @@ export function useSelectedShownResources() {
     (explorerValues) => explorerValues.selectedShownResources,
   );
 }
+
+export function useIsResourceSelected(resourceKey: string) {
+  return useCwdSegmentDerivedValuesSelector((explorerValues) => {
+    const isResourceSelected = !!explorerValues.selectedShownResources.find(
+      (selectedResource) => selectedResource.key === resourceKey,
+    );
+    return isResourceSelected;
+  });
+}

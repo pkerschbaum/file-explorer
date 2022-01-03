@@ -23,7 +23,7 @@ import {
 
 const useCustomTitleBar = isWindows;
 
-export const Shell: React.FC = () => {
+export const Shell = React.memo(function Shell() {
   const [userPreferencesSidebarOpen, setUserPreferencesSidebarOpen] = React.useState(false);
 
   const explorerPanels = useExplorerPanels();
@@ -55,7 +55,7 @@ export const Shell: React.FC = () => {
       <UserPreferencesSidebar userPreferencesSidebarOpen={userPreferencesSidebarOpen} />
     </RootContainer>
   );
-};
+});
 
 const CUSTOM_TITLE_BAR_GRID_CONFIGURATION = css<{ userPreferencesSidebarOpen: boolean }>`
   grid-template-rows: 28px max-content max-content 1fr max-content;
