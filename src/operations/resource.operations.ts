@@ -61,20 +61,35 @@ export async function runDeleteProcess(deleteProcessId: string, options: { useTr
     actions.updateDeleteProcess({ id: deleteProcessId, status: DELETE_PROCESS_STATUS.RUNNING }),
   );
 
-  // delete all files (in parallel)
+  // delete all resources (in parallel)
   try {
     await Promise.all(
       deleteProcess.uris.map(async (uri) => {
+        let fileStat;
+        try {
+          fileStat = await fileSystemRef.current.resolve(URI.from(uri));
+        } catch (err) {
+          logger.warn(
+            `could not resolve resource which should get deleted --> skipping deletion of the resource.`,
+            { uri },
+          );
+          return;
+        }
+
         try {
           await fileSystemRef.current.del(URI.from(uri), {
             useTrash: options.useTrash,
-            recursive: true,
+            recursive: fileStat.isDirectory,
           });
         } catch (err) {
-          logger.error(`could not delete files`, err);
+          logger.error(`could not delete resources`, err);
           throw err;
         }
       }),
+    );
+
+    dispatchRef.current(
+      actions.updateDeleteProcess({ id: deleteProcessId, status: DELETE_PROCESS_STATUS.SUCCESS }),
     );
   } catch (err: unknown) {
     dispatchRef.current(
@@ -85,10 +100,6 @@ export async function runDeleteProcess(deleteProcessId: string, options: { useTr
       }),
     );
   }
-
-  dispatchRef.current(
-    actions.updateDeleteProcess({ id: deleteProcessId, status: DELETE_PROCESS_STATUS.SUCCESS }),
-  );
 
   // invalidate resources of all affected directories
   const distinctParents = uriHelper.getDistinctParents(deleteProcess.uris);
