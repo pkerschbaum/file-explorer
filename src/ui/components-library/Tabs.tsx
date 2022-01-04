@@ -45,6 +45,7 @@ export const Tabs = styled((props: TabsProps) => {
 })``;
 
 const TabsRoot = styled(Box)`
+  /* create stacking context so that the "TabIsActiveIndicator" always gets rendered on top of all tabs */
   isolation: isolate;
 
   display: flex;

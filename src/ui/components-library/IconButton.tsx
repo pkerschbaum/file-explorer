@@ -114,7 +114,6 @@ type StyleProps = IconButtonProps & {
 
 const IconButtonRoot = styled(motion.button)<{ styleProps: StyleProps }>`
   position: relative;
-  isolation: isolate;
 
   display: flex;
   ${({ styleProps: scProps }) =>

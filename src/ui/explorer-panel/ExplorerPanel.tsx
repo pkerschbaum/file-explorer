@@ -125,6 +125,7 @@ const ResourcesViewContainer = styled(Box)`
   min-height: 0;
   height: 100%;
   max-height: 100%;
+  /* TODO workaround: set z-index: 0 so that Backdrops rendered in the ProcessesArea are *above* the ResourcesViewContainer */
   z-index: 0;
 
   display: flex;

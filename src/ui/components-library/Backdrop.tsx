@@ -36,7 +36,6 @@ export const Backdrop = styled((props: BackdropProps) => {
 
 const BackdropContainer = styled(Box)`
   z-index: 1;
-  isolation: isolate;
 `;
 
 const VisualBackdrop = styled(Box)`

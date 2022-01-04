@@ -215,8 +215,9 @@ const ButtonRoot = styled(motion.button)<{ styleProps: StyleProps }>`
   min-width: 45px;
 
   /* 
-     set "position: relative" and "overflow: hidden" so that the button is a container for the 
-     absolutely positioned TouchRipple and the ripple animation does not leak out of the container.
+     set "position: relative" and "overflow: hidden" so that 
+     1) the button is a container for the absolutely positioned TouchRipple,
+     2) and the ripple animation does not leak out of the container.
    */
   position: relative;
   overflow: hidden;
