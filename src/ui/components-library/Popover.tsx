@@ -15,7 +15,6 @@ import { AnimatePresence } from 'framer-motion';
 import * as React from 'react';
 import styled from 'styled-components';
 
-import { functions } from '@app/base/utils/functions.util';
 import { Backdrop } from '@app/ui/components-library/Backdrop';
 import { Box } from '@app/ui/components-library/Box';
 import { useFramerMotionAnimations } from '@app/ui/components-library/DesignTokenContext';
@@ -64,18 +63,33 @@ export function usePopover<TriggerHTMLElement extends HTMLElement>(
 
   React.useEffect(
     function updatePositionOnTargetMovement() {
-      if (props.triggerRef.current && state.isOpen) {
-        const [throttledUpdatePosition, finishTrailingFnCall] = functions.throttle(
-          updatePosition,
-          20,
-        );
-        const mutationObserver = new MutationObserver(throttledUpdatePosition);
-        mutationObserver.observe(props.triggerRef.current, { attributes: true });
-        return () => {
-          mutationObserver.disconnect();
-          finishTrailingFnCall();
-        };
+      if (!props.triggerRef.current || !state.isOpen) {
+        return;
       }
+
+      let currentRAFHandle: undefined | number;
+
+      // to detect movements of the popover trigger, use MutationObserver
+      const mutationObserver = new MutationObserver(function requestAnimationFrameOnMovement() {
+        if (currentRAFHandle !== undefined) {
+          // there is already a request for an animation frame pending --> return
+          return;
+        }
+
+        // request animation frame which will update the position of the popover
+        currentRAFHandle = requestAnimationFrame(() => {
+          currentRAFHandle = undefined;
+          updatePosition();
+        });
+      });
+      mutationObserver.observe(props.triggerRef.current, { attributes: true });
+
+      return function cleanUp() {
+        mutationObserver.disconnect();
+        if (currentRAFHandle !== undefined) {
+          cancelAnimationFrame(currentRAFHandle);
+        }
+      };
     },
     [props.triggerRef, state.isOpen, updatePosition],
   );
