@@ -70,8 +70,6 @@ export const ActionsBar: React.FC = () => {
   const scheduleDeleteButtonHandleRef = React.useRef<ButtonHandle>(null);
   const triggerCreateNewFolderButtonHandleRef = React.useRef<ButtonHandle>(null);
 
-  const filterInputRef = React.useRef<HTMLInputElement>(null);
-
   const registerShortcutsResult = useRegisterCwdSegmentShortcuts({
     selectAllShortcut: {
       keybindings: [
@@ -205,14 +203,6 @@ export const ActionsBar: React.FC = () => {
         triggerCreateNewFolderButtonHandleRef.current.triggerSyntheticPress();
       },
     },
-    focusFilterInputShortcut: {
-      priority: ShortcutPriority.LOW,
-      condition: (e) => !e.altKey && !e.ctrlKey && !e.shiftKey,
-      handler: () => {
-        invariant(filterInputRef.current);
-        filterInputRef.current.focus();
-      },
-    },
   });
 
   const singleResourceActionsDisabled = selectedShownResources.length !== 1;
@@ -221,7 +211,7 @@ export const ActionsBar: React.FC = () => {
   return (
     <ActionBarContainer>
       <Box style={{ alignSelf: 'flex-end' }}>
-        <FilterInput filterInputRef={filterInputRef} />
+        <FilterInput />
       </Box>
 
       <Divider orientation="vertical" />
@@ -323,11 +313,21 @@ export const ActionsBar: React.FC = () => {
   );
 };
 
-type FilterInputProps = {
-  filterInputRef: React.RefObject<HTMLInputElement>;
-};
+const FilterInput: React.FC = () => {
+  const filterInputRef = React.useRef<HTMLInputElement>(null);
 
-const FilterInput: React.FC<FilterInputProps> = ({ filterInputRef }) => {
+  useRegisterCwdSegmentShortcuts({
+    focusFilterInputShortcut: {
+      priority: ShortcutPriority.LOW,
+      condition: (e) => !e.altKey && !e.ctrlKey && !e.shiftKey,
+      handler: () => {
+        invariant(filterInputRef.current);
+        filterInputRef.current.focus();
+      },
+      disablePreventDefault: true,
+    },
+  });
+
   const filterInput = useFilterInput();
   const setFilterInput = useSetFilterInput();
   const [localFilterInput, setLocalFilterInput] = React.useState(filterInput);

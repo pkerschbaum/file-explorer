@@ -44,6 +44,7 @@ type Shortcut = {
   keybindings?: Keybinding[];
   condition?: (e: WindowEventMap['keydown']) => boolean;
   handler: (e: WindowEventMap['keydown']) => void;
+  disablePreventDefault?: boolean;
   priority?: ShortcutPriority;
   enableForRepeatedKeyboardEvent?: boolean;
 };
@@ -218,8 +219,11 @@ export const GlobalShortcutsContextProvider: React.FC<GlobalShortcutsContextProv
 
         if (matchingShortcut) {
           matchingShortcut.handler(e);
-          e.preventDefault();
           e.stopPropagation();
+
+          if (!matchingShortcut.disablePreventDefault) {
+            e.preventDefault();
+          }
         }
       };
 
