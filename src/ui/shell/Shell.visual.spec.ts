@@ -159,6 +159,9 @@ describe('Shell [visual]', () => {
   });
 
   it('navigating down and up the file system should restore resources view state (filter, selection, ...)', () => {
+    // control time to be able to invoke the debounce of the filter input manually
+    cy.clock();
+
     const storybookIdToVisit = deriveIdFromMetadataAndExportName(
       metadata,
       varToString({ SimpleCase }),
@@ -166,6 +169,10 @@ describe('Shell [visual]', () => {
     bootstrap({ storybookIdToVisit });
 
     cy.findByRole('textbox', { name: /Filter/i }).type('test folder');
+    // invoke debounce of filter input and "yield" to the browser via cy.wait(1)
+    cy.tick(1000);
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(1);
     cy.get('body').type('{downarrow}');
     cy.document().matchImageSnapshot(`${getTestTitle()}_1_filter-and-selection-was-applied`);
 
@@ -173,6 +180,7 @@ describe('Shell [visual]', () => {
     cy.document().matchImageSnapshot(`${getTestTitle()}_2_navigated-down`);
 
     cy.get('body').type('{alt}{leftarrow}');
+    cy.tick(1000);
     cy.document().matchImageSnapshot(`${getTestTitle()}_3_navigated-up-and-restored-state`);
   });
 });
