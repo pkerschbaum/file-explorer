@@ -415,6 +415,9 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
 const ResourceRowRoot = styled(Row)`
   /* add scroll-margin-top so that "scrollIntoView" respects the sticky-positioned header */
   scroll-margin-top: ${ROW_HEIGHT}px;
+
+  will-change: transform, opacity;
+  content-visibility: auto;
 `;
 
 const ResourceNameFormattedSpacingFactor = 1;

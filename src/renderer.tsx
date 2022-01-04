@@ -1,4 +1,5 @@
 import ReactDOM from 'react-dom';
+import invariant from 'tiny-invariant';
 
 import { createStoreInstance } from '@app/global-state/store';
 import {
@@ -35,11 +36,13 @@ async function rendererScriptEntryPoint() {
   const queryClient = createQueryClient();
 
   // render React application
+  const rootContainer = document.getElementById('root');
+  invariant(rootContainer);
   ReactDOM.render(
     <Globals queryClient={queryClient} store={store}>
       <Shell />
     </Globals>,
-    document.getElementById('root'),
+    rootContainer,
   );
 }
 

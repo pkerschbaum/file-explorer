@@ -5,6 +5,7 @@ import invariant from 'tiny-invariant';
 import { assertIsUnreachable, check } from '@app/base/utils/assert.util';
 import { formatter } from '@app/base/utils/formatter.util';
 import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
+import { REASON_FOR_SELECTION_CHANGE } from '@app/global-state/slices/explorers.slice';
 import { startNativeFileDnD } from '@app/operations/app.operations';
 import { openResources } from '@app/operations/explorer.operations';
 import { commonStyles } from '@app/ui/common-styles';
@@ -14,6 +15,7 @@ import {
   useChangeSelection,
   useKeyOfLastSelectedResource,
   useKeyOfResourceToRename,
+  useReasonForLastSelectionChange,
   useRegisterCwdSegmentShortcuts,
   useRenameResource,
   useResourcesToShow,
@@ -184,6 +186,7 @@ const ResourceTile: React.FC<ResourceTileProps> = ({ resource, idxOfResource }) 
 
   const explorerId = useExplorerId();
   const selectedShownResources = useSelectedShownResources();
+  const reasonForLastSelectionChange = useReasonForLastSelectionChange();
   const renameResource = useRenameResource();
   const changeSelection = useChangeSelection();
   const keyOfResourceToRename = useKeyOfResourceToRename();
@@ -196,14 +199,17 @@ const ResourceTile: React.FC<ResourceTileProps> = ({ resource, idxOfResource }) 
   const tileGotSelected = !wasResourceSelectedLastRender && isResourceSelected;
 
   React.useEffect(
-    function scrollElementIntoViewOnSelection() {
+    function scrollElementIntoViewOnUserSelection() {
       invariant(tileRef.current);
 
-      if (tileGotSelected) {
+      if (
+        tileGotSelected &&
+        reasonForLastSelectionChange === REASON_FOR_SELECTION_CHANGE.USER_CHANGED_SELECTION
+      ) {
         tileRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
       }
     },
-    [tileGotSelected],
+    [reasonForLastSelectionChange, tileGotSelected],
   );
 
   function abortRename() {
@@ -275,6 +281,9 @@ type ResourceTileRootProps = {
 const ResourceTileRoot = styled(Box)<{ styleProps: ResourceTileRootProps }>`
   display: flex;
   flex-direction: column;
+
+  will-change: transform, opacity;
+  content-visibility: auto;
 
   border: var(--border-width-1) solid var(--color-darken-1);
   border-radius: var(--border-radius-2);

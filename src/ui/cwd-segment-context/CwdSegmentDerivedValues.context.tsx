@@ -17,7 +17,7 @@ import {
 } from '@app/ui/cwd-segment-context';
 import { useExplorerId } from '@app/ui/explorer-context';
 import { useEnrichResourcesWithTags, useResourcesForUI } from '@app/ui/hooks/resources.hooks';
-import { createSelectableContext, useDebouncedValue, usePrevious } from '@app/ui/utils/react.util';
+import { createSelectableContext, usePrevious } from '@app/ui/utils/react.util';
 
 const USE_GALLERY_VIEW_PERCENTAGE = 0.75;
 
@@ -43,7 +43,7 @@ export const CwdSegmentDerivedValuesContextProvider: React.FC<
   const segmentIdx = useSegmentIdx();
 
   const uri = useSegmentUri(explorerId, segmentIdx);
-  const debouncedFilterInput = useDebouncedValue(useFilterInput(), 50);
+  const filterInput = useFilterInput();
   const keysOfSelectedResources = useKeysOfSelectedResources();
   const activeResourcesView = useActiveResourcesView();
   const setReasonForLastSelectionChange = useSetReasonForLastSelectionChange();
@@ -63,7 +63,7 @@ export const CwdSegmentDerivedValuesContextProvider: React.FC<
   const resourcesToShow: ResourceForUI[] = React.useMemo(() => {
     let result;
 
-    if (check.isEmptyString(debouncedFilterInput)) {
+    if (check.isEmptyString(filterInput)) {
       result = arrays
         .wrap(resourcesWithTags)
         .stableSort((a, b) => {
@@ -89,14 +89,14 @@ export const CwdSegmentDerivedValuesContextProvider: React.FC<
     } else {
       result = arrays
         .wrap(resourcesWithTags)
-        .matchSort(debouncedFilterInput, {
+        .matchSort(filterInput, {
           keys: [(resource) => resource.basename],
         })
         .getValue();
     }
 
     return result;
-  }, [debouncedFilterInput, resourcesWithTags]);
+  }, [filterInput, resourcesWithTags]);
 
   const { selectedShownResources, didApplySelectionFallback } = React.useMemo(() => {
     const result: ResourceForUI[] = [];
@@ -139,8 +139,8 @@ export const CwdSegmentDerivedValuesContextProvider: React.FC<
   ]);
 
   // every time the filter input changes, reset selection
-  const prevFilterInput = usePrevious(debouncedFilterInput);
-  const filterInputChanged = debouncedFilterInput !== prevFilterInput;
+  const prevFilterInput = usePrevious(filterInput);
+  const filterInputChanged = filterInput !== prevFilterInput;
   React.useEffect(() => {
     if (filterInputChanged && resourcesToShow.length > 0) {
       setReasonForLastSelectionChange(REASON_FOR_SELECTION_CHANGE.RESET);

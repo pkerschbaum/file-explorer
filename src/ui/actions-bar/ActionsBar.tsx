@@ -44,6 +44,7 @@ import {
   ShortcutPriority,
 } from '@app/ui/GlobalShortcutsContext';
 import { useClipboardResources } from '@app/ui/hooks/clipboard-resources.hooks';
+import { useDebouncedValue } from '@app/ui/utils/react.util';
 
 export const ActionsBar: React.FC = () => {
   const draftPasteState = useDraftPasteState();
@@ -336,6 +337,15 @@ type FilterInputProps = {
 const FilterInput: React.FC<FilterInputProps> = ({ filterInputRef }) => {
   const filterInput = useFilterInput();
   const setFilterInput = useSetFilterInput();
+  const [localFilterInput, setLocalFilterInput] = React.useState(filterInput);
+
+  const debouncedFilterInput = useDebouncedValue(localFilterInput, 100);
+  React.useEffect(
+    function syncFilterInputAfterDebounce() {
+      setFilterInput(debouncedFilterInput);
+    },
+    [debouncedFilterInput, setFilterInput],
+  );
 
   return (
     <TextField
@@ -343,11 +353,11 @@ const FilterInput: React.FC<FilterInputProps> = ({ filterInputRef }) => {
       inputProps={DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED.datasetAttr}
       placeholder="Filter"
       aria-label="Filter"
-      autoFocus={check.isNonEmptyString(filterInput)}
-      value={filterInput}
+      autoFocus={check.isNonEmptyString(localFilterInput)}
+      value={localFilterInput}
       onChange={(newValue) => {
         const trimmedValue = newValue.trimStart();
-        setFilterInput(trimmedValue);
+        setLocalFilterInput(trimmedValue);
 
         // if input is empty now, blur the input field
         if (trimmedValue === '' && filterInputRef.current !== null) {

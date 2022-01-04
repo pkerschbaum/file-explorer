@@ -142,7 +142,9 @@ const ResourcesView: React.FC = () => {
   const activeResourcesView = useActiveResourcesView();
   const isAnimationAllowed = componentLibraryUtils.useIsAnimationAllowed();
   const variants = {
-    closed: { x: '100%' },
+    closed: {
+      x: '100%',
+    },
     center: {
       x: 0,
       transitionEnd: {
@@ -178,5 +180,7 @@ const ResourcesViewSlideBox = styled(Box)`
   height: 100%;
   display: flex;
   flex-direction: column;
+
   background-color: var(--color-bg-0);
+  will-change: transform;
 `;
