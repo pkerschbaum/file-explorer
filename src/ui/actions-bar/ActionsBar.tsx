@@ -83,10 +83,7 @@ export const ActionsBar: React.FC = () => {
           },
         },
       ],
-      handler: (e) => {
-        e.preventDefault();
-        selectAll();
-      },
+      handler: selectAll,
     },
     setActiveResourcesViewShortcut: {
       keybindings: [
@@ -173,11 +170,9 @@ export const ActionsBar: React.FC = () => {
           },
         },
       ],
-      handler: (e) => {
+      handler: () => {
         invariant(triggerRenameButtonHandleRef.current);
         triggerRenameButtonHandleRef.current.triggerSyntheticPress();
-        // avoid reload of window (default browser action for CTRL+R)
-        e.preventDefault();
       },
     },
     scheduleDeleteShortcut: {
@@ -190,11 +185,9 @@ export const ActionsBar: React.FC = () => {
           },
         },
       ],
-      handler: (e) => {
+      handler: () => {
         invariant(scheduleDeleteButtonHandleRef.current);
         scheduleDeleteButtonHandleRef.current.triggerSyntheticPress();
-        // prevent the default action of the DELETE key (e.g. deletion of a character in the "Filter" textbox)
-        e.preventDefault();
       },
     },
     triggerCreateNewFolderShortcut: {

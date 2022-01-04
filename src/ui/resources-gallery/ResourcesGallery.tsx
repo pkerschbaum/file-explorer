@@ -120,7 +120,6 @@ export const ResourcesGallery: React.FC = () => {
       ],
       handler: (e) => {
         invariant(countOfColumns !== undefined);
-        e.preventDefault();
 
         let idxOfResourceToSelect;
         if (e.key === KEY.ARROW_LEFT) {

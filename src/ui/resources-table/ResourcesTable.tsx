@@ -166,8 +166,6 @@ const ResourcesTableBody: React.FC<ResourcesTableBodyProps> = ({ tableContainerR
         },
       ],
       handler: (e) => {
-        e.preventDefault();
-
         let idxOfResourceToSelect;
         if (e.key === KEY.ARROW_UP) {
           idxOfResourceToSelect = idxOfLastSelectedResource - 1;

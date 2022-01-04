@@ -218,6 +218,7 @@ export const GlobalShortcutsContextProvider: React.FC<GlobalShortcutsContextProv
 
         if (matchingShortcut) {
           matchingShortcut.handler(e);
+          e.preventDefault();
           e.stopPropagation();
         }
       };
