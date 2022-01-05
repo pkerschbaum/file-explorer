@@ -10,7 +10,7 @@ import { startNativeFileDnD } from '@app/operations/app.operations';
 import { openResources } from '@app/operations/explorer.operations';
 import { commonStyles } from '@app/ui/common-styles';
 import { Box, componentLibraryUtils, useFramerMotionAnimations } from '@app/ui/components-library';
-import { KEY } from '@app/ui/constants';
+import { doesKeyboardEventKeyMatchPrintedKey, PRINTED_KEY } from '@app/ui/constants';
 import {
   useChangeSelection,
   useKeyOfLastSelectedResource,
@@ -76,42 +76,42 @@ export const ResourcesGallery: React.FC = () => {
     changeSelectionByKeyboardShortcut: {
       keybindings: [
         {
-          key: KEY.ARROW_LEFT,
+          key: PRINTED_KEY.ARROW_LEFT,
           modifiers: {
             ctrl: 'NOT_SET',
             alt: 'NOT_SET',
           },
         },
         {
-          key: KEY.ARROW_RIGHT,
+          key: PRINTED_KEY.ARROW_RIGHT,
           modifiers: {
             ctrl: 'NOT_SET',
             alt: 'NOT_SET',
           },
         },
         {
-          key: KEY.ARROW_UP,
+          key: PRINTED_KEY.ARROW_UP,
           modifiers: {
             ctrl: 'NOT_SET',
             alt: 'NOT_SET',
           },
         },
         {
-          key: KEY.ARROW_DOWN,
+          key: PRINTED_KEY.ARROW_DOWN,
           modifiers: {
             ctrl: 'NOT_SET',
             alt: 'NOT_SET',
           },
         },
         {
-          key: KEY.PAGE_UP,
+          key: PRINTED_KEY.PAGE_UP,
           modifiers: {
             ctrl: 'NOT_SET',
             alt: 'NOT_SET',
           },
         },
         {
-          key: KEY.PAGE_DOWN,
+          key: PRINTED_KEY.PAGE_DOWN,
           modifiers: {
             ctrl: 'NOT_SET',
             alt: 'NOT_SET',
@@ -122,23 +122,53 @@ export const ResourcesGallery: React.FC = () => {
         invariant(countOfColumns !== undefined);
 
         let idxOfResourceToSelect;
-        if (e.key === KEY.ARROW_LEFT) {
+        if (
+          doesKeyboardEventKeyMatchPrintedKey({
+            printedKey: PRINTED_KEY.ARROW_LEFT,
+            keyboardEventKey: e.key,
+          })
+        ) {
           idxOfResourceToSelect = idxOfLastSelectedResource - 1;
-        } else if (e.key === KEY.ARROW_RIGHT) {
+        } else if (
+          doesKeyboardEventKeyMatchPrintedKey({
+            printedKey: PRINTED_KEY.ARROW_RIGHT,
+            keyboardEventKey: e.key,
+          })
+        ) {
           idxOfResourceToSelect = idxOfLastSelectedResource + 1;
-        } else if (e.key === KEY.ARROW_UP) {
+        } else if (
+          doesKeyboardEventKeyMatchPrintedKey({
+            printedKey: PRINTED_KEY.ARROW_UP,
+            keyboardEventKey: e.key,
+          })
+        ) {
           idxOfResourceToSelect = idxOfLastSelectedResource - countOfColumns;
           if (idxOfResourceToSelect < 0) {
             idxOfResourceToSelect = 0;
           }
-        } else if (e.key === KEY.ARROW_DOWN) {
+        } else if (
+          doesKeyboardEventKeyMatchPrintedKey({
+            printedKey: PRINTED_KEY.ARROW_DOWN,
+            keyboardEventKey: e.key,
+          })
+        ) {
           idxOfResourceToSelect = idxOfLastSelectedResource + countOfColumns;
           if (idxOfResourceToSelect >= resourcesToShow.length) {
             idxOfResourceToSelect = resourcesToShow.length - 1;
           }
-        } else if (e.key === KEY.PAGE_UP) {
+        } else if (
+          doesKeyboardEventKeyMatchPrintedKey({
+            printedKey: PRINTED_KEY.PAGE_UP,
+            keyboardEventKey: e.key,
+          })
+        ) {
           idxOfResourceToSelect = 0;
-        } else if (e.key === KEY.PAGE_DOWN) {
+        } else if (
+          doesKeyboardEventKeyMatchPrintedKey({
+            printedKey: PRINTED_KEY.PAGE_DOWN,
+            keyboardEventKey: e.key,
+          })
+        ) {
           idxOfResourceToSelect = resourcesToShow.length - 1;
         } else {
           assertIsUnreachable();

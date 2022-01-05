@@ -27,7 +27,7 @@ import * as React from 'react';
 
 import { objects } from '@app/base/utils/objects.util';
 import { KEY_TO_VISUALIZATION_MAP } from '@app/ui/components-library/visual-key';
-import { KEY } from '@app/ui/constants';
+import { PRINTED_KEY, doesKeyboardEventKeyMatchPrintedKey } from '@app/ui/constants';
 import { createContext } from '@app/ui/utils/react.util';
 
 export const DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED = {
@@ -49,7 +49,7 @@ type Shortcut = {
   enableForRepeatedKeyboardEvent?: boolean;
 };
 type Keybinding = {
-  key: KEY;
+  key: PRINTED_KEY;
   modifiers: Modifiers;
 };
 type Modifiers = {
@@ -203,7 +203,10 @@ export const GlobalShortcutsContextProvider: React.FC<GlobalShortcutsContextProv
               matches &&
               shortcut.keybindings.some(
                 (keybinding) =>
-                  e.key === keybinding.key &&
+                  doesKeyboardEventKeyMatchPrintedKey({
+                    printedKey: keybinding.key,
+                    keyboardEventKey: e.key,
+                  }) &&
                   (!keybinding.modifiers ||
                     doesEventMatchKeybindingModifiers(newActiveModifiers, keybinding.modifiers)),
               );
@@ -286,8 +289,11 @@ function shouldEventGetProcessed(
   return e.target instanceof HTMLElement && !isFocusSomewhereVisible && !isReservedKey(e.key);
 }
 
-function isReservedKey(key: string): boolean {
-  return key === KEY.TAB || key === KEY.ESC;
+function isReservedKey(key: KeyboardEvent['key']): boolean {
+  return (
+    doesKeyboardEventKeyMatchPrintedKey({ printedKey: PRINTED_KEY.TAB, keyboardEventKey: key }) ||
+    doesKeyboardEventKeyMatchPrintedKey({ printedKey: PRINTED_KEY.ESC, keyboardEventKey: key })
+  );
 }
 
 export type RegisterShortcutsResultMap<ActualShortcutMap extends ShortcutMap> = {

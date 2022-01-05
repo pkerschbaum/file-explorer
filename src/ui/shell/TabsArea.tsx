@@ -23,7 +23,7 @@ import {
   AddCircleOutlineOutlinedIcon,
   CloseOutlinedIcon,
 } from '@app/ui/components-library';
-import { KEY } from '@app/ui/constants';
+import { PRINTED_KEY } from '@app/ui/constants';
 import { useRegisterGlobalShortcuts } from '@app/ui/GlobalShortcutsContext';
 
 type TabsAreaProps = { explorersToShow: ExplorerPanelEntry[] };
@@ -57,7 +57,7 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
     changeToPrevTabShortcut: {
       keybindings: [
         {
-          key: KEY.ARROW_UP,
+          key: PRINTED_KEY.ARROW_UP,
           modifiers: {
             ctrl: 'NOT_SET',
             alt: 'SET',
@@ -69,7 +69,7 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
     changeToNextTabShortcut: {
       keybindings: [
         {
-          key: KEY.ARROW_DOWN,
+          key: PRINTED_KEY.ARROW_DOWN,
           modifiers: {
             ctrl: 'NOT_SET',
             alt: 'SET',
@@ -81,7 +81,7 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
     addNewTabShortcut: {
       keybindings: [
         {
-          key: KEY.T,
+          key: PRINTED_KEY.T,
           modifiers: {
             ctrl: 'NOT_SET',
             alt: 'SET',

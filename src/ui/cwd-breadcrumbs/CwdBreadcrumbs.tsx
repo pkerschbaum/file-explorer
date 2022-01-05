@@ -17,7 +17,7 @@ import {
   useBreadcrumbItem,
   KeyboardArrowDownOutlinedIcon,
 } from '@app/ui/components-library';
-import { KEY, MOUSE_BUTTONS } from '@app/ui/constants';
+import { PRINTED_KEY, MOUSE_BUTTONS } from '@app/ui/constants';
 import { CwdActionsMenu } from '@app/ui/cwd-breadcrumbs/CwdActionsMenu';
 import {
   useExplorerId,
@@ -99,7 +99,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
       keybindings: isSecondToLastSegment
         ? [
             {
-              key: KEY.ARROW_LEFT,
+              key: PRINTED_KEY.ARROW_LEFT,
               modifiers: {
                 ctrl: 'NOT_SET',
                 alt: 'SET',
@@ -116,7 +116,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
       keybindings: isLastSegment
         ? [
             {
-              key: KEY.ENTER,
+              key: PRINTED_KEY.ENTER,
               modifiers: {
                 ctrl: 'NOT_SET',
                 alt: 'SET',
