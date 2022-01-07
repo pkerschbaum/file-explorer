@@ -1,76 +1,60 @@
-import { cy, describe, it } from 'local-cypress';
+import { queries } from '@playwright-testing-library/test';
+import { expect, test } from '@playwright/test';
 
-import metadata, {
-  AbortRequested,
-  AbortSuccess,
-  Failure,
-  RunningDeterminingTotalSize,
-  RunningPerformingPaste,
-  Success,
-} from '@app/ui/process/PasteProcess.stories';
+import { bootstrap } from '@app-playwright/playwright.util';
 
-import { deriveIdFromMetadataAndExportName, varToString } from '@app-storybook/storybook-utils';
-
-import { getTestTitle, bootstrap } from '@app-cypress/cypress.util';
-
-describe('PasteProcess [visual]', () => {
-  it('Running Determining Total Size', () => {
-    const storybookIdToVisit = deriveIdFromMetadataAndExportName(
-      metadata,
-      varToString({ RunningDeterminingTotalSize }),
-    );
-    bootstrap({ storybookIdToVisit });
-
-    cy.findByLabelText(/^Paste Process$/i).matchImageSnapshot(`${getTestTitle()}_1`);
+test.describe('PasteProcess [visual]', () => {
+  test('Running Determining Total Size', async ({ page }) => {
+    const $document = await bootstrap({
+      page,
+      storybookIdToVisit: 'processes-paste--running-determining-total-size',
+    });
+    const process = await queries.findByLabelText($document, /^Paste Process$/i);
+    expect(await process.screenshot()).toMatchSnapshot('running-determining-total-size_1.png');
   });
 
-  it('Running Performing Paste', () => {
-    const storybookIdToVisit = deriveIdFromMetadataAndExportName(
-      metadata,
-      varToString({ RunningPerformingPaste }),
-    );
-    bootstrap({ storybookIdToVisit });
-
-    cy.findByLabelText(/^Paste Process$/i).matchImageSnapshot(`${getTestTitle()}_1`);
+  test('Running Performing Paste', async ({ page }) => {
+    const $document = await bootstrap({
+      page,
+      storybookIdToVisit: 'processes-paste--running-performing-paste',
+    });
+    const process = await queries.findByLabelText($document, /^Paste Process$/i);
+    expect(await process.screenshot()).toMatchSnapshot('running-performing-paste_1.png');
   });
 
-  it('Success', () => {
-    const storybookIdToVisit = deriveIdFromMetadataAndExportName(
-      metadata,
-      varToString({ Success }),
-    );
-    bootstrap({ storybookIdToVisit });
-
-    cy.findByLabelText(/^Paste Process$/i).matchImageSnapshot(`${getTestTitle()}_1`);
+  test('Success', async ({ page }) => {
+    const $document = await bootstrap({
+      page,
+      storybookIdToVisit: 'processes-paste--success',
+    });
+    const process = await queries.findByLabelText($document, /^Paste Process$/i);
+    expect(await process.screenshot()).toMatchSnapshot('success_1.png');
   });
 
-  it('Abort Requested', () => {
-    const storybookIdToVisit = deriveIdFromMetadataAndExportName(
-      metadata,
-      varToString({ AbortRequested }),
-    );
-    bootstrap({ storybookIdToVisit });
-
-    cy.findByLabelText(/^Paste Process$/i).matchImageSnapshot(`${getTestTitle()}_1`);
+  test('Abort Requested', async ({ page }) => {
+    const $document = await bootstrap({
+      page,
+      storybookIdToVisit: 'processes-paste--abort-requested',
+    });
+    const process = await queries.findByLabelText($document, /^Paste Process$/i);
+    expect(await process.screenshot()).toMatchSnapshot('abort-requested_1.png');
   });
 
-  it('Abort Success', () => {
-    const storybookIdToVisit = deriveIdFromMetadataAndExportName(
-      metadata,
-      varToString({ AbortSuccess }),
-    );
-    bootstrap({ storybookIdToVisit });
-
-    cy.findByLabelText(/^Paste Process$/i).matchImageSnapshot(`${getTestTitle()}_1`);
+  test('Abort Success', async ({ page }) => {
+    const $document = await bootstrap({
+      page,
+      storybookIdToVisit: 'processes-paste--abort-success',
+    });
+    const process = await queries.findByLabelText($document, /^Paste Process$/i);
+    expect(await process.screenshot()).toMatchSnapshot('abort-success_1.png');
   });
 
-  it('Failure', () => {
-    const storybookIdToVisit = deriveIdFromMetadataAndExportName(
-      metadata,
-      varToString({ Failure }),
-    );
-    bootstrap({ storybookIdToVisit });
-
-    cy.findByLabelText(/^Paste Process$/i).matchImageSnapshot(`${getTestTitle()}_1`);
+  test('Failure', async ({ page }) => {
+    const $document = await bootstrap({
+      page,
+      storybookIdToVisit: 'processes-paste--failure',
+    });
+    const process = await queries.findByLabelText($document, /^Paste Process$/i);
+    expect(await process.screenshot()).toMatchSnapshot('failure_1.png');
   });
 });

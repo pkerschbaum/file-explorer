@@ -27,7 +27,7 @@ export type ReactMotionProps<
   >;
 
 function useIsAnimationAllowed(): boolean {
-  const isRunningInCypress = (window as any).Cypress !== undefined;
+  const isRunningInPlaywright = (window as any).playwright !== undefined;
   const prefersReducedMotion = useMediaMatch('(prefers-reduced-motion: reduce)');
-  return !isRunningInCypress && !prefersReducedMotion;
+  return !isRunningInPlaywright && !prefersReducedMotion;
 }

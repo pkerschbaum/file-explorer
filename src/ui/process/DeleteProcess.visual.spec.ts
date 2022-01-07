@@ -1,65 +1,51 @@
-import { cy, describe, it } from 'local-cypress';
+import { queries } from '@playwright-testing-library/test';
+import { expect, test } from '@playwright/test';
 
-import metadata, {
-  Failure,
-  PendingForUserInput,
-  Running,
-  Success,
-  VeryLongResourceNames,
-} from '@app/ui/process/DeleteProcess.stories';
+import { bootstrap } from '@app-playwright/playwright.util';
 
-import { deriveIdFromMetadataAndExportName, varToString } from '@app-storybook/storybook-utils';
-
-import { getTestTitle, bootstrap } from '@app-cypress/cypress.util';
-
-describe('DeleteProcess [visual]', () => {
-  it('Pending for User Input', () => {
-    const storybookIdToVisit = deriveIdFromMetadataAndExportName(
-      metadata,
-      varToString({ PendingForUserInput }),
-    );
-    bootstrap({ storybookIdToVisit });
-
-    cy.findByLabelText(/^Delete Process$/i).matchImageSnapshot(`${getTestTitle()}_1`);
+test.describe('DeleteProcess [visual]', () => {
+  test('Pending for User Input', async ({ page }) => {
+    const $document = await bootstrap({
+      page,
+      storybookIdToVisit: 'processes-delete--pending-for-user-input',
+    });
+    const process = await queries.findByLabelText($document, /^Delete Process$/i);
+    expect(await process.screenshot()).toMatchSnapshot('pending-for-user-input_1.png');
   });
 
-  it('Running', () => {
-    const storybookIdToVisit = deriveIdFromMetadataAndExportName(
-      metadata,
-      varToString({ Running }),
-    );
-    bootstrap({ storybookIdToVisit });
-
-    cy.findByLabelText(/^Delete Process$/i).matchImageSnapshot(`${getTestTitle()}_1`);
+  test('Running', async ({ page }) => {
+    const $document = await bootstrap({
+      page,
+      storybookIdToVisit: 'processes-delete--running',
+    });
+    const process = await queries.findByLabelText($document, /^Delete Process$/i);
+    expect(await process.screenshot()).toMatchSnapshot('running_1.png');
   });
 
-  it('Success', () => {
-    const storybookIdToVisit = deriveIdFromMetadataAndExportName(
-      metadata,
-      varToString({ Success }),
-    );
-    bootstrap({ storybookIdToVisit });
-
-    cy.findByLabelText(/^Delete Process$/i).matchImageSnapshot(`${getTestTitle()}_1`);
+  test('Success', async ({ page }) => {
+    const $document = await bootstrap({
+      page,
+      storybookIdToVisit: 'processes-delete--success',
+    });
+    const process = await queries.findByLabelText($document, /^Delete Process$/i);
+    expect(await process.screenshot()).toMatchSnapshot('success_1.png');
   });
 
-  it('Failure', () => {
-    const storybookIdToVisit = deriveIdFromMetadataAndExportName(
-      metadata,
-      varToString({ Failure }),
-    );
-    bootstrap({ storybookIdToVisit });
-
-    cy.findByLabelText(/^Delete Process$/i).matchImageSnapshot(`${getTestTitle()}_1`);
+  test('Failure', async ({ page }) => {
+    const $document = await bootstrap({
+      page,
+      storybookIdToVisit: 'processes-delete--failure',
+    });
+    const process = await queries.findByLabelText($document, /^Delete Process$/i);
+    expect(await process.screenshot()).toMatchSnapshot('failure_1.png');
   });
 
-  it('Very Long Resource Names', () => {
-    const storybookIdToVisit = deriveIdFromMetadataAndExportName(
-      metadata,
-      varToString({ VeryLongResourceNames }),
-    );
-    bootstrap({ storybookIdToVisit });
-
-    cy.findByLabelText(/^Delete Process$/i).matchImageSnapshot(`${getTestTitle()}_1`);
+  test('Very Long Resource Name', async ({ page }) => {
+    const $document = await bootstrap({
+      page,
+      storybookIdToVisit: 'processes-delete--very-long-resource-name',
+    });
+    const process = await queries.findByLabelText($document, /^Delete Process$/i);
+    expect(await process.screenshot()).toMatchSnapshot('very-long-resource-name_1.png');
   });
 });

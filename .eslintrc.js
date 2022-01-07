@@ -1,7 +1,7 @@
 module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: ['./tsconfig.json', './cypress/tsconfig.json'],
+    project: ['./tsconfig.json'],
     sourceType: 'module',
     tsconfigRootDir: __dirname,
   },
@@ -16,7 +16,6 @@ module.exports = {
     'plugin:react-hooks/recommended',
     'plugin:jsx-a11y/recommended',
     'plugin:storybook/recommended',
-    'plugin:cypress/recommended',
     'plugin:playwright/playwright-test',
   ],
   /**
@@ -30,7 +29,6 @@ module.exports = {
     'node',
     'import',
     'jsx-a11y',
-    'cypress',
     'testing-library',
     '@pkerschbaum/code-import-patterns',
   ],
@@ -66,11 +64,6 @@ module.exports = {
           },
           {
             pattern: '@app-storybook/**',
-            group: 'parent',
-            position: 'after',
-          },
-          {
-            pattern: '@app-cypress/**',
             group: 'parent',
             position: 'after',
           },
@@ -200,7 +193,7 @@ module.exports = {
           },
           {
             target: /\/src\/ui\/.+\.visual\.spec\.ts$/,
-            allowedPatterns: ['local-cypress'],
+            allowedPatterns: ['@playwright/test', '@playwright-testing-library/test'],
           },
           {
             target: /\/src\/ui\/Globals\.tsx$/,
@@ -250,16 +243,6 @@ module.exports = {
             allowedPatterns: ['react-redux', /^react-query/, /^@reduxjs\/toolkit/],
           },
           {
-            target: /\/cypress\/.+/,
-            allowedPatterns: [
-              '@storybook/csf',
-              'local-cypress',
-              'path',
-              /^@pkerschbaum\/cypress-image-snapshot/,
-              /^@testing-library\/cypress/,
-            ],
-          },
-          {
             target: /\/scripts\/.+/,
             allowedPatterns: [/.+/],
           },
@@ -269,6 +252,10 @@ module.exports = {
           },
           {
             target: /\/test\/.+/,
+            allowedPatterns: [/.+/],
+          },
+          {
+            target: /\/playwright\/.+/,
             allowedPatterns: [/.+/],
           },
           {
@@ -347,8 +334,8 @@ module.exports = {
       },
     },
     {
-      // allow default export for Storybook stories and for the Cypress plugins index file
-      files: ['**/*.stories.@(js|jsx|ts|tsx)', 'cypress/plugins/index.@(js|ts)'],
+      // allow default export for Storybook stories
+      files: ['**/*.stories.@(js|jsx|ts|tsx)'],
       rules: {
         'import/no-default-export': 'off',
       },
