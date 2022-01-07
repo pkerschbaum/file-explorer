@@ -6,13 +6,12 @@ import { extractCwdFromExplorerPanel } from '@app/global-state/slices/explorers.
 import { ExplorersMap } from '@app/global-state/slices/explorers.slice';
 import type { RootState } from '@app/global-state/store';
 import { createLogger } from '@app/operations/create-logger';
-import { fileSystemRef, persistentStorageRef } from '@app/operations/global-modules';
 import { StorageState } from '@app/platform/persistent-storage.types';
 
 const logger = createLogger('storage-state.operations');
 
 export async function readStorageState(): Promise<StorageState> {
-  return await persistentStorageRef.current.read();
+  return await globalThis.modules.persistentStorage.read();
 }
 
 export async function reviveGlobalStateFromStorageState(
@@ -25,9 +24,12 @@ export async function reviveGlobalStateFromStorageState(
       storageState.activeExplorerPanels.map(async (panel) => {
         try {
           // make sure the CWD is still present and reachable
-          await fileSystemRef.current.resolve(URI.from(extractCwdFromExplorerPanel(panel)), {
-            resolveMetadata: false,
-          });
+          await globalThis.modules.fileSystem.resolve(
+            URI.from(extractCwdFromExplorerPanel(panel)),
+            {
+              resolveMetadata: false,
+            },
+          );
           explorers[panel.id] = { cwdSegments: panel.cwdSegments };
         } catch (error) {
           logger.error(`could not revive a explorer panel`, error, { panel });

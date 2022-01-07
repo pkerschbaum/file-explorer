@@ -3,7 +3,6 @@ import { Query, QueryCache } from 'react-query';
 
 import { check } from '@app/base/utils/assert.util';
 import { createRefreshResourcesOfDirectorySubscription } from '@app/operations/global-cache-subscriptions/refresh-resources-of-directory';
-import { queryClientRef } from '@app/operations/global-modules';
 
 export type QueryCacheSubscription = {
   subscription: {
@@ -33,7 +32,7 @@ export function useGlobalCacheSubscriptions() {
     );
 
     // run "digestExistingQuery" for all currently existing queries
-    const allQueries = queryClientRef.current.getQueryCache().findAll();
+    const allQueries = globalThis.modules.queryClient.getQueryCache().findAll();
     for (const query of allQueries) {
       for (const digestExistingQuery of allDigestExistingQueryFunctions) {
         digestExistingQuery(query);
@@ -41,7 +40,7 @@ export function useGlobalCacheSubscriptions() {
     }
 
     // setup a subscription on the QueryCache and run "digestCacheNotifyEvent" on every cache notify event
-    const unsubscribeFromQueryCache = queryClientRef.current
+    const unsubscribeFromQueryCache = globalThis.modules.queryClient
       .getQueryCache()
       .subscribe((cacheNotifyEvent) => {
         for (const digestCacheNotifyEvent of allDigestCacheNotifyEventFunctions) {

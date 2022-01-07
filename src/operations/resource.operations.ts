@@ -27,12 +27,6 @@ import { mapProcess } from '@app/global-state/slices/processes.hooks';
 import { actions } from '@app/global-state/slices/processes.slice';
 import { actions as tagsSliceActions } from '@app/global-state/slices/tags.slice';
 import { createLogger } from '@app/operations/create-logger';
-import {
-  dispatchRef,
-  fileSystemRef,
-  nativeHostRef,
-  storeRef,
-} from '@app/operations/global-modules';
 import * as tagOperations from '@app/operations/tag.operations';
 
 const logger = createLogger('resource.operations');
@@ -47,17 +41,17 @@ export function scheduleMoveResourcesToTrash(uris: UriComponents[]) {
     id: uuid.generateUuid(),
     uris,
   };
-  dispatchRef.current(actions.addDeleteProcess(deleteProcess));
+  globalThis.modules.dispatch(actions.addDeleteProcess(deleteProcess));
 }
 
 export async function runDeleteProcess(deleteProcessId: string, options: { useTrash: boolean }) {
-  const processes = storeRef.current.getState().processesSlice.processes.map(mapProcess);
+  const processes = globalThis.modules.store.getState().processesSlice.processes.map(mapProcess);
   const deleteProcess = processes.find((process) => process.id === deleteProcessId);
   if (!deleteProcess || deleteProcess.type !== PROCESS_TYPE.DELETE) {
     throw new Error(`could not find delete process, deleteProcessId=${deleteProcessId}`);
   }
 
-  dispatchRef.current(
+  globalThis.modules.dispatch(
     actions.updateDeleteProcess({ id: deleteProcessId, status: DELETE_PROCESS_STATUS.RUNNING }),
   );
 
@@ -67,7 +61,7 @@ export async function runDeleteProcess(deleteProcessId: string, options: { useTr
       deleteProcess.uris.map(async (uri) => {
         let fileStat;
         try {
-          fileStat = await fileSystemRef.current.resolve(URI.from(uri));
+          fileStat = await globalThis.modules.fileSystem.resolve(URI.from(uri));
         } catch (err) {
           logger.warn(
             `could not resolve resource which should get deleted --> skipping deletion of the resource.`,
@@ -77,7 +71,7 @@ export async function runDeleteProcess(deleteProcessId: string, options: { useTr
         }
 
         try {
-          await fileSystemRef.current.del(URI.from(uri), {
+          await globalThis.modules.fileSystem.del(URI.from(uri), {
             useTrash: options.useTrash,
             recursive: fileStat.isDirectory,
           });
@@ -88,11 +82,11 @@ export async function runDeleteProcess(deleteProcessId: string, options: { useTr
       }),
     );
 
-    dispatchRef.current(
+    globalThis.modules.dispatch(
       actions.updateDeleteProcess({ id: deleteProcessId, status: DELETE_PROCESS_STATUS.SUCCESS }),
     );
   } catch (err: unknown) {
-    dispatchRef.current(
+    globalThis.modules.dispatch(
       actions.updateDeleteProcess({
         id: deleteProcessId,
         status: DELETE_PROCESS_STATUS.FAILURE,
@@ -107,11 +101,11 @@ export async function runDeleteProcess(deleteProcessId: string, options: { useTr
 }
 
 export function removeProcess(processId: string) {
-  dispatchRef.current(actions.removeProcess({ id: processId }));
+  globalThis.modules.dispatch(actions.removeProcess({ id: processId }));
 }
 
 export async function openFiles(uris: UriComponents[]) {
-  await nativeHostRef.current.shell.openPath(uris);
+  await globalThis.modules.nativeHost.shell.openPath(uris);
 }
 
 export function cutOrCopyResources(resources: UriComponents[], cut: boolean) {
@@ -119,14 +113,19 @@ export function cutOrCopyResources(resources: UriComponents[], cut: boolean) {
     return;
   }
 
-  nativeHostRef.current.clipboard.writeResources(resources.map((resource) => URI.from(resource)));
-  dispatchRef.current(actions.cutOrCopyResources({ cut }));
+  globalThis.modules.nativeHost.clipboard.writeResources(
+    resources.map((resource) => URI.from(resource)),
+  );
+  globalThis.modules.dispatch(actions.cutOrCopyResources({ cut }));
 }
 
 export async function renameResource(resourceURI: UriComponents, uriToRenameTo: UriComponents) {
-  const fileStatOfSourceResource = await fileSystemRef.current.resolve(URI.from(resourceURI), {
-    resolveMetadata: true,
-  });
+  const fileStatOfSourceResource = await globalThis.modules.fileSystem.resolve(
+    URI.from(resourceURI),
+    {
+      resolveMetadata: true,
+    },
+  );
   await executeCopyOrMove({
     sourceResource: { uri: URI.from(resourceURI), fileStat: fileStatOfSourceResource },
     targetResource: { uri: URI.from(uriToRenameTo) },
@@ -157,7 +156,7 @@ async function resolveDeepRecursive(
     // recursive resolve
     await Promise.all(
       targetStat.children.map(async (child) => {
-        const childStat = await fileSystemRef.current.resolve(child.resource, {
+        const childStat = await globalThis.modules.fileSystem.resolve(child.resource, {
           resolveMetadata: true,
         });
         return resolveDeepRecursive(child.resource, childStat, resultMap);
@@ -204,12 +203,12 @@ export async function addTagsToResources(resources: UriComponents[], tagIds: str
   }
 
   const resourcesToTagsMap = objects.deepCopyJson(
-    storeRef.current.getState().tagsSlice.resourcesToTags,
+    globalThis.modules.store.getState().tagsSlice.resourcesToTags,
   );
 
   await Promise.all(
     resources.map(async (resource) => {
-      const statOfResource = await fileSystemRef.current.resolve(URI.from(resource), {
+      const statOfResource = await globalThis.modules.fileSystem.resolve(URI.from(resource), {
         resolveMetadata: true,
       });
 
@@ -225,7 +224,7 @@ export async function addTagsToResources(resources: UriComponents[], tagIds: str
     }),
   );
 
-  dispatchRef.current(
+  globalThis.modules.dispatch(
     tagsSliceActions.storeResourcesToTags({ resourcesToTags: resourcesToTagsMap }),
   );
 
@@ -236,7 +235,7 @@ export function removeTagsFromResources(resources: UriComponents[], tagIds: stri
   logger.debug(`removing tags from resources...`, { resources, tagIds });
 
   const resourcesToTagsMap = objects.deepCopyJson(
-    storeRef.current.getState().tagsSlice.resourcesToTags,
+    globalThis.modules.store.getState().tagsSlice.resourcesToTags,
   );
 
   for (const resource of resources) {
@@ -249,7 +248,7 @@ export function removeTagsFromResources(resources: UriComponents[], tagIds: stri
     }
   }
 
-  dispatchRef.current(
+  globalThis.modules.dispatch(
     tagsSliceActions.storeResourcesToTags({ resourcesToTags: resourcesToTagsMap }),
   );
 
@@ -271,11 +270,11 @@ export async function executeCopyOrMove({
 }) {
   // Move/Copy Resource
   const operation = pasteShouldMove
-    ? fileSystemRef.current.move(sourceResource.uri, targetResource.uri, false, {
+    ? globalThis.modules.fileSystem.move(sourceResource.uri, targetResource.uri, false, {
         token: cancellationTokenSource?.token,
         progressCb,
       })
-    : fileSystemRef.current.copy(sourceResource.uri, targetResource.uri, false, {
+    : globalThis.modules.fileSystem.copy(sourceResource.uri, targetResource.uri, false, {
         token: cancellationTokenSource?.token,
         progressCb,
       });
@@ -285,7 +284,7 @@ export async function executeCopyOrMove({
 
     // Also copy tags to destination
     const tagsOfSourceResource = getTagsOfResource(
-      storeRef.current.getState().tagsSlice.resourcesToTags,
+      globalThis.modules.store.getState().tagsSlice.resourcesToTags,
       {
         uri: sourceResource.uri,
         ctime: sourceResource.fileStat.ctime,
@@ -304,7 +303,10 @@ export async function executeCopyOrMove({
      * since "findValidPasteFileTarget" makes sure that the paste target URI is new, without conflict.
      */
     try {
-      await fileSystemRef.current.del(targetResource.uri, { useTrash: false, recursive: true });
+      await globalThis.modules.fileSystem.del(targetResource.uri, {
+        useTrash: false,
+        recursive: true,
+      });
     } catch {
       // ignore
     }
@@ -358,9 +360,12 @@ async function doPreloadContentsOfResource(resource: ResourceStat) {
     directory: uri,
     resolveMetadata: false,
   };
-  const statsWithMetadata = await fileSystemRef.current.resolve(URI.from(fetchArgs.directory), {
-    resolveMetadata: fetchArgs.resolveMetadata,
-  });
+  const statsWithMetadata = await globalThis.modules.fileSystem.resolve(
+    URI.from(fetchArgs.directory),
+    {
+      resolveMetadata: fetchArgs.resolveMetadata,
+    },
+  );
 
   cachedQueryData = getCachedResourcesOfDirectory(fetchArgs.directory);
   if (cachedQueryData) {

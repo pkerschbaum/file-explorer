@@ -92,3 +92,6 @@ tmp/
 
 # Playwright test results
 test-results/
+
+# TODO file
+TODO.md

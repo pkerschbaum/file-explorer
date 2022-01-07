@@ -5,7 +5,6 @@ import { useQuery } from 'react-query';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { ResourceStat, RESOURCE_TYPE } from '@app/domain/types';
 import { QUERY_KEYS } from '@app/global-cache/query-keys';
-import { fileSystemRef, queryClientRef } from '@app/operations/global-modules';
 
 type ResourcesQuery = {
   directory: UriComponents;
@@ -22,7 +21,7 @@ export function useResources(
       resolveMetadata,
     }),
     async () => {
-      const statsWithMetadata = await fileSystemRef.current.resolve(URI.from(directory), {
+      const statsWithMetadata = await globalThis.modules.fileSystem.resolve(URI.from(directory), {
         resolveMetadata,
       });
 
@@ -41,7 +40,7 @@ export async function refreshResourcesOfDirectory(
   { directory }: Omit<ResourcesQuery, 'resolveMetadata'>,
   filter?: { active?: boolean },
 ) {
-  await queryClientRef.current.refetchQueries(
+  await globalThis.modules.queryClient.refetchQueries(
     QUERY_KEYS.RESOURCES_OF_DIRECTORY({ directoryId: uriHelper.getComparisonKey(directory) }),
     {
       exact: false,
@@ -51,7 +50,7 @@ export async function refreshResourcesOfDirectory(
 }
 
 export function getCachedResourcesOfDirectory(directory: ResourcesQuery['directory']) {
-  return queryClientRef.current.getQueryData(
+  return globalThis.modules.queryClient.getQueryData(
     QUERY_KEYS.RESOURCES_OF_DIRECTORY({ directoryId: uriHelper.getComparisonKey(directory) }),
     {
       exact: false,
@@ -63,7 +62,7 @@ export function setCachedResourcesOfDirectory(
   { directory, resolveMetadata }: ResourcesQuery,
   resources: IFileStat[],
 ) {
-  return queryClientRef.current.setQueryData(
+  return globalThis.modules.queryClient.setQueryData(
     QUERY_KEYS.RESOURCES_OF_DIRECTORY({
       directoryId: uriHelper.getComparisonKey(directory),
       resolveMetadata,

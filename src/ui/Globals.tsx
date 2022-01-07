@@ -9,7 +9,7 @@ import { FILE_ICON_THEMES } from '@app/domain/constants';
 import { useActiveFileIconTheme } from '@app/global-state/slices/user.hooks';
 import { RootStore } from '@app/global-state/store';
 import { useGlobalCacheSubscriptions } from '@app/operations/global-cache-subscriptions';
-import { fileIconThemeLoaderRef, setGlobalModules } from '@app/operations/global-modules';
+import { setGlobalModules } from '@app/operations/global-modules';
 import { DesignTokenProvider, DESIGN_TOKENS, OverlayProvider } from '@app/ui/components-library';
 import {
   DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED,
@@ -199,7 +199,7 @@ const FileIconThemeLoader: React.FC = ({ children }) => {
   React.useEffect(() => {
     async function addCssRulesForFileIconTheme() {
       // load CSS rules of the file icon theme to set
-      const iconThemeCssRules = await fileIconThemeLoaderRef.current.loadCssRules(
+      const iconThemeCssRules = await globalThis.modules.fileIconThemeLoader.loadCssRules(
         FILE_ICON_THEMES[activeFileIconTheme].fsPathFragment,
       );
 

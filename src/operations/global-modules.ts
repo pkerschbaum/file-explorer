@@ -30,32 +30,4 @@ export function setGlobalModules(modulesToSet: Partial<GlobalModules>) {
     ...global.modules,
     ...modulesToSet,
   };
-
-  queryClientRef.current = global.modules.queryClient;
-
-  storeRef.current = global.modules.store;
-  dispatchRef.current = global.modules.dispatch;
-
-  fileIconThemeLoaderRef.current = global.modules.fileIconThemeLoader;
-  fileSystemRef.current = global.modules.fileSystem;
-  logWriterRef.current = global.modules.logWriter;
-  nativeHostRef.current = global.modules.nativeHost;
-  persistentStorageRef.current = global.modules.persistentStorage;
 }
-
-export const queryClientRef: { current: QueryClient } = { current: null } as any;
-
-export const storeRef: { current: RootStore } = { current: null } as any;
-export const dispatchRef: { current: AppDispatch } = { current: null } as any;
-
-export const fileIconThemeLoaderRef: { current: PlatformFileIconThemeLoader } = {
-  current: null,
-} as any;
-export const fileSystemRef: { current: PlatformFileSystem } = { current: null } as any;
-export const logWriterRef: { current: PlatformLogWriter } = {
-  current: null,
-} as any;
-export const nativeHostRef: { current: PlatformNativeHost } = { current: null } as any;
-export const persistentStorageRef: { current: PlatformPersistentStorage } = {
-  current: null,
-} as any;

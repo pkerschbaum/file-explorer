@@ -1,15 +1,13 @@
 import * as React from 'react';
 
-import { nativeHostRef } from '@app/operations/global-modules';
-
 export function useClipboardResources() {
   const [clipboardResources, setClipboardResources] = React.useState(() =>
-    nativeHostRef.current.clipboard.readResources(),
+    globalThis.modules.nativeHost.clipboard.readResources(),
   );
 
   React.useEffect(function registerOnClipboardChangedHandler() {
-    const disposable = nativeHostRef.current.clipboard.onClipboardChanged(() => {
-      setClipboardResources(nativeHostRef.current.clipboard.readResources());
+    const disposable = globalThis.modules.nativeHost.clipboard.onClipboardChanged(() => {
+      setClipboardResources(globalThis.modules.nativeHost.clipboard.readResources());
     });
 
     return () => disposable.dispose();

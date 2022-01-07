@@ -23,12 +23,6 @@ import {
 } from '@app/global-state/slices/explorers.slice';
 import { actions as processesActions } from '@app/global-state/slices/processes.slice';
 import { createLogger } from '@app/operations/create-logger';
-import {
-  dispatchRef,
-  fileSystemRef,
-  nativeHostRef,
-  storeRef,
-} from '@app/operations/global-modules';
 import { executeCopyOrMove, openFiles, resolveDeep } from '@app/operations/resource.operations';
 
 const UPDATE_INTERVAL_MS = 500;
@@ -48,7 +42,7 @@ export async function openResources(explorerId: string, resources: ResourceForUI
 
 export async function changeDirectory(explorerId: string, newCwd: UriComponents) {
   const newCwdUri = URI.from(newCwd);
-  const stats = await fileSystemRef.current.resolve(newCwdUri);
+  const stats = await globalThis.modules.fileSystem.resolve(newCwdUri);
   if (!stats.isDirectory) {
     throw Error(
       `could not change directory, reason: uri is not a valid directory. uri: ${formatter.resourcePath(
@@ -58,32 +52,34 @@ export async function changeDirectory(explorerId: string, newCwd: UriComponents)
   }
 
   // change to the new directory and refresh resources of that directory
-  dispatchRef.current(explorerActions.changeCwd({ explorerId, newCwd: newCwdUri.toJSON() }));
+  globalThis.modules.dispatch(
+    explorerActions.changeCwd({ explorerId, newCwd: newCwdUri.toJSON() }),
+  );
   await refreshResourcesOfDirectory({ directory: newCwd });
 }
 
 export async function pasteResources(explorerId: string) {
-  const clipboardResources = nativeHostRef.current.clipboard
+  const clipboardResources = globalThis.modules.nativeHost.clipboard
     .readResources()
     .map((r) => URI.from(r));
-  const draftPasteState = storeRef.current.getState().processesSlice.draftPasteState;
+  const draftPasteState = globalThis.modules.store.getState().processesSlice.draftPasteState;
   if (clipboardResources.length === 0 || draftPasteState === undefined) {
     return;
   }
 
   const cwd = extractCwdFromExplorerPanel(
-    storeRef.current.getState().explorersSlice.explorerPanels[explorerId],
+    globalThis.modules.store.getState().explorersSlice.explorerPanels[explorerId],
   );
   const destinationFolder = URI.from(cwd);
-  const destinationFolderStat = await fileSystemRef.current.resolve(destinationFolder);
+  const destinationFolderStat = await globalThis.modules.fileSystem.resolve(destinationFolder);
   const id = uuid.generateUuid();
   const cancellationTokenSource = new CancellationTokenSource();
 
   // clear draft paste state (neither cut&paste nor copy&paste is designed to be repeatable)
-  dispatchRef.current(processesActions.clearDraftPasteState());
+  globalThis.modules.dispatch(processesActions.clearDraftPasteState());
 
   // add the paste process about to start
-  dispatchRef.current(
+  globalThis.modules.dispatch(
     processesActions.addPasteProcess({
       id,
       pasteShouldMove: draftPasteState.pasteShouldMove,
@@ -95,7 +91,7 @@ export async function pasteResources(explorerId: string) {
 
   // register listener on cancellation token so that if cancellation gets requested, "ABORT_REQUESTED" state gets dispatched
   cancellationTokenSource.token.onCancellationRequested(() => {
-    dispatchRef.current(
+    globalThis.modules.dispatch(
       processesActions.updatePasteProcess({ id, status: PASTE_PROCESS_STATUS.ABORT_REQUESTED }),
     );
   });
@@ -123,9 +119,12 @@ export async function pasteResources(explorerId: string) {
 
         let fileStatOfSourceResource;
         try {
-          fileStatOfSourceResource = await fileSystemRef.current.resolve(uriOfSourceResource, {
-            resolveMetadata: true,
-          });
+          fileStatOfSourceResource = await globalThis.modules.fileSystem.resolve(
+            uriOfSourceResource,
+            {
+              resolveMetadata: true,
+            },
+          );
         } catch (err: unknown) {
           logger.error(
             'error during paste process, source resource was probably deleted or moved meanwhile',
@@ -150,7 +149,7 @@ export async function pasteResources(explorerId: string) {
 
   // if cancellation was requested in the meantime, abort paste process
   if (cancellationTokenSource.token.isCancellationRequested) {
-    dispatchRef.current(
+    globalThis.modules.dispatch(
       processesActions.updatePasteProcess({ id, status: PASTE_PROCESS_STATUS.ABORT_SUCCESS }),
     );
     return;
@@ -179,13 +178,13 @@ export async function pasteResources(explorerId: string) {
 
   // if cancellation was requested in the meantime, abort paste process
   if (cancellationTokenSource.token.isCancellationRequested) {
-    dispatchRef.current(
+    globalThis.modules.dispatch(
       processesActions.updatePasteProcess({ id, status: PASTE_PROCESS_STATUS.ABORT_SUCCESS }),
     );
     return;
   }
 
-  dispatchRef.current(
+  globalThis.modules.dispatch(
     processesActions.updatePasteProcess({
       id,
       status: PASTE_PROCESS_STATUS.RUNNING_PERFORMING_PASTE,
@@ -194,7 +193,7 @@ export async function pasteResources(explorerId: string) {
       progressOfAtLeastOneSourceIsIndeterminate,
     }),
   );
-  dispatchRef.current(
+  globalThis.modules.dispatch(
     processesActions.updatePasteProcess({
       id,
       status: PASTE_PROCESS_STATUS.RUNNING_PERFORMING_PASTE,
@@ -213,7 +212,7 @@ export async function pasteResources(explorerId: string) {
     }
   }
   const intervalId = setInterval(function dispatchProgress() {
-    dispatchRef.current(
+    globalThis.modules.dispatch(
       processesActions.updatePasteProcess({
         id,
         bytesProcessed,
@@ -239,16 +238,16 @@ export async function pasteResources(explorerId: string) {
     );
 
     if (!cancellationTokenSource.token.isCancellationRequested) {
-      dispatchRef.current(
+      globalThis.modules.dispatch(
         processesActions.updatePasteProcess({ id, status: PASTE_PROCESS_STATUS.SUCCESS }),
       );
     } else {
-      dispatchRef.current(
+      globalThis.modules.dispatch(
         processesActions.updatePasteProcess({ id, status: PASTE_PROCESS_STATUS.ABORT_SUCCESS }),
       );
     }
   } catch (err: unknown) {
-    dispatchRef.current(
+    globalThis.modules.dispatch(
       processesActions.updatePasteProcess({
         id,
         status: PASTE_PROCESS_STATUS.FAILURE,
@@ -263,10 +262,10 @@ export async function pasteResources(explorerId: string) {
 
 export async function createFolder(explorerId: string, folderName: string) {
   const cwd = extractCwdFromExplorerPanel(
-    storeRef.current.getState().explorersSlice.explorerPanels[explorerId],
+    globalThis.modules.store.getState().explorersSlice.explorerPanels[explorerId],
   );
   const folderUri = URI.joinPath(URI.from(cwd), folderName);
-  await fileSystemRef.current.createFolder(folderUri);
+  await globalThis.modules.fileSystem.createFolder(folderUri);
 
   // refresh resources of the target directory
   await refreshResourcesOfDirectory({ directory: cwd });
@@ -274,13 +273,13 @@ export async function createFolder(explorerId: string, folderName: string) {
 
 export async function revealCwdInOSExplorer(explorerId: string) {
   const cwd = extractCwdFromExplorerPanel(
-    storeRef.current.getState().explorersSlice.explorerPanels[explorerId],
+    globalThis.modules.store.getState().explorersSlice.explorerPanels[explorerId],
   );
-  await nativeHostRef.current.shell.revealResourcesInOS([cwd]);
+  await globalThis.modules.nativeHost.shell.revealResourcesInOS([cwd]);
 }
 
 export function setFilterInput(explorerId: string, segmentIdx: number, newValue: string): void {
-  dispatchRef.current(
+  globalThis.modules.dispatch(
     explorerActions.updateCwdSegment({ explorerId, segmentIdx, filterInput: newValue }),
   );
 }
@@ -294,8 +293,9 @@ export function setReasonForLastSelectionChange(
     | UpdateFn<REASON_FOR_SELECTION_CHANGE | undefined>,
 ): void {
   const currentValue =
-    storeRef.current.getState().explorersSlice.explorerPanels[explorerId].cwdSegments[segmentIdx]
-      .selection.reasonForLastSelectionChange;
+    globalThis.modules.store.getState().explorersSlice.explorerPanels[explorerId].cwdSegments[
+      segmentIdx
+    ].selection.reasonForLastSelectionChange;
 
   let newValue;
   if (typeof newValueOrUpdateFn === 'function') {
@@ -304,7 +304,7 @@ export function setReasonForLastSelectionChange(
     newValue = newValueOrUpdateFn;
   }
 
-  dispatchRef.current(
+  globalThis.modules.dispatch(
     explorerActions.updateCwdSegment({
       explorerId,
       segmentIdx,
@@ -321,8 +321,9 @@ export function setKeysOfSelectedResources(
   newValueOrUpdateFn: RenameHistoryKeys[] | UpdateFn<RenameHistoryKeys[]>,
 ): void {
   const currentSelection =
-    storeRef.current.getState().explorersSlice.explorerPanels[explorerId].cwdSegments[segmentIdx]
-      .selection;
+    globalThis.modules.store.getState().explorersSlice.explorerPanels[explorerId].cwdSegments[
+      segmentIdx
+    ].selection;
 
   let newValue;
   if (typeof newValueOrUpdateFn === 'function') {
@@ -331,7 +332,7 @@ export function setKeysOfSelectedResources(
     newValue = newValueOrUpdateFn;
   }
 
-  dispatchRef.current(
+  globalThis.modules.dispatch(
     explorerActions.updateCwdSegment({
       explorerId,
       segmentIdx,
@@ -352,8 +353,9 @@ export function setActiveResourcesView(
   newValueOrUpdateFn: ResourcesView | UpdateFn<ResourcesView>,
 ): void {
   const currentValue =
-    storeRef.current.getState().explorersSlice.explorerPanels[explorerId].cwdSegments[segmentIdx]
-      .activeResourcesView;
+    globalThis.modules.store.getState().explorersSlice.explorerPanels[explorerId].cwdSegments[
+      segmentIdx
+    ].activeResourcesView;
 
   let newValue;
   if (typeof newValueOrUpdateFn === 'function') {
@@ -362,7 +364,7 @@ export function setActiveResourcesView(
     newValue = newValueOrUpdateFn;
   }
 
-  dispatchRef.current(
+  globalThis.modules.dispatch(
     explorerActions.updateCwdSegment({ explorerId, segmentIdx, activeResourcesView: newValue }),
   );
 }
@@ -372,7 +374,7 @@ export function setScrollTop(
   segmentIdx: number,
   newValue: undefined | number,
 ): void {
-  dispatchRef.current(
+  globalThis.modules.dispatch(
     explorerActions.updateCwdSegment({ explorerId, segmentIdx, scrollTop: newValue }),
   );
 }
