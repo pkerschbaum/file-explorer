@@ -147,11 +147,13 @@ const IconButtonRoot = styled(motion.button)<{ styleProps: StyleProps }>`
 `;
 
 const ButtonContent = styled(Box)`
+  pointer-events: none;
   position: relative;
   display: flex;
 `;
 
 const FocusAndHoverCircle = styled(Box)<{ styleProps: StyleProps }>`
+  pointer-events: none;
   position: absolute;
   ${({ styleProps }) =>
     !styleProps.disablePadding

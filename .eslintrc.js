@@ -17,7 +17,7 @@ module.exports = {
     'plugin:jsx-a11y/recommended',
     'plugin:storybook/recommended',
     'plugin:cypress/recommended',
-    'plugin:jest-dom/recommended',
+    'plugin:playwright/playwright-test',
   ],
   /**
    * add "only-warn" plugin to change all errors to warnings.
@@ -31,7 +31,6 @@ module.exports = {
     'import',
     'jsx-a11y',
     'cypress',
-    'jest-dom',
     'testing-library',
     '@pkerschbaum/code-import-patterns',
   ],
@@ -72,6 +71,11 @@ module.exports = {
           },
           {
             pattern: '@app-cypress/**',
+            group: 'parent',
+            position: 'after',
+          },
+          {
+            pattern: '@app-playwright/**',
             group: 'parent',
             position: 'after',
           },
@@ -223,7 +227,7 @@ module.exports = {
           },
           {
             target: /\/src\/.+\.logic\.spec\.ts$/,
-            allowedPatterns: ['@testing-library/react', '@testing-library/user-event'],
+            allowedPatterns: ['@playwright/test', '@playwright-testing-library/test'],
           },
           {
             target: /\/src\/platform\/electron\/protocol\/electron-main\/app.ts$/,
@@ -338,6 +342,9 @@ module.exports = {
       // enable eslint-plugin-testing-library for "logic" specs
       files: ['**/?(*.)+(logic.spec).[jt]s?(x)'],
       extends: ['plugin:testing-library/react'],
+      rules: {
+        'testing-library/prefer-screen-queries': 'off',
+      },
     },
     {
       // allow default export for Storybook stories and for the Cypress plugins index file

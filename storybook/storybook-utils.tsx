@@ -3,7 +3,7 @@ import type { ComponentMeta } from '@storybook/react';
 import invariant from 'tiny-invariant';
 
 import { ObjectLiteral } from '@app/base/utils/types.util';
-import { fileIconThemeLoaderRef, logWriterRef } from '@app/operations/global-modules';
+import { setGlobalModules } from '@app/operations/global-modules';
 import { createLogWriter } from '@app/platform/browser/log-writer';
 import { createStorybookFileIconThemeLoader } from '@app/platform/storybook/file-icon-theme-loader';
 
@@ -29,6 +29,8 @@ export function deriveIdFromMetadataAndExportName(
 
 export async function initializeStorybookPlatformModules(args?: InitializeFakePlatformModulesArgs) {
   await initializeFakePlatformModules(args);
-  fileIconThemeLoaderRef.current = createStorybookFileIconThemeLoader();
-  logWriterRef.current = createLogWriter();
+  setGlobalModules({
+    fileIconThemeLoader: createStorybookFileIconThemeLoader(),
+    logWriter: createLogWriter(),
+  });
 }

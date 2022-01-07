@@ -1,52 +1,57 @@
 import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import { screen } from '@testing-library/react';
+import { queries } from '@playwright-testing-library/test';
+import { expect, test } from '@playwright/test';
 
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { ResourceStat } from '@app/domain/types';
 import { QUERY_KEYS } from '@app/global-cache/query-keys';
-import { createStoreInstance } from '@app/global-state/store';
-import { fileSystemRef, queryClientRef } from '@app/operations/global-modules';
-import { createQueryClient } from '@app/ui/Globals';
 
-import { initializeFakePlatformModules } from '@app-test/utils/fake-platform-modules';
-import { renderApp } from '@app-test/utils/render-app';
+import { bootstrap } from '@app-playwright/playwright.util';
 
-describe('Refresh resources of currently open directories if any change occurs in the underlying file system [logic]', () => {
-  it('If a new folder pops up in the file system in the currently opened directory, the cache should be refreshed', async () => {
-    await initializeFakePlatformModules();
-    const store = await createStoreInstance();
-    const queryClient = createQueryClient();
-    renderApp({ queryClient, store });
-
-    await screen.findByRole('row', { name: /testfile1.txt/i });
-
-    let cacheEntriesForCwd = queryClientRef.current.getQueryCache().findAll(
-      QUERY_KEYS.RESOURCES_OF_DIRECTORY({
+test.describe(
+  'Refresh resources of currently open directories if any change occurs in the underlying file system [logic]',
+  () => {
+    test('If a new folder pops up in the file system in the currently opened directory, the cache should be refreshed', async ({
+      page,
+    }) => {
+      const $document = await bootstrap({ page, storybookIdToVisit: 'shell--simple-case' });
+      const queryKey = QUERY_KEYS.RESOURCES_OF_DIRECTORY({
         directoryId: uriHelper.getComparisonKey(
           URI.parse(`${Schemas.inMemory}:///home/testdir`).toJSON(),
         ),
         resolveMetadata: true,
-      }),
-    );
-    expect(cacheEntriesForCwd).toHaveLength(1);
-    const initialCachedResourcesOfCwd = cacheEntriesForCwd[0].state.data as ResourceStat[];
+      });
 
-    await fileSystemRef.current.createFolder(
-      URI.parse(`${Schemas.inMemory}:///home/testdir/name-of-new-folder`),
-    );
-    await screen.findByRole('row', { name: /name-of-new-folder/i });
+      await queries.findByRole($document, 'row', { name: /testfile1.txt/i });
 
-    cacheEntriesForCwd = queryClientRef.current.getQueryCache().findAll(
-      QUERY_KEYS.RESOURCES_OF_DIRECTORY({
-        directoryId: uriHelper.getComparisonKey(
-          URI.parse(`${Schemas.inMemory}:///home/testdir`).toJSON(),
-        ),
-        resolveMetadata: true,
-      }),
-    );
-    expect(cacheEntriesForCwd).toHaveLength(1);
-    const cachedResourcesOfCwd = cacheEntriesForCwd[0].state.data as ResourceStat[];
-    expect(cachedResourcesOfCwd).toHaveLength(initialCachedResourcesOfCwd.length + 1);
-  });
-});
+      let cacheEntriesForCwd = await page.evaluate((queryKey) => {
+        const cacheEntries = globalThis.modules.queryClient.getQueryCache().findAll(queryKey);
+        return cacheEntries.map((entry) => ({
+          state: entry.state,
+        }));
+      }, queryKey);
+      expect(cacheEntriesForCwd).toHaveLength(1);
+      const initialCachedResourcesOfCwd = cacheEntriesForCwd[0].state.data as ResourceStat[];
+
+      const uriToCreate = URI.parse(
+        `${Schemas.inMemory}:///home/testdir/name-of-new-folder`,
+      ).toJSON();
+      await page.evaluate(
+        (uriToCreate) => globalThis.modules.fileSystem.createFolder(uriToCreate),
+        uriToCreate,
+      );
+      await queries.findByRole($document, 'row', { name: /name-of-new-folder/i });
+
+      cacheEntriesForCwd = await page.evaluate((queryKey) => {
+        const cacheEntries = globalThis.modules.queryClient.getQueryCache().findAll(queryKey);
+        return cacheEntries.map((entry) => ({
+          state: entry.state,
+        }));
+      }, queryKey);
+      expect(cacheEntriesForCwd).toHaveLength(1);
+      const cachedResourcesOfCwd = cacheEntriesForCwd[0].state.data as ResourceStat[];
+      expect(cachedResourcesOfCwd).toHaveLength(initialCachedResourcesOfCwd.length + 1);
+    });
+  },
+);

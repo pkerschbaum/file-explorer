@@ -1,4 +1,5 @@
-import path from 'path';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const moduleAliases = require('../package-module-aliases');
 
 module.exports = {
   stories: ['../src/**/*.stories.@(js|jsx|ts|tsx)'],
@@ -31,9 +32,7 @@ module.exports = {
         ...config.resolve,
         alias: {
           ...config.resolve?.alias,
-          '@app': path.resolve(__dirname, '../src/'),
-          '@app-test': path.resolve(__dirname, '../test/'),
-          '@app-storybook': path.resolve(__dirname, '../storybook/'),
+          ...moduleAliases,
         },
       },
     };

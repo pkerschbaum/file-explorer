@@ -14,7 +14,8 @@
       "@app/*": ["./src/*"],
       "@app-test/*": ["./test/*"],
       "@app-storybook/*": ["./storybook/*"],
-      "@app-cypress/*": ["./cypress/*"]
+      "@app-cypress/*": ["./cypress/*"],
+      "@app-playwright/*": ["./playwright/*"]
     },
 
     /* Emit */
@@ -27,7 +28,6 @@
 
     /* Type Checking */
     "strict": true,
-    "useUnknownInCatchVariables": true,
 
     /* Completeness */
     "skipLibCheck": true,

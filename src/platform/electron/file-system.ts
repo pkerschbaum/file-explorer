@@ -1,4 +1,5 @@
 import { normalize } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/path';
+import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 
 import type { PlatformFileSystem } from '@app/platform/file-system.types';
 
@@ -15,7 +16,7 @@ export const createFileSystem = () => {
     },
     copy: window.privileged.fileService.copy.bind(window.privileged.fileService),
     move: window.privileged.fileService.move.bind(window.privileged.fileService),
-    createFolder: window.privileged.fileService.createFolder.bind(window.privileged.fileService),
+    createFolder: (resource) => window.privileged.fileService.createFolder(URI.from(resource)),
     watch: window.privileged.fileService.watch.bind(window.privileged.fileService),
     onDidFilesChange: window.privileged.fileService.onDidFilesChange.bind(
       window.privileged.fileService,

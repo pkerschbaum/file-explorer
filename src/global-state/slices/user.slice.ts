@@ -1,6 +1,6 @@
 import { createAction, createReducer } from '@reduxjs/toolkit';
 
-import { AvailableFileIconTheme } from '@app/constants';
+import { AvailableFileIconTheme } from '@app/domain/constants';
 import { AvailableTheme, defaultTheme } from '@app/ui/components-library';
 
 export type UserState = {

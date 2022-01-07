@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
-import { AvailableFileIconTheme, FILE_ICON_THEMES } from '@app/constants';
+import { AvailableFileIconTheme, FILE_ICON_THEMES } from '@app/domain/constants';
 import { useActiveFileIconTheme, useActiveTheme } from '@app/global-state/slices/user.hooks';
 import {
   setActiveFileIconTheme,
