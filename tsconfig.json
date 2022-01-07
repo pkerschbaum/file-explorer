@@ -8,7 +8,7 @@
     /* Modules */
     "module": "commonjs",
     "moduleResolution": "node",
-    "types": ["node"],
+    "types": ["node", "jest"],
     "baseUrl": ".",
     "paths": {
       "@app/*": ["./src/*"],
