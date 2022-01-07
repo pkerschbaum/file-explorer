@@ -2,13 +2,7 @@ import ReactDOM from 'react-dom';
 import invariant from 'tiny-invariant';
 
 import { createStoreInstance } from '@app/global-state/store';
-import {
-  fileIconThemeLoaderRef,
-  fileSystemRef,
-  logWriterRef,
-  nativeHostRef,
-  persistentStorageRef,
-} from '@app/operations/global-modules';
+import { setGlobalModules } from '@app/operations/global-modules';
 import {
   readStorageState,
   reviveGlobalStateFromStorageState,
@@ -23,11 +17,13 @@ import { Shell } from '@app/ui/shell';
 
 async function rendererScriptEntryPoint() {
   // set up platform modules
-  fileIconThemeLoaderRef.current = createFileIconThemeLoader();
-  fileSystemRef.current = createFileSystem();
-  logWriterRef.current = createLogWriter();
-  nativeHostRef.current = createNativeHost();
-  persistentStorageRef.current = createPersistentStorage();
+  setGlobalModules({
+    fileIconThemeLoader: createFileIconThemeLoader(),
+    fileSystem: createFileSystem(),
+    logWriter: createLogWriter(),
+    nativeHost: createNativeHost(),
+    persistentStorage: createPersistentStorage(),
+  });
 
   // boot global state (redux) from (possibly) persisted data, and initialize empty global cache (react-query)
   const persistedStorageState = await readStorageState();

@@ -89,3 +89,6 @@ typings/
 out/
 storybook-static/
 tmp/
+
+# Playwright test results
+test-results/

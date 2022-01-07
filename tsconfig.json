@@ -8,13 +8,13 @@
     /* Modules */
     "module": "commonjs",
     "moduleResolution": "node",
-    "types": ["node", "@testing-library/cypress"],
+    "types": ["node"],
     "baseUrl": ".",
     "paths": {
       "@app/*": ["./src/*"],
       "@app-test/*": ["./test/*"],
       "@app-storybook/*": ["./storybook/*"],
-      "@app-cypress/*": ["./cypress/*"]
+      "@app-playwright/*": ["./playwright/*"]
     },
 
     /* Emit */
@@ -27,7 +27,6 @@
 
     /* Type Checking */
     "strict": true,
-    "useUnknownInCatchVariables": true,
 
     /* Completeness */
     "skipLibCheck": true,
@@ -39,5 +38,5 @@
       }
     ]
   },
-  "include": ["src/**/*", "test/**/*", "storybook/**/*", "cypress/**/*", "scripts/**/*"]
+  "include": ["src/**/*", "test/**/*", "storybook/**/*", "playwright/**/*", "scripts/**/*"]
 }

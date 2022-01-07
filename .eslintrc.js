@@ -1,7 +1,7 @@
 module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: ['./tsconfig.json', './cypress/tsconfig.json'],
+    project: ['./tsconfig.json'],
     sourceType: 'module',
     tsconfigRootDir: __dirname,
   },
@@ -16,8 +16,7 @@ module.exports = {
     'plugin:react-hooks/recommended',
     'plugin:jsx-a11y/recommended',
     'plugin:storybook/recommended',
-    'plugin:cypress/recommended',
-    'plugin:jest-dom/recommended',
+    'plugin:playwright/playwright-test',
   ],
   /**
    * add "only-warn" plugin to change all errors to warnings.
@@ -30,8 +29,6 @@ module.exports = {
     'node',
     'import',
     'jsx-a11y',
-    'cypress',
-    'jest-dom',
     'testing-library',
     '@pkerschbaum/code-import-patterns',
   ],
@@ -71,7 +68,7 @@ module.exports = {
             position: 'after',
           },
           {
-            pattern: '@app-cypress/**',
+            pattern: '@app-playwright/**',
             group: 'parent',
             position: 'after',
           },
@@ -97,11 +94,6 @@ module.exports = {
         selector:
           "MemberExpression[object.name='it'][property.name='skip'], MemberExpression[object.name='test'][property.name='skip']",
         message: 'Do not check in dead tests. Either fix or delete them.',
-      },
-      {
-        selector: "MemberExpression[object.name='fireEvent']",
-        message:
-          'Use "userEvent" from @testing-library/user-event instead of "fireEvent" from @testing-library/react.',
       },
     ],
     'node/no-process-env': 'error',
@@ -196,11 +188,7 @@ module.exports = {
           },
           {
             target: /\/src\/ui\/.+\.visual\.spec\.ts$/,
-            allowedPatterns: ['local-cypress'],
-          },
-          {
-            target: /\/src\/ui\/Globals\.tsx$/,
-            allowedPatterns: ['focus-visible'],
+            allowedPatterns: ['@playwright/test', '@playwright-testing-library/test'],
           },
           {
             target: /\/src\/ui\/.+/,
@@ -223,7 +211,7 @@ module.exports = {
           },
           {
             target: /\/src\/.+\.logic\.spec\.ts$/,
-            allowedPatterns: ['@testing-library/react', '@testing-library/user-event'],
+            allowedPatterns: ['@playwright/test', '@playwright-testing-library/test'],
           },
           {
             target: /\/src\/platform\/electron\/protocol\/electron-main\/app.ts$/,
@@ -246,16 +234,6 @@ module.exports = {
             allowedPatterns: ['react-redux', /^react-query/, /^@reduxjs\/toolkit/],
           },
           {
-            target: /\/cypress\/.+/,
-            allowedPatterns: [
-              '@storybook/csf',
-              'local-cypress',
-              'path',
-              /^@pkerschbaum\/cypress-image-snapshot/,
-              /^@testing-library\/cypress/,
-            ],
-          },
-          {
             target: /\/scripts\/.+/,
             allowedPatterns: [/.+/],
           },
@@ -265,6 +243,10 @@ module.exports = {
           },
           {
             target: /\/test\/.+/,
+            allowedPatterns: [/.+/],
+          },
+          {
+            target: /\/playwright\/.+/,
             allowedPatterns: [/.+/],
           },
           {
@@ -338,10 +320,13 @@ module.exports = {
       // enable eslint-plugin-testing-library for "logic" specs
       files: ['**/?(*.)+(logic.spec).[jt]s?(x)'],
       extends: ['plugin:testing-library/react'],
+      rules: {
+        'testing-library/prefer-screen-queries': 'off',
+      },
     },
     {
-      // allow default export for Storybook stories and for the Cypress plugins index file
-      files: ['**/*.stories.@(js|jsx|ts|tsx)', 'cypress/plugins/index.@(js|ts)'],
+      // allow default export for Storybook stories
+      files: ['**/*.stories.@(js|jsx|ts|tsx)'],
       rules: {
         'import/no-default-export': 'off',
       },

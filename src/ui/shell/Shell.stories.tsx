@@ -4,10 +4,7 @@ import { ComponentMeta, ComponentStory } from '@storybook/react';
 
 import { numbers } from '@app/base/utils/numbers.util';
 import { PASTE_PROCESS_STATUS, RESOURCE_TYPE } from '@app/domain/types';
-import {
-  actions as explorerActions,
-  computeCwdSegmentsFromUri,
-} from '@app/global-state/slices/explorers.slice';
+import { computeCwdSegmentsFromUri } from '@app/global-state/slices/explorers.slice';
 import { createStoreInstance } from '@app/global-state/store';
 import { getDefaultExplorerCwd } from '@app/operations/app.operations';
 import { FileSystemResourceToCreate } from '@app/platform/fake/file-system';
@@ -78,26 +75,24 @@ export const MultipleTabs = Template.bind({});
   async () => {
     await initializeStorybookPlatformModules();
     const cwd = await getDefaultExplorerCwd();
-    const store = await createStoreInstance();
-    store.dispatch(
-      explorerActions.addExplorer({
-        explorerId: 'panel-1',
-        cwdSegments: computeCwdSegmentsFromUri(cwd),
-      }),
-    );
-    store.dispatch(
-      explorerActions.addExplorer({
-        explorerId: 'panel-2',
-        cwdSegments: computeCwdSegmentsFromUri(cwd),
-      }),
-    );
-    store.dispatch(
-      explorerActions.addExplorer({
-        explorerId: 'panel-3',
-        cwdSegments: computeCwdSegmentsFromUri(cwd),
-      }),
-    );
-    store.dispatch(explorerActions.changeFocusedExplorer({ explorerId: 'panel-2' }));
+    const store = await createStoreInstance({
+      preloadedState: {
+        explorersSlice: {
+          explorerPanels: {
+            'panel-1': {
+              cwdSegments: computeCwdSegmentsFromUri(URI.joinPath(URI.from(cwd), '..').toJSON()),
+            },
+            'panel-2': { cwdSegments: computeCwdSegmentsFromUri(cwd) },
+            'panel-3': {
+              cwdSegments: computeCwdSegmentsFromUri(
+                URI.joinPath(URI.from(cwd), 'test-folder').toJSON(),
+              ),
+            },
+          },
+          focusedExplorerPanelId: 'panel-2',
+        },
+      },
+    });
     const queryClient = createQueryClient();
     return { store, queryClient };
   },

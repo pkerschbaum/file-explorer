@@ -16,12 +16,12 @@ module.exports = {
   globalTeardown: '../test/global-teardown.ts',
   setupFilesAfterEnv: ['../test/setup-after-env.ts'],
   rootDir: './src',
-  // exclude all visual tests from Jest (those are executed by Cypress)
-  testRegex: 'src/(?!.+\\.visual\\.spec\\.tsx?)(.+\\.spec\\.(?:t|j)sx?)',
+  // exclude all logic and visual tests from Jest (those are executed by Playwright)
+  testRegex:
+    'src/(?!.+\\.visual\\.spec\\.tsx?)(?!.+\\.logic\\.spec\\.tsx?)(.+\\.spec\\.(?:t|j)sx?)',
   transform: {
     '^.+\\.(?:t|j)sx?$': 'ts-jest',
   },
-  testEnvironment: 'jsdom',
   moduleNameMapper,
   /**
    * Jest will time out sometimes when loading the tests.

@@ -1,92 +1,108 @@
-import { screen, within } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { queries } from '@playwright-testing-library/test';
+import { expect, test } from '@playwright/test';
 
-import { AvailableFileIconTheme } from '@app/constants';
-import { createStoreInstance } from '@app/global-state/store';
-import { storeRef } from '@app/operations/global-modules';
-import { readStorageState } from '@app/operations/storage-state.operations';
-import { createQueryClient } from '@app/ui/Globals';
+import { AvailableFileIconTheme } from '@app/domain/constants';
 
-import { initializeFakePlatformModules } from '@app-test/utils/fake-platform-modules';
-import { renderApp } from '@app-test/utils/render-app';
+import { bootstrap } from '@app-playwright/playwright.util';
 
-describe('UserPreferences [logic]', () => {
-  it('Change of theme should be reflected in global state and persisted storage', async () => {
-    await initializeFakePlatformModules();
-    const store = await createStoreInstance();
-    const queryClient = createQueryClient();
-    renderApp({ queryClient, store });
+test.describe('UserPreferences [logic]', () => {
+  test('Change of theme should be reflected in global state and persisted storage', async ({
+    page,
+  }) => {
+    const $document = await bootstrap({ page, storybookIdToVisit: 'shell--simple-case' });
 
-    expect(storeRef.current.getState().userSlice.preferences.activeTheme).toEqual('nord');
+    let activeTheme = await page.evaluate(
+      () => globalThis.modules.store.getState().userSlice.preferences.activeTheme,
+    );
+    expect(activeTheme).toEqual('nord');
 
-    const openUserPreferencesButton = await screen.findByRole('button', {
+    const openUserPreferencesButton = await queries.findByRole($document, 'button', {
       name: /Open User Preferences/i,
     });
+    await openUserPreferencesButton.click({ force: true });
 
-    userEvent.click(openUserPreferencesButton);
-
-    const themeRadioGroup = await screen.findByRole('radiogroup', { name: /Theme/i });
-    const switchToCoffeeThemeRadio = await within(themeRadioGroup).findByRole('radio', {
+    const themeRadioGroup = await queries.findByRole($document, 'radiogroup', { name: /Theme/i });
+    const switchToCoffeeThemeRadio = await queries.findByRole(themeRadioGroup, 'radio', {
       name: /Coffee/i,
     });
-    const switchToFlowThemeRadio = await within(themeRadioGroup).findByRole('radio', {
+    const switchToFlowThemeRadio = await queries.findByRole(themeRadioGroup, 'radio', {
       name: /Flow/i,
     });
 
-    userEvent.click(switchToFlowThemeRadio);
+    await switchToFlowThemeRadio.click({ force: true });
 
-    expect(storeRef.current.getState().userSlice.preferences.activeTheme).toEqual('flow');
-    const newPersistedState1 = await readStorageState();
+    activeTheme = await page.evaluate(
+      () => globalThis.modules.store.getState().userSlice.preferences.activeTheme,
+    );
+    expect(activeTheme).toEqual('flow');
+    const newPersistedState1 = await page.evaluate(() =>
+      globalThis.modules.persistentStorage.read(),
+    );
     expect(newPersistedState1.userState?.preferences.activeTheme).toEqual('flow');
 
-    userEvent.click(switchToCoffeeThemeRadio);
+    await switchToCoffeeThemeRadio.click({ force: true });
 
-    expect(storeRef.current.getState().userSlice.preferences.activeTheme).toEqual('coffee');
-    const newPersistedState2 = await readStorageState();
+    activeTheme = await page.evaluate(
+      () => globalThis.modules.store.getState().userSlice.preferences.activeTheme,
+    );
+    expect(activeTheme).toEqual('coffee');
+    const newPersistedState2 = await page.evaluate(() =>
+      globalThis.modules.persistentStorage.read(),
+    );
     expect(newPersistedState2.userState?.preferences.activeTheme).toEqual('coffee');
   });
 
-  it('Change of file icon theme should be reflected in global state and persisted storage', async () => {
-    await initializeFakePlatformModules();
-    const store = await createStoreInstance();
-    const queryClient = createQueryClient();
-    renderApp({ queryClient, store });
+  test('Change of file icon theme should be reflected in global state and persisted storage', async ({
+    page,
+  }) => {
+    const $document = await bootstrap({ page, storybookIdToVisit: 'shell--simple-case' });
 
     const vsCodeThemeId: AvailableFileIconTheme = 'vsCode';
     const materialDesignId: AvailableFileIconTheme = 'materialDesign';
 
-    expect(storeRef.current.getState().userSlice.preferences.activeFileIconTheme).toEqual(
-      vsCodeThemeId,
+    let activeFileIconTheme = await page.evaluate(
+      () => globalThis.modules.store.getState().userSlice.preferences.activeFileIconTheme,
     );
+    expect(activeFileIconTheme).toEqual(vsCodeThemeId);
 
-    const openUserPreferencesButton = await screen.findByRole('button', {
+    const openUserPreferencesButton = await queries.findByRole($document, 'button', {
       name: /Open User Preferences/i,
     });
 
-    userEvent.click(openUserPreferencesButton);
+    await openUserPreferencesButton.click({ force: true });
 
-    const fileIconsRadioGroup = await screen.findByRole('radiogroup', { name: /File Icons/i });
-    const switchToVsCodeFileIconThemeRadio = await within(fileIconsRadioGroup).findByRole('radio', {
-      name: /VS Code/i,
+    const fileIconsRadioGroup = await queries.findByRole($document, 'radiogroup', {
+      name: /File Icons/i,
     });
-    const switchToMDFileIconThemeRadio = await within(fileIconsRadioGroup).findByRole('radio', {
+    const switchToVsCodeFileIconThemeRadio = await queries.findByRole(
+      fileIconsRadioGroup,
+      'radio',
+      { name: /VS Code/i },
+    );
+    const switchToMDFileIconThemeRadio = await queries.findByRole(fileIconsRadioGroup, 'radio', {
       name: /Material Design/i,
     });
 
-    userEvent.click(switchToMDFileIconThemeRadio);
+    await switchToMDFileIconThemeRadio.click({ force: true });
 
-    expect(storeRef.current.getState().userSlice.preferences.activeFileIconTheme).toEqual(
-      materialDesignId,
+    activeFileIconTheme = await page.evaluate(
+      () => globalThis.modules.store.getState().userSlice.preferences.activeFileIconTheme,
     );
-    const newPersistedState1 = await readStorageState();
+    expect(activeFileIconTheme).toEqual(materialDesignId);
+    const newPersistedState1 = await page.evaluate(() =>
+      globalThis.modules.persistentStorage.read(),
+    );
     expect(newPersistedState1.userState?.preferences.activeFileIconTheme).toEqual(materialDesignId);
 
-    userEvent.click(switchToVsCodeFileIconThemeRadio);
+    await switchToVsCodeFileIconThemeRadio.click({ force: true });
 
-    expect(storeRef.current.getState().userSlice.preferences.activeFileIconTheme).toEqual(
-      vsCodeThemeId,
+    activeFileIconTheme = await page.evaluate(
+      () => globalThis.modules.store.getState().userSlice.preferences.activeFileIconTheme,
     );
-    const newPersistedState2 = await readStorageState();
+    expect(activeFileIconTheme).toEqual(vsCodeThemeId);
+    const newPersistedState2 = await page.evaluate(() =>
+      globalThis.modules.persistentStorage.read(),
+    );
     expect(newPersistedState2.userState?.preferences.activeFileIconTheme).toEqual(vsCodeThemeId);
   });
 });

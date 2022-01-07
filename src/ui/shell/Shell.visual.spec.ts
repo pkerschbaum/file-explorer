@@ -1,186 +1,228 @@
-import { cy, describe, it } from 'local-cypress';
+import { queries } from '@playwright-testing-library/test';
+import { expect, test } from '@playwright/test';
 
-import metadata, { MultipleTabs, SimpleCase, WithProcesses } from '@app/ui/shell/Shell.stories';
+import { bootstrap, enableFakeClock } from '@app-playwright/playwright.util';
 
-import { deriveIdFromMetadataAndExportName, varToString } from '@app-storybook/storybook-utils';
-
-import { getTestTitle, bootstrap } from '@app-cypress/cypress.util';
-
-describe('Shell [visual]', () => {
-  it('with processes', () => {
-    const storybookIdToVisit = deriveIdFromMetadataAndExportName(
-      metadata,
-      varToString({ WithProcesses }),
-    );
-    bootstrap({ storybookIdToVisit });
-
-    cy.document().matchImageSnapshot(`${getTestTitle()}_1`);
+test.describe('Shell [visual]', () => {
+  test('with processes', async ({ page }) => {
+    await bootstrap({
+      page,
+      storybookIdToVisit: 'shell--with-processes',
+    });
+    expect(await page.screenshot()).toMatchSnapshot('with-processes_1.png');
   });
 
-  it('filter resources', () => {
-    const storybookIdToVisit = deriveIdFromMetadataAndExportName(
-      metadata,
-      varToString({ SimpleCase }),
-    );
-    bootstrap({ storybookIdToVisit });
+  test('trigger rename', async ({ page }) => {
+    const $document = await bootstrap({
+      page,
+      storybookIdToVisit: 'shell--simple-case',
+    });
 
-    cy.findByRole('textbox', { name: /Filter/i }).type('testf');
+    const rowTestfile2 = await queries.findByRole($document, 'row', { name: /testfile2.docx/i });
+    await rowTestfile2.click();
+    const buttonRename = await queries.findByRole($document, 'button', { name: /Rename/i });
+    await buttonRename.click();
 
-    cy.document().matchImageSnapshot(`${getTestTitle()}_1_after-first-filter-input`);
-
-    cy.findByRole('textbox', { name: /Filter/i })
-      .clearUsingBackspace()
-      .type('aa test');
-
-    cy.document().matchImageSnapshot(`${getTestTitle()}_2_after-second-filter-input`);
+    expect(await page.screenshot()).toMatchSnapshot('trigger-rename_1_after-trigger-of-rename.png');
   });
 
-  it('trigger rename', () => {
-    const storybookIdToVisit = deriveIdFromMetadataAndExportName(
-      metadata,
-      varToString({ SimpleCase }),
-    );
-    bootstrap({ storybookIdToVisit });
+  test('open and close sidebar', async ({ page }) => {
+    const $document = await bootstrap({
+      page,
+      storybookIdToVisit: 'shell--simple-case',
+    });
 
-    cy.findByRole('row', { name: /testfile2.docx/i }).click();
-    cy.findByRole('button', { name: /Rename/i }).click();
+    const buttonOpenUserPreferences = await queries.findByRole($document, 'button', {
+      name: /Open User Preferences/i,
+    });
+    await buttonOpenUserPreferences.click();
 
-    cy.document().matchImageSnapshot(`${getTestTitle()}_1_after-trigger-of-rename`);
+    expect(await page.screenshot()).toMatchSnapshot('open-and-close-sidebar_1_sidebar-open.png');
+
+    const buttonHideUserPreferences = await queries.findByRole($document, 'button', {
+      name: /Hide User Preferences/i,
+    });
+    await buttonHideUserPreferences.click();
+
+    expect(await page.screenshot()).toMatchSnapshot('open-and-close-sidebar_2_sidebar-hidden.png');
   });
 
-  it('open and close sidebar', () => {
-    const storybookIdToVisit = deriveIdFromMetadataAndExportName(
-      metadata,
-      varToString({ SimpleCase }),
-    );
-    bootstrap({ storybookIdToVisit });
+  test('switch theme', async ({ page }) => {
+    const $document = await bootstrap({
+      page,
+      storybookIdToVisit: 'shell--simple-case',
+    });
 
-    cy.findByRole('button', { name: /Open User Preferences/i }).click();
+    const buttonOpenUserPreferences = await queries.findByRole($document, 'button', {
+      name: /Open User Preferences/i,
+    });
+    await buttonOpenUserPreferences.click();
+    const radiogroupTheme = await queries.findByRole($document, 'radiogroup', { name: /Theme/i });
+    const radioThemeFlow = await queries.findByRole(radiogroupTheme, 'radio', { name: /Flow/i });
+    await radioThemeFlow.click({ force: true });
 
-    cy.document().matchImageSnapshot(`${getTestTitle()}_1_sidebar-open`);
-
-    cy.findByRole('button', { name: /Hide User Preferences/i }).click();
-
-    cy.document().matchImageSnapshot(`${getTestTitle()}_2_sidebar-hidden`);
+    expect(await page.screenshot()).toMatchSnapshot('switch-theme_1_switched-theme.png');
   });
 
-  it('switch theme', () => {
-    const storybookIdToVisit = deriveIdFromMetadataAndExportName(
-      metadata,
-      varToString({ SimpleCase }),
-    );
-    bootstrap({ storybookIdToVisit });
+  test('switch file icon theme', async ({ page }) => {
+    const $document = await bootstrap({
+      page,
+      storybookIdToVisit: 'shell--simple-case',
+    });
 
-    cy.findByRole('button', { name: /Open User Preferences/i }).click();
-    cy.findByRole('radiogroup', { name: /Theme/i })
-      .findByRole('radio', { name: /Flow/i })
-      .click({ force: true });
+    const buttonOpenUserPreferences = await queries.findByRole($document, 'button', {
+      name: /Open User Preferences/i,
+    });
+    await buttonOpenUserPreferences.click();
+    const radiogroupFileIcons = await queries.findByRole($document, 'radiogroup', {
+      name: /File Icons/i,
+    });
+    const radioIconsMaterialDesign = await queries.findByRole(radiogroupFileIcons, 'radio', {
+      name: /Material Design/i,
+    });
+    await Promise.all([
+      radioIconsMaterialDesign.click({ force: true }),
+      page.waitForResponse(/icons\/folder\.svg/i),
+    ]);
 
-    cy.document().matchImageSnapshot(`${getTestTitle()}_1_switched-theme`);
-  });
-
-  it('switch file icon theme', () => {
-    const storybookIdToVisit = deriveIdFromMetadataAndExportName(
-      metadata,
-      varToString({ SimpleCase }),
-    );
-    bootstrap({ storybookIdToVisit });
-
-    cy.intercept({ url: /icons\/folder\.svg/i }).as('iconRequest');
-
-    cy.findByRole('button', { name: /Open User Preferences/i }).click();
-    cy.findByRole('radiogroup', { name: /File Icons/i })
-      .findByRole('radio', { name: /Material Design/i })
-      .click({ force: true });
-
-    cy.wait('@iconRequest');
-
-    cy.document().matchImageSnapshot(`${getTestTitle()}_1_switched-file-icon-theme`);
-  });
-
-  it('the CWD should automatically update if a new folder is created', () => {
-    const storybookIdToVisit = deriveIdFromMetadataAndExportName(
-      metadata,
-      varToString({ SimpleCase }),
-    );
-    bootstrap({ storybookIdToVisit });
-
-    cy.findByRole('button', { name: /New Folder/i }).click();
-    cy.findByRole('textbox', { name: /Name of folder/i }).type('name of new folder');
-    cy.findByRole('button', { name: /Create/i }).click();
-
-    cy.findByRole('table', { name: /Table of resources/i }).matchImageSnapshot(
-      `${getTestTitle()}_1_folder-created`,
+    expect(await page.screenshot()).toMatchSnapshot(
+      'switch-file-icon-theme_1_switched-file-icon-theme.png',
     );
   });
 
-  it('available shortcuts should be shown depending on pressed modifier keys and current focus', () => {
-    const storybookIdToVisit = deriveIdFromMetadataAndExportName(
-      metadata,
-      varToString({ MultipleTabs }),
-    );
-    bootstrap({ storybookIdToVisit });
+  test('the CWD should automatically update if a new folder is created', async ({ page }) => {
+    const $document = await bootstrap({
+      page,
+      storybookIdToVisit: 'shell--simple-case',
+    });
 
-    cy.document().matchImageSnapshot(
-      `${getTestTitle()}_1_no-modifier-keydown_default-shortcuts-should-be-shown`,
-    );
+    const buttonNewFolder = await queries.findByRole($document, 'button', { name: /New Folder/i });
+    await buttonNewFolder.click();
+    const textboxNameOfFolder = await queries.findByRole($document, 'textbox', {
+      name: /Name of folder/i,
+    });
+    await textboxNameOfFolder.type('name of new folder');
+    const buttonCreateFolder = await queries.findByRole($document, 'button', { name: /Create/i });
+    await buttonCreateFolder.click();
 
-    cy.get('body').type('{ctrl}', { release: false });
-    cy.document().matchImageSnapshot(
-      `${getTestTitle()}_2_ctrl-keydown_ctrl-shortcuts-should-be-shown`,
-    );
-    cy.get('body').type('{ctrl}');
+    const tableOfResources = await queries.findByRole($document, 'table', {
+      name: /Table of resources/i,
+    });
 
-    cy.get('body').type('{alt}', { release: false });
-    cy.document().matchImageSnapshot(
-      `${getTestTitle()}_3_alt-keydown_alt-shortcuts-should-be-shown`,
-    );
-    cy.get('body').type('{alt}');
-
-    cy.document().matchImageSnapshot(
-      `${getTestTitle()}_4_modifier-released_default-shortcuts-should-be-shown`,
-    );
-
-    cy.findByRole('button', { name: /^Open$/i }).focus();
-    cy.document().matchImageSnapshot(
-      `${getTestTitle()}_5_focus-present_no-shortcuts-should-be-shown`,
+    expect(await tableOfResources.screenshot()).toMatchSnapshot(
+      'cwd-should-automatically-update_1_folder-created.png',
     );
   });
 
-  it('ctrl+c should trigger copy action', () => {
-    const storybookIdToVisit = deriveIdFromMetadataAndExportName(
-      metadata,
-      varToString({ MultipleTabs }),
-    );
-    bootstrap({ storybookIdToVisit });
+  test('available shortcuts should be shown depending on pressed modifier keys and current focus', async ({
+    page,
+  }) => {
+    const $document = await bootstrap({
+      page,
+      storybookIdToVisit: 'shell--multiple-tabs',
+    });
 
-    cy.get('body').type('{ctrl}c');
-    cy.document().matchImageSnapshot(`${getTestTitle()}_1_ctrl-and-c-pressed`);
+    expect(await page.screenshot()).toMatchSnapshot(
+      'shortcuts-should-be-shown_1_no-modifier-keydown_default-shortcuts-should-be-shown.png',
+    );
+
+    await page.keyboard.down('Control');
+    expect(await page.screenshot()).toMatchSnapshot(
+      'shortcuts-should-be-shown_2_ctrl-keydown_ctrl-shortcuts-should-be-shown.png',
+    );
+    await page.keyboard.up('Control');
+
+    await page.keyboard.down('Alt');
+    expect(await page.screenshot()).toMatchSnapshot(
+      'shortcuts-should-be-shown_3_alt-keydown_alt-shortcuts-should-be-shown.png',
+    );
+    await page.keyboard.up('Alt');
+
+    expect(await page.screenshot()).toMatchSnapshot(
+      'shortcuts-should-be-shown_4_modifier-released_default-shortcuts-should-be-shown.png',
+    );
+
+    const buttonOpen = await queries.findByRole($document, 'button', { name: /^Open$/i });
+    await buttonOpen.focus();
+    expect(await page.screenshot()).toMatchSnapshot(
+      'shortcuts-should-be-shown_5_focus-present_no-shortcuts-should-be-shown.png',
+    );
   });
 
-  it('navigating down and up the file system should restore resources view state (filter, selection, ...)', () => {
+  test('ctrl+c should trigger copy action', async ({ page }) => {
+    await bootstrap({
+      page,
+      storybookIdToVisit: 'shell--multiple-tabs',
+    });
+
+    await page.keyboard.press('Control+c');
+    expect(await page.screenshot()).toMatchSnapshot('ctrl-c-should-copy_1_ctrl-and-c-pressed.png');
+  });
+
+  test.describe('tests with manual clock', () => {
     // control time to be able to invoke the debounce of the filter input manually
-    cy.clock();
+    test.beforeEach(enableFakeClock);
 
-    const storybookIdToVisit = deriveIdFromMetadataAndExportName(
-      metadata,
-      varToString({ SimpleCase }),
-    );
-    bootstrap({ storybookIdToVisit });
+    test('filter files', async ({ page }) => {
+      const $document = await bootstrap({
+        page,
+        storybookIdToVisit: 'shell--simple-case',
+      });
 
-    cy.findByRole('textbox', { name: /Filter/i }).type('test folder');
-    // invoke debounce of filter input and "yield" to the browser via cy.wait(1)
-    cy.tick(1000);
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1);
-    cy.get('body').type('{downarrow}');
-    cy.document().matchImageSnapshot(`${getTestTitle()}_1_filter-and-selection-was-applied`);
+      const textboxFilter = await queries.findByRole($document, 'textbox', { name: /Filter/i });
+      await textboxFilter.type('testf');
+      // invoke debounce of filter input and "yield" to browser via wait of 1ms
+      await page.evaluate(() => window.__clock.tick(1000));
+      await page.evaluate(() => window.__clock.tick(1000));
+      await page.waitForTimeout(1);
 
-    cy.get('body').type('{enter}');
-    cy.document().matchImageSnapshot(`${getTestTitle()}_2_navigated-down`);
+      expect(await page.screenshot()).toMatchSnapshot(
+        'filter-files_1_after-first-filter-input.png',
+      );
 
-    cy.get('body').type('{alt}{leftarrow}');
-    cy.tick(1000);
-    cy.document().matchImageSnapshot(`${getTestTitle()}_3_navigated-up-and-restored-state`);
+      await textboxFilter.click({ clickCount: 3 });
+      await page.keyboard.press('Backspace');
+      await page.keyboard.type('aa test');
+      // invoke debounce of filter input and "yield" to browser via wait of 1ms
+      await page.evaluate(() => window.__clock.tick(1000));
+      await page.evaluate(() => window.__clock.tick(1000));
+      await page.waitForTimeout(200);
+
+      expect(await page.screenshot()).toMatchSnapshot(
+        'filter-files_2_after-second-filter-input.png',
+      );
+    });
+
+    test('navigating down and up the file system should restore resources view state (filter, selection, ...)', async ({
+      page,
+    }) => {
+      const $document = await bootstrap({
+        page,
+        storybookIdToVisit: 'shell--simple-case',
+      });
+
+      const textboxFilter = await queries.findByRole($document, 'textbox', { name: /Filter/i });
+      await textboxFilter.type('test folder');
+      // invoke debounce of filter input and "yield" to browser via wait of 1ms
+      await page.evaluate(() => window.__clock.tick(1000));
+      await page.waitForTimeout(1);
+      await page.keyboard.press('ArrowDown');
+      expect(await page.screenshot()).toMatchSnapshot(
+        'navigating-down-and-up-should-restore-state_1_filter-and-selection-was-applied.png',
+      );
+
+      await page.keyboard.press('Enter');
+      expect(await page.screenshot()).toMatchSnapshot(
+        'navigating-down-and-up-should-restore-state_2_navigated-down.png',
+      );
+
+      await page.keyboard.press('Alt+ArrowLeft');
+      // invoke debounce of filter input and "yield" to browser via wait of 1ms
+      await page.evaluate(() => window.__clock.tick(1000));
+      await page.waitForTimeout(1);
+      expect(await page.screenshot()).toMatchSnapshot(
+        'navigating-down-and-up-should-restore-state_3_navigated-up-and-restored-state.png',
+      );
+    });
   });
 });

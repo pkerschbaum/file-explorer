@@ -1,39 +1,39 @@
-import { cy, describe, it } from 'local-cypress';
+import { queries } from '@playwright-testing-library/test';
+import { expect, test } from '@playwright/test';
 
-import metadata, { DefaultCase } from '@app/ui/explorer-panel/ExplorerPanel.stories';
+import { bootstrap } from '@app-playwright/playwright.util';
 
-import { deriveIdFromMetadataAndExportName, varToString } from '@app-storybook/storybook-utils';
-
-import { getTestTitle, bootstrap } from '@app-cypress/cypress.util';
-
-describe('ExplorerPanel [visual]', () => {
-  it('Default Case', () => {
-    const storybookIdToVisit = deriveIdFromMetadataAndExportName(
-      metadata,
-      varToString({ DefaultCase }),
-    );
-    bootstrap({ storybookIdToVisit });
-
-    cy.document().matchImageSnapshot(`${getTestTitle()}_1`);
+test.describe('ExplorerPanel [visual]', () => {
+  test('Default Case', async ({ page }) => {
+    await bootstrap({
+      page,
+      storybookIdToVisit: 'explorerpanel--default-case',
+    });
+    expect(await page.screenshot()).toMatchSnapshot('default-case_1.png');
   });
 
-  it('Rename resource', () => {
-    const storybookIdToVisit = deriveIdFromMetadataAndExportName(
-      metadata,
-      varToString({ DefaultCase }),
-    );
-    bootstrap({ storybookIdToVisit });
+  test('Rename resource', async ({ page }) => {
+    const $document = await bootstrap({
+      page,
+      storybookIdToVisit: 'explorerpanel--default-case',
+    });
 
-    cy.findByRole('row', { name: /testfile1.txt/i }).click();
-    cy.findByRole('button', { name: /Rename/i }).click();
+    const rowTestfile1 = await queries.findByRole($document, 'row', { name: /testfile1.txt/i });
+    await rowTestfile1.click();
+    const buttonRename = await queries.findByRole($document, 'button', { name: /Rename/i });
+    await buttonRename.click();
 
-    cy.document().matchImageSnapshot(`${getTestTitle()}_1`);
+    expect(await page.screenshot()).toMatchSnapshot('rename-resource_1.png');
 
-    cy.findByRole('textbox', { name: /new name for resource/i })
-      .clearUsingBackspace()
-      .type('new-name.txt');
-    cy.findByRole('button', { name: /OK/i }).click();
+    const textboxRename = await queries.findByRole($document, 'textbox', {
+      name: /new name for resource/i,
+    });
+    await textboxRename.click({ clickCount: 3 });
+    await page.keyboard.press('Backspace');
+    await page.keyboard.type('new-name.txt');
+    const buttonOk = await queries.findByRole($document, 'button', { name: /OK/i });
+    await buttonOk.click();
 
-    cy.document().matchImageSnapshot(`${getTestTitle()}_2`);
+    expect(await page.screenshot()).toMatchSnapshot('rename-resource_2.png');
   });
 });

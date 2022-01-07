@@ -55,15 +55,17 @@ export const createFakeFileSystem: (
 
   await Promise.all(resourcesToCreate.map(createResource));
 
-  return {
+  const instance: PlatformFileSystem = {
     resolve: fileService.resolve.bind(fileService),
     copy: fileService.copy.bind(fileService),
     move: fileService.move.bind(fileService),
-    createFolder: fileService.createFolder.bind(fileService),
+    createFolder: (resource) => fileService.createFolder(URI.from(resource)),
     del: fileService.del.bind(fileService),
     watch: fileService.watch.bind(fileService),
     onDidFilesChange: fileService.onDidFilesChange.bind(fileService),
   };
+
+  return instance;
 };
 
 const defaultFileSystemResources: FileSystemResourceToCreate[] = [

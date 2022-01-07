@@ -1,10 +1,4 @@
-import {
-  fileIconThemeLoaderRef,
-  fileSystemRef,
-  logWriterRef,
-  nativeHostRef,
-  persistentStorageRef,
-} from '@app/operations/global-modules';
+import { setGlobalModules } from '@app/operations/global-modules';
 import { createFakeFileIconThemeLoader } from '@app/platform/fake/file-icon-theme-loader';
 import { createFakeFileSystem, CreateFakeFileSystemArgs } from '@app/platform/fake/file-system';
 import { createNoopLogWriter } from '@app/platform/fake/log-writer';
@@ -16,9 +10,11 @@ export type InitializeFakePlatformModulesArgs = {
 };
 
 export async function initializeFakePlatformModules(args?: InitializeFakePlatformModulesArgs) {
-  fileIconThemeLoaderRef.current = createFakeFileIconThemeLoader();
-  fileSystemRef.current = await createFakeFileSystem(args?.createFileSystemArgs);
-  logWriterRef.current = createNoopLogWriter();
-  nativeHostRef.current = createFakeNativeHost();
-  persistentStorageRef.current = createFakePersistentStorage();
+  setGlobalModules({
+    fileIconThemeLoader: createFakeFileIconThemeLoader(),
+    fileSystem: await createFakeFileSystem(args?.createFileSystemArgs),
+    logWriter: createNoopLogWriter(),
+    nativeHost: createFakeNativeHost(),
+    persistentStorage: createFakePersistentStorage(),
+  });
 }

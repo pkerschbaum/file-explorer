@@ -10,12 +10,11 @@
  *
  * That's why we track whether at least one element in the app currently has focus, and if so, we
  * disable all shortcuts.
- * To determine if some elements have focus, we query for the CSS class ".focus-visible".
- * This class is set by "focus-visible.js" (https://github.com/WICG/focus-visible) which is a polyfill
- * for the pseudo class ":focus-visible". It is set by the browser if a focus should be made evident
- * on the element, thus it is set if the element was focused by keyboard but it is NOT set if the element
- * was focused by click. Therefore, it's the ideal pseudo class to determine if the user navigated to
- * the event target via keyboard ({Tab} and {Shift+Tab}).
+ * To determine if some elements have focus, we query for the CSS class ":focus-visible".
+ * This class is set by the browser if a focus should be made evident on the element, thus it is set
+ * if the element was focused by keyboard but it is NOT set if the element was focused by click.
+ * Therefore, it's the ideal pseudo class to determine if the user navigated to the event target via
+ * keyboard ({Tab} and {Shift+Tab}).
  * @see https://developer.mozilla.org/en-US/docs/Web/CSS/:focus-visible
  *
  * Exceptions for the aforementioned rule can be made by setting the attribute "data-global-shortcuts-enabled"
@@ -117,20 +116,10 @@ export const GlobalShortcutsContextProvider: React.FC<GlobalShortcutsContextProv
      * the update of the "isSomeElementBlockingShortcuts" in the event queue (via setTimeout). It is
      * guaranteed that any immediately following "focus" event will already be in the event queue and
      * thus, be processed *before* the scheduled update (https://stackoverflow.com/a/1378103/1700319).
-     *
-     * Also in case of "focus" events, the update of the "isSomeElementBlockingShortcuts" state is
-     * scheduled via setTimeout.
-     * The reason is that we do not use the browser native ":focus-visible" pseudo class to query for
-     * focused elements, but the ".focus-visible" CSS class. This class is set by a polyfill "focus-visible.js"
-     * (https://github.com/WICG/focus-visible). We need to use that polyfill because Jest DOM (jsdom)
-     * does not support ":focus-visible".
-     * But, that polyfilled ".focus-visible" CSS class is only set *after* the "focus" event
-     * (https://github.com/WICG/focus-visible#how-it-works). So we have to schedule the update to wait
-     * for the "focus" (and any other events) to get processed before we query for focused elements.
      */
     function storeInfoIfSomeElementIsBlockingShortcuts() {
       function updateIsElementBlockingShortcuts() {
-        const focusedElements = document.querySelectorAll('*.focus-visible');
+        const focusedElements = document.querySelectorAll('*:focus-visible');
         const focusedElementsWhichShouldBlockShortcuts = Array.from(focusedElements).filter(
           (elem) =>
             elem instanceof HTMLElement &&
@@ -149,7 +138,7 @@ export const GlobalShortcutsContextProvider: React.FC<GlobalShortcutsContextProv
              */
             clearTimeout(blurTimeoutId);
           }
-          setTimeout(updateIsElementBlockingShortcuts, 0);
+          updateIsElementBlockingShortcuts();
         } else {
           blurTimeoutId = setTimeout(updateIsElementBlockingShortcuts, 0);
         }

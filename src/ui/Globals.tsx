@@ -3,20 +3,13 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { Provider as ReactReduxProvider } from 'react-redux';
 import styled, { createGlobalStyle, css } from 'styled-components';
-// Polyfill for ":focus-visible" pseudo class. Needed because jest dom (jsdom) does not support that pseudo class.
-import 'focus-visible';
 
 import { config } from '@app/config';
-import { FILE_ICON_THEMES } from '@app/constants';
+import { FILE_ICON_THEMES } from '@app/domain/constants';
 import { useActiveFileIconTheme } from '@app/global-state/slices/user.hooks';
 import { RootStore } from '@app/global-state/store';
 import { useGlobalCacheSubscriptions } from '@app/operations/global-cache-subscriptions';
-import {
-  queryClientRef,
-  storeRef,
-  dispatchRef,
-  fileIconThemeLoaderRef,
-} from '@app/operations/global-modules';
+import { fileIconThemeLoaderRef, setGlobalModules } from '@app/operations/global-modules';
 import { DesignTokenProvider, DESIGN_TOKENS, OverlayProvider } from '@app/ui/components-library';
 import {
   DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED,
@@ -154,10 +147,12 @@ export type GlobalsProps = {
 
 export const Globals: React.FC<GlobalsProps> = ({ queryClient, store, children }) => {
   React.useEffect(
-    function setStoreAndQueryClientRefs() {
-      storeRef.current = store;
-      dispatchRef.current = store.dispatch;
-      queryClientRef.current = queryClient;
+    function setStoreAndQueryClientGlobalModules() {
+      setGlobalModules({
+        store,
+        dispatch: store.dispatch,
+        queryClient,
+      });
     },
     [queryClient, store],
   );

@@ -147,11 +147,13 @@ const IconButtonRoot = styled(motion.button)<{ styleProps: StyleProps }>`
 `;
 
 const ButtonContent = styled(Box)`
+  pointer-events: none;
   position: relative;
   display: flex;
 `;
 
 const FocusAndHoverCircle = styled(Box)<{ styleProps: StyleProps }>`
+  pointer-events: none;
   position: absolute;
   ${({ styleProps }) =>
     !styleProps.disablePadding
@@ -170,9 +172,6 @@ const FocusAndHoverCircle = styled(Box)<{ styleProps: StyleProps }>`
     color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 
   ${IconButton}:focus-visible > & {
-    outline: var(--outline);
-  }
-  ${IconButton}.focus-visible > & {
     outline: var(--outline);
   }
 
