@@ -13,6 +13,7 @@ import dayjs from 'dayjs';
 import { assertIsUnreachable } from '@app/base/utils/assert.util';
 import { Writeable } from '@app/base/utils/types.util';
 import { RESOURCE_TYPE } from '@app/domain/types';
+import { convertUriComponentsToURIInstances } from '@app/platform/electron/file-system';
 import type { PlatformFileSystem } from '@app/platform/file-system.types';
 
 type WritableIStat = Writeable<IStat>;
@@ -59,13 +60,13 @@ export const createFakeFileSystem: (
     resolve: fileService.resolve.bind(fileService),
     copy: fileService.copy.bind(fileService),
     move: fileService.move.bind(fileService),
-    createFolder: (resource) => fileService.createFolder(URI.from(resource)),
+    createFolder: fileService.createFolder.bind(fileService),
     del: fileService.del.bind(fileService),
     watch: fileService.watch.bind(fileService),
     onDidFilesChange: fileService.onDidFilesChange.bind(fileService),
   };
 
-  return instance;
+  return convertUriComponentsToURIInstances(instance);
 };
 
 const defaultFileSystemResources: FileSystemResourceToCreate[] = [
