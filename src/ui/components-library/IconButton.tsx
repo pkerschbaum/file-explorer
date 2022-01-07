@@ -174,9 +174,6 @@ const FocusAndHoverCircle = styled(Box)<{ styleProps: StyleProps }>`
   ${IconButton}:focus-visible > & {
     outline: var(--outline);
   }
-  ${IconButton}.focus-visible > & {
-    outline: var(--outline);
-  }
 
   ${IconButton}:not(:disabled):hover > & {
     border-color: var(--color-bg-2);

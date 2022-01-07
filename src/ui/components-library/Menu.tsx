@@ -196,9 +196,7 @@ function MenuItem<T extends object>(props: MenuItemProps<T>) {
 
   return (
     <MenuItemRoot
-      {...mergeProps(menuItemProps, focusProps, itemDomProps, {
-        className: isFocused ? 'focus-visible' : undefined,
-      })}
+      {...mergeProps(menuItemProps, focusProps, itemDomProps)}
       ref={ref}
       styleProps={styleProps}
     >

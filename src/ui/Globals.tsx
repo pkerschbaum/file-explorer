@@ -3,8 +3,6 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { Provider as ReactReduxProvider } from 'react-redux';
 import styled, { createGlobalStyle, css } from 'styled-components';
-// Polyfill for ":focus-visible" pseudo class. Needed because jest dom (jsdom) does not support that pseudo class.
-import 'focus-visible';
 
 import { config } from '@app/config';
 import { FILE_ICON_THEMES } from '@app/domain/constants';

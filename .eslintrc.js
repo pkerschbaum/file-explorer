@@ -95,11 +95,6 @@ module.exports = {
           "MemberExpression[object.name='it'][property.name='skip'], MemberExpression[object.name='test'][property.name='skip']",
         message: 'Do not check in dead tests. Either fix or delete them.',
       },
-      {
-        selector: "MemberExpression[object.name='fireEvent']",
-        message:
-          'Use "userEvent" from @testing-library/user-event instead of "fireEvent" from @testing-library/react.',
-      },
     ],
     'node/no-process-env': 'error',
     'node/process-exit-as-throw': 'off',
@@ -194,10 +189,6 @@ module.exports = {
           {
             target: /\/src\/ui\/.+\.visual\.spec\.ts$/,
             allowedPatterns: ['@playwright/test', '@playwright-testing-library/test'],
-          },
-          {
-            target: /\/src\/ui\/Globals\.tsx$/,
-            allowedPatterns: ['focus-visible'],
           },
           {
             target: /\/src\/ui\/.+/,
