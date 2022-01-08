@@ -1,4 +1,4 @@
-import { isWindows } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/platform';
+import { isWindows, isMacintosh } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/platform';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 
@@ -125,7 +125,14 @@ const TabsAndProcesses = styled(Box)`
         -webkit-app-region: no-drag;
       `;
     }
-  }}
+    if(isMacintosh){
+      return css`
+      margin-top: var(--spacing-mac);
+      -webkit-app-region: no-drag;
+    `;
+    }
+  }
+}
 
   /* 
    * Stretch to the end of the RootContainer (i.e., revert the padding-bottom of the RootContainer
