@@ -12,6 +12,7 @@
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "lint": "eslint --max-warnings 0 .",
+    "format": "prettier --write .",
     "test:unit": "jest --no-cache",
     "test:unit:watch": "jest --no-cache --runInBand --watch",
     "pretest:pw": "playwright install",
