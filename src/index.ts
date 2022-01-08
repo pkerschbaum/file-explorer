@@ -17,7 +17,7 @@ function handleError(error: unknown) {
 process.on('uncaughtException', handleError);
 process.on('unhandledRejection', handleError);
 
-import { isWindows } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/platform';
+import { isWindows, isMacintosh } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/platform';
 import { BrowserWindow, protocol } from 'electron';
 import Store from 'electron-store';
 import invariant from 'tiny-invariant';
@@ -127,7 +127,7 @@ function createMainWindow(): BrowserWindow {
     },
     backgroundColor: THEMES[activeTheme].background[0],
     show: false,
-    titleBarStyle: isWindows ? 'hidden' : undefined,
+    titleBarStyle: isWindows ? 'hidden' : isMacintosh ? 'hiddenInset' : 'default',
   });
   mainWindow.setMenuBarVisibility(false);
 

@@ -6,6 +6,7 @@ export enum KEY {
   T = 't',
   X = 'x',
   V = 'v',
+  H = '†',
   ARROW_UP = 'ArrowUp',
   ARROW_RIGHT = 'ArrowRight',
   ARROW_DOWN = 'ArrowDown',

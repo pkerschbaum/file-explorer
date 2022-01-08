@@ -242,7 +242,9 @@ export const DESIGN_TOKENS = {
   SPACING_2: SPACING_1 * 2,
   SPACING_3: SPACING_1 * 3,
   SPACING_4: SPACING_1 * 4,
+  SPACING_7: SPACING_1 * 0.25 * 3,
   SPACING_8: SPACING_1 * 8,
+  SPACING_MAC: 41,
   OUTLINE_WIDTH: 2,
 } as const;
 
@@ -364,7 +366,9 @@ export const DesignTokenProvider: React.FC = ({ children }) => {
         --spacing-2: ${DESIGN_TOKENS.SPACING_2}px;
         --spacing-3: ${DESIGN_TOKENS.SPACING_3}px;
         --spacing-4: ${DESIGN_TOKENS.SPACING_4}px;
+        --spacing-7: ${DESIGN_TOKENS.SPACING_7}px;
         --spacing-8: ${DESIGN_TOKENS.SPACING_8}px;
+        --spacing-mac: ${DESIGN_TOKENS.SPACING_MAC}px;
         --padding-button-md-block: 5px;
         --padding-button-md-inline: 10px;
 
