@@ -81,7 +81,7 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
     addNewTabShortcut: {
       keybindings: [
         {
-          key: KEY.H,
+          key: KEY.T,
           modifiers: {
             ctrl: 'NOT_SET',
             alt: 'SET',

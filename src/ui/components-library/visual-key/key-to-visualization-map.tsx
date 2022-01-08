@@ -39,11 +39,6 @@ export const KEY_TO_VISUALIZATION_MAP: { [key in KEY]: React.ReactNode } = {
       T
     </VisualKey>
   ),
-  [KEY.H]: (
-    <VisualKey type="char" contentSize="md">
-      T
-    </VisualKey>
-  ),
   [KEY.X]: (
     <VisualKey type="char" contentSize="md">
       X
