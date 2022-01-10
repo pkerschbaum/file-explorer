@@ -71,10 +71,11 @@ export async function runDeleteProcess(deleteProcessId: string, options: { useTr
         }
 
         try {
-          await globalThis.modules.fileSystem.del(URI.from(uri), {
-            useTrash: options.useTrash,
-            recursive: fileStat.isDirectory,
-          });
+          if (options.useTrash) {
+            await globalThis.modules.fileSystem.trash(uri, { recursive: fileStat.isDirectory });
+          } else {
+            await globalThis.modules.fileSystem.del(uri, { recursive: fileStat.isDirectory });
+          }
         } catch (err) {
           logger.error(`could not delete resources`, err);
           throw err;
@@ -303,10 +304,7 @@ export async function executeCopyOrMove({
      * since "findValidPasteFileTarget" makes sure that the paste target URI is new, without conflict.
      */
     try {
-      await globalThis.modules.fileSystem.del(targetResource.uri, {
-        useTrash: false,
-        recursive: true,
-      });
+      await globalThis.modules.fileSystem.del(targetResource.uri, { recursive: true });
     } catch {
       // ignore
     }

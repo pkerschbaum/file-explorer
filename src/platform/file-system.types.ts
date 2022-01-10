@@ -1,7 +1,7 @@
 import { CancellationToken } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/cancellation';
 import { IDisposable } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/lifecycle';
 import { ProgressCbArgs } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
-import { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import {
   FileDeleteOptions,
   IFileService,
@@ -18,7 +18,14 @@ export type PlatformFileSystem = {
     options: IResolveMetadataFileOptions,
   ): Promise<IFileStatWithMetadata>;
   resolve(resource: UriComponents, options?: IResolveFileOptions): Promise<IFileStat>;
-  del(resource: UriComponents, options?: Partial<FileDeleteOptions>): Promise<void>;
+  del(
+    resource: UriComponents,
+    options?: Partial<Omit<FileDeleteOptions, 'useTrash'>>,
+  ): Promise<void>;
+  trash(
+    resource: UriComponents,
+    options?: Partial<Omit<FileDeleteOptions, 'useTrash'>>,
+  ): Promise<void>;
   copy(
     source: UriComponents,
     target: UriComponents,
@@ -38,7 +45,8 @@ export type PlatformFileSystem = {
 
 export type PlatformFileSystemURIInstances = {
   resolve: IFileService['resolve'];
-  del: IFileService['del'];
+  del(resource: URI, options?: Partial<Omit<FileDeleteOptions, 'useTrash'>>): Promise<void>;
+  trash(resource: URI, options?: Partial<Omit<FileDeleteOptions, 'useTrash'>>): Promise<void>;
   copy: IFileService['copy'];
   move: IFileService['move'];
   createFolder: IFileService['createFolder'];

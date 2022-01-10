@@ -62,6 +62,7 @@ export const createFakeFileSystem: (
     move: fileService.move.bind(fileService),
     createFolder: fileService.createFolder.bind(fileService),
     del: fileService.del.bind(fileService),
+    trash: fileService.del.bind(fileService),
     watch: fileService.watch.bind(fileService),
     onDidFilesChange: fileService.onDidFilesChange.bind(fileService),
   };
