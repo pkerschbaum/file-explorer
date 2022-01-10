@@ -215,12 +215,14 @@ const FRAMER_MOTION_ANIMATIONS: FramerMotionAnimations = {
     exit: { opacity: 0 },
   },
 };
+// set a very short duration to disable animations (https://css-tricks.com/empathetic-animation/#did-we-allow-users-to-opt-out)
 const FRAMER_MOTION_ANIMATIONS_DISABLED: FramerMotionAnimations = {
   fadeInOut: {
-    initial: { opacity: 0 },
-    animate: { opacity: 1 },
-    transition: { duration: 0 },
-    exit: { opacity: 0 },
+    ...FRAMER_MOTION_ANIMATIONS.fadeInOut,
+    transition: {
+      ...FRAMER_MOTION_ANIMATIONS.fadeInOut.transition,
+      ...{ duration: 0.01 },
+    },
   },
 };
 

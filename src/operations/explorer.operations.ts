@@ -7,6 +7,7 @@ import { Constants } from '@pkerschbaum/code-oss-file-service/out/vs/base/common
 import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import * as uuid from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uuid';
 import { IFileStat } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
+import invariant from 'tiny-invariant';
 
 import { CustomError } from '@app/base/custom-error';
 import { check } from '@app/base/utils/assert.util';
@@ -30,7 +31,7 @@ const logger = createLogger('explorer.hooks');
 
 export async function openResources(explorerId: string, resources: ResourceForUI[]) {
   if (resources.length === 1 && resources[0].resourceType === RESOURCE_TYPE.DIRECTORY) {
-    await changeDirectory(explorerId, URI.from(resources[0].uri));
+    await changeCwd(explorerId, URI.from(resources[0].uri));
   } else {
     await openFiles(
       resources
@@ -40,7 +41,15 @@ export async function openResources(explorerId: string, resources: ResourceForUI
   }
 }
 
-export async function changeDirectory(explorerId: string, newCwd: UriComponents) {
+export function copyCwdIntoClipboard(explorerId: string) {
+  const cwdUri = extractCwdFromExplorerPanel(
+    globalThis.modules.store.getState().explorersSlice.explorerPanels[explorerId],
+  );
+  invariant(cwdUri);
+  globalThis.modules.nativeHost.clipboard.writeText(formatter.resourcePath(cwdUri));
+}
+
+export async function changeCwd(explorerId: string, newCwd: UriComponents) {
   const newCwdUri = URI.from(newCwd);
   const stats = await globalThis.modules.fileSystem.resolve(newCwdUri);
   if (!stats.isDirectory) {

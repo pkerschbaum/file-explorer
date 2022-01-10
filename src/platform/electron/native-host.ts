@@ -9,13 +9,13 @@ import {
   NATIVE_FILE_ICON_PROTOCOL_SCHEME,
   THUMBNAIL_PROTOCOL_SCHEME,
 } from '@app/platform/electron/protocol/common/app';
-import type { PlatformNativeHost } from '@app/platform/native-host.types';
+import { CLIPBOARD_CHANGED_DATA_TYPE, PlatformNativeHost } from '@app/platform/native-host.types';
 
 const USE_NATIVE_ICON_FOR_REGEX = /(?:exe|ico|dll|iso)/i;
 const THUMBNAIL_AVAILABLE_FOR_MIME_TYPE = ['image/png', 'image/jpeg', 'image/svg+xml'];
 
 export const createNativeHost = () => {
-  const onClipboardChanged = new Emitter<void>();
+  const onClipboardChanged = new Emitter<CLIPBOARD_CHANGED_DATA_TYPE>();
 
   const instance: PlatformNativeHost = {
     app: {
@@ -95,12 +95,15 @@ export const createNativeHost = () => {
       close: window.privileged.window.close,
     },
     clipboard: {
+      readText: window.privileged.clipboard.readText,
+      writeText: (value) => {
+        window.privileged.clipboard.writeText(value);
+        onClipboardChanged.fire(CLIPBOARD_CHANGED_DATA_TYPE.TEXT);
+      },
       readResources: window.privileged.clipboard.readResources,
       writeResources: (resources) => {
-        if (resources.length) {
-          window.privileged.clipboard.writeResources(resources.map((r) => URI.from(r)));
-          onClipboardChanged.fire();
-        }
+        window.privileged.clipboard.writeResources(resources.map((r) => URI.from(r)));
+        onClipboardChanged.fire(CLIPBOARD_CHANGED_DATA_TYPE.RESOURCES);
       },
       onClipboardChanged: onClipboardChanged.event,
     },

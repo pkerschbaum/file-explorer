@@ -1,15 +1,6 @@
-import { CancellationToken } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/cancellation';
-import { IDisposable } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/lifecycle';
 import { normalize } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/path';
-import { ProgressCbArgs } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
-import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import {
-  IResolveFileOptions,
-  IFileStat,
-  FileDeleteOptions,
-  IFileStatWithMetadata,
-  IWatchOptions,
-} from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
+import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import { IFileStatWithMetadata } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 
 import type {
   PlatformFileSystem,
@@ -43,35 +34,22 @@ export function convertUriComponentsToURIInstances(
   origFileSystem: PlatformFileSystemURIInstances,
 ): PlatformFileSystem {
   const wrappedInstance: PlatformFileSystem = {
-    async resolve(resource: UriComponents, options?: IResolveFileOptions): Promise<IFileStat> {
-      return origFileSystem.resolve(URI.from(resource), options);
+    async resolve(resource, options?) {
+      return origFileSystem.resolve(URI.from(resource), options) as Promise<IFileStatWithMetadata>;
     },
-    async del(resource: UriComponents, options?: Partial<FileDeleteOptions>): Promise<void> {
+    async del(resource, options?) {
       return origFileSystem.del(URI.from(resource), options);
     },
-    async copy(
-      source: UriComponents,
-      target: UriComponents,
-      overwrite?: boolean,
-      additionalArgs?: { token?: CancellationToken; progressCb?: (args: ProgressCbArgs) => void },
-    ): Promise<undefined | IFileStatWithMetadata> {
+    async copy(source, target, overwrite?, additionalArgs?) {
       return origFileSystem.copy(URI.from(source), URI.from(target), overwrite, additionalArgs);
     },
-    async move(
-      source: UriComponents,
-      target: UriComponents,
-      overwrite?: boolean,
-      additionalArgs?: { token?: CancellationToken; progressCb?: (args: ProgressCbArgs) => void },
-    ): Promise<undefined | IFileStatWithMetadata> {
+    async move(source, target, overwrite?, additionalArgs?) {
       return origFileSystem.move(URI.from(source), URI.from(target), overwrite, additionalArgs);
     },
-    async createFolder(resource: UriComponents): Promise<IFileStatWithMetadata> {
+    async createFolder(resource) {
       return origFileSystem.createFolder(URI.from(resource));
     },
-    watch(
-      resource: UriComponents,
-      options: IWatchOptions = { recursive: false, excludes: [] },
-    ): IDisposable {
+    watch(resource, options = { recursive: false, excludes: [] }) {
       return origFileSystem.watch(URI.from(resource), options);
     },
     onDidFilesChange: origFileSystem.onDidFilesChange.bind(origFileSystem),

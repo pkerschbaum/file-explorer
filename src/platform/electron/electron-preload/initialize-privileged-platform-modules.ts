@@ -39,6 +39,8 @@ type Privileged = {
     close: (args: IpcWindow.Close.Args) => IpcWindow.Close.ReturnValue;
   };
   clipboard: {
+    readText: () => string;
+    writeText: (value: string) => void;
     readResources: () => URI[];
     writeResources: (resources: URI[]) => void;
   };
@@ -75,6 +77,8 @@ export function initializePrivilegedPlatformModules() {
       close: (...args) => ipcRenderer.invoke(WINDOW_CHANNEL.CLOSE, ...args),
     },
     clipboard: {
+      readText: () => clipboard.readText(),
+      writeText: (value) => clipboard.writeText(value),
       readResources: () => bufferToResources(clipboard.readBuffer(CLIPBOARD_FILELIST_FORMAT)),
       writeResources: (resources) =>
         clipboard.writeBuffer(

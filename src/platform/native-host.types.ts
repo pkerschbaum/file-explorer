@@ -22,11 +22,18 @@ export type PlatformNativeHost = {
     close: () => Promise<void>;
   };
   clipboard: {
+    readText(): string;
+    writeText(value: string): void;
     readResources(): UriComponents[];
     writeResources(resources: UriComponents[]): void;
-    onClipboardChanged: Event<void>;
+    onClipboardChanged: Event<CLIPBOARD_CHANGED_DATA_TYPE>;
   };
   webContents: {
     startNativeFileDnD: (resource: UriComponents) => void;
   };
 };
+
+export enum CLIPBOARD_CHANGED_DATA_TYPE {
+  TEXT = 'TEXT',
+  RESOURCES = 'RESOURCES',
+}

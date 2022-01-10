@@ -1,5 +1,16 @@
+import { CancellationToken } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/cancellation';
+import { IDisposable } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/lifecycle';
+import { ProgressCbArgs } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
 import { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import { IFileService } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
+import {
+  FileDeleteOptions,
+  IFileService,
+  IFileStat,
+  IFileStatWithMetadata,
+  IResolveFileOptions,
+  IResolveMetadataFileOptions,
+  IWatchOptions,
+} from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 
 export type PlatformFileSystem = {
   resolve(
@@ -12,24 +23,14 @@ export type PlatformFileSystem = {
     source: UriComponents,
     target: UriComponents,
     overwrite?: boolean,
-  ): Promise<IFileStatWithMetadata>;
-  copy(
-    source: UriComponents,
-    target: UriComponents,
-    overwrite?: boolean,
     additionalArgs?: { token?: CancellationToken; progressCb?: (args: ProgressCbArgs) => void },
-  ): Promise<undefined | IFileStatWithMetadata>;
-  move(
-    source: UriComponents,
-    target: UriComponents,
-    overwrite?: boolean,
   ): Promise<IFileStatWithMetadata>;
   move(
     source: UriComponents,
     target: UriComponents,
     overwrite?: boolean,
     additionalArgs?: { token?: CancellationToken; progressCb?: (args: ProgressCbArgs) => void },
-  ): Promise<undefined | IFileStatWithMetadata>;
+  ): Promise<IFileStatWithMetadata>;
   createFolder(resource: UriComponents): Promise<IFileStatWithMetadata>;
   watch(resource: UriComponents, options?: IWatchOptions): IDisposable;
   onDidFilesChange: IFileService['onDidFilesChange'];

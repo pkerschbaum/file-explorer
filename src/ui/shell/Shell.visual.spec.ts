@@ -225,4 +225,34 @@ test.describe('Shell [visual]', () => {
       );
     });
   });
+
+  test('actions menu should show after click on breadcrumb and hide after "Copy Directory Path" menu item was clicked on', async ({
+    page,
+  }) => {
+    const $document = await bootstrap({
+      page,
+      storybookIdToVisit: 'shell--simple-case',
+    });
+
+    const navBreadcrumbs = await queries.findByRole($document, 'navigation', {
+      name: /Breadcrumbs/i,
+    });
+    const buttonActionsMenuTrigger = await queries.findByRole(navBreadcrumbs, 'link', {
+      name: /testdir/i,
+    });
+    await buttonActionsMenuTrigger.click();
+
+    expect(await page.screenshot()).toMatchSnapshot(
+      'actions-menu-copy-directory-path_1_after-click-on-trigger-button.png',
+    );
+
+    const menuItemCopyCwd = await queries.findByRole($document, 'menuitem', {
+      name: /Copy Directory Path/i,
+    });
+    await menuItemCopyCwd.click();
+
+    expect(await page.screenshot()).toMatchSnapshot(
+      'actions-menu-copy-directory-path_2_after-click-on-menu-item.png',
+    );
+  });
 });
