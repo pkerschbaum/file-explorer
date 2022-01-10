@@ -61,6 +61,9 @@ test.describe('Shell [visual]', () => {
     const radioThemeFlow = await queries.findByRole(radiogroupTheme, 'radio', { name: /Flow/i });
     await radioThemeFlow.click({ force: true });
 
+    // the change of the foreground color (because of the theme change) needs some time to propagate (in Chrome)
+    await page.waitForTimeout(1000);
+
     expect(await page.screenshot()).toMatchSnapshot('switch-theme_1_switched-theme.png');
   });
 
