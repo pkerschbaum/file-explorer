@@ -304,7 +304,9 @@ export async function executeCopyOrMove({
      * since "findValidPasteFileTarget" makes sure that the paste target URI is new, without conflict.
      */
     try {
-      await globalThis.modules.fileSystem.del(targetResource.uri, { recursive: true });
+      await globalThis.modules.fileSystem.del(targetResource.uri, {
+        recursive: sourceResource.fileStat.isDirectory,
+      });
     } catch {
       // ignore
     }

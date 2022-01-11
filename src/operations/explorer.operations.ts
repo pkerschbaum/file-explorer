@@ -169,7 +169,10 @@ export async function pasteResources(explorerId: string) {
   let bytesProcessed = 0;
   let progressOfAtLeastOneSourceIsIndeterminate = false;
   const statusPerFile: {
-    [uri: string]: { bytesProcessed: number };
+    [uri: string]: {
+      bytesProcessed: number;
+      progressDeterminateType: 'DETERMINATE' | 'INDETERMINATE';
+    };
   } = {};
 
   await Promise.all(
@@ -180,7 +183,7 @@ export async function pasteResources(explorerId: string) {
 
       Object.entries(fileStatMap).forEach(([uri, fileStat]) => {
         totalSize += fileStat.size;
-        statusPerFile[uri] = { bytesProcessed: 0 };
+        statusPerFile[uri] = { bytesProcessed: 0, progressDeterminateType: 'DETERMINATE' };
       });
     }),
   );
@@ -216,8 +219,12 @@ export async function pasteResources(explorerId: string) {
       statusPerFile[uriHelper.getComparisonKey(progressArgs.forSource)].bytesProcessed +=
         progressArgs.newBytesRead;
     }
-    if ('progressIsIndeterminate' in progressArgs && progressArgs.progressIsIndeterminate) {
-      progressOfAtLeastOneSourceIsIndeterminate = true;
+    if ('progressDeterminateType' in progressArgs && progressArgs.progressDeterminateType) {
+      statusPerFile[uriHelper.getComparisonKey(progressArgs.forSource)].progressDeterminateType +=
+        progressArgs.progressDeterminateType;
+      progressOfAtLeastOneSourceIsIndeterminate = Object.values(statusPerFile).some(
+        (status) => status.progressDeterminateType === 'INDETERMINATE',
+      );
     }
   }
   const intervalId = setInterval(function dispatchProgress() {
