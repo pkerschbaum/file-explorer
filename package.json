@@ -5,7 +5,7 @@
   "description": "File Explorer",
   "main": ".webpack/main",
   "scripts": {
-    "postinstall": "node ./scripts/modify-tsserver-to-defer-type-truncation.js",
+    "postinstall": "husky install && node ./scripts/modify-tsserver-to-defer-type-truncation.js",
     "start": "cross-env NODE_ENV=development cross-env ELECTRONAPP_RQDEVTOOLS_ENABLED=false electron-forge start",
     "compile": "tsc --noEmit",
     "compile:watch": "tsc --watch --noEmit",
@@ -118,6 +118,7 @@
     "@types/d3-color": "^3.0.2",
     "@types/jest": "^27.4.0",
     "@types/mime": "^2.0.3",
+    "@types/module-alias": "^2.0.1",
     "@types/react": "^17.0.38",
     "@types/react-dom": "^17.0.9",
     "@types/sharp": "^0.29.5",

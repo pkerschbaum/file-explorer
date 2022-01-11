@@ -32,7 +32,7 @@ module.exports = {
     'testing-library',
     '@pkerschbaum/code-import-patterns',
   ],
-  ignorePatterns: ['**/*.js'],
+  ignorePatterns: ['**/*.js', 'playwright.config.ts'],
   rules: {
     curly: 'error',
     'import/first': 'error',
