@@ -36,5 +36,5 @@ function isRunningInPlaywright(): boolean {
 
 function useIsAnimationAllowed(): boolean {
   const prefersReducedMotion = useMediaMatch('(prefers-reduced-motion: reduce)');
-  return !isRunningInPlaywright() && !prefersReducedMotion;
+  return !prefersReducedMotion;
 }
