@@ -16,7 +16,7 @@ export async function bootstrap({
   await Promise.all([
     page.goto(
       `http://${STORYBOOK_HOST}:6006/iframe.html?viewMode=story&args=&id=${storybookIdToVisit}`,
-      { waitUntil: 'load' },
+      { waitUntil: 'networkidle' },
     ),
     page.waitForResponse(/fonts\/SegoeUI-VF.ttf/i),
   ]);

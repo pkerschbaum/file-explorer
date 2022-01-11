@@ -98,7 +98,7 @@
     "@electron-forge/plugin-webpack": "^6.0.0-beta.61",
     "@pkerschbaum/eslint-plugin-code-import-patterns": "^1.0.0",
     "@playwright-testing-library/test": "^4.0.1",
-    "@playwright/test": "^1.17.1",
+    "@playwright/test": "^1.17.2",
     "@react-types/breadcrumbs": "^3.2.1",
     "@react-types/button": "^3.4.1",
     "@react-types/menu": "^3.4.1",
