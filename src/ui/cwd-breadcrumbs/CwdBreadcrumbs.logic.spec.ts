@@ -34,6 +34,13 @@ test.describe('CwdBreadcrumbs [logic]', () => {
     );
     const actualUri = uriHelper.parseUri(Schemas.file, textInClipboard);
     const expectedUri = uriHelper.parseUri(Schemas.file, '/home/testdir');
-    expect(resources.isEqual(actualUri, expectedUri)).toBeTruthy();
+    try {
+      expect(resources.isEqual(actualUri, expectedUri)).toBeTruthy();
+    } catch (e) {
+      throw new Error(
+        `ActualUri is not equal to ExpectedUri! ` +
+          `actualUri=${actualUri.toString()}, expectedUri=${expectedUri.toString()}`,
+      );
+    }
   });
 });

@@ -1,7 +1,10 @@
+/* eslint-disable node/no-process-env */
 import { getDocument } from '@playwright-testing-library/test';
 import { BrowserContext, expect, PlaywrightTestArgs } from '@playwright/test';
 import path from 'path';
 import * as sinon from 'sinon';
+
+const STORYBOOK_HOST = process.env.STORYBOOK_HOST ?? 'localhost';
 
 export async function bootstrap({
   page,
@@ -10,12 +13,16 @@ export async function bootstrap({
   page: PlaywrightTestArgs['page'];
   storybookIdToVisit: string;
 }) {
-  await page.goto(
-    `http://localhost:6006/iframe.html?viewMode=story&args=&id=${storybookIdToVisit}`,
-    { waitUntil: 'networkidle' },
-  );
+  await Promise.all([
+    page.goto(
+      `http://${STORYBOOK_HOST}:6006/iframe.html?viewMode=story&args=&id=${storybookIdToVisit}`,
+      { waitUntil: 'networkidle' },
+    ),
+    page.waitForResponse(/fonts\/SegoeUI-VF.ttf/i),
+  ]);
   const rootContainer = page.locator('#root > *');
   await expect(rootContainer).toHaveCount(1);
+  await page.evaluate(() => document.fonts.ready);
   const $document = await getDocument(page);
   return $document;
 }
@@ -37,4 +44,11 @@ export async function enableFakeClock({ context }: { context: BrowserContext }) 
   await context.addInitScript(() => {
     window.__clock = sinon.useFakeTimers();
   });
+}
+
+export async function letBrowserUpdateStuffDependingOnClock(page: PlaywrightTestArgs['page']) {
+  await page.evaluate(() => window.__clock.tick(1000));
+  await page.evaluate(() => window.__clock.tick(1000));
+  // eslint-disable-next-line no-restricted-syntax -- wait with 1ms timeout "yields" to the browser
+  await page.waitForTimeout(1);
 }

@@ -1,7 +1,11 @@
 import { queries } from '@playwright-testing-library/test';
 import { expect, test } from '@playwright/test';
 
-import { bootstrap, enableFakeClock } from '@app-playwright/playwright.util';
+import {
+  bootstrap,
+  enableFakeClock,
+  letBrowserUpdateStuffDependingOnClock,
+} from '@app-playwright/playwright.util';
 
 test.describe('Shell [visual]', () => {
   test('with processes', async ({ page }) => {
@@ -61,7 +65,7 @@ test.describe('Shell [visual]', () => {
     const radioThemeFlow = await queries.findByRole(radiogroupTheme, 'radio', { name: /Flow/i });
     await radioThemeFlow.click({ force: true });
 
-    // the change of the foreground color (because of the theme change) needs some time to propagate (in Chrome)
+    // eslint-disable-next-line no-restricted-syntax -- the change of the foreground color (because of the theme change) needs some time to propagate (in Chrome)
     await page.waitForTimeout(1000);
 
     expect(await page.screenshot()).toMatchSnapshot('switch-theme_1_switched-theme.png');
@@ -90,30 +94,6 @@ test.describe('Shell [visual]', () => {
 
     expect(await page.screenshot()).toMatchSnapshot(
       'switch-file-icon-theme_1_switched-file-icon-theme.png',
-    );
-  });
-
-  test('the CWD should automatically update if a new folder is created', async ({ page }) => {
-    const $document = await bootstrap({
-      page,
-      storybookIdToVisit: 'shell--simple-case',
-    });
-
-    const buttonNewFolder = await queries.findByRole($document, 'button', { name: /New Folder/i });
-    await buttonNewFolder.click();
-    const textboxNameOfFolder = await queries.findByRole($document, 'textbox', {
-      name: /Name of folder/i,
-    });
-    await textboxNameOfFolder.type('name of new folder');
-    const buttonCreateFolder = await queries.findByRole($document, 'button', { name: /Create/i });
-    await buttonCreateFolder.click();
-
-    const tableOfResources = await queries.findByRole($document, 'table', {
-      name: /Table of resources/i,
-    });
-
-    expect(await tableOfResources.screenshot()).toMatchSnapshot(
-      'cwd-should-automatically-update_1_folder-created.png',
     );
   });
 
@@ -166,6 +146,35 @@ test.describe('Shell [visual]', () => {
     // control time to be able to invoke the debounce of the filter input manually
     test.beforeEach(enableFakeClock);
 
+    test('the CWD should automatically update if a new folder is created', async ({ page }) => {
+      /**
+       * this test case uses a fake clock because otherwise, the newly created folder would get
+       * another timestamp in each test run
+       */
+
+      const $document = await bootstrap({
+        page,
+        storybookIdToVisit: 'shell--simple-case',
+      });
+
+      const buttonNewFolder = await queries.findByRole($document, 'button', {
+        name: /New Folder/i,
+      });
+      await buttonNewFolder.click();
+      const textboxNameOfFolder = await queries.findByRole($document, 'textbox', {
+        name: /Name of folder/i,
+      });
+      await textboxNameOfFolder.type('name of new folder');
+      const buttonCreateFolder = await queries.findByRole($document, 'button', { name: /Create/i });
+      await buttonCreateFolder.click();
+
+      await letBrowserUpdateStuffDependingOnClock(page);
+
+      expect(await page.screenshot()).toMatchSnapshot(
+        'cwd-should-automatically-update_1_folder-created.png',
+      );
+    });
+
     test('filter files', async ({ page }) => {
       const $document = await bootstrap({
         page,
@@ -174,10 +183,8 @@ test.describe('Shell [visual]', () => {
 
       const textboxFilter = await queries.findByRole($document, 'textbox', { name: /Filter/i });
       await textboxFilter.type('testf');
-      // invoke debounce of filter input and "yield" to browser via wait of 1ms
-      await page.evaluate(() => window.__clock.tick(1000));
-      await page.evaluate(() => window.__clock.tick(1000));
-      await page.waitForTimeout(1);
+      // invoke debounce of filter input
+      await letBrowserUpdateStuffDependingOnClock(page);
 
       expect(await page.screenshot()).toMatchSnapshot(
         'filter-files_1_after-first-filter-input.png',
@@ -186,10 +193,8 @@ test.describe('Shell [visual]', () => {
       await textboxFilter.click({ clickCount: 3 });
       await page.keyboard.press('Backspace');
       await page.keyboard.type('aa test');
-      // invoke debounce of filter input and "yield" to browser via wait of 1ms
-      await page.evaluate(() => window.__clock.tick(1000));
-      await page.evaluate(() => window.__clock.tick(1000));
-      await page.waitForTimeout(200);
+      // invoke debounce of filter input
+      await letBrowserUpdateStuffDependingOnClock(page);
 
       expect(await page.screenshot()).toMatchSnapshot(
         'filter-files_2_after-second-filter-input.png',
@@ -206,9 +211,8 @@ test.describe('Shell [visual]', () => {
 
       const textboxFilter = await queries.findByRole($document, 'textbox', { name: /Filter/i });
       await textboxFilter.type('test folder');
-      // invoke debounce of filter input and "yield" to browser via wait of 1ms
-      await page.evaluate(() => window.__clock.tick(1000));
-      await page.waitForTimeout(1);
+      // invoke debounce of filter input
+      await letBrowserUpdateStuffDependingOnClock(page);
       await page.keyboard.press('ArrowDown');
       expect(await page.screenshot()).toMatchSnapshot(
         'navigating-down-and-up-should-restore-state_1_filter-and-selection-was-applied.png',
@@ -220,9 +224,9 @@ test.describe('Shell [visual]', () => {
       );
 
       await page.keyboard.press('Alt+ArrowLeft');
-      // invoke debounce of filter input and "yield" to browser via wait of 1ms
-      await page.evaluate(() => window.__clock.tick(1000));
-      await page.waitForTimeout(1);
+      // invoke debounce of filter input
+      await letBrowserUpdateStuffDependingOnClock(page);
+
       expect(await page.screenshot()).toMatchSnapshot(
         'navigating-down-and-up-should-restore-state_3_navigated-up-and-restored-state.png',
       );

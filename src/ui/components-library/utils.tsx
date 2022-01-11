@@ -3,7 +3,13 @@ import { MotionProps } from 'framer-motion';
 
 import { config } from '@app/config';
 
-export const componentLibraryUtils = { generateMotionLayoutId, useIsAnimationAllowed };
+const isRunningInPlaywright = (window as any).playwright !== undefined;
+
+export const componentLibraryUtils = {
+  isRunningInPlaywright,
+  generateMotionLayoutId,
+  useIsAnimationAllowed,
+};
 
 const MOTION_LAYOUTID_PREFIX = `${config.productName}-motion-layoutid`;
 let lastId = 0;
@@ -27,7 +33,6 @@ export type ReactMotionProps<
   >;
 
 function useIsAnimationAllowed(): boolean {
-  const isRunningInPlaywright = (window as any).playwright !== undefined;
   const prefersReducedMotion = useMediaMatch('(prefers-reduced-motion: reduce)');
   return !isRunningInPlaywright && !prefersReducedMotion;
 }

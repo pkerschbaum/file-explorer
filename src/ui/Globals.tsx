@@ -10,7 +10,12 @@ import { useActiveFileIconTheme } from '@app/global-state/slices/user.hooks';
 import { RootStore } from '@app/global-state/store';
 import { useGlobalCacheSubscriptions } from '@app/operations/global-cache-subscriptions';
 import { setGlobalModules } from '@app/operations/global-modules';
-import { DesignTokenProvider, DESIGN_TOKENS, OverlayProvider } from '@app/ui/components-library';
+import {
+  componentLibraryUtils,
+  DesignTokenProvider,
+  DESIGN_TOKENS,
+  OverlayProvider,
+} from '@app/ui/components-library';
 import {
   DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED,
   GlobalShortcutsContextProvider,
@@ -33,7 +38,7 @@ const globalStyle = css`
     font-family: 'Segoe UI Variable';
     src: url('./fonts/SegoeUI-VF.ttf') format('truetype-variations');
     font-weight: 1 999;
-    font-display: fallback;
+    font-display: block;
   }
 
   :root {
@@ -116,6 +121,16 @@ const globalStyle = css`
   *:focus-visible {
     outline: none;
   }
+
+  /* disable caret blinking if UI is running in test environment */
+  ${() =>
+    componentLibraryUtils.isRunningInPlaywright &&
+    css`
+      input,
+      textarea {
+        caret-color: transparent !important;
+      }
+    `}
 
   /* change scrollbar to a thin variant which lightens up on hover */
   *::-webkit-scrollbar {
