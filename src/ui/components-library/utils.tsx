@@ -3,11 +3,9 @@ import { MotionProps } from 'framer-motion';
 
 import { config } from '@app/config';
 
-const isRunningInPlaywright = (window as any).playwright !== undefined;
-
 export const componentLibraryUtils = {
-  isRunningInPlaywright,
   generateMotionLayoutId,
+  isRunningInPlaywright,
   useIsAnimationAllowed,
 };
 
@@ -32,7 +30,11 @@ export type ReactMotionProps<
     'layout' | 'layoutId' | 'initial' | 'animate' | 'exit' | 'transition' | 'variants'
   >;
 
+function isRunningInPlaywright(): boolean {
+  return (window as any).playwright !== undefined;
+}
+
 function useIsAnimationAllowed(): boolean {
   const prefersReducedMotion = useMediaMatch('(prefers-reduced-motion: reduce)');
-  return !isRunningInPlaywright && !prefersReducedMotion;
+  return !isRunningInPlaywright() && !prefersReducedMotion;
 }

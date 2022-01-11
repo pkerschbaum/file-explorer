@@ -124,7 +124,7 @@ const globalStyle = css`
 
   /* disable caret blinking if UI is running in test environment */
   ${() =>
-    componentLibraryUtils.isRunningInPlaywright &&
+    componentLibraryUtils.isRunningInPlaywright() &&
     css`
       input,
       textarea {
