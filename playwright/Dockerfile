@@ -13,4 +13,4 @@ RUN yarn
 
 COPY ../ ./
 
-CMD ["yarn", "run", "test:pw:update"]
+ENTRYPOINT ["yarn", "run", "test:pw"]

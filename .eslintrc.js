@@ -95,6 +95,12 @@ module.exports = {
           "MemberExpression[object.name='it'][property.name='skip'], MemberExpression[object.name='test'][property.name='skip']",
         message: 'Do not check in dead tests. Either fix or delete them.',
       },
+      {
+        selector: "MemberExpression[object.name='page'][property.name='waitForTimeout']",
+        message:
+          'Do not check in hard-coded timeouts. If there is no other choice, ' +
+          'disable this eslint rule for the line in question and provide an explanation why the rule is needed.',
+      },
     ],
     'node/no-process-env': 'error',
     'node/process-exit-as-throw': 'off',

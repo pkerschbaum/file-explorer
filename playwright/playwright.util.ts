@@ -45,3 +45,10 @@ export async function enableFakeClock({ context }: { context: BrowserContext }) 
     window.__clock = sinon.useFakeTimers();
   });
 }
+
+export async function letBrowserUpdateStuffDependingOnClock(page: PlaywrightTestArgs['page']) {
+  await page.evaluate(() => window.__clock.tick(1000));
+  await page.evaluate(() => window.__clock.tick(1000));
+  // eslint-disable-next-line no-restricted-syntax -- wait with 1ms timeout "yields" to the browser
+  await page.waitForTimeout(1);
+}

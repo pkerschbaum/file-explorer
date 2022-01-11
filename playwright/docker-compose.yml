@@ -1,7 +1,7 @@
 version: '3.9'
 
 services:
-  playwright:
+  playwright-svc:
     build:
       context: ../
       dockerfile: ./playwright/Dockerfile
@@ -9,6 +9,7 @@ services:
       shm_size: '1gb'
     volumes:
       - ../src:/app/src
+      - ../test-results:/app/test-results
     environment:
       - STORYBOOK_HOST=host.docker.internal
     # allow access to the host (https://stackoverflow.com/a/43541732/1700319)
