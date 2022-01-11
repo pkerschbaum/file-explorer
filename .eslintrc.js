@@ -17,6 +17,7 @@ module.exports = {
     'plugin:jsx-a11y/recommended',
     'plugin:storybook/recommended',
     'plugin:playwright/playwright-test',
+    'plugin:eslint-comments/recommended',
   ],
   /**
    * add "only-warn" plugin to change all errors to warnings.
@@ -24,17 +25,11 @@ module.exports = {
    * allows to distinguish ESLint warnings from other errors (e.g. TypeScript compile errors) in the
    * code editor (e.g. VS Code).
    */
-  plugins: [
-    'only-warn',
-    'node',
-    'import',
-    'jsx-a11y',
-    'testing-library',
-    '@pkerschbaum/code-import-patterns',
-  ],
+  plugins: ['only-warn', 'node', 'import', 'jsx-a11y', '@pkerschbaum/code-import-patterns'],
   ignorePatterns: ['**/*.js', 'playwright.config.ts'],
   rules: {
     curly: 'error',
+    'eslint-comments/disable-enable-pair': ['error', { allowWholeFile: true }],
     'import/first': 'error',
     'import/newline-after-import': 'error',
     'import/no-absolute-path': 'error',
@@ -322,14 +317,6 @@ module.exports = {
     '@typescript-eslint/unified-signatures': 'error',
   },
   overrides: [
-    {
-      // enable eslint-plugin-testing-library for "logic" specs
-      files: ['**/?(*.)+(logic.spec).[jt]s?(x)'],
-      extends: ['plugin:testing-library/react'],
-      rules: {
-        'testing-library/prefer-screen-queries': 'off',
-      },
-    },
     {
       // allow default export for Storybook stories
       files: ['**/*.stories.@(js|jsx|ts|tsx)'],
