@@ -20,6 +20,7 @@
     "test:pw": "playwright test",
     "pretest:pw:update": "playwright install",
     "test:pw:update": "playwright test --update-snapshots",
+    "test:pw:docker": "docker-compose -f ./playwright/docker-compose.yml up --build",
     "storybook": "cross-env STORYBOOK_RQDEVTOOLS_ENABLED=false start-storybook -c storybook -p 6006",
     "build-storybook": "cross-env STORYBOOK_RQDEVTOOLS_ENABLED=false build-storybook -c storybook",
     "serve-static-storybook": "yarn run http-server -p 6006 ./storybook-static",

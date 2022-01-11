@@ -33,7 +33,7 @@ const globalStyle = css`
     font-family: 'Segoe UI Variable';
     src: url('./fonts/SegoeUI-VF.ttf') format('truetype-variations');
     font-weight: 1 999;
-    font-display: fallback;
+    font-display: block;
   }
 
   :root {

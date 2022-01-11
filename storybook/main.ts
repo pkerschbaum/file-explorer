@@ -1,8 +1,22 @@
+import glob from 'glob';
+import path from 'path';
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const moduleAliases = require('../package-module-aliases');
 
+/**
+ * Exclude .png files from Storybook watcher so that Storybook does not reload when image snapshots
+ * are created during test runs.
+ * See also https://github.com/storybookjs/storybook/issues/11181#issuecomment-912549523
+ */
+const srcDirectory = path.resolve(__dirname, '..', 'src');
+const getStories = () =>
+  glob.sync(`${srcDirectory}/**/*.stories.@(js|jsx|ts|tsx)`, {
+    ignore: `${srcDirectory}/**/*.png`,
+  });
+
 module.exports = {
-  stories: ['../src/**/*.stories.@(js|jsx|ts|tsx)'],
+  stories: (list: any) => [...list, ...getStories()],
   addons: [
     '@storybook/addon-links',
     '@storybook/addon-essentials',

@@ -1,0 +1,16 @@
+version: '3.9'
+
+services:
+  playwright:
+    build:
+      context: ../
+      dockerfile: ./playwright/Dockerfile
+      # Playwright needs 1GB shared memory space (https://playwright.dev/docs/ci#docker)
+      shm_size: '1gb'
+    volumes:
+      - ../src:/app/src
+    environment:
+      - STORYBOOK_HOST=host.docker.internal
+    # allow access to the host (https://stackoverflow.com/a/43541732/1700319)
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
