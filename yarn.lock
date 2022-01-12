@@ -2130,11 +2130,6 @@
     graceful-fs "4.2.8"
     vscode-nls "^5.0.0"
 
-"@pkerschbaum/eslint-plugin-code-import-patterns@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@pkerschbaum/eslint-plugin-code-import-patterns/-/eslint-plugin-code-import-patterns-1.0.0.tgz#e975cad3ad8b0a8df7557f85921a39899b78813b"
-  integrity sha512-Ft2kewpgMBWN8Kcwlbx0Aicj7BTrgK0M5qS1a4GGu4JIsWR3Qjbu5jYm9An1dvGauh6zD7q8H4fVJJC+evXIJw==
-
 "@playwright-testing-library/test@^4.0.1":
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/@playwright-testing-library/test/-/test-4.0.1.tgz#7bea88109904a69a8dd45e57662e99f42206a8dd"
@@ -7781,6 +7776,11 @@ eslint-module-utils@^2.7.2:
   dependencies:
     debug "^3.2.7"
     find-up "^2.1.0"
+
+eslint-plugin-code-import-patterns@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-code-import-patterns/-/eslint-plugin-code-import-patterns-2.0.0.tgz#9a3a4f5450a5292a0b6a5af44098beb3ee1f80de"
+  integrity sha512-W91eZxllpFIxLDqn0Ehhha7itXbYhfnMmfcB0FDe0jy/A33GwEbxcIM7SP1m0agLeNlPIThRjNzyyfybAvJZwQ==
 
 eslint-plugin-es@^3.0.0:
   version "3.0.1"

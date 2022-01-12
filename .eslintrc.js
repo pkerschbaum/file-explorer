@@ -25,7 +25,7 @@ module.exports = {
    * allows to distinguish ESLint warnings from other errors (e.g. TypeScript compile errors) in the
    * code editor (e.g. VS Code).
    */
-  plugins: ['only-warn', 'node', 'import', 'jsx-a11y', '@pkerschbaum/code-import-patterns'],
+  plugins: ['only-warn', 'node', 'import', 'jsx-a11y', 'code-import-patterns'],
   ignorePatterns: ['**/*.js'],
   rules: {
     curly: 'error',
@@ -104,7 +104,7 @@ module.exports = {
     'prefer-template': 'error',
     'react/prop-types': 'off',
     'react/react-in-jsx-scope': 'off',
-    '@pkerschbaum/code-import-patterns/code-import-patterns': [
+    'code-import-patterns/patterns': [
       'error',
       {
         zones: [
