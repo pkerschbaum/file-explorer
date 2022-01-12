@@ -5,6 +5,7 @@ import {
   bootstrap,
   enableFakeClock,
   letBrowserUpdateStuffDependingOnClock,
+  waitForAnimations,
 } from '@app-playwright/playwright.util';
 
 test.describe('Shell [visual]', () => {
@@ -55,6 +56,7 @@ test.describe('Shell [visual]', () => {
     const $document = await bootstrap({
       page,
       storybookIdToVisit: 'shell--simple-case',
+      enableAnimationsObserver: true,
     });
 
     const buttonOpenUserPreferences = await queries.findByRole($document, 'button', {
@@ -65,8 +67,8 @@ test.describe('Shell [visual]', () => {
     const radioThemeFlow = await queries.findByRole(radiogroupTheme, 'radio', { name: /Flow/i });
     await radioThemeFlow.click({ force: true });
 
-    // eslint-disable-next-line no-restricted-syntax -- the change of the foreground color (because of the theme change) needs some time to propagate (in Chrome)
-    await page.waitForTimeout(1000);
+    // the change of the foreground color (because of the theme change) needs some time to propagate (in Chrome)
+    await waitForAnimations({ page });
 
     expect(await page.screenshot()).toMatchSnapshot('switch-theme_1_switched-theme.png');
   });
@@ -136,11 +138,12 @@ test.describe('Shell [visual]', () => {
     await bootstrap({
       page,
       storybookIdToVisit: 'shell--multiple-tabs',
+      enableAnimationsObserver: true,
     });
 
     await page.keyboard.press('Control+c');
-    // eslint-disable-next-line no-restricted-syntax -- the change of the paste button icon color needs some time to propagate (in Chrome)
-    await page.waitForTimeout(200);
+    // the change of the paste button icon color needs some time to propagate (in Chrome)
+    await waitForAnimations({ page });
 
     expect(await page.screenshot()).toMatchSnapshot('ctrl-c-should-copy_1_ctrl-and-c-pressed.png');
   });
