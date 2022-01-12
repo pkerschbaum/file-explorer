@@ -198,12 +198,13 @@ const ResourceTile: React.FC<ResourceTileProps> = ({ resource, idxOfResource }) 
   const tileGotSelected = !wasResourceSelectedLastRender && isResourceSelected;
 
   React.useEffect(
-    function scrollElementIntoViewOnUserSelection() {
+    function scrollElementIntoViewOnSelection() {
       invariant(tileRef.current);
 
       if (
         tileGotSelected &&
-        reasonForLastSelectionChange === REASON_FOR_SELECTION_CHANGE.USER_CHANGED_SELECTION
+        (reasonForLastSelectionChange === REASON_FOR_SELECTION_CHANGE.USER_CHANGED_SELECTION ||
+          reasonForLastSelectionChange === REASON_FOR_SELECTION_CHANGE.NEW_FOLDER_WAS_CREATED)
       ) {
         tileRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
       }

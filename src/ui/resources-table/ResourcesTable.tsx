@@ -308,12 +308,13 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
   const tileGotSelected = !wasResourceSelectedLastRender && isResourceSelected;
 
   React.useEffect(
-    function scrollElementIntoViewOnUserSelection() {
+    function scrollElementIntoViewOnSelection() {
       invariant(rowRef.current);
 
       if (
         tileGotSelected &&
-        reasonForLastSelectionChange === REASON_FOR_SELECTION_CHANGE.USER_CHANGED_SELECTION
+        (reasonForLastSelectionChange === REASON_FOR_SELECTION_CHANGE.USER_CHANGED_SELECTION ||
+          reasonForLastSelectionChange === REASON_FOR_SELECTION_CHANGE.NEW_FOLDER_WAS_CREATED)
       ) {
         rowRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
       }

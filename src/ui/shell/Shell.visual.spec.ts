@@ -139,6 +139,9 @@ test.describe('Shell [visual]', () => {
     });
 
     await page.keyboard.press('Control+c');
+    // eslint-disable-next-line no-restricted-syntax -- the change of the paste button icon color needs some time to propagate (in Chrome)
+    await page.waitForTimeout(200);
+
     expect(await page.screenshot()).toMatchSnapshot('ctrl-c-should-copy_1_ctrl-and-c-pressed.png');
   });
 

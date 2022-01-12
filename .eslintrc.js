@@ -26,7 +26,7 @@ module.exports = {
    * code editor (e.g. VS Code).
    */
   plugins: ['only-warn', 'node', 'import', 'jsx-a11y', '@pkerschbaum/code-import-patterns'],
-  ignorePatterns: ['**/*.js', 'playwright.config.ts'],
+  ignorePatterns: ['**/*.js'],
   rules: {
     curly: 'error',
     'eslint-comments/disable-enable-pair': ['error', { allowWholeFile: true }],
@@ -200,7 +200,6 @@ module.exports = {
               'react',
               'react-dom',
               'styled-components',
-              'tiny-invariant',
               'use-context-selector',
               'use-immer',
               /^@mui\/utils/,

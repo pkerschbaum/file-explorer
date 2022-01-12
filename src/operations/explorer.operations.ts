@@ -276,15 +276,17 @@ export async function pasteResources(explorerId: string) {
   }
 }
 
-export async function createFolder(explorerId: string, folderName: string) {
+export async function createFolder(explorerId: string, folderName: string): Promise<UriComponents> {
   const cwd = extractCwdFromExplorerPanel(
     globalThis.modules.store.getState().explorersSlice.explorerPanels[explorerId],
   );
-  const folderUri = URI.joinPath(URI.from(cwd), folderName);
-  await globalThis.modules.fileSystem.createFolder(folderUri);
+  const uriOfFolderToCreate = URI.joinPath(URI.from(cwd), folderName);
+  await globalThis.modules.fileSystem.createFolder(uriOfFolderToCreate);
 
   // refresh resources of the target directory
   await refreshResourcesOfDirectory({ directory: cwd });
+
+  return uriOfFolderToCreate;
 }
 
 export async function revealCwdInOSExplorer(explorerId: string) {

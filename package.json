@@ -17,7 +17,7 @@
     "test:unit": "jest --no-cache",
     "test:unit:watch": "jest --no-cache --runInBand --watch",
     "pretest:pw": "playwright install",
-    "test:pw": "playwright test",
+    "test:pw": "playwright test --config=playwright/playwright.config.ts",
     "test:pw:update": "yarn run test:pw --update-snapshots",
     "test:pw-docker": "docker-compose -f ./playwright/docker-compose.yml build playwright-svc && docker-compose -f ./playwright/docker-compose.yml run --rm playwright-svc",
     "test:pw-docker:update": "yarn run test:pw-docker --update-snapshots",
