@@ -2,7 +2,6 @@ import { PayloadAction } from '@reduxjs/toolkit';
 
 import type { RootState } from '@app/global-state/store';
 import { createLogger } from '@app/operations/create-logger';
-import { persistentStorageRef } from '@app/operations/global-modules';
 import type { StorageState } from '@app/platform/persistent-storage.types';
 
 const logger = createLogger('store-persist-middleware');
@@ -12,7 +11,7 @@ export const persistMiddleware = (store: any) => (next: any) => (action: Payload
   const currentState = store.getState() as RootState;
   const storageState = mapStorageStateFromGlobalState(currentState);
   logger.debug('persisting state (asynchronously)...', { storageState });
-  void persistentStorageRef.current
+  void globalThis.modules.persistentStorage
     .write(storageState)
     .then(() => logger.debug('state persisted!'));
   return result;

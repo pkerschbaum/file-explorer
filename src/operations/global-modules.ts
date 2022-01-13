@@ -7,19 +7,27 @@ import { PlatformLogWriter } from '@app/platform/log-writer.types';
 import { PlatformNativeHost } from '@app/platform/native-host.types';
 import { PlatformPersistentStorage } from '@app/platform/persistent-storage.types';
 
-export const queryClientRef: { current: QueryClient } = { current: null } as any;
+type GlobalModules = {
+  queryClient: QueryClient;
 
-export const storeRef: { current: RootStore } = { current: null } as any;
-export const dispatchRef: { current: AppDispatch } = { current: null } as any;
+  store: RootStore;
+  dispatch: AppDispatch;
 
-export const fileIconThemeLoaderRef: { current: PlatformFileIconThemeLoader } = {
-  current: null,
-} as any;
-export const fileSystemRef: { current: PlatformFileSystem } = { current: null } as any;
-export const logWriterRef: { current: PlatformLogWriter } = {
-  current: null,
-} as any;
-export const nativeHostRef: { current: PlatformNativeHost } = { current: null } as any;
-export const persistentStorageRef: { current: PlatformPersistentStorage } = {
-  current: null,
-} as any;
+  fileIconThemeLoader: PlatformFileIconThemeLoader;
+  fileSystem: PlatformFileSystem;
+  logWriter: PlatformLogWriter;
+  nativeHost: PlatformNativeHost;
+  persistentStorage: PlatformPersistentStorage;
+};
+
+declare global {
+  // eslint-disable-next-line no-var
+  var modules: GlobalModules;
+}
+
+export function setGlobalModules(modulesToSet: Partial<GlobalModules>) {
+  global.modules = {
+    ...global.modules,
+    ...modulesToSet,
+  };
+}

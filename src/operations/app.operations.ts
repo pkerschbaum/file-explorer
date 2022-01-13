@@ -11,7 +11,6 @@ import {
   CwdSegment,
   generateExplorerId,
 } from '@app/global-state/slices/explorers.slice';
-import { dispatchRef, fileSystemRef, nativeHostRef } from '@app/operations/global-modules';
 
 export async function addExplorerPanel(cwdSegmentsToClone?: CwdSegment[]) {
   let cwdSegmentsOfNewExplorer;
@@ -19,7 +18,7 @@ export async function addExplorerPanel(cwdSegmentsToClone?: CwdSegment[]) {
     cwdSegmentsOfNewExplorer = objects.deepCopyJson(cwdSegmentsToClone);
   } else {
     const defaultExplorerCwd = URI.from(await getDefaultExplorerCwd());
-    const stats = await fileSystemRef.current.resolve(defaultExplorerCwd);
+    const stats = await globalThis.modules.fileSystem.resolve(defaultExplorerCwd);
     if (!stats.isDirectory) {
       throw new CustomError(
         `could not set directory for explorer panel! reason: uri is not a valid directory.`,
@@ -31,8 +30,10 @@ export async function addExplorerPanel(cwdSegmentsToClone?: CwdSegment[]) {
 
   const explorerId = generateExplorerId();
 
-  dispatchRef.current(actions.addExplorer({ explorerId, cwdSegments: cwdSegmentsOfNewExplorer }));
-  dispatchRef.current(actions.changeFocusedExplorer({ explorerId }));
+  globalThis.modules.dispatch(
+    actions.addExplorer({ explorerId, cwdSegments: cwdSegmentsOfNewExplorer }),
+  );
+  globalThis.modules.dispatch(actions.changeFocusedExplorer({ explorerId }));
 }
 
 export function removeExplorerPanel(explorerId: string, explorerIdToSwitchTo?: string) {
@@ -44,51 +45,53 @@ export function removeExplorerPanel(explorerId: string, explorerIdToSwitchTo?: s
    *
    * After that, remove the explorer.
    */
-  dispatchRef.current(actions.markExplorerForRemoval({ explorerId }));
+  globalThis.modules.dispatch(actions.markExplorerForRemoval({ explorerId }));
   if (check.isNonEmptyString(explorerIdToSwitchTo)) {
-    dispatchRef.current(actions.changeFocusedExplorer({ explorerId: explorerIdToSwitchTo }));
+    globalThis.modules.dispatch(
+      actions.changeFocusedExplorer({ explorerId: explorerIdToSwitchTo }),
+    );
   }
   setTimeout(() => {
-    dispatchRef.current(actions.removeExplorer({ explorerId }));
+    globalThis.modules.dispatch(actions.removeExplorer({ explorerId }));
   });
 }
 
 export function changeFocusedExplorer(newFocusedExplorerId: string) {
-  dispatchRef.current(actions.changeFocusedExplorer({ explorerId: newFocusedExplorerId }));
+  globalThis.modules.dispatch(actions.changeFocusedExplorer({ explorerId: newFocusedExplorerId }));
 }
 
 export async function windowMinimize(): Promise<void> {
-  return await nativeHostRef.current.window.minimize();
+  return await globalThis.modules.nativeHost.window.minimize();
 }
 
 export async function windowToggleMaximized(): Promise<void> {
-  return await nativeHostRef.current.window.toggleMaximized();
+  return await globalThis.modules.nativeHost.window.toggleMaximized();
 }
 
 export async function windowClose(): Promise<void> {
-  return await nativeHostRef.current.window.close();
+  return await globalThis.modules.nativeHost.window.close();
 }
 
 export async function getDefaultExplorerCwd(): Promise<UriComponents> {
-  return await nativeHostRef.current.app.getPath({ name: 'home' });
+  return await globalThis.modules.nativeHost.app.getPath({ name: 'home' });
 }
 
 export function isResourceQualifiedForThumbnail(resource: ResourceForUI) {
-  return nativeHostRef.current.app.isResourceQualifiedForThumbnail(resource);
+  return globalThis.modules.nativeHost.app.isResourceQualifiedForThumbnail(resource);
 }
 
 export function getThumbnailURLForResource(resource: ResourceForUI, height: number) {
-  return nativeHostRef.current.app.getThumbnailURLForResource(resource, height);
+  return globalThis.modules.nativeHost.app.getThumbnailURLForResource(resource, height);
 }
 
 export function isResourceQualifiedForNativeIcon(resource: ResourceForUI) {
-  return nativeHostRef.current.app.isResourceQualifiedForNativeIcon(resource);
+  return globalThis.modules.nativeHost.app.isResourceQualifiedForNativeIcon(resource);
 }
 
 export function getNativeIconURLForResource(resource: ResourceForUI) {
-  return nativeHostRef.current.app.getNativeIconURLForResource(resource);
+  return globalThis.modules.nativeHost.app.getNativeIconURLForResource(resource);
 }
 
 export function startNativeFileDnD(uri: UriComponents) {
-  return nativeHostRef.current.webContents.startNativeFileDnD(uri);
+  return globalThis.modules.nativeHost.webContents.startNativeFileDnD(uri);
 }

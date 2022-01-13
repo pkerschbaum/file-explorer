@@ -1,4 +1,5 @@
 import * as path from '@pkerschbaum/code-oss-file-service/out/vs/base/common/path';
+import * as platform from '@pkerschbaum/code-oss-file-service/out/vs/base/common/platform';
 
 import { loadCssRules } from '@app/operations/file-icon-theme.operations';
 import type { PlatformFileIconThemeLoader } from '@app/platform/file-icon-theme-loader.types';
@@ -15,7 +16,9 @@ export function createStorybookFileIconThemeLoader(): PlatformFileIconThemeLoade
         cssRulesPostProcessing: (rawIconThemeCssRules) => {
           return rawIconThemeCssRules.replace(
             FILE_ICON_THEME_PATH_REPLACE_REGEX,
-            path.join(FILE_ICON_THEME_RELATIVE_PATH, fileIconThemePathFragment, '/'),
+            platform.isWindows
+              ? path.join(FILE_ICON_THEME_RELATIVE_PATH, fileIconThemePathFragment, '/')
+              : '/',
           );
         },
       });

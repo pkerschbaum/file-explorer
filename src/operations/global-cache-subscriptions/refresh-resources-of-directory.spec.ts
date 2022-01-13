@@ -7,7 +7,6 @@ import { uriHelper } from '@app/base/utils/uri-helper';
 import { RESOURCES_OF_DIRECTORY_KEY_PREFIX } from '@app/global-cache/query-keys';
 import { QueryCacheNotifyEvent } from '@app/operations/global-cache-subscriptions';
 import { createRefreshResourcesOfDirectorySubscription } from '@app/operations/global-cache-subscriptions/refresh-resources-of-directory';
-import { fileSystemRef } from '@app/operations/global-modules';
 import { PlatformFileSystem } from '@app/platform/file-system.types';
 
 import { initializeFakePlatformModules } from '@app-test/utils/fake-platform-modules';
@@ -53,7 +52,7 @@ describe('refresh-resources-of-directory', () => {
     await initializeFakePlatformModules();
     const { allCreatedDisposables, fakeWatch, fakeOnDidFilesChange, fakeFileSystem } =
       createFakeFileSystem();
-    fileSystemRef.current = fakeFileSystem;
+    globalThis.modules.fileSystem = fakeFileSystem;
 
     const refreshResourcesOfDirectorySubscription = createRefreshResourcesOfDirectorySubscription();
 
@@ -120,7 +119,7 @@ describe('refresh-resources-of-directory', () => {
     await initializeFakePlatformModules();
     const { allCreatedDisposables, fakeWatch, fakeOnDidFilesChange, fakeFileSystem } =
       createFakeFileSystem();
-    fileSystemRef.current = fakeFileSystem;
+    globalThis.modules.fileSystem = fakeFileSystem;
 
     const refreshResourcesOfDirectorySubscription = createRefreshResourcesOfDirectorySubscription();
 
@@ -171,7 +170,7 @@ describe('refresh-resources-of-directory', () => {
     await initializeFakePlatformModules();
     const { allCreatedDisposables, fakeWatch, fakeOnDidFilesChange, fakeFileSystem } =
       createFakeFileSystem();
-    fileSystemRef.current = fakeFileSystem;
+    globalThis.modules.fileSystem = fakeFileSystem;
 
     const refreshResourcesOfDirectorySubscription = createRefreshResourcesOfDirectorySubscription();
 

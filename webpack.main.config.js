@@ -1,5 +1,6 @@
-const path = require('path');
+const rules = require('./webpack.rules');
 const plugins = require('./webpack.main.plugins');
+const moduleAliases = require('./package-module-aliases');
 
 module.exports = {
   /**
@@ -9,16 +10,12 @@ module.exports = {
   entry: './src/index.ts',
   // Put your normal webpack config below here
   module: {
-    rules: require('./webpack.rules'),
+    rules,
   },
   plugins,
   resolve: {
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
-    alias: {
-      '@app': path.resolve(__dirname, './src'),
-      '@app-test': path.resolve(__dirname, './test'),
-      '@app-storybook': path.resolve(__dirname, './storybook'),
-    },
+    alias: moduleAliases,
   },
   /**
    * "sharp" does not get packaged correctly in this electron/electron-forge setup.

@@ -1,32 +1,28 @@
-import { screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { queries } from '@playwright-testing-library/test';
+import { expect, test } from '@playwright/test';
 
-import { asyncUtils } from '@app/base/utils/async.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
-import { createStoreInstance } from '@app/global-state/store';
-import { nativeHostRef, storeRef } from '@app/operations/global-modules';
-import { createQueryClient } from '@app/ui/Globals';
 
-import { initializeFakePlatformModules } from '@app-test/utils/fake-platform-modules';
-import { renderApp } from '@app-test/utils/render-app';
+import { bootstrap } from '@app-playwright/playwright.util';
 
-describe('ActionsBar [logic]', () => {
-  it('Click on button "Copy" should store selected resources in clipboard and "pasteShouldMove: false" in global-state', async () => {
-    await initializeFakePlatformModules();
-    const store = await createStoreInstance();
-    const queryClient = createQueryClient();
-    renderApp({ queryClient, store });
+test.describe('ActionsBar [logic]', () => {
+  test('Click on button "Copy" should store selected resources in clipboard and "pasteShouldMove: false" in global-state', async ({
+    page,
+  }) => {
+    const $document = await bootstrap({ page, storybookIdToVisit: 'shell--simple-case' });
 
     // select some resources and copy them
-    const res1 = await screen.findByRole('row', { name: /aa test folder/i });
-    const res2 = await screen.findByRole('row', { name: /testfile1.txt/i });
-    userEvent.click(res1);
-    userEvent.click(res2, { ctrlKey: true });
-    const copyButton = await screen.findByRole('button', { name: /Copy/i });
-    userEvent.click(copyButton);
+    const res1 = await queries.findByRole($document, 'row', { name: /aa test folder/i });
+    const res2 = await queries.findByRole($document, 'row', { name: /testfile1.txt/i });
+    await res1.click();
+    await res2.click({ modifiers: ['Control'] });
+    const copyButton = await queries.findByRole($document, 'button', { name: /Copy/i });
+    await copyButton.click();
 
     // assert clipboard
-    const resourcesInClipboard = nativeHostRef.current.clipboard.readResources();
+    const resourcesInClipboard = await page.evaluate(() =>
+      globalThis.modules.nativeHost.clipboard.readResources(),
+    );
     expect(resourcesInClipboard).toHaveLength(2);
     const actualResource1Basename = uriHelper.extractBasename(resourcesInClipboard[0]);
     expect(actualResource1Basename).toEqual('aa test folder');
@@ -34,25 +30,29 @@ describe('ActionsBar [logic]', () => {
     expect(actualResource2Basename).toEqual('testfile1.txt');
 
     // assert that "pasteShouldMove" was set to "false" in global state
-    expect(storeRef.current.getState().processesSlice.draftPasteState).not.toBeUndefined();
-    expect(storeRef.current.getState().processesSlice.draftPasteState?.pasteShouldMove).toBe(false);
+    const draftPasteState = await page.evaluate(
+      () => globalThis.modules.store.getState().processesSlice.draftPasteState,
+    );
+    expect(draftPasteState).not.toBeUndefined();
+    expect(draftPasteState?.pasteShouldMove).toBe(false);
   });
 
-  it('CTRL+C should trigger the "Copy" action (therefore, store selected resources in clipboard and "pasteShouldMove: false" in global-state)', async () => {
-    await initializeFakePlatformModules();
-    const store = await createStoreInstance();
-    const queryClient = createQueryClient();
-    renderApp({ queryClient, store });
+  test('CTRL+C should trigger the "Copy" action (therefore, store selected resources in clipboard and "pasteShouldMove: false" in global-state)', async ({
+    page,
+  }) => {
+    const $document = await bootstrap({ page, storybookIdToVisit: 'shell--simple-case' });
 
     // select some resources and copy them
-    const res1 = await screen.findByRole('row', { name: /aa test folder/i });
-    const res2 = await screen.findByRole('row', { name: /testfile1.txt/i });
-    userEvent.click(res1);
-    userEvent.click(res2, { ctrlKey: true });
-    userEvent.keyboard('{ctrl}c');
+    const res1 = await queries.findByRole($document, 'row', { name: /aa test folder/i });
+    const res2 = await queries.findByRole($document, 'row', { name: /testfile1.txt/i });
+    await res1.click();
+    await res2.click({ modifiers: ['Control'] });
+    await page.keyboard.press('Control+c');
 
     // assert clipboard
-    const resourcesInClipboard = nativeHostRef.current.clipboard.readResources();
+    const resourcesInClipboard = await page.evaluate(() =>
+      globalThis.modules.nativeHost.clipboard.readResources(),
+    );
     expect(resourcesInClipboard).toHaveLength(2);
     const actualResource1Basename = uriHelper.extractBasename(resourcesInClipboard[0]);
     expect(actualResource1Basename).toEqual('aa test folder');
@@ -60,26 +60,30 @@ describe('ActionsBar [logic]', () => {
     expect(actualResource2Basename).toEqual('testfile1.txt');
 
     // assert that "pasteShouldMove" was set to "false" in global state
-    expect(storeRef.current.getState().processesSlice.draftPasteState).not.toBeUndefined();
-    expect(storeRef.current.getState().processesSlice.draftPasteState?.pasteShouldMove).toBe(false);
+    const draftPasteState = await page.evaluate(
+      () => globalThis.modules.store.getState().processesSlice.draftPasteState,
+    );
+    expect(draftPasteState).not.toBeUndefined();
+    expect(draftPasteState?.pasteShouldMove).toBe(false);
   });
 
-  it('Click on button "Cut" should store selected resources in clipboard and "pasteShouldMove: true" in global-state', async () => {
-    await initializeFakePlatformModules();
-    const store = await createStoreInstance();
-    const queryClient = createQueryClient();
-    renderApp({ queryClient, store });
+  test('Click on button "Cut" should store selected resources in clipboard and "pasteShouldMove: true" in global-state', async ({
+    page,
+  }) => {
+    const $document = await bootstrap({ page, storybookIdToVisit: 'shell--simple-case' });
 
     // select some resources and copy them
-    const res1 = await screen.findByRole('row', { name: /aa test folder/i });
-    const res2 = await screen.findByRole('row', { name: /testfile1.txt/i });
-    userEvent.click(res1);
-    userEvent.click(res2, { ctrlKey: true });
-    const copyButton = await screen.findByRole('button', { name: /Cut/i });
-    userEvent.click(copyButton);
+    const res1 = await queries.findByRole($document, 'row', { name: /aa test folder/i });
+    const res2 = await queries.findByRole($document, 'row', { name: /testfile1.txt/i });
+    await res1.click();
+    await res2.click({ modifiers: ['Control'] });
+    const copyButton = await queries.findByRole($document, 'button', { name: /Cut/i });
+    await copyButton.click();
 
     // assert clipboard
-    const resourcesInClipboard = nativeHostRef.current.clipboard.readResources();
+    const resourcesInClipboard = await page.evaluate(() =>
+      globalThis.modules.nativeHost.clipboard.readResources(),
+    );
     expect(resourcesInClipboard).toHaveLength(2);
     const actualResource1Basename = uriHelper.extractBasename(resourcesInClipboard[0]);
     expect(actualResource1Basename).toEqual('aa test folder');
@@ -87,25 +91,29 @@ describe('ActionsBar [logic]', () => {
     expect(actualResource2Basename).toEqual('testfile1.txt');
 
     // assert that "pasteShouldMove" was set to "false" in global state
-    expect(storeRef.current.getState().processesSlice.draftPasteState).not.toBeUndefined();
-    expect(storeRef.current.getState().processesSlice.draftPasteState?.pasteShouldMove).toBe(true);
+    const draftPasteState = await page.evaluate(
+      () => globalThis.modules.store.getState().processesSlice.draftPasteState,
+    );
+    expect(draftPasteState).not.toBeUndefined();
+    expect(draftPasteState?.pasteShouldMove).toBe(true);
   });
 
-  it('CTRL+X should trigger "Cut" action (therefore, store selected resources in clipboard and "pasteShouldMove: true" in global-state)', async () => {
-    await initializeFakePlatformModules();
-    const store = await createStoreInstance();
-    const queryClient = createQueryClient();
-    renderApp({ queryClient, store });
+  test('CTRL+X should trigger "Cut" action (therefore, store selected resources in clipboard and "pasteShouldMove: true" in global-state)', async ({
+    page,
+  }) => {
+    const $document = await bootstrap({ page, storybookIdToVisit: 'shell--simple-case' });
 
     // select some resources and copy them
-    const res1 = await screen.findByRole('row', { name: /aa test folder/i });
-    const res2 = await screen.findByRole('row', { name: /testfile1.txt/i });
-    userEvent.click(res1);
-    userEvent.click(res2, { ctrlKey: true });
-    userEvent.keyboard('{ctrl}x');
+    const res1 = await queries.findByRole($document, 'row', { name: /aa test folder/i });
+    const res2 = await queries.findByRole($document, 'row', { name: /testfile1.txt/i });
+    await res1.click();
+    await res2.click({ modifiers: ['Control'] });
+    await page.keyboard.press('Control+x');
 
     // assert clipboard
-    const resourcesInClipboard = nativeHostRef.current.clipboard.readResources();
+    const resourcesInClipboard = await page.evaluate(() =>
+      globalThis.modules.nativeHost.clipboard.readResources(),
+    );
     expect(resourcesInClipboard).toHaveLength(2);
     const actualResource1Basename = uriHelper.extractBasename(resourcesInClipboard[0]);
     expect(actualResource1Basename).toEqual('aa test folder');
@@ -113,33 +121,39 @@ describe('ActionsBar [logic]', () => {
     expect(actualResource2Basename).toEqual('testfile1.txt');
 
     // assert that "pasteShouldMove" was set to "false" in global state
-    expect(storeRef.current.getState().processesSlice.draftPasteState).not.toBeUndefined();
-    expect(storeRef.current.getState().processesSlice.draftPasteState?.pasteShouldMove).toBe(true);
+    const draftPasteState = await page.evaluate(
+      () => globalThis.modules.store.getState().processesSlice.draftPasteState,
+    );
+    expect(draftPasteState).not.toBeUndefined();
+    expect(draftPasteState?.pasteShouldMove).toBe(true);
   });
 
-  it('if an element has focus, CTRL+C should be disabled and thus not trigger any action', async () => {
-    await initializeFakePlatformModules();
-    const store = await createStoreInstance();
-    const queryClient = createQueryClient();
-    renderApp({ queryClient, store });
+  test('if an element has focus, CTRL+C should be disabled and thus not trigger any action', async ({
+    page,
+  }) => {
+    const $document = await bootstrap({ page, storybookIdToVisit: 'shell--simple-case' });
 
-    let resourcesInClipboard = nativeHostRef.current.clipboard.readResources();
+    let resourcesInClipboard = await page.evaluate(() =>
+      globalThis.modules.nativeHost.clipboard.readResources(),
+    );
     expect(resourcesInClipboard).toHaveLength(0);
 
     // set focus on "Open" button by first clicking on the Filter textbox and then tab once
-    const filterInput = await screen.findByRole('textbox', { name: /Filter/i });
-    userEvent.click(filterInput);
-    userEvent.tab();
-
-    // yield to the browser (the GlobalShortcutsContext does determine if elements have focus in a setTimeout call)
-    await waitFor(() => asyncUtils.wait(0));
+    const filterInput = await queries.findByRole($document, 'textbox', { name: /Filter/i });
+    await filterInput.click();
+    await page.keyboard.press('Tab');
 
     // fire copy shortcut
-    userEvent.keyboard('{ctrl}c');
+    await page.keyboard.press('Control+C');
 
     // shortcut should not have been invoked
-    resourcesInClipboard = nativeHostRef.current.clipboard.readResources();
+    resourcesInClipboard = await page.evaluate(() =>
+      globalThis.modules.nativeHost.clipboard.readResources(),
+    );
     expect(resourcesInClipboard).toHaveLength(0);
-    expect(storeRef.current.getState().processesSlice.draftPasteState).toBeUndefined();
+    const draftPasteState = await page.evaluate(
+      () => globalThis.modules.store.getState().processesSlice.draftPasteState,
+    );
+    expect(draftPasteState).toBeUndefined();
   });
 });

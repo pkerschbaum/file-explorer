@@ -209,7 +209,7 @@ export const ActionsBar: React.FC = () => {
   const multipleResourcesActionsDisabled = selectedShownResources.length < 1;
 
   return (
-    <ActionBarContainer>
+    <ActionBarContainer role="menubar">
       <Box style={{ alignSelf: 'flex-end' }}>
         <FilterInput />
       </Box>

@@ -121,6 +121,7 @@ const RadioRoot = styled.label`
 
 const OverlayedIconsContainer = styled(Box)`
   --spacing-for-focused-icon: 5px;
+  pointer-events: none;
   position: relative;
   height: calc(1em + 2 * var(--spacing-for-focused-icon));
   width: calc(1em + 2 * var(--spacing-for-focused-icon));

@@ -127,7 +127,14 @@ export const CwdSegmentOperationsContextProvider: React.FC<
     }, [selectedShownResources]);
 
   const createFolderInExplorer: CwdSegmentOperationsContext['createFolderInExplorer'] =
-    React.useCallback((folderName) => createFolder(explorerId, folderName), [explorerId]);
+    React.useCallback(
+      async (folderName) => {
+        const createdFolderUri = await createFolder(explorerId, folderName);
+        setKeysOfSelectedResources([[uriHelper.getComparisonKey(createdFolderUri)]]);
+        setReasonForLastSelectionChange(REASON_FOR_SELECTION_CHANGE.NEW_FOLDER_WAS_CREATED);
+      },
+      [explorerId, setKeysOfSelectedResources, setReasonForLastSelectionChange],
+    );
 
   const changeSelection: CwdSegmentOperationsContext['changeSelection'] = React.useCallback(
     (idxOfResource, modifiers) => {

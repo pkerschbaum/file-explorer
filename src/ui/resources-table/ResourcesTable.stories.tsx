@@ -4,7 +4,6 @@ import invariant from 'tiny-invariant';
 
 import { extractCwdSegmentsFromExplorerPanel } from '@app/global-state/slices/explorers.hooks';
 import { createStoreInstance, RootStore } from '@app/global-state/store';
-import { fileSystemRef } from '@app/operations/global-modules';
 import { CwdSegmentContextProvider } from '@app/ui/cwd-segment-context';
 import { ExplorerContextProvider } from '@app/ui/explorer-context';
 import { createQueryClient, Globals } from '@app/ui/Globals';
@@ -56,7 +55,7 @@ ResourcesDataNotAvailable.loaders = [
   async () => {
     await initializeStorybookPlatformModules();
     // never resolve file-system access in order to show loading state (skeletons)
-    fileSystemRef.current.resolve = () => {
+    globalThis.modules.fileSystem.resolve = () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       return new Promise<IFileStatWithMetadata>(() => {});
     };

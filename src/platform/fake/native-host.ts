@@ -3,11 +3,12 @@ import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/n
 import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 
 import { functions } from '@app/base/utils/functions.util';
-import type { PlatformNativeHost } from '@app/platform/native-host.types';
+import { CLIPBOARD_CHANGED_DATA_TYPE, PlatformNativeHost } from '@app/platform/native-host.types';
 
 export function createFakeNativeHost(): PlatformNativeHost {
-  let currentClipboardValue: UriComponents[] = [];
-  const clipboardChangedEmitter = new Emitter<void>();
+  let currentClipboardText = '';
+  let currentClipboardResources: UriComponents[] = [];
+  const clipboardChangedEmitter = new Emitter<CLIPBOARD_CHANGED_DATA_TYPE>();
 
   return {
     app: {
@@ -27,10 +28,15 @@ export function createFakeNativeHost(): PlatformNativeHost {
       close: () => Promise.resolve(),
     },
     clipboard: {
-      readResources: () => currentClipboardValue,
+      readText: () => currentClipboardText,
+      writeText: (value) => {
+        currentClipboardText = value;
+        clipboardChangedEmitter.fire(CLIPBOARD_CHANGED_DATA_TYPE.TEXT);
+      },
+      readResources: () => currentClipboardResources,
       writeResources: (resources) => {
-        currentClipboardValue = resources;
-        clipboardChangedEmitter.fire();
+        currentClipboardResources = resources;
+        clipboardChangedEmitter.fire(CLIPBOARD_CHANGED_DATA_TYPE.RESOURCES);
       },
       onClipboardChanged: clipboardChangedEmitter.event,
     },

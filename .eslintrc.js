@@ -1,7 +1,7 @@
 module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: ['./tsconfig.json', './cypress/tsconfig.json'],
+    project: ['./tsconfig.json'],
     sourceType: 'module',
     tsconfigRootDir: __dirname,
   },
@@ -16,8 +16,8 @@ module.exports = {
     'plugin:react-hooks/recommended',
     'plugin:jsx-a11y/recommended',
     'plugin:storybook/recommended',
-    'plugin:cypress/recommended',
-    'plugin:jest-dom/recommended',
+    'plugin:playwright/playwright-test',
+    'plugin:eslint-comments/recommended',
   ],
   /**
    * add "only-warn" plugin to change all errors to warnings.
@@ -25,19 +25,11 @@ module.exports = {
    * allows to distinguish ESLint warnings from other errors (e.g. TypeScript compile errors) in the
    * code editor (e.g. VS Code).
    */
-  plugins: [
-    'only-warn',
-    'node',
-    'import',
-    'jsx-a11y',
-    'cypress',
-    'jest-dom',
-    'testing-library',
-    '@pkerschbaum/code-import-patterns',
-  ],
+  plugins: ['only-warn', 'node', 'import', 'jsx-a11y', 'code-import-patterns'],
   ignorePatterns: ['**/*.js'],
   rules: {
     curly: 'error',
+    'eslint-comments/disable-enable-pair': ['error', { allowWholeFile: true }],
     'import/first': 'error',
     'import/newline-after-import': 'error',
     'import/no-absolute-path': 'error',
@@ -71,7 +63,7 @@ module.exports = {
             position: 'after',
           },
           {
-            pattern: '@app-cypress/**',
+            pattern: '@app-playwright/**',
             group: 'parent',
             position: 'after',
           },
@@ -99,9 +91,10 @@ module.exports = {
         message: 'Do not check in dead tests. Either fix or delete them.',
       },
       {
-        selector: "MemberExpression[object.name='fireEvent']",
+        selector: "MemberExpression[object.name='page'][property.name='waitForTimeout']",
         message:
-          'Use "userEvent" from @testing-library/user-event instead of "fireEvent" from @testing-library/react.',
+          'Do not check in hard-coded timeouts. If there is no other choice, ' +
+          'disable this eslint rule for the line in question and provide an explanation why the rule is needed.',
       },
     ],
     'node/no-process-env': 'error',
@@ -111,7 +104,7 @@ module.exports = {
     'prefer-template': 'error',
     'react/prop-types': 'off',
     'react/react-in-jsx-scope': 'off',
-    '@pkerschbaum/code-import-patterns/code-import-patterns': [
+    'code-import-patterns/patterns': [
       'error',
       {
         zones: [
@@ -196,11 +189,7 @@ module.exports = {
           },
           {
             target: /\/src\/ui\/.+\.visual\.spec\.ts$/,
-            allowedPatterns: ['local-cypress'],
-          },
-          {
-            target: /\/src\/ui\/Globals\.tsx$/,
-            allowedPatterns: ['focus-visible'],
+            allowedPatterns: ['@playwright/test', '@playwright-testing-library/test'],
           },
           {
             target: /\/src\/ui\/.+/,
@@ -211,7 +200,6 @@ module.exports = {
               'react',
               'react-dom',
               'styled-components',
-              'tiny-invariant',
               'use-context-selector',
               'use-immer',
               /^@mui\/utils/,
@@ -223,7 +211,7 @@ module.exports = {
           },
           {
             target: /\/src\/.+\.logic\.spec\.ts$/,
-            allowedPatterns: ['@testing-library/react', '@testing-library/user-event'],
+            allowedPatterns: ['@playwright/test', '@playwright-testing-library/test'],
           },
           {
             target: /\/src\/platform\/electron\/protocol\/electron-main\/app.ts$/,
@@ -246,16 +234,6 @@ module.exports = {
             allowedPatterns: ['react-redux', /^react-query/, /^@reduxjs\/toolkit/],
           },
           {
-            target: /\/cypress\/.+/,
-            allowedPatterns: [
-              '@storybook/csf',
-              'local-cypress',
-              'path',
-              /^@pkerschbaum\/cypress-image-snapshot/,
-              /^@testing-library\/cypress/,
-            ],
-          },
-          {
             target: /\/scripts\/.+/,
             allowedPatterns: [/.+/],
           },
@@ -265,6 +243,10 @@ module.exports = {
           },
           {
             target: /\/test\/.+/,
+            allowedPatterns: [/.+/],
+          },
+          {
+            target: /\/playwright\/.+/,
             allowedPatterns: [/.+/],
           },
           {
@@ -335,13 +317,8 @@ module.exports = {
   },
   overrides: [
     {
-      // enable eslint-plugin-testing-library for "logic" specs
-      files: ['**/?(*.)+(logic.spec).[jt]s?(x)'],
-      extends: ['plugin:testing-library/react'],
-    },
-    {
-      // allow default export for Storybook stories and for the Cypress plugins index file
-      files: ['**/*.stories.@(js|jsx|ts|tsx)', 'cypress/plugins/index.@(js|ts)'],
+      // allow default export for Storybook stories
+      files: ['**/*.stories.@(js|jsx|ts|tsx)'],
       rules: {
         'import/no-default-export': 'off',
       },

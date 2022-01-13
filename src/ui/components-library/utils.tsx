@@ -3,7 +3,11 @@ import { MotionProps } from 'framer-motion';
 
 import { config } from '@app/config';
 
-export const componentLibraryUtils = { generateMotionLayoutId, useIsAnimationAllowed };
+export const componentLibraryUtils = {
+  generateMotionLayoutId,
+  isRunningInPlaywright,
+  useIsAnimationAllowed,
+};
 
 const MOTION_LAYOUTID_PREFIX = `${config.productName}-motion-layoutid`;
 let lastId = 0;
@@ -26,8 +30,11 @@ export type ReactMotionProps<
     'layout' | 'layoutId' | 'initial' | 'animate' | 'exit' | 'transition' | 'variants'
   >;
 
+function isRunningInPlaywright(): boolean {
+  return (window as any).playwright !== undefined;
+}
+
 function useIsAnimationAllowed(): boolean {
-  const isRunningInCypress = (window as any).Cypress !== undefined;
   const prefersReducedMotion = useMediaMatch('(prefers-reduced-motion: reduce)');
-  return !isRunningInCypress && !prefersReducedMotion;
+  return !prefersReducedMotion;
 }

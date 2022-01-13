@@ -3,7 +3,11 @@ import * as React from 'react';
 import { formatter } from '@app/base/utils/formatter.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { useCwd } from '@app/global-state/slices/explorers.hooks';
-import { changeDirectory, revealCwdInOSExplorer } from '@app/operations/explorer.operations';
+import {
+  changeCwd,
+  copyCwdIntoClipboard,
+  revealCwdInOSExplorer,
+} from '@app/operations/explorer.operations';
 import {
   Paper,
   Popover,
@@ -13,11 +17,13 @@ import {
   MenuInstance,
   ArrowRightAltOutlinedIcon,
   FolderOutlinedIcon,
+  ContentCopyOutlinedIcon,
 } from '@app/ui/components-library';
 import { ChangeCwdForm } from '@app/ui/cwd-breadcrumbs/ChangeCwdForm';
 
 enum CWD_ACTIONS_MENU_ACTION {
   REVEAL_IN_OS_FILE_EXPLORER = 'reveal-in-os-file-explorer',
+  COPY_CWD = 'copy-cwd',
   CHANGE_CWD = 'change-cwd',
 }
 
@@ -58,6 +64,17 @@ export const CwdActionsMenu: React.FC<CwdActionsMenuProps> = ({ explorerId, menu
           Reveal in OS File Explorer
         </Item>
         <Item
+          key={CWD_ACTIONS_MENU_ACTION.COPY_CWD}
+          textValue="Copy Directory Path"
+          onAction={() => {
+            copyCwdIntoClipboard(explorerId);
+            menuInstance.state.close();
+          }}
+        >
+          <ContentCopyOutlinedIcon />
+          Copy Directory Path
+        </Item>
+        <Item
           key={CWD_ACTIONS_MENU_ACTION.CHANGE_CWD}
           textValue="Change Directory"
           itemRef={changeCwdLIRef}
@@ -75,7 +92,7 @@ export const CwdActionsMenu: React.FC<CwdActionsMenuProps> = ({ explorerId, menu
             isOpen={changeCwdPopoverInstance.state.isOpen}
             initialCwdValue={formatter.resourcePath(cwd)}
             onSubmit={async (newDir) => {
-              await changeDirectory(explorerId, uriHelper.parseUri(cwd.scheme, newDir));
+              await changeCwd(explorerId, uriHelper.parseUri(cwd.scheme, newDir));
               changeCwdPopoverInstance.state.close();
               menuInstance.state.close();
             }}

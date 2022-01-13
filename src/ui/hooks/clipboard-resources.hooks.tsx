@@ -1,15 +1,17 @@
 import * as React from 'react';
 
-import { nativeHostRef } from '@app/operations/global-modules';
+import { CLIPBOARD_CHANGED_DATA_TYPE } from '@app/platform/native-host.types';
 
 export function useClipboardResources() {
   const [clipboardResources, setClipboardResources] = React.useState(() =>
-    nativeHostRef.current.clipboard.readResources(),
+    globalThis.modules.nativeHost.clipboard.readResources(),
   );
 
   React.useEffect(function registerOnClipboardChangedHandler() {
-    const disposable = nativeHostRef.current.clipboard.onClipboardChanged(() => {
-      setClipboardResources(nativeHostRef.current.clipboard.readResources());
+    const disposable = globalThis.modules.nativeHost.clipboard.onClipboardChanged((type) => {
+      if (type === CLIPBOARD_CHANGED_DATA_TYPE.RESOURCES) {
+        setClipboardResources(globalThis.modules.nativeHost.clipboard.readResources());
+      }
     });
 
     return () => disposable.dispose();

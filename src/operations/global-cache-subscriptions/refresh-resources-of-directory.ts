@@ -18,7 +18,6 @@ import type {
   QueryCacheNotifyEvent,
   QueryCacheSubscription,
 } from '@app/operations/global-cache-subscriptions/setup-subscriptions';
-import { fileSystemRef } from '@app/operations/global-modules';
 
 const logger = createLogger('refresh-resources-of-directory');
 
@@ -112,12 +111,12 @@ function addDirectoryWatcherIfNonePresent(
     logger.debug('directory watcher for the given directory is already present', { queryKey });
   } else {
     logger.debug('no directory watcher present --> creating (throttled) watcher...', { queryKey });
-    const watcherDisposable = fileSystemRef.current.watch(directoryUri);
+    const watcherDisposable = globalThis.modules.fileSystem.watch(directoryUri);
     const [throttledRefreshResourcesOfDirectory] = functions.throttle(
       refreshResourcesOfDirectory,
       200,
     );
-    const didFilesChangeDisposable = fileSystemRef.current.onDidFilesChange((e) => {
+    const didFilesChangeDisposable = globalThis.modules.fileSystem.onDidFilesChange((e) => {
       logger.debug(
         'did receive onDidFilesChange event --> checking if refreshing resources of directory is necessary...',
         { queryKey, fileChangesEvent: JSON.parse(JSON.stringify(e)) as {} },

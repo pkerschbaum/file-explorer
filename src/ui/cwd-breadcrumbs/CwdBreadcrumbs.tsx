@@ -6,7 +6,7 @@ import invariant from 'tiny-invariant';
 import { formatter } from '@app/base/utils/formatter.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { useCwdSegments } from '@app/global-state/slices/explorers.hooks';
-import { changeDirectory } from '@app/operations/explorer.operations';
+import { changeCwd } from '@app/operations/explorer.operations';
 import {
   ButtonHandle,
   Box,
@@ -44,7 +44,7 @@ export const CwdBreadcrumbs: React.FC = () => {
             segmentFormatted={formattedUriSegments[idx]}
             isLastSegment={isLastSegment}
             isSecondToLastSegment={isSecondToLastSegment}
-            changeDirectory={() => changeDirectory(explorerId, segment.uri)}
+            changeDirectory={() => changeCwd(explorerId, segment.uri)}
           />
         );
       })}

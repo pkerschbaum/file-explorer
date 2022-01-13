@@ -3,21 +3,19 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { Provider as ReactReduxProvider } from 'react-redux';
 import styled, { createGlobalStyle, css } from 'styled-components';
-// Polyfill for ":focus-visible" pseudo class. Needed because jest dom (jsdom) does not support that pseudo class.
-import 'focus-visible';
 
 import { config } from '@app/config';
-import { FILE_ICON_THEMES } from '@app/constants';
+import { FILE_ICON_THEMES } from '@app/domain/constants';
 import { useActiveFileIconTheme } from '@app/global-state/slices/user.hooks';
 import { RootStore } from '@app/global-state/store';
 import { useGlobalCacheSubscriptions } from '@app/operations/global-cache-subscriptions';
+import { setGlobalModules } from '@app/operations/global-modules';
 import {
-  queryClientRef,
-  storeRef,
-  dispatchRef,
-  fileIconThemeLoaderRef,
-} from '@app/operations/global-modules';
-import { DesignTokenProvider, DESIGN_TOKENS, OverlayProvider } from '@app/ui/components-library';
+  componentLibraryUtils,
+  DesignTokenProvider,
+  DESIGN_TOKENS,
+  OverlayProvider,
+} from '@app/ui/components-library';
 import {
   DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED,
   GlobalShortcutsContextProvider,
@@ -40,7 +38,7 @@ const globalStyle = css`
     font-family: 'Segoe UI Variable';
     src: url('./fonts/SegoeUI-VF.ttf') format('truetype-variations');
     font-weight: 1 999;
-    font-display: fallback;
+    font-display: block;
   }
 
   :root {
@@ -124,6 +122,16 @@ const globalStyle = css`
     outline: none;
   }
 
+  /* disable caret blinking if UI is running in test environment */
+  ${() =>
+    componentLibraryUtils.isRunningInPlaywright() &&
+    css`
+      input,
+      textarea {
+        caret-color: transparent !important;
+      }
+    `}
+
   /* change scrollbar to a thin variant which lightens up on hover */
   *::-webkit-scrollbar {
     width: 10px;
@@ -154,10 +162,12 @@ export type GlobalsProps = {
 
 export const Globals: React.FC<GlobalsProps> = ({ queryClient, store, children }) => {
   React.useEffect(
-    function setStoreAndQueryClientRefs() {
-      storeRef.current = store;
-      dispatchRef.current = store.dispatch;
-      queryClientRef.current = queryClient;
+    function setStoreAndQueryClientGlobalModules() {
+      setGlobalModules({
+        store,
+        dispatch: store.dispatch,
+        queryClient,
+      });
     },
     [queryClient, store],
   );
@@ -204,7 +214,7 @@ const FileIconThemeLoader: React.FC = ({ children }) => {
   React.useEffect(() => {
     async function addCssRulesForFileIconTheme() {
       // load CSS rules of the file icon theme to set
-      const iconThemeCssRules = await fileIconThemeLoaderRef.current.loadCssRules(
+      const iconThemeCssRules = await globalThis.modules.fileIconThemeLoader.loadCssRules(
         FILE_ICON_THEMES[activeFileIconTheme].fsPathFragment,
       );
 
