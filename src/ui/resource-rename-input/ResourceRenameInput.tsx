@@ -6,7 +6,7 @@ import { check } from '@app/base/utils/assert.util';
 import { ResourceForUI } from '@app/domain/types';
 import { commonStyles } from '@app/ui/common-styles';
 import { Button, FocusScope, TextField } from '@app/ui/components-library';
-import { KEY } from '@app/ui/constants';
+import { doesKeyboardEventKeyMatchPrintedKey, PRINTED_KEY } from '@app/ui/constants';
 
 type ResourceRenameInputProps = {
   resource: ResourceForUI;
@@ -34,7 +34,9 @@ export const ResourceRenameInput: React.FC<ResourceRenameInputProps> = ({
   }
 
   function abortOnEsc(e: KeyboardEvent) {
-    if (e.key === KEY.ESC) {
+    if (
+      doesKeyboardEventKeyMatchPrintedKey({ printedKey: PRINTED_KEY.ESC, keyboardEventKey: e.key })
+    ) {
       abortRename();
     }
   }

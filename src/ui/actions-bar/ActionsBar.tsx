@@ -23,7 +23,7 @@ import {
   useTooltip,
   ViewComfyIcon,
 } from '@app/ui/components-library';
-import { KEY } from '@app/ui/constants';
+import { PRINTED_KEY } from '@app/ui/constants';
 import {
   useFilterInput,
   useSelectedShownResources,
@@ -74,7 +74,7 @@ export const ActionsBar: React.FC = () => {
     selectAllShortcut: {
       keybindings: [
         {
-          key: KEY.A,
+          key: PRINTED_KEY.A,
           modifiers: {
             ctrl: 'SET',
             alt: 'NOT_SET',
@@ -86,7 +86,7 @@ export const ActionsBar: React.FC = () => {
     setActiveResourcesViewShortcut: {
       keybindings: [
         {
-          key: KEY.T,
+          key: PRINTED_KEY.T,
           modifiers: {
             ctrl: 'SET',
             alt: 'NOT_SET',
@@ -101,7 +101,7 @@ export const ActionsBar: React.FC = () => {
     openShortcut: {
       keybindings: [
         {
-          key: KEY.ENTER,
+          key: PRINTED_KEY.ENTER,
           modifiers: {
             ctrl: 'NOT_SET',
             alt: 'NOT_SET',
@@ -116,7 +116,7 @@ export const ActionsBar: React.FC = () => {
     copyShortcut: {
       keybindings: [
         {
-          key: KEY.C,
+          key: PRINTED_KEY.C,
           modifiers: {
             ctrl: 'SET',
             alt: 'NOT_SET',
@@ -131,7 +131,7 @@ export const ActionsBar: React.FC = () => {
     cutShortcut: {
       keybindings: [
         {
-          key: KEY.X,
+          key: PRINTED_KEY.X,
           modifiers: {
             ctrl: 'SET',
             alt: 'NOT_SET',
@@ -146,7 +146,7 @@ export const ActionsBar: React.FC = () => {
     pasteShortcut: {
       keybindings: [
         {
-          key: KEY.V,
+          key: PRINTED_KEY.V,
           modifiers: {
             ctrl: 'SET',
             alt: 'NOT_SET',
@@ -161,7 +161,7 @@ export const ActionsBar: React.FC = () => {
     triggerRenameShortcut: {
       keybindings: [
         {
-          key: KEY.R,
+          key: PRINTED_KEY.R,
           modifiers: {
             ctrl: 'SET',
             alt: 'NOT_SET',
@@ -176,7 +176,7 @@ export const ActionsBar: React.FC = () => {
     scheduleDeleteShortcut: {
       keybindings: [
         {
-          key: KEY.DELETE,
+          key: PRINTED_KEY.DELETE,
           modifiers: {
             ctrl: 'SET',
             alt: 'NOT_SET',
@@ -191,7 +191,7 @@ export const ActionsBar: React.FC = () => {
     triggerCreateNewFolderShortcut: {
       keybindings: [
         {
-          key: KEY.N,
+          key: PRINTED_KEY.N,
           modifiers: {
             ctrl: 'SET',
             alt: 'NOT_SET',

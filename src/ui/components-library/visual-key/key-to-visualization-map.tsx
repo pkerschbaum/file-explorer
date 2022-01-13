@@ -11,95 +11,95 @@ import {
   KeyboardTabOutlinedIcon,
 } from '@app/ui/components-library/icons';
 import { VisualKey } from '@app/ui/components-library/visual-key';
-import { KEY } from '@app/ui/constants';
+import { PRINTED_KEY } from '@app/ui/constants';
 
-export const KEY_TO_VISUALIZATION_MAP: { [key in KEY]: React.ReactNode } = {
-  [KEY.A]: (
+export const KEY_TO_VISUALIZATION_MAP: { [key in PRINTED_KEY]: React.ReactNode } = {
+  [PRINTED_KEY.A]: (
     <VisualKey type="char" contentSize="md">
       A
     </VisualKey>
   ),
-  [KEY.C]: (
+  [PRINTED_KEY.C]: (
     <VisualKey type="char" contentSize="md">
       C
     </VisualKey>
   ),
-  [KEY.N]: (
+  [PRINTED_KEY.N]: (
     <VisualKey type="char" contentSize="md">
       N
     </VisualKey>
   ),
-  [KEY.R]: (
+  [PRINTED_KEY.R]: (
     <VisualKey type="char" contentSize="md">
       R
     </VisualKey>
   ),
-  [KEY.T]: (
+  [PRINTED_KEY.T]: (
     <VisualKey type="char" contentSize="md">
       T
     </VisualKey>
   ),
-  [KEY.X]: (
+  [PRINTED_KEY.X]: (
     <VisualKey type="char" contentSize="md">
       X
     </VisualKey>
   ),
-  [KEY.V]: (
+  [PRINTED_KEY.V]: (
     <VisualKey type="char" contentSize="md">
       V
     </VisualKey>
   ),
-  [KEY.ARROW_UP]: (
+  [PRINTED_KEY.ARROW_UP]: (
     <VisualKey type="icon">
       <KeyboardArrowUpOutlinedIcon />
     </VisualKey>
   ),
-  [KEY.ARROW_RIGHT]: (
+  [PRINTED_KEY.ARROW_RIGHT]: (
     <VisualKey type="icon">
       <KeyboardArrowRightOutlinedIcon />
     </VisualKey>
   ),
-  [KEY.ARROW_DOWN]: (
+  [PRINTED_KEY.ARROW_DOWN]: (
     <VisualKey type="icon">
       <KeyboardArrowDownOutlinedIcon />
     </VisualKey>
   ),
-  [KEY.ARROW_LEFT]: (
+  [PRINTED_KEY.ARROW_LEFT]: (
     <VisualKey type="icon">
       <KeyboardArrowLeftOutlinedIcon />
     </VisualKey>
   ),
-  [KEY.PAGE_UP]: (
+  [PRINTED_KEY.PAGE_UP]: (
     <VisualKey type="icon">
       <ArrowCircleUpOutlinedIcon />
     </VisualKey>
   ),
-  [KEY.PAGE_DOWN]: (
+  [PRINTED_KEY.PAGE_DOWN]: (
     <VisualKey type="icon">
       <ArrowCircleDownOutlinedIcon />
     </VisualKey>
   ),
-  [KEY.DELETE]: (
+  [PRINTED_KEY.DELETE]: (
     <VisualKey type="char" contentSize="sm">
       Del
     </VisualKey>
   ),
-  [KEY.ENTER]: (
+  [PRINTED_KEY.ENTER]: (
     <VisualKey type="icon">
       <KeyboardReturnOutlinedIcon />
     </VisualKey>
   ),
-  [KEY.ESC]: (
+  [PRINTED_KEY.ESC]: (
     <VisualKey type="char" contentSize="sm">
       Esc
     </VisualKey>
   ),
-  [KEY.TAB]: (
+  [PRINTED_KEY.TAB]: (
     <VisualKey type="icon">
       <KeyboardTabOutlinedIcon />
     </VisualKey>
   ),
-  [KEY.ALT]: (
+  [PRINTED_KEY.ALT]: (
     <VisualKey type="char" contentSize="sm">
       Alt
     </VisualKey>
