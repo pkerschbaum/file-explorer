@@ -157,8 +157,6 @@ export const GlobalShortcutsContextProvider: React.FC<GlobalShortcutsContextProv
   React.useEffect(
     function invokeShortcutOnKeydown() {
       const eventListener = (e: WindowEventMap['keydown']) => {
-        // eslint-disable-next-line no-console
-        console.trace('invokeShortcutOnKeydown', e);
         if (!shouldEventGetProcessed(e, isSomeElementBlockingShortcuts)) {
           return;
         }

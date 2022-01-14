@@ -45,4 +45,31 @@ test.describe('TabsArea [logic]', () => {
     const tabs = await queries.findAllByRole($document, 'tab');
     expect(tabs).toHaveLength(2);
   });
+
+  test('ALT+W should close the currently focused tab', async ({ page }) => {
+    const $document = await bootstrap({ page, storybookIdToVisit: 'shell--multiple-tabs' });
+
+    // at the beginning, three tabs should be present, of which the second one should be focused
+    let tabs = await queries.findAllByRole($document, 'tab');
+    expect(tabs).toHaveLength(3);
+    let firstTab = await queries.findByRole($document, 'tab', { name: /home/i });
+    const secondTab = await queries.findByRole($document, 'tab', { name: /testdir/i });
+    let thirdTab = await queries.findByRole($document, 'tab', { name: /test-folder/i });
+
+    expect(await firstTab.getAttribute('aria-selected')).toEqual('false');
+    expect(await secondTab.getAttribute('aria-selected')).toEqual('true');
+    expect(await thirdTab.getAttribute('aria-selected')).toEqual('false');
+
+    // close the currently focused tab
+    await page.keyboard.press('Alt+w');
+
+    // now, two tabs should be present, of which the first one should be focused
+    tabs = await queries.findAllByRole($document, 'tab');
+    expect(tabs).toHaveLength(2);
+    firstTab = await queries.findByRole($document, 'tab', { name: /home/i });
+    thirdTab = await queries.findByRole($document, 'tab', { name: /test-folder/i });
+
+    expect(await firstTab.getAttribute('aria-selected')).toEqual('true');
+    expect(await thirdTab.getAttribute('aria-selected')).toEqual('false');
+  });
 });

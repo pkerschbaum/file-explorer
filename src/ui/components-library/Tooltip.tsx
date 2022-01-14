@@ -18,6 +18,7 @@ export type Placement = ReactAriaPlacement;
 export type UseTooltipArgs<TriggerHTMLElement extends HTMLElement> = {
   triggerRef: React.RefObject<TriggerHTMLElement>;
   tooltip?: {
+    isOpen?: boolean;
     placement?: Placement;
     offset?: {
       mainAxis?: number;
@@ -45,9 +46,10 @@ export function useTooltip<TriggerHTMLElement extends HTMLElement>(
 
   const tooltipTriggerProps: TooltipTriggerProps = { delay: 0 };
   const state = useTooltipTriggerState(tooltipTriggerProps);
+  const isOpen = props.tooltip?.isOpen ?? state.isOpen;
   const { triggerProps, tooltipProps: reactAriaTooltipProps } = useTooltipTrigger(
-    tooltipTriggerProps,
-    state,
+    { ...tooltipTriggerProps, isOpen },
+    { ...state, isOpen },
     props.triggerRef,
   );
 
@@ -60,7 +62,7 @@ export function useTooltip<TriggerHTMLElement extends HTMLElement>(
     overlayRef: tooltipRef,
     placement: props.tooltip?.placement ?? 'bottom',
     offset: props.tooltip?.offset?.mainAxis ?? 0,
-    isOpen: state.isOpen,
+    isOpen,
     containerPadding: 0,
   });
 
@@ -81,29 +83,29 @@ export type TooltipProps = TooltipComponentProps &
 
 type TooltipComponentProps = {
   tooltipInstance: TooltipInstance;
+  overrideIsOpen?: boolean;
   children: React.ReactNode;
 };
 
 export const Tooltip = styled((props: TooltipProps) => {
-  const { tooltipInstance } = props;
+  const { tooltipInstance, overrideIsOpen } = props;
 
-  return <>{tooltipInstance.state.isOpen && <TooltipInner {...props} />}</>;
+  return <>{(overrideIsOpen ?? tooltipInstance.state.isOpen) && <TooltipInner {...props} />}</>;
 })``;
 
 const TooltipInner = styled((props: TooltipProps) => {
   const {
     /* component props */
     tooltipInstance,
+    overrideIsOpen,
     children,
 
     /* other props */
     ...delegatedProps
   } = props;
 
-  const { tooltipProps } = useReactAriaTooltip(
-    { isOpen: tooltipInstance.state.isOpen },
-    tooltipInstance.state,
-  );
+  const isOpen = overrideIsOpen ?? tooltipInstance.state.isOpen;
+  const { tooltipProps } = useReactAriaTooltip({ isOpen }, { ...tooltipInstance.state, isOpen });
 
   return (
     <OverlayContainer style={{ isolation: 'isolate' }}>

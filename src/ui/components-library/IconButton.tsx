@@ -22,6 +22,7 @@ type IconButtonAriaProps = Required<Pick<AriaButtonProps<'button'>, 'aria-label'
 type IconButtonComponentProps = {
   tooltipContent: React.ReactChild;
   tooltipPlacement?: Placement;
+  tooltipOverrideIsOpen?: boolean;
   size?: 'md' | 'sm';
   disablePadding?: boolean;
 };
@@ -38,6 +39,7 @@ export const IconButton = styled(
       /* component props */
       tooltipContent,
       tooltipPlacement,
+      tooltipOverrideIsOpen,
       size,
       disablePadding,
 
@@ -79,6 +81,7 @@ export const IconButton = styled(
     const { triggerProps, tooltipInstance } = useTooltip({
       triggerRef: buttonRef,
       tooltip: {
+        isOpen: tooltipOverrideIsOpen,
         placement: tooltipPlacement,
         offset: {
           mainAxis: tooltipOffsetToUse,
@@ -102,7 +105,9 @@ export const IconButton = styled(
           <ButtonContent>{children}</ButtonContent>
         </IconButtonRoot>
 
-        <Tooltip tooltipInstance={tooltipInstance}>{tooltipContent}</Tooltip>
+        <Tooltip tooltipInstance={tooltipInstance} overrideIsOpen={tooltipOverrideIsOpen}>
+          {tooltipContent}
+        </Tooltip>
       </>
     );
   }),

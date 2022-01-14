@@ -32,8 +32,6 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
   const idOfFocusedExplorerPanel = useIdOfFocusedExplorerPanel();
 
   const addTabButtonHandleRef = React.useRef<ButtonHandle>(null);
-  const prevTabButtonHandleRef = React.useRef<ButtonHandle>(null);
-  const nextTabButtonHandleRef = React.useRef<ButtonHandle>(null);
 
   const focusedExplorer = explorersToShow.find(
     (explorer) => explorer.explorerId === idOfFocusedExplorerPanel,
@@ -54,30 +52,6 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
   }
 
   const registerShortcutsResult = useRegisterGlobalShortcuts({
-    changeToPrevTabShortcut: {
-      keybindings: [
-        {
-          key: PRINTED_KEY.ARROW_UP,
-          modifiers: {
-            ctrl: 'NOT_SET',
-            alt: 'SET',
-          },
-        },
-      ],
-      handler: () => prevTabButtonHandleRef.current?.triggerSyntheticPress(),
-    },
-    changeToNextTabShortcut: {
-      keybindings: [
-        {
-          key: PRINTED_KEY.ARROW_DOWN,
-          modifiers: {
-            ctrl: 'NOT_SET',
-            alt: 'SET',
-          },
-        },
-      ],
-      handler: () => nextTabButtonHandleRef.current?.triggerSyntheticPress(),
-    },
     addNewTabShortcut: {
       keybindings: [
         {
@@ -88,7 +62,7 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
           },
         },
       ],
-      handler: duplicateFocusedExplorerPanel,
+      handler: () => addTabButtonHandleRef.current?.triggerSyntheticPress(),
     },
   });
 
@@ -112,20 +86,9 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
               <ExplorerTabContent
                 value={explorer.explorerId}
                 label={formattedUriSegmentToRender}
-                buttonHandleRef={
-                  isPrevExplorer
-                    ? prevTabButtonHandleRef
-                    : isNextExplorer
-                    ? nextTabButtonHandleRef
-                    : undefined
-                }
-                buttonEndIcon={
-                  isPrevExplorer
-                    ? registerShortcutsResult.changeToPrevTabShortcut.icon
-                    : isNextExplorer
-                    ? registerShortcutsResult.changeToNextTabShortcut.icon
-                    : undefined
-                }
+                isFocusedExplorer={isFocusedExplorer}
+                isPrevExplorer={isPrevExplorer}
+                isNextExplorer={isNextExplorer}
                 onRemove={() =>
                   removeExplorerPanel(
                     explorer.explorerId,
@@ -160,26 +123,85 @@ const TabsAreaContainer = styled(Box)`
 type ExplorerTabContentProps = {
   value: string;
   label: string;
-  buttonHandleRef?: React.RefObject<ButtonHandle>;
-  buttonEndIcon?: React.ReactNode;
+  isFocusedExplorer: boolean;
+  isPrevExplorer: boolean;
+  isNextExplorer: boolean;
   onRemove: () => void;
   removeExplorerActionDisabled: boolean;
 };
 
 const ExplorerTabContent: React.FC<ExplorerTabContentProps> = (props) => {
   const { onSelect } = useTab({ value: props.value });
+  const tabButtonHandleRef = React.useRef<ButtonHandle>(null);
+
+  const registerShortcutsResult = useRegisterGlobalShortcuts({
+    changeToPrevTabShortcut: {
+      keybindings: !props.isPrevExplorer
+        ? []
+        : [
+            {
+              key: PRINTED_KEY.ARROW_UP,
+              modifiers: {
+                ctrl: 'NOT_SET',
+                alt: 'SET',
+              },
+            },
+          ],
+      handler: () => tabButtonHandleRef.current?.triggerSyntheticPress(),
+    },
+    changeToNextTabShortcut: {
+      keybindings: !props.isNextExplorer
+        ? []
+        : [
+            {
+              key: PRINTED_KEY.ARROW_DOWN,
+              modifiers: {
+                ctrl: 'NOT_SET',
+                alt: 'SET',
+              },
+            },
+          ],
+      handler: () => tabButtonHandleRef.current?.triggerSyntheticPress(),
+    },
+    removeTabShortcut: {
+      keybindings: !props.isFocusedExplorer
+        ? []
+        : [
+            {
+              key: PRINTED_KEY.W,
+              modifiers: {
+                ctrl: 'NOT_SET',
+                alt: 'SET',
+              },
+            },
+          ],
+      handler: props.onRemove,
+    },
+  });
+
+  const buttonEndIcon =
+    registerShortcutsResult.changeToPrevTabShortcut.icon ??
+    registerShortcutsResult.changeToNextTabShortcut.icon;
+  const removeTabShortcutModifiersAreActive =
+    registerShortcutsResult.removeTabShortcut.icon !== undefined;
 
   return (
     <>
-      <TabButton onPress={onSelect} handleRef={props.buttonHandleRef} endIcon={props.buttonEndIcon}>
+      <TabButton onPress={onSelect} handleRef={tabButtonHandleRef} endIcon={buttonEndIcon}>
         {props.label}
       </TabButton>
       {!props.removeExplorerActionDisabled && (
         <TabIconButton
           size="sm"
           aria-label="Close Tab"
-          tooltipContent="Close Tab"
+          tooltipContent={
+            <CloseTabButtonTooltipContent>
+              <Box>Close Tab</Box>
+              {registerShortcutsResult.removeTabShortcut.icon}
+            </CloseTabButtonTooltipContent>
+          }
           tooltipPlacement="right"
+          tooltipOverrideIsOpen={removeTabShortcutModifiersAreActive ? true : undefined}
           onPress={props.onRemove}
           disablePadding
         >
@@ -207,4 +229,9 @@ const TabIconButton = styled(IconButton)`
   height: fit-content;
 
   border-radius: 0;
+`;
+
+const CloseTabButtonTooltipContent = styled(Box)`
+  display: flex;
+  gap: var(--spacing-2);
 `;

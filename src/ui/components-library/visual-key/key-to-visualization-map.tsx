@@ -49,6 +49,11 @@ export const KEY_TO_VISUALIZATION_MAP: { [key in PRINTED_KEY]: React.ReactNode }
       V
     </VisualKey>
   ),
+  [PRINTED_KEY.W]: (
+    <VisualKey type="char" contentSize="md">
+      W
+    </VisualKey>
+  ),
   [PRINTED_KEY.ARROW_UP]: (
     <VisualKey type="icon">
       <KeyboardArrowUpOutlinedIcon />
