@@ -1,7 +1,7 @@
 import { CancellationTokenSource } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/cancellation';
 import { extname, basename } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/path';
 import { isLinux } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/platform';
-import type { ProgressCbArgs } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
+import type { ReportProgressArgs } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
 import * as resources from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
 import { Constants } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uint';
 import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
@@ -14,7 +14,7 @@ import { check } from '@app/base/utils/assert.util';
 import { formatter } from '@app/base/utils/formatter.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { PASTE_PROCESS_STATUS, ResourceForUI, RESOURCE_TYPE, UpdateFn } from '@app/domain/types';
-import { refreshResourcesOfDirectory } from '@app/global-cache/resources';
+import { mapFileStatToResource, refreshResourcesOfDirectory } from '@app/global-cache/resources';
 import { extractCwdFromExplorerPanel } from '@app/global-state/slices/explorers.hooks';
 import {
   actions as explorerActions,
@@ -168,22 +168,38 @@ export async function pasteResources(explorerId: string) {
   let totalSize = 0;
   let bytesProcessed = 0;
   let progressOfAtLeastOneSourceIsIndeterminate = false;
-  const statusPerFile: {
-    [uri: string]: {
-      bytesProcessed: number;
-      progressDeterminateType: 'DETERMINATE' | 'INDETERMINATE';
-    };
+  const statusPerResource: {
+    [keyOfResource: string]:
+      | {
+          type: RESOURCE_TYPE.FILE;
+          progressDeterminateType: 'DETERMINATE' | 'INDETERMINATE';
+          bytesProcessed: number;
+        }
+      | {
+          type: RESOURCE_TYPE.DIRECTORY | RESOURCE_TYPE.SYMBOLIC_LINK | RESOURCE_TYPE.UNKNOWN;
+        };
   } = {};
 
   await Promise.all(
     pasteInfos.map(async (pasteInfo) => {
       const { sourceResource } = pasteInfo;
 
-      const fileStatMap = await resolveDeep(sourceResource.uri, sourceResource.fileStat);
+      const resourceStatMap = await resolveDeep(sourceResource.uri, sourceResource.fileStat);
 
-      Object.entries(fileStatMap).forEach(([uri, fileStat]) => {
-        totalSize += fileStat.size;
-        statusPerFile[uri] = { bytesProcessed: 0, progressDeterminateType: 'DETERMINATE' };
+      Object.entries(resourceStatMap).forEach(([keyOfResource, statOfResource]) => {
+        totalSize += statOfResource.size;
+        const resourceType = mapFileStatToResource(statOfResource).resourceType;
+        if (resourceType === RESOURCE_TYPE.FILE) {
+          statusPerResource[keyOfResource] = {
+            type: resourceType,
+            progressDeterminateType: 'INDETERMINATE',
+            bytesProcessed: 0,
+          };
+        } else {
+          statusPerResource[keyOfResource] = {
+            type: resourceType,
+          };
+        }
       });
     }),
   );
@@ -213,18 +229,31 @@ export async function pasteResources(explorerId: string) {
   );
 
   // perform paste
-  function progressCb(progressArgs: ProgressCbArgs) {
+  function reportProgress(progressArgs: ReportProgressArgs) {
+    const keyOfResource = uriHelper.getComparisonKey(progressArgs.forSource);
+    const statusOfResource = statusPerResource[keyOfResource];
+
     if ('newBytesRead' in progressArgs && progressArgs.newBytesRead !== undefined) {
+      if (statusOfResource.type !== RESOURCE_TYPE.FILE) {
+        throw new CustomError(`"newBytesRead" were reported for a resource which is not a file!`, {
+          keyOfResource,
+          statusOfResource,
+        });
+      }
+
       bytesProcessed += progressArgs.newBytesRead;
-      statusPerFile[uriHelper.getComparisonKey(progressArgs.forSource)].bytesProcessed +=
-        progressArgs.newBytesRead;
+      statusOfResource.bytesProcessed += progressArgs.newBytesRead;
     }
     if ('progressDeterminateType' in progressArgs && progressArgs.progressDeterminateType) {
-      statusPerFile[uriHelper.getComparisonKey(progressArgs.forSource)].progressDeterminateType +=
-        progressArgs.progressDeterminateType;
-      progressOfAtLeastOneSourceIsIndeterminate = Object.values(statusPerFile).some(
-        (status) => status.progressDeterminateType === 'INDETERMINATE',
-      );
+      // we only track determinate type for files
+      if (statusOfResource.type === RESOURCE_TYPE.FILE) {
+        statusOfResource.progressDeterminateType = progressArgs.progressDeterminateType;
+        progressOfAtLeastOneSourceIsIndeterminate = Object.values(statusPerResource).some(
+          (status) =>
+            status.type === RESOURCE_TYPE.FILE &&
+            status.progressDeterminateType === 'INDETERMINATE',
+        );
+      }
     }
   }
   const intervalId = setInterval(function dispatchProgress() {
@@ -248,7 +277,7 @@ export async function pasteResources(explorerId: string) {
           ...pasteInfo,
           pasteShouldMove: draftPasteState.pasteShouldMove,
           cancellationTokenSource,
-          progressCb,
+          reportProgress,
         }),
       ),
     );

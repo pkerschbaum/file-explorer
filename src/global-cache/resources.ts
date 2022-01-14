@@ -71,7 +71,7 @@ export function setCachedResourcesOfDirectory(
   );
 }
 
-function mapFileStatToResource(resource: IFileStat): ResourceStat {
+export function mapFileStatToResource(resource: IFileStat): ResourceStat {
   const resourceType = resource.isDirectory
     ? RESOURCE_TYPE.DIRECTORY
     : resource.isSymbolicLink

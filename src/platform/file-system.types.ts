@@ -1,6 +1,5 @@
-import { CancellationToken } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/cancellation';
 import { IDisposable } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/lifecycle';
-import { ProgressCbArgs } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
+import { CoordinationArgs } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
 import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import {
   FileDeleteOptions,
@@ -30,13 +29,13 @@ export type PlatformFileSystem = {
     source: UriComponents,
     target: UriComponents,
     overwrite?: boolean,
-    additionalArgs?: { token?: CancellationToken; progressCb?: (args: ProgressCbArgs) => void },
+    coordinationArgs?: CoordinationArgs,
   ): Promise<IFileStatWithMetadata>;
   move(
     source: UriComponents,
     target: UriComponents,
     overwrite?: boolean,
-    additionalArgs?: { token?: CancellationToken; progressCb?: (args: ProgressCbArgs) => void },
+    coordinationArgs?: CoordinationArgs,
   ): Promise<IFileStatWithMetadata>;
   createFolder(resource: UriComponents): Promise<IFileStatWithMetadata>;
   watch(resource: UriComponents, options?: IWatchOptions): IDisposable;

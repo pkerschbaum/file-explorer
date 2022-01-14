@@ -1,5 +1,5 @@
 import { CancellationTokenSource } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/cancellation';
-import type { ProgressCbArgs } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
+import type { ReportProgressArgs } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
 import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import * as uuid from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uuid';
 import { IFileStatWithMetadata } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
@@ -151,9 +151,8 @@ async function resolveDeepRecursive(
   targetStat: IFileStatWithMetadata,
   resultMap: ResourceStatMap,
 ) {
-  if (!targetStat.isDirectory) {
-    resultMap[uriHelper.getComparisonKey(targetToResolve)] = targetStat;
-  } else if (targetStat.children && targetStat.children.length > 0) {
+  resultMap[uriHelper.getComparisonKey(targetToResolve)] = targetStat;
+  if (targetStat.isDirectory && targetStat.children && targetStat.children.length > 0) {
     // recursive resolve
     await Promise.all(
       targetStat.children.map(async (child) => {
@@ -261,23 +260,23 @@ export async function executeCopyOrMove({
   targetResource,
   pasteShouldMove,
   cancellationTokenSource,
-  progressCb,
+  reportProgress,
 }: {
   sourceResource: { uri: URI; fileStat: IFileStatWithMetadata };
   targetResource: { uri: URI };
   pasteShouldMove: boolean;
   cancellationTokenSource?: CancellationTokenSource;
-  progressCb?: (args: ProgressCbArgs) => void;
+  reportProgress?: (args: ReportProgressArgs) => void;
 }) {
   // Move/Copy Resource
   const operation = pasteShouldMove
     ? globalThis.modules.fileSystem.move(sourceResource.uri, targetResource.uri, false, {
         token: cancellationTokenSource?.token,
-        progressCb,
+        reportProgress,
       })
     : globalThis.modules.fileSystem.copy(sourceResource.uri, targetResource.uri, false, {
         token: cancellationTokenSource?.token,
-        progressCb,
+        reportProgress,
       });
 
   try {

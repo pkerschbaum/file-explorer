@@ -118,7 +118,7 @@ export type ResourceStat = {
 };
 
 export type ResourceStatMap = {
-  [uri: string]: IFileStatWithMetadata;
+  [keyOfResource: string]: IFileStatWithMetadata;
 };
 
 type TagId = string;

@@ -2121,10 +2121,10 @@
     css.escape "^1.5.1"
     vscode-nls "^5.0.0"
 
-"@pkerschbaum/code-oss-file-service@^1.65.0":
-  version "1.65.0"
-  resolved "https://registry.yarnpkg.com/@pkerschbaum/code-oss-file-service/-/code-oss-file-service-1.65.0.tgz#b74d82cb1faeb9719c0a6e196752ce39b66b4114"
-  integrity sha512-y+xkzfUXa6VzDmxYPwVSej2Qy773kK9wY6WssE7YgR9/kRGVNDhqUCR8+yjBjPi6eeMvTh34ZLdUGtJTYt1qWA==
+"@pkerschbaum/code-oss-file-service@^1.65.1":
+  version "1.65.1"
+  resolved "https://registry.yarnpkg.com/@pkerschbaum/code-oss-file-service/-/code-oss-file-service-1.65.1.tgz#c8beae9b75557b90e81a927a93c1653f501331c4"
+  integrity sha512-Il6TDNrp2M2woecLQFH6ohYdn9YQ2A20yT4jRgtgbNHOSGlRPuiRYaWvHkczDnDmbAfJ6FNaHbb6YGuRmy9QQQ==
   dependencies:
     "@parcel/watcher" "2.0.5"
     graceful-fs "4.2.8"

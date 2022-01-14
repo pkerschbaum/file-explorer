@@ -40,11 +40,11 @@ export function convertUriComponentsToURIInstances(
     async trash(resource, options?) {
       return origFileSystem.trash(URI.from(resource), options);
     },
-    async copy(source, target, overwrite?, additionalArgs?) {
-      return origFileSystem.copy(URI.from(source), URI.from(target), overwrite, additionalArgs);
+    async copy(source, target, overwrite?, coordinationArgs?) {
+      return origFileSystem.copy(URI.from(source), URI.from(target), overwrite, coordinationArgs);
     },
-    async move(source, target, overwrite?, additionalArgs?) {
-      return origFileSystem.move(URI.from(source), URI.from(target), overwrite, additionalArgs);
+    async move(source, target, overwrite?, coordinationArgs?) {
+      return origFileSystem.move(URI.from(source), URI.from(target), overwrite, coordinationArgs);
     },
     async createFolder(resource) {
       return origFileSystem.createFolder(URI.from(resource));
