@@ -182,5 +182,4 @@ const ResourcesViewSlideBox = styled(Box)`
   flex-direction: column;
 
   background-color: var(--color-bg-0);
-  will-change: transform;
 `;
