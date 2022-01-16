@@ -62,22 +62,21 @@ export const CwdSegmentOperationsContextProvider: React.FC<
   const keyOfResourceSelectionGotStartedWith = useKeyOfResourceSelectionGotStartedWith();
   const setKeyOfResourceToRename = useSetKeyOfResourceToRename();
 
-  const { copySelectedResources, cutSelectedResources } = React.useMemo(() => {
-    const urisOfResourcesToCutOrCopy = selectedShownResources.map((resource) => resource.uri);
+  const urisOfSelectedShownResources = React.useMemo(
+    () => selectedShownResources.map((resource) => resource.uri),
+    [selectedShownResources],
+  );
 
-    return {
-      copySelectedResources: () =>
-        resourceOperations.cutOrCopyResources(urisOfResourcesToCutOrCopy, false),
-      cutSelectedResources: () =>
-        resourceOperations.cutOrCopyResources(urisOfResourcesToCutOrCopy, true),
-    };
-  }, [selectedShownResources]);
+  const copySelectedResources: CwdSegmentOperationsContext['copySelectedResources'] = () =>
+    resourceOperations.cutOrCopyResources(urisOfSelectedShownResources, false);
+  const cutSelectedResources: CwdSegmentOperationsContext['cutSelectedResources'] = () =>
+    resourceOperations.cutOrCopyResources(urisOfSelectedShownResources, true);
 
   const pasteResourcesIntoExplorer: CwdSegmentOperationsContext['pasteResourcesIntoExplorer'] =
-    React.useCallback(() => pasteResources(explorerId), [explorerId]);
+    () => pasteResources(explorerId);
 
   const triggerRenameForSelectedResources: CwdSegmentOperationsContext['triggerRenameForSelectedResources'] =
-    React.useCallback(() => {
+    () =>
       setKeyOfResourceToRename((currentKeyOfResourceToRename) => {
         if (selectedShownResources.length !== 1) {
           return undefined;
@@ -88,125 +87,109 @@ export const CwdSegmentOperationsContextProvider: React.FC<
           return selectedShownResources[0].key;
         }
       });
-    }, [selectedShownResources, setKeyOfResourceToRename]);
 
-  const renameResource: CwdSegmentOperationsContext['renameResource'] = React.useCallback(
-    async (resourceToRename, newBaseName) => {
-      const uriToRenameTo = URI.joinPath(URI.from(resourceToRename.uri), '..', newBaseName);
-      setReasonForLastSelectionChange(REASON_FOR_SELECTION_CHANGE.USER_CHANGED_SELECTION);
-      setKeysOfSelectedResources((currentKeysOfSelectedResources) => {
-        const oldKeyOfRenamedResource = uriHelper.getComparisonKey(resourceToRename.uri);
-        const newKeyOfRenamedResource = uriHelper.getComparisonKey(uriToRenameTo);
+  const renameResource: CwdSegmentOperationsContext['renameResource'] = async (
+    resourceToRename,
+    newBaseName,
+  ) => {
+    const uriToRenameTo = URI.joinPath(URI.from(resourceToRename.uri), '..', newBaseName);
+    setReasonForLastSelectionChange(REASON_FOR_SELECTION_CHANGE.USER_CHANGED_SELECTION);
+    setKeysOfSelectedResources((currentKeysOfSelectedResources) => {
+      const oldKeyOfRenamedResource = uriHelper.getComparisonKey(resourceToRename.uri);
+      const newKeyOfRenamedResource = uriHelper.getComparisonKey(uriToRenameTo);
 
-        const newKeys = currentKeysOfSelectedResources.map((renameHistoryKeys) => {
-          if (renameHistoryKeys.includes(oldKeyOfRenamedResource)) {
-            return [...renameHistoryKeys, newKeyOfRenamedResource];
-          }
-          return renameHistoryKeys;
-        });
-
-        return newKeys;
+      const newKeys = currentKeysOfSelectedResources.map((renameHistoryKeys) => {
+        if (renameHistoryKeys.includes(oldKeyOfRenamedResource)) {
+          return [...renameHistoryKeys, newKeyOfRenamedResource];
+        }
+        return renameHistoryKeys;
       });
-      await resourceOperations.renameResource(resourceToRename.uri, uriToRenameTo);
-      setKeyOfResourceToRename(undefined);
-    },
-    [setKeyOfResourceToRename, setKeysOfSelectedResources, setReasonForLastSelectionChange],
-  );
 
-  const openSelectedResources: CwdSegmentOperationsContext['openSelectedResources'] =
-    React.useCallback(
-      () => openResources(explorerId, selectedShownResources),
-      [explorerId, selectedShownResources],
-    );
+      return newKeys;
+    });
+    await resourceOperations.renameResource(resourceToRename.uri, uriToRenameTo);
+    setKeyOfResourceToRename(undefined);
+  };
+
+  const openSelectedResources: CwdSegmentOperationsContext['openSelectedResources'] = () =>
+    openResources(explorerId, selectedShownResources);
 
   const scheduleDeleteSelectedResources: CwdSegmentOperationsContext['scheduleDeleteSelectedResources'] =
-    React.useCallback(() => {
-      resourceOperations.scheduleMoveResourcesToTrash(
-        selectedShownResources.map((resource) => resource.uri),
-      );
-    }, [selectedShownResources]);
+    () => resourceOperations.scheduleMoveResourcesToTrash(urisOfSelectedShownResources);
 
-  const createFolderInExplorer: CwdSegmentOperationsContext['createFolderInExplorer'] =
-    React.useCallback(
-      async (folderName) => {
-        const createdFolderUri = await createFolder(explorerId, folderName);
-        setKeysOfSelectedResources([[uriHelper.getComparisonKey(createdFolderUri)]]);
-        setReasonForLastSelectionChange(REASON_FOR_SELECTION_CHANGE.NEW_FOLDER_WAS_CREATED);
-      },
-      [explorerId, setKeysOfSelectedResources, setReasonForLastSelectionChange],
+  const createFolderInExplorer: CwdSegmentOperationsContext['createFolderInExplorer'] = async (
+    folderName,
+  ) => {
+    const createdFolderUri = await createFolder(explorerId, folderName);
+    setKeysOfSelectedResources([[uriHelper.getComparisonKey(createdFolderUri)]]);
+    setReasonForLastSelectionChange(REASON_FOR_SELECTION_CHANGE.NEW_FOLDER_WAS_CREATED);
+  };
+
+  const changeSelection: CwdSegmentOperationsContext['changeSelection'] = (
+    idxOfResource,
+    modifiers,
+  ) => {
+    if (idxOfResource < 0 || idxOfResource >= resourcesToShow.length) {
+      return;
+    }
+
+    const resource = resourcesToShow[idxOfResource];
+    const resourceIsSelected = !!selectedShownResources.find(
+      (selectedResource) => selectedResource.key === resource.key,
     );
+    function selectResources(resources: ResourceForUI[]) {
+      setReasonForLastSelectionChange(REASON_FOR_SELECTION_CHANGE.USER_CHANGED_SELECTION);
+      setKeysOfSelectedResources(resources.map((resource) => [resource.key]));
+    }
 
-  const changeSelection: CwdSegmentOperationsContext['changeSelection'] = React.useCallback(
-    (idxOfResource, modifiers) => {
-      if (idxOfResource < 0 || idxOfResource >= resourcesToShow.length) {
+    if (modifiers.ctrl) {
+      // toggle selection of resource
+      if (resourceIsSelected) {
+        selectResources(
+          selectedShownResources.filter(
+            (selectedResource) => selectedResource.key !== resource.key,
+          ),
+        );
+      } else {
+        selectResources([...selectedShownResources, resource]);
+      }
+    } else if (modifiers.shift) {
+      // select range of resources
+      if (keyOfResourceSelectionGotStartedWith === undefined) {
         return;
       }
 
-      const resource = resourcesToShow[idxOfResource];
-      const resourceIsSelected = !!selectedShownResources.find(
-        (selectedResource) => selectedResource.key === resource.key,
+      const idxSelectionGotStartedWith = resourcesToShow.findIndex((resource) =>
+        keyOfResourceSelectionGotStartedWith.includes(resource.key),
       );
-      function selectResources(resources: ResourceForUI[]) {
-        setReasonForLastSelectionChange(REASON_FOR_SELECTION_CHANGE.USER_CHANGED_SELECTION);
-        setKeysOfSelectedResources(resources.map((resource) => [resource.key]));
+      let idxSelectFrom = idxSelectionGotStartedWith;
+      let idxSelectTo = idxOfResource;
+      let selectionDirection: 'DOWN' | 'UP' = 'DOWN';
+      if (idxSelectTo < idxSelectFrom) {
+        // swap values
+        selectionDirection = 'UP';
+        const tmp = idxSelectFrom;
+        idxSelectFrom = idxSelectTo;
+        idxSelectTo = tmp;
       }
 
-      if (modifiers.ctrl) {
-        // toggle selection of resource
-        if (resourceIsSelected) {
-          selectResources(
-            selectedShownResources.filter(
-              (selectedResource) => selectedResource.key !== resource.key,
-            ),
-          );
-        } else {
-          selectResources([...selectedShownResources, resource]);
-        }
-      } else if (modifiers.shift) {
-        // select range of resources
-        if (keyOfResourceSelectionGotStartedWith === undefined) {
-          return;
-        }
-
-        const idxSelectionGotStartedWith = resourcesToShow.findIndex((resource) =>
-          keyOfResourceSelectionGotStartedWith.includes(resource.key),
-        );
-        let idxSelectFrom = idxSelectionGotStartedWith;
-        let idxSelectTo = idxOfResource;
-        let selectionDirection: 'DOWN' | 'UP' = 'DOWN';
-        if (idxSelectTo < idxSelectFrom) {
-          // swap values
-          selectionDirection = 'UP';
-          const tmp = idxSelectFrom;
-          idxSelectFrom = idxSelectTo;
-          idxSelectTo = tmp;
-        }
-
-        let resourcesToSelect = resourcesToShow.filter(
-          (_, idx) => idx >= idxSelectFrom && idx <= idxSelectTo,
-        );
-        if (selectionDirection === 'UP') {
-          resourcesToSelect = arrays.reverse(resourcesToSelect);
-        }
-        selectResources(resourcesToSelect);
-      } else {
-        // no ctrl or shift key pressed --> just select the resource
-        selectResources([resource]);
+      let resourcesToSelect = resourcesToShow.filter(
+        (_, idx) => idx >= idxSelectFrom && idx <= idxSelectTo,
+      );
+      if (selectionDirection === 'UP') {
+        resourcesToSelect = arrays.reverse(resourcesToSelect);
       }
-    },
-    [
-      keyOfResourceSelectionGotStartedWith,
-      resourcesToShow,
-      selectedShownResources,
-      setKeysOfSelectedResources,
-      setReasonForLastSelectionChange,
-    ],
-  );
+      selectResources(resourcesToSelect);
+    } else {
+      // no ctrl or shift key pressed --> just select the resource
+      selectResources([resource]);
+    }
+  };
 
-  const selectAll: CwdSegmentOperationsContext['selectAll'] = React.useCallback(() => {
+  const selectAll: CwdSegmentOperationsContext['selectAll'] = () => {
     setReasonForLastSelectionChange(REASON_FOR_SELECTION_CHANGE.USER_CHANGED_SELECTION);
     setKeysOfSelectedResources(resourcesToShow.map((resource) => [resource.key]));
-  }, [resourcesToShow, setKeysOfSelectedResources, setReasonForLastSelectionChange]);
+  };
 
   const latestOperationsRef = useLatestValueRef({
     copySelectedResources,
