@@ -8,10 +8,12 @@ import { mergeProps } from '@react-aria/utils';
 import { TooltipTriggerState, useTooltipTriggerState } from '@react-stately/tooltip';
 import { Placement as ReactAriaPlacement, PlacementAxis } from '@react-types/overlays';
 import { TooltipTriggerProps } from '@react-types/tooltip';
+import { AnimatePresence } from 'framer-motion';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 
 import { Box } from '@app/ui/components-library/Box';
+import { useFramerMotionAnimations } from '@app/ui/components-library/DesignTokenContext';
 
 export type Placement = ReactAriaPlacement;
 
@@ -90,7 +92,11 @@ type TooltipComponentProps = {
 export const Tooltip = styled((props: TooltipProps) => {
   const { tooltipInstance, overrideIsOpen } = props;
 
-  return <>{(overrideIsOpen ?? tooltipInstance.state.isOpen) && <TooltipInner {...props} />}</>;
+  return (
+    <AnimatePresence>
+      {(overrideIsOpen ?? tooltipInstance.state.isOpen) && <TooltipInner {...props} />}
+    </AnimatePresence>
+  );
 })``;
 
 const TooltipInner = styled((props: TooltipProps) => {
@@ -107,10 +113,13 @@ const TooltipInner = styled((props: TooltipProps) => {
   const isOpen = overrideIsOpen ?? tooltipInstance.state.isOpen;
   const { tooltipProps } = useReactAriaTooltip({ isOpen }, { ...tooltipInstance.state, isOpen });
 
+  const framerMotionAnimations = useFramerMotionAnimations();
+
   return (
     <OverlayContainer style={{ isolation: 'isolate' }}>
       <TooltipRoot
         ref={tooltipInstance.tooltipRef}
+        {...framerMotionAnimations.fadeInOut}
         {...mergeProps(delegatedProps, tooltipInstance.tooltipDomProps, tooltipProps)}
       >
         <TooltipArrow {...tooltipInstance.tooltipArrowDomProps} styleProps={props} />
