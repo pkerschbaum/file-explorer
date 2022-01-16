@@ -1,0 +1,76 @@
+import { AnimatePresence } from 'framer-motion';
+import * as React from 'react';
+
+import { Snackbar, SnackbarAction, SNACKBAR_SEVERITY } from '@app/ui/components-library';
+import { createContext } from '@app/ui/utils/react.util';
+
+export const APP_MESSAGE_SEVERITY = SNACKBAR_SEVERITY;
+export type APP_MESSAGE_SEVERITY = SNACKBAR_SEVERITY;
+
+type AppMessage = {
+  severity: APP_MESSAGE_SEVERITY;
+  label: string;
+  retryAction?: {
+    label: string;
+    onPress: () => void | Promise<void>;
+  };
+};
+
+type PushAppMessages = (message: AppMessage) => void;
+
+const context = createContext<PushAppMessages>('PushAppMessageContext');
+export const usePushAppMessage = context.useContextValue;
+const PushAppMessageContextProvider = context.Provider;
+
+type AppMessagesContextProps = {
+  children: React.ReactNode;
+};
+
+export const AppMessagesContext: React.FC<AppMessagesContextProps> = ({ children }) => {
+  const [messages, setMessages] = React.useState<AppMessage[]>([]);
+  const [currentMessageIdx, setCurrentMessageIdx] = React.useState(0);
+
+  const pushAppMessage: PushAppMessages = React.useCallback((message) => {
+    setMessages((oldVal) => [...oldVal, message]);
+  }, []);
+
+  function removeCurrentMessage() {
+    setCurrentMessageIdx((oldVal) => oldVal + 1);
+  }
+
+  const currentMessage: AppMessage | undefined = messages[currentMessageIdx];
+  const snackbarActions: SnackbarAction[] = [
+    {
+      label: 'Dismiss',
+      onPress: removeCurrentMessage,
+    },
+  ];
+  if (currentMessage?.retryAction) {
+    const retry = currentMessage.retryAction.onPress;
+    async function retryAndDismiss() {
+      await retry();
+      removeCurrentMessage();
+    }
+
+    snackbarActions.push({
+      label: currentMessage.retryAction.label,
+      onPress: retryAndDismiss,
+    });
+  }
+
+  return (
+    <PushAppMessageContextProvider value={pushAppMessage}>
+      {children}
+      <AnimatePresence exitBeforeEnter>
+        {currentMessage && (
+          <Snackbar
+            key={currentMessageIdx}
+            severity={currentMessage.severity}
+            label={currentMessage.label}
+            actions={snackbarActions}
+          />
+        )}
+      </AnimatePresence>
+    </PushAppMessageContextProvider>
+  );
+};

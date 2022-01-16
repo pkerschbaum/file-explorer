@@ -29,7 +29,6 @@ import {
   useSelectedShownResources,
   useSetFilterInput,
   useCopySelectedResources,
-  useCreateFolderInExplorer,
   useCutSelectedResources,
   useOpenSelectedResources,
   usePasteResourcesIntoExplorer,
@@ -59,7 +58,6 @@ export const ActionsBar: React.FC = () => {
   const pasteResourcesIntoExplorer = usePasteResourcesIntoExplorer();
   const triggerRenameForSelectedResources = useTriggerRenameForSelectedResources();
   const scheduleDeleteSelectedResources = useScheduleDeleteSelectedResources();
-  const createFolderInExplorer = useCreateFolderInExplorer();
 
   const setActiveResourcesViewButtonHandleRef = React.useRef<ButtonHandle>(null);
   const openButtonHandleRef = React.useRef<ButtonHandle>(null);
@@ -287,7 +285,6 @@ export const ActionsBar: React.FC = () => {
         <CreateFolder
           buttonHandleRef={triggerCreateNewFolderButtonHandleRef}
           buttonEndIcon={registerShortcutsResult.triggerCreateNewFolderShortcut?.icon}
-          onSubmit={createFolderInExplorer}
         />
         <Button
           handleRef={setActiveResourcesViewButtonHandleRef}
@@ -426,5 +423,4 @@ const ClipboardResourcesList = styled(Box)`
   gap: var(--spacing-2);
 
   word-break: break-all;
-  white-space: pre-wrap;
 `;
