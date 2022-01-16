@@ -10,6 +10,7 @@ export type APP_MESSAGE_SEVERITY = SNACKBAR_SEVERITY;
 type AppMessage = {
   severity: APP_MESSAGE_SEVERITY;
   label: string;
+  detail?: string;
   retryAction?: {
     label: string;
     onPress: () => void | Promise<void>;
@@ -67,6 +68,7 @@ export const AppMessagesContext: React.FC<AppMessagesContextProps> = ({ children
             key={currentMessageIdx}
             severity={currentMessage.severity}
             label={currentMessage.label}
+            detail={currentMessage.detail}
             actions={snackbarActions}
           />
         )}

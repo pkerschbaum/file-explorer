@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 
-import { assertIsUnreachable } from '@app/base/utils/assert.util';
+import { assertIsUnreachable, check } from '@app/base/utils/assert.util';
 import { Box } from '@app/ui/components-library/Box';
 import { Button } from '@app/ui/components-library/Button';
 import { useFramerMotionAnimations } from '@app/ui/components-library/DesignTokenContext';
@@ -15,6 +15,7 @@ export enum SNACKBAR_SEVERITY {
 type SnackbarProps = {
   severity: SNACKBAR_SEVERITY;
   label: string;
+  detail?: string;
   actions?: SnackbarAction[];
 };
 
@@ -23,26 +24,28 @@ export type SnackbarAction = {
   onPress: () => void;
 };
 
-export const Snackbar: React.FC<SnackbarProps> = ({ severity, label, actions }) => {
+export const Snackbar: React.FC<SnackbarProps> = ({ severity, label, detail, actions }) => {
   const framerMotionAnimations = useFramerMotionAnimations();
 
   return (
     <SnackbarContainer {...framerMotionAnimations.fadeInOut}>
-      <SnackbarIconAndMessage>
-        <MessageIconContainer styleProps={{ severity }}>
-          {severity === SNACKBAR_SEVERITY.ERROR && <ErrorOutlineOutlinedIcon fontSize="sm" />}
-        </MessageIconContainer>
-        <Box>{label}</Box>
-      </SnackbarIconAndMessage>
+      <IconContainer styleProps={{ severity }}>
+        {severity === SNACKBAR_SEVERITY.ERROR && <ErrorOutlineOutlinedIcon fontSize="sm" />}
+      </IconContainer>
+      <Label>
+        {label}
+        {check.isNonEmptyString(detail) && ':'}
+      </Label>
+      {check.isNonEmptyString(detail) && <Detail>{detail}</Detail>}
 
       {actions && (
-        <SnackbarActions>
+        <Actions>
           {actions.map((action, idx) => (
             <Button key={idx} variant="text" onPress={action.onPress}>
               {action.label}
             </Button>
           ))}
-        </SnackbarActions>
+        </Actions>
       )}
     </SnackbarContainer>
   );
@@ -54,26 +57,27 @@ const SnackbarContainer = styled(Box)`
   bottom: var(--spacing-6);
 
   max-width: 500px;
-  padding: var(--spacing-2) var(--spacing-3);
-  display: flex;
-  flex-direction: column;
+  padding: var(--spacing-3);
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  grid-template-rows: max-content max-content max-content;
+  grid-template-areas:
+    'icon label'
+    'empty detail'
+    'actions actions';
+  align-items: center;
   gap: var(--spacing-2);
 
   background-color: var(--color-bg-1);
   border-radius: var(--border-radius-1);
 `;
 
-const SnackbarIconAndMessage = styled(Box)`
-  display: flex;
-  gap: var(--spacing-2);
-`;
-
 type StyleProps = {
   severity: SNACKBAR_SEVERITY;
 };
 
-const MessageIconContainer = styled(Box)<{ styleProps: StyleProps }>`
-  flex-shrink: 0;
+const IconContainer = styled(Box)<{ styleProps: StyleProps }>`
+  grid-area: icon;
 
   display: flex;
   ${({ styleProps }) =>
@@ -88,7 +92,24 @@ const MessageIconContainer = styled(Box)<{ styleProps: StyleProps }>`
       : assertIsUnreachable(styleProps.severity)}
 `;
 
-const SnackbarActions = styled(Box)`
+const Label = styled(Box)`
+  grid-area: label;
+`;
+
+const Detail = styled(Box)`
+  grid-area: detail;
+
+  max-height: 200px;
+  padding: var(--spacing-1) var(--spacing-2);
+  overflow-y: auto;
+
+  border: var(--border-width-1) solid var(--color-darken-1);
+  border-radius: var(--border-radius-2);
+`;
+
+const Actions = styled(Box)`
+  grid-area: actions;
+
   display: flex;
   justify-content: flex-end;
   gap: var(--spacing-2);
