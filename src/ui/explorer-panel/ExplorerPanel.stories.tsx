@@ -16,14 +16,6 @@ import { initializeStorybookPlatformModules } from '@app-storybook/storybook-uti
 export default {
   title: 'ExplorerPanel',
   component: ExplorerPanel,
-  loaders: [
-    async () => {
-      await initializeStorybookPlatformModules();
-      const store = await createStoreInstance();
-      const queryClient = createQueryClient();
-      return { store, queryClient };
-    },
-  ],
   decorators: [
     (story, { loaded }) => (
       <Globals queryClient={loaded.queryClient} store={loaded.store}>
@@ -54,6 +46,30 @@ const ExplorerPanelGrid = styled(Box)`
 `;
 
 export const DefaultCase = Template.bind({});
-DefaultCase.args = {
-  explorerId: 'test-explorerid',
-};
+DefaultCase.loaders = [
+  async () => {
+    await initializeStorybookPlatformModules();
+    const store = await createStoreInstance();
+    const queryClient = createQueryClient();
+    return { store, queryClient };
+  },
+];
+
+export const ErrorsOnCreateFolderAndMove = Template.bind({});
+ErrorsOnCreateFolderAndMove.loaders = [
+  async () => {
+    await initializeStorybookPlatformModules();
+    globalThis.modules.fileSystem.createFolder = () => {
+      throw new Error(`fake error instance on fileSystem.createFolder`);
+    };
+    globalThis.modules.fileSystem.move = () => {
+      throw `fake string error on fileSystem.move`;
+    };
+    globalThis.modules.nativeHost.shell.openPath = () => {
+      throw new Error(`fake error instance on nativeHost.shell.openPath`);
+    };
+    const store = await createStoreInstance();
+    const queryClient = createQueryClient();
+    return { store, queryClient };
+  },
+];

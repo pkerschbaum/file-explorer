@@ -2,11 +2,13 @@ import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import * as React from 'react';
 
 import { arrays } from '@app/base/utils/arrays.util';
+import { errorsUtil } from '@app/base/utils/errors.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { ResourceForUI } from '@app/domain/types';
 import { REASON_FOR_SELECTION_CHANGE } from '@app/global-state/slices/explorers.slice';
 import { createFolder, openResources, pasteResources } from '@app/operations/explorer.operations';
 import * as resourceOperations from '@app/operations/resource.operations';
+import { APP_MESSAGE_SEVERITY, usePushAppMessage } from '@app/ui/AppMessagesContext';
 import {
   useIsActiveCwdSegment,
   useKeyOfResourceSelectionGotStartedWith,
@@ -61,6 +63,7 @@ export const CwdSegmentOperationsContextProvider: React.FC<
   const selectedShownResources = useSelectedShownResources();
   const keyOfResourceSelectionGotStartedWith = useKeyOfResourceSelectionGotStartedWith();
   const setKeyOfResourceToRename = useSetKeyOfResourceToRename();
+  const pushAppMessage = usePushAppMessage();
 
   const urisOfSelectedShownResources = React.useMemo(
     () => selectedShownResources.map((resource) => resource.uri),
@@ -92,27 +95,56 @@ export const CwdSegmentOperationsContextProvider: React.FC<
     resourceToRename,
     newBaseName,
   ) => {
-    const uriToRenameTo = URI.joinPath(URI.from(resourceToRename.uri), '..', newBaseName);
-    setReasonForLastSelectionChange(REASON_FOR_SELECTION_CHANGE.USER_CHANGED_SELECTION);
-    setKeysOfSelectedResources((currentKeysOfSelectedResources) => {
-      const oldKeyOfRenamedResource = uriHelper.getComparisonKey(resourceToRename.uri);
-      const newKeyOfRenamedResource = uriHelper.getComparisonKey(uriToRenameTo);
+    try {
+      const uriToRenameTo = URI.joinPath(URI.from(resourceToRename.uri), '..', newBaseName);
+      setReasonForLastSelectionChange(REASON_FOR_SELECTION_CHANGE.USER_CHANGED_SELECTION);
+      setKeysOfSelectedResources((currentKeysOfSelectedResources) => {
+        const oldKeyOfRenamedResource = uriHelper.getComparisonKey(resourceToRename.uri);
+        const newKeyOfRenamedResource = uriHelper.getComparisonKey(uriToRenameTo);
 
-      const newKeys = currentKeysOfSelectedResources.map((renameHistoryKeys) => {
-        if (renameHistoryKeys.includes(oldKeyOfRenamedResource)) {
-          return [...renameHistoryKeys, newKeyOfRenamedResource];
-        }
-        return renameHistoryKeys;
+        const newKeys = currentKeysOfSelectedResources.map((renameHistoryKeys) => {
+          if (renameHistoryKeys.includes(oldKeyOfRenamedResource)) {
+            return [...renameHistoryKeys, newKeyOfRenamedResource];
+          }
+          return renameHistoryKeys;
+        });
+
+        return newKeys;
       });
+      await resourceOperations.renameResource(resourceToRename.uri, uriToRenameTo);
+      setKeyOfResourceToRename(undefined);
+    } catch (error) {
+      const errorMessage = errorsUtil.computeVerboseMessageFromError(error) ?? 'Unknown error';
 
-      return newKeys;
-    });
-    await resourceOperations.renameResource(resourceToRename.uri, uriToRenameTo);
-    setKeyOfResourceToRename(undefined);
+      pushAppMessage({
+        severity: APP_MESSAGE_SEVERITY.ERROR,
+        label: `Error occured when trying to rename`,
+        detail: errorMessage,
+        retryAction: {
+          label: 'Retry',
+          onPress: () => renameResource(resourceToRename, newBaseName),
+        },
+      });
+    }
   };
 
-  const openSelectedResources: CwdSegmentOperationsContext['openSelectedResources'] = () =>
-    openResources(explorerId, selectedShownResources);
+  const openSelectedResources: CwdSegmentOperationsContext['openSelectedResources'] = async () => {
+    try {
+      await openResources(explorerId, selectedShownResources);
+    } catch (error) {
+      const errorMessage = errorsUtil.computeVerboseMessageFromError(error) ?? 'Unknown error';
+
+      pushAppMessage({
+        severity: APP_MESSAGE_SEVERITY.ERROR,
+        label: `Error occured when trying to open the selected resources`,
+        detail: errorMessage,
+        retryAction: {
+          label: 'Retry',
+          onPress: () => openSelectedResources(),
+        },
+      });
+    }
+  };
 
   const scheduleDeleteSelectedResources: CwdSegmentOperationsContext['scheduleDeleteSelectedResources'] =
     () => resourceOperations.scheduleMoveResourcesToTrash(urisOfSelectedShownResources);
@@ -120,9 +152,23 @@ export const CwdSegmentOperationsContextProvider: React.FC<
   const createFolderInExplorer: CwdSegmentOperationsContext['createFolderInExplorer'] = async (
     folderName,
   ) => {
-    const createdFolderUri = await createFolder(explorerId, folderName);
-    setKeysOfSelectedResources([[uriHelper.getComparisonKey(createdFolderUri)]]);
-    setReasonForLastSelectionChange(REASON_FOR_SELECTION_CHANGE.NEW_FOLDER_WAS_CREATED);
+    try {
+      const createdFolderUri = await createFolder(explorerId, folderName);
+      setKeysOfSelectedResources([[uriHelper.getComparisonKey(createdFolderUri)]]);
+      setReasonForLastSelectionChange(REASON_FOR_SELECTION_CHANGE.NEW_FOLDER_WAS_CREATED);
+    } catch (error) {
+      const errorMessage = errorsUtil.computeVerboseMessageFromError(error) ?? 'Unknown error';
+
+      pushAppMessage({
+        severity: APP_MESSAGE_SEVERITY.ERROR,
+        label: `Error occured while creating folder with name "${folderName}"`,
+        detail: errorMessage,
+        retryAction: {
+          label: 'Retry',
+          onPress: () => createFolderInExplorer(folderName),
+        },
+      });
+    }
   };
 
   const changeSelection: CwdSegmentOperationsContext['changeSelection'] = (

@@ -13,18 +13,16 @@ import {
   commonComponentStyles,
   CreateNewFolderOutlinedIcon,
 } from '@app/ui/components-library';
+import { useCreateFolderInExplorer } from '@app/ui/cwd-segment-context';
 
 type CreateFolderProps = {
   buttonHandleRef?: React.RefObject<ButtonHandle>;
   buttonEndIcon?: React.ReactNode;
-  onSubmit: (folderName: string) => void | Promise<void>;
 };
 
-export const CreateFolder: React.FC<CreateFolderProps> = ({
-  buttonHandleRef,
-  buttonEndIcon,
-  onSubmit,
-}) => {
+export const CreateFolder: React.FC<CreateFolderProps> = ({ buttonHandleRef, buttonEndIcon }) => {
+  const createFolderInExplorer = useCreateFolderInExplorer();
+
   const buttonRef = React.useRef<HTMLButtonElement>(null);
   const [createFolderValue, setCreateFolderValue] = React.useState('');
 
@@ -48,7 +46,7 @@ export const CreateFolder: React.FC<CreateFolderProps> = ({
       return;
     }
 
-    await onSubmit(createFolderValue);
+    await createFolderInExplorer(createFolderValue);
     popoverInstance.state.close();
   }
 

@@ -92,17 +92,22 @@ const StyledTableHead = styled(TableHead)`
   user-select: none;
 `;
 
-const headCellStyles = css`
+const cellStyles = css`
   height: ${ROW_HEIGHT}px;
 
   padding-inline: var(--padding-button-md-inline);
 
-  text-align: start;
-  font-weight: var(--font-weight-bold);
   white-space: nowrap;
   & * {
     white-space: nowrap;
   }
+`;
+
+const headCellStyles = css`
+  ${cellStyles}
+
+  text-align: start;
+  font-weight: var(--font-weight-bold);
 `;
 
 const NameHeadCell = styled(HeadCell)`
@@ -526,14 +531,7 @@ const ResourceRowContent: React.FC<ResourceRowContentProps> = ({
 );
 
 const StyledDataCell = styled(DataCell)`
-  height: ${ROW_HEIGHT}px;
-
-  padding-inline: var(--padding-button-md-inline);
-
-  white-space: nowrap;
-  & * {
-    white-space: nowrap;
-  }
+  ${cellStyles}
 `;
 
 const NameDataCell = styled(StyledDataCell)`

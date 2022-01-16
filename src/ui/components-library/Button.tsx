@@ -157,7 +157,7 @@ const variantRules = css<{ styleProps: StyleProps }>`
       `;
     } else if (styleProps.variant === 'text') {
       return css`
-        color: var(--color-fg-0);
+        color: var(--color-primary-main);
         background-color: transparent;
         border-width: 0;
 

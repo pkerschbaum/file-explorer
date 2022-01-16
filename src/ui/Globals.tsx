@@ -10,6 +10,7 @@ import { useActiveFileIconTheme } from '@app/global-state/slices/user.hooks';
 import { RootStore } from '@app/global-state/store';
 import { useGlobalCacheSubscriptions } from '@app/operations/global-cache-subscriptions';
 import { setGlobalModules } from '@app/operations/global-modules';
+import { AppMessagesContext } from '@app/ui/AppMessagesContext';
 import {
   componentLibraryUtils,
   DesignTokenProvider,
@@ -108,6 +109,11 @@ const globalStyle = css`
     overflow-wrap: anywhere;
   }
 
+  /* Preserve newlines */
+  * {
+    white-space: pre-wrap;
+  }
+
   /* set colors based on active theme */
   body {
     color: var(--color-fg-0);
@@ -193,7 +199,9 @@ export const Globals: React.FC<GlobalsProps> = ({ queryClient, store, children }
               {/* class "show-file-icons" will enable file icon theme of code-oss project */}
               <FileIconThemeLoader>
                 <OverlayProvider style={{ height: '100%' }}>
-                  <RootContainer className="show-file-icons">{children}</RootContainer>
+                  <RootContainer className="show-file-icons">
+                    <AppMessagesContext>{children}</AppMessagesContext>
+                  </RootContainer>
                 </OverlayProvider>
               </FileIconThemeLoader>
             </DesignTokenProvider>
