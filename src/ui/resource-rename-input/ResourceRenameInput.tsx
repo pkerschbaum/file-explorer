@@ -1,3 +1,4 @@
+import * as extpath from '@pkerschbaum/code-oss-file-service/out/vs/base/common/extpath';
 import { KeyboardEvent } from '@react-types/shared';
 import * as React from 'react';
 import styled from 'styled-components';
@@ -23,7 +24,7 @@ export const ResourceRenameInput: React.FC<ResourceRenameInputProps> = ({
 }) => {
   const [value, setValue] = React.useState(resource.basename);
 
-  const inputIsValid = check.isNonEmptyString(value);
+  const inputIsValid = check.isNonEmptyString(value) && extpath.isValidBasename(value);
 
   function handleSubmit() {
     if (!inputIsValid) {

@@ -1,10 +1,12 @@
 import { Emitter } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/event';
+import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import mime from 'mime';
 import invariant from 'tiny-invariant';
 
 import { check } from '@app/base/utils/assert.util';
 import { numbers } from '@app/base/utils/numbers.util';
+import { uriHelper } from '@app/base/utils/uri-helper';
 import {
   NATIVE_FILE_ICON_PROTOCOL_SCHEME,
   THUMBNAIL_PROTOCOL_SCHEME,
@@ -21,7 +23,7 @@ export const createNativeHost = () => {
     app: {
       getPath: async (args) => {
         const fsPath = await window.privileged.app.getPath(args);
-        return URI.file(fsPath);
+        return uriHelper.parseUri(Schemas.file, fsPath);
       },
       isResourceQualifiedForThumbnail: (resource) => {
         if (check.isNullishOrEmptyString(resource.extension)) {

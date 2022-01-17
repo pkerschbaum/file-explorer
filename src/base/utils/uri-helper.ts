@@ -15,7 +15,7 @@ export const uriHelper = {
   getDistinctParents,
 };
 
-function parseUri(scheme: string, path: string) {
+function parseUri(scheme: string, path: string): URI {
   if (path === '') {
     throw new Error(`empty uri is not allowed`);
   }

@@ -1,5 +1,6 @@
 import * as React from 'react';
 
+import { errorsUtil } from '@app/base/utils/errors.util';
 import { formatter } from '@app/base/utils/formatter.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { useCwd } from '@app/global-state/slices/explorers.hooks';
@@ -8,6 +9,7 @@ import {
   copyCwdIntoClipboard,
   revealCwdInOSExplorer,
 } from '@app/operations/explorer.operations';
+import { APP_MESSAGE_SEVERITY, usePushAppMessage } from '@app/ui/AppMessagesContext';
 import {
   Paper,
   Popover,
@@ -34,6 +36,7 @@ type CwdActionsMenuProps = {
 
 export const CwdActionsMenu: React.FC<CwdActionsMenuProps> = ({ explorerId, menuInstance }) => {
   const cwd = useCwd(explorerId);
+  const pushAppMessage = usePushAppMessage();
 
   const changeCwdLIRef = React.useRef<HTMLLIElement>(null);
 
@@ -92,13 +95,24 @@ export const CwdActionsMenu: React.FC<CwdActionsMenuProps> = ({ explorerId, menu
             isOpen={changeCwdPopoverInstance.state.isOpen}
             initialCwdValue={formatter.resourcePath(cwd)}
             onSubmit={async (newDir) => {
-              await changeCwd({
-                explorerId,
-                newCwd: uriHelper.parseUri(cwd.scheme, newDir),
-                keepExistingCwdSegments: false,
-              });
-              changeCwdPopoverInstance.state.close();
-              menuInstance.state.close();
+              try {
+                await changeCwd({
+                  explorerId,
+                  newCwd: uriHelper.parseUri(cwd.scheme, newDir),
+                  keepExistingCwdSegments: false,
+                });
+                changeCwdPopoverInstance.state.close();
+                menuInstance.state.close();
+              } catch (error) {
+                const errorMessage =
+                  errorsUtil.computeVerboseMessageFromError(error) ?? 'Unknown error';
+
+                pushAppMessage({
+                  severity: APP_MESSAGE_SEVERITY.ERROR,
+                  label: `Error while changing current working directory`,
+                  detail: errorMessage,
+                });
+              }
             }}
           />
         </Paper>

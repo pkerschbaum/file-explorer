@@ -13,57 +13,61 @@ import { getTagsOfResource } from '@app/operations/resource.operations';
 
 const logger = createLogger('resources.hooks');
 
-type ResourcesLoadingResult =
-  | {
-      dataAvailable: false;
-      resources: ResourceForUI[];
-    }
-  | {
-      dataAvailable: true;
-      resources: ResourceForUI[];
-    };
-export const useResourcesForUI = (uri: UriComponents): ResourcesLoadingResult => {
-  const { data: resourcesQueryWithMetadataData } = useResources({
-    directory: uri,
-    resolveMetadata: true,
-  });
-  const { data: filesQueryWithoutMetadataData } = useResources(
-    { directory: uri, resolveMetadata: false },
-    { enabled: resourcesQueryWithMetadataData === undefined },
+type ResourcesLoadingResult = {
+  resources?: ResourceForUI[];
+  isLoading: boolean;
+  error?: unknown;
+};
+export const useResourcesOfDirectory = (
+  directory: UriComponents,
+  queryOptions?: { enabled?: boolean },
+): ResourcesLoadingResult => {
+  const resourcesQueryWithMetadata = useResources(
+    { directory, resolveMetadata: true },
+    queryOptions,
+  );
+  const resourcesQueryWithoutMetadata = useResources(
+    { directory, resolveMetadata: false },
+    { enabled: resourcesQueryWithMetadata.data === undefined, ...queryOptions },
   );
 
-  let dataAvailable: boolean;
-  let resourcesToUse: ResourceStat[];
-  if (resourcesQueryWithMetadataData !== undefined) {
-    dataAvailable = true;
-    resourcesToUse = resourcesQueryWithMetadataData;
-  } else if (filesQueryWithoutMetadataData !== undefined) {
-    dataAvailable = true;
-    resourcesToUse = filesQueryWithoutMetadataData;
+  let resourcesToUse: undefined | ResourceStat[];
+  let isLoading: boolean;
+  let error: undefined | unknown;
+  if (resourcesQueryWithMetadata.data !== undefined) {
+    resourcesToUse = resourcesQueryWithMetadata.data;
+    isLoading = resourcesQueryWithMetadata.isLoading;
+    error = resourcesQueryWithMetadata.error;
+  } else if (resourcesQueryWithoutMetadata.data !== undefined) {
+    resourcesToUse = resourcesQueryWithoutMetadata.data;
+    isLoading = resourcesQueryWithoutMetadata.isLoading;
+    error = resourcesQueryWithoutMetadata.error;
   } else {
     // files queries do not have any (possibly cached) data yet
-    dataAvailable = false;
-    resourcesToUse = [];
+    isLoading = resourcesQueryWithMetadata.isLoading || resourcesQueryWithoutMetadata.isLoading;
+    error = resourcesQueryWithMetadata.error ?? resourcesQueryWithoutMetadata.error;
   }
 
   const resourcesForUI = React.useMemo(
     () =>
-      resourcesToUse.map((resource) => {
-        const basename = uriHelper.extractBasename(resource.uri);
-        const extension = uriHelper.extractExtension(resource.uri);
+      resourcesToUse === undefined
+        ? undefined
+        : resourcesToUse.map((resource) => {
+            const basename = uriHelper.extractBasename(resource.uri);
+            const extension = uriHelper.extractExtension(resource.uri);
 
-        const resourceForUI: ResourceForUI = {
-          ...resource,
-          basename,
-          extension,
-          tags: [],
-        };
-        return resourceForUI;
-      }),
+            const resourceForUI: ResourceForUI = {
+              ...resource,
+              basename,
+              extension,
+              tags: [],
+            };
+            return resourceForUI;
+          }),
     [resourcesToUse],
   );
 
-  return { dataAvailable, resources: resourcesForUI };
+  return { resources: resourcesForUI, isLoading, error };
 };
 
 export function useEnrichResourcesWithTags(resources: ResourceForUI[]) {
