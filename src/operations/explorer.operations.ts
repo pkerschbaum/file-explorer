@@ -179,7 +179,7 @@ export async function pasteResources(explorerId: string) {
   // after target URI got prepared, initialize paste status fields and gather totalSize
   let totalSize = 0;
   let bytesProcessed = 0;
-  let progressOfAtLeastOneSourceIsIndeterminate = false;
+  let progressOfAtLeastOneSourceIsIndeterminate = true;
   const statusPerResource: {
     [keyOfResource: string]:
       | {

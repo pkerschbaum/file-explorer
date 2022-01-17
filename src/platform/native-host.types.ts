@@ -29,7 +29,7 @@ export type PlatformNativeHost = {
     onClipboardChanged: Event<CLIPBOARD_CHANGED_DATA_TYPE>;
   };
   webContents: {
-    startNativeFileDnD: (resource: UriComponents) => void;
+    startNativeFileDnD: (resources: UriComponents[]) => void;
   };
 };
 

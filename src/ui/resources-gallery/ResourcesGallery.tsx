@@ -6,7 +6,6 @@ import { assertIsUnreachable, check } from '@app/base/utils/assert.util';
 import { formatter } from '@app/base/utils/formatter.util';
 import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
 import { REASON_FOR_SELECTION_CHANGE } from '@app/global-state/slices/explorers.slice';
-import { startNativeFileDnD } from '@app/operations/app.operations';
 import { openResources } from '@app/operations/explorer.operations';
 import { commonStyles } from '@app/ui/common-styles';
 import { Box, componentLibraryUtils, useFramerMotionAnimations } from '@app/ui/components-library';
@@ -23,6 +22,7 @@ import {
   useSelectedShownResources,
   useSetKeyOfResourceToRename,
   useSetScrollTop,
+  useStartNativeDnDForSelectedResources,
 } from '@app/ui/cwd-segment-context';
 import { useExplorerId } from '@app/ui/explorer-context';
 import { ResourceIcon } from '@app/ui/resource-icon';
@@ -217,6 +217,7 @@ const ResourceTile: React.FC<ResourceTileProps> = ({ resource, idxOfResource }) 
   const selectedShownResources = useSelectedShownResources();
   const reasonForLastSelectionChange = useReasonForLastSelectionChange();
   const renameResource = useRenameResource();
+  const startNativeDnDForSelectedResources = useStartNativeDnDForSelectedResources();
   const changeSelection = useChangeSelection();
   const keyOfResourceToRename = useKeyOfResourceToRename();
   const setKeyOfResourceToRename = useSetKeyOfResourceToRename();
@@ -266,7 +267,7 @@ const ResourceTile: React.FC<ResourceTileProps> = ({ resource, idxOfResource }) 
       draggable={!renameForResourceIsActive}
       onDragStart={(e) => {
         e.preventDefault();
-        startNativeFileDnD(resource.uri);
+        startNativeDnDForSelectedResources();
       }}
       onClick={(e) =>
         changeSelection(idxOfResource, {

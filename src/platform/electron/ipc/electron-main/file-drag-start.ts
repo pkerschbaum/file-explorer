@@ -1,4 +1,5 @@
-import { ipcMain, IpcMainEvent } from 'electron';
+import { ipcMain, IpcMainEvent, Item } from 'electron';
+import invariant from 'tiny-invariant';
 
 import {
   IpcFileDragStart,
@@ -12,10 +13,13 @@ export function registerListeners(): void {
 
 function fileDragStartHandler(
   e: IpcMainEvent,
-  { fsPath }: IpcFileDragStart.Args,
+  { fsPaths }: IpcFileDragStart.Args,
 ): IpcFileDragStart.ReturnValue {
-  e.sender.startDrag({
-    file: fsPath,
+  invariant(fsPaths.length > 0);
+  const startDragArg: Omit<Item, 'file'> = {
+    files: fsPaths,
     icon: OUTLINE_INSERT_DRIVE_FILE_ICON_PATH,
-  });
+  };
+  // @ts-expect-error -- electron typings have the property "file" defined as required, although that is actually not necessary (https://www.electronjs.org/docs/latest/api/web-contents#contentsstartdragitem)
+  e.sender.startDrag(startDragArg);
 }

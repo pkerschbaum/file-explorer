@@ -92,6 +92,6 @@ export function getNativeIconURLForResource(resource: ResourceForUI) {
   return globalThis.modules.nativeHost.app.getNativeIconURLForResource(resource);
 }
 
-export function startNativeFileDnD(uri: UriComponents) {
-  return globalThis.modules.nativeHost.webContents.startNativeFileDnD(uri);
+export function startNativeFileDnD(uris: UriComponents[]) {
+  return globalThis.modules.nativeHost.webContents.startNativeFileDnD(uris);
 }

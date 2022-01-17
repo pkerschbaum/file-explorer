@@ -108,8 +108,10 @@ export const createNativeHost = () => {
       onClipboardChanged: onClipboardChanged.event,
     },
     webContents: {
-      startNativeFileDnD: (resource) =>
-        window.privileged.webContents.fileDragStart({ fsPath: URI.from(resource).fsPath }),
+      startNativeFileDnD: (resources) =>
+        window.privileged.webContents.fileDragStart({
+          fsPaths: resources.map((resource) => URI.from(resource).fsPath),
+        }),
     },
   };
 

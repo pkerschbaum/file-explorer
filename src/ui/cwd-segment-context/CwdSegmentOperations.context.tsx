@@ -6,6 +6,7 @@ import { errorsUtil } from '@app/base/utils/errors.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { ResourceForUI } from '@app/domain/types';
 import { REASON_FOR_SELECTION_CHANGE } from '@app/global-state/slices/explorers.slice';
+import { startNativeFileDnD } from '@app/operations/app.operations';
 import { createFolder, openResources, pasteResources } from '@app/operations/explorer.operations';
 import * as resourceOperations from '@app/operations/resource.operations';
 import { APP_MESSAGE_SEVERITY, usePushAppMessage } from '@app/ui/AppMessagesContext';
@@ -40,6 +41,7 @@ type CwdSegmentOperationsContext = {
   openSelectedResources: () => void;
   scheduleDeleteSelectedResources: () => void;
   createFolderInExplorer: (folderName: string) => Promise<void>;
+  startNativeDnDForSelectedResources: () => void;
   changeSelection: (idxOfResource: number, modifiers: { ctrl: boolean; shift: boolean }) => void;
   selectAll: () => void;
 };
@@ -171,6 +173,9 @@ export const CwdSegmentOperationsContextProvider: React.FC<
     }
   };
 
+  const startNativeDnDForSelectedResources: CwdSegmentOperationsContext['startNativeDnDForSelectedResources'] =
+    () => startNativeFileDnD(urisOfSelectedShownResources);
+
   const changeSelection: CwdSegmentOperationsContext['changeSelection'] = (
     idxOfResource,
     modifiers,
@@ -246,6 +251,7 @@ export const CwdSegmentOperationsContextProvider: React.FC<
     openSelectedResources,
     scheduleDeleteSelectedResources,
     createFolderInExplorer,
+    startNativeDnDForSelectedResources,
     changeSelection,
     selectAll,
   });
@@ -293,6 +299,11 @@ export function useScheduleDeleteSelectedResources(): CwdSegmentOperationsContex
 export function useCreateFolderInExplorer(): CwdSegmentOperationsContext['createFolderInExplorer'] {
   const operationsRef = useCwdSegmentOperationsValue();
   return (...params) => operationsRef.current.createFolderInExplorer(...params);
+}
+
+export function useStartNativeDnDForSelectedResources(): CwdSegmentOperationsContext['startNativeDnDForSelectedResources'] {
+  const operationsRef = useCwdSegmentOperationsValue();
+  return (...params) => operationsRef.current.startNativeDnDForSelectedResources(...params);
 }
 
 export function useChangeSelection(): CwdSegmentOperationsContext['changeSelection'] {
