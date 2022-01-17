@@ -8,7 +8,7 @@ const STORYBOOK_HOST = process.env.STORYBOOK_HOST ?? 'localhost';
 
 declare global {
   // eslint-disable-next-line no-var
-  var __clock: sinon.SinonFakeTimers;
+  var __clock: undefined | sinon.SinonFakeTimers;
   // eslint-disable-next-line no-var
   var getCountOfAnimatedElems: undefined | (() => number);
 }
@@ -126,6 +126,11 @@ export async function bootstrap({
   return $document;
 }
 
+export async function retrievePageScreenshot(page: PlaywrightTestArgs['page']) {
+  await yieldToBrowser(page);
+  return await page.screenshot();
+}
+
 /**
  * https://github.com/microsoft/playwright/issues/6347#issuecomment-965887758
  */
@@ -141,10 +146,44 @@ export async function enableFakeClock({ context }: { context: BrowserContext }) 
 }
 
 export async function letBrowserUpdateStuffDependingOnClock(page: PlaywrightTestArgs['page']) {
-  await page.evaluate(() => window.__clock.tick(1000));
-  await page.evaluate(() => window.__clock.tick(1000));
+  await page.evaluate(() => {
+    if (!window.__clock) {
+      throw new Error(
+        `"letBrowserUpdateStuffDependingOnClock" should only be used in tests with fake clock enabled`,
+      );
+    }
+  });
+  await yieldToBrowser(page);
+}
+
+/**
+ * Screenshots taken with the Playwright API `page.screenshot()` do sometimes not capture the final
+ * state of the UI - it seems like taking the screenshot is sometimes so fast that React could not
+ * finish updating the page before the screenshot is taken.
+ *
+ * The intent of this function `yieldToBrowser` is to not hard-code a timeout before taking screenshots
+ * but instead, yielding to the browser and waiting for it to finish its work.
+ *
+ * `setTimeout` with a timeout of 0ms waits for all events currently present in the event queue to be
+ * processed, and `requestIdleCallback` waits for the browser to become idle.
+ */
+async function yieldToBrowser(page: PlaywrightTestArgs['page']) {
   // eslint-disable-next-line no-restricted-syntax -- wait with 1ms timeout "yields" to the browser
   await page.waitForTimeout(1);
+  await page.evaluate(() => {
+    const p = new Promise((resolve) => setTimeout(resolve, 0));
+    if (window.__clock) {
+      window.__clock.tick(1000);
+    }
+    return p;
+  });
+  await page.evaluate(() => {
+    const p = new Promise((resolve) => requestIdleCallback(resolve));
+    if (window.__clock) {
+      window.__clock.tick(1000);
+    }
+    return p;
+  });
 }
 
 /**

@@ -5,6 +5,7 @@ import {
   bootstrap,
   enableFakeClock,
   letBrowserUpdateStuffDependingOnClock,
+  retrievePageScreenshot,
   waitForAnimations,
 } from '@app-playwright/playwright.util';
 
@@ -14,7 +15,7 @@ test.describe('Shell [visual]', () => {
       page,
       storybookIdToVisit: 'shell--with-processes',
     });
-    expect(await page.screenshot()).toMatchSnapshot('with-processes_1.png');
+    expect(await retrievePageScreenshot(page)).toMatchSnapshot('with-processes_1.png');
   });
 
   test('trigger rename', async ({ page }) => {
@@ -28,7 +29,9 @@ test.describe('Shell [visual]', () => {
     const buttonRename = await queries.findByRole($document, 'button', { name: /Rename/i });
     await buttonRename.click();
 
-    expect(await page.screenshot()).toMatchSnapshot('trigger-rename_1_after-trigger-of-rename.png');
+    expect(await retrievePageScreenshot(page)).toMatchSnapshot(
+      'trigger-rename_1_after-trigger-of-rename.png',
+    );
   });
 
   test('open and close sidebar', async ({ page }) => {
@@ -42,14 +45,18 @@ test.describe('Shell [visual]', () => {
     });
     await buttonOpenUserPreferences.click();
 
-    expect(await page.screenshot()).toMatchSnapshot('open-and-close-sidebar_1_sidebar-open.png');
+    expect(await retrievePageScreenshot(page)).toMatchSnapshot(
+      'open-and-close-sidebar_1_sidebar-open.png',
+    );
 
     const buttonHideUserPreferences = await queries.findByRole($document, 'button', {
       name: /Hide User Preferences/i,
     });
     await buttonHideUserPreferences.click();
 
-    expect(await page.screenshot()).toMatchSnapshot('open-and-close-sidebar_2_sidebar-hidden.png');
+    expect(await retrievePageScreenshot(page)).toMatchSnapshot(
+      'open-and-close-sidebar_2_sidebar-hidden.png',
+    );
   });
 
   test('switch theme', async ({ page }) => {
@@ -70,7 +77,7 @@ test.describe('Shell [visual]', () => {
     // the change of the foreground color (because of the theme change) needs some time to propagate (in Chrome)
     await waitForAnimations({ page });
 
-    expect(await page.screenshot()).toMatchSnapshot('switch-theme_1_switched-theme.png');
+    expect(await retrievePageScreenshot(page)).toMatchSnapshot('switch-theme_1_switched-theme.png');
   });
 
   test('switch file icon theme', async ({ page }) => {
@@ -94,7 +101,7 @@ test.describe('Shell [visual]', () => {
       page.waitForResponse(/icons\/folder\.svg/i),
     ]);
 
-    expect(await page.screenshot()).toMatchSnapshot(
+    expect(await retrievePageScreenshot(page)).toMatchSnapshot(
       'switch-file-icon-theme_1_switched-file-icon-theme.png',
     );
   });
@@ -107,29 +114,29 @@ test.describe('Shell [visual]', () => {
       storybookIdToVisit: 'shell--multiple-tabs',
     });
 
-    expect(await page.screenshot()).toMatchSnapshot(
+    expect(await retrievePageScreenshot(page)).toMatchSnapshot(
       'shortcuts-should-be-shown_1_no-modifier-keydown_default-shortcuts-should-be-shown.png',
     );
 
     await page.keyboard.down('Control');
-    expect(await page.screenshot()).toMatchSnapshot(
+    expect(await retrievePageScreenshot(page)).toMatchSnapshot(
       'shortcuts-should-be-shown_2_ctrl-keydown_ctrl-shortcuts-should-be-shown.png',
     );
     await page.keyboard.up('Control');
 
     await page.keyboard.down('Alt');
-    expect(await page.screenshot()).toMatchSnapshot(
+    expect(await retrievePageScreenshot(page)).toMatchSnapshot(
       'shortcuts-should-be-shown_3_alt-keydown_alt-shortcuts-should-be-shown.png',
     );
     await page.keyboard.up('Alt');
 
-    expect(await page.screenshot()).toMatchSnapshot(
+    expect(await retrievePageScreenshot(page)).toMatchSnapshot(
       'shortcuts-should-be-shown_4_modifier-released_default-shortcuts-should-be-shown.png',
     );
 
     const buttonOpen = await queries.findByRole($document, 'button', { name: /^Open$/i });
     await buttonOpen.focus();
-    expect(await page.screenshot()).toMatchSnapshot(
+    expect(await retrievePageScreenshot(page)).toMatchSnapshot(
       'shortcuts-should-be-shown_5_focus-present_no-shortcuts-should-be-shown.png',
     );
   });
@@ -145,7 +152,9 @@ test.describe('Shell [visual]', () => {
     // the change of the paste button icon color needs some time to propagate (in Chrome)
     await waitForAnimations({ page });
 
-    expect(await page.screenshot()).toMatchSnapshot('ctrl-c-should-copy_1_ctrl-and-c-pressed.png');
+    expect(await retrievePageScreenshot(page)).toMatchSnapshot(
+      'ctrl-c-should-copy_1_ctrl-and-c-pressed.png',
+    );
   });
 
   test.describe('tests with manual clock', () => {
@@ -176,7 +185,7 @@ test.describe('Shell [visual]', () => {
 
       await letBrowserUpdateStuffDependingOnClock(page);
 
-      expect(await page.screenshot()).toMatchSnapshot(
+      expect(await retrievePageScreenshot(page)).toMatchSnapshot(
         'cwd-should-automatically-update_1_folder-created.png',
       );
     });
@@ -192,7 +201,7 @@ test.describe('Shell [visual]', () => {
       // invoke debounce of filter input
       await letBrowserUpdateStuffDependingOnClock(page);
 
-      expect(await page.screenshot()).toMatchSnapshot(
+      expect(await retrievePageScreenshot(page)).toMatchSnapshot(
         'filter-files_1_after-first-filter-input.png',
       );
 
@@ -202,7 +211,7 @@ test.describe('Shell [visual]', () => {
       // invoke debounce of filter input
       await letBrowserUpdateStuffDependingOnClock(page);
 
-      expect(await page.screenshot()).toMatchSnapshot(
+      expect(await retrievePageScreenshot(page)).toMatchSnapshot(
         'filter-files_2_after-second-filter-input.png',
       );
     });
@@ -220,12 +229,12 @@ test.describe('Shell [visual]', () => {
       // invoke debounce of filter input
       await letBrowserUpdateStuffDependingOnClock(page);
       await page.keyboard.press('ArrowDown');
-      expect(await page.screenshot()).toMatchSnapshot(
+      expect(await retrievePageScreenshot(page)).toMatchSnapshot(
         'navigating-down-and-up-should-restore-state_1_filter-and-selection-was-applied.png',
       );
 
       await page.keyboard.press('Enter');
-      expect(await page.screenshot()).toMatchSnapshot(
+      expect(await retrievePageScreenshot(page)).toMatchSnapshot(
         'navigating-down-and-up-should-restore-state_2_navigated-down.png',
       );
 
@@ -233,7 +242,7 @@ test.describe('Shell [visual]', () => {
       // invoke debounce of filter input
       await letBrowserUpdateStuffDependingOnClock(page);
 
-      expect(await page.screenshot()).toMatchSnapshot(
+      expect(await retrievePageScreenshot(page)).toMatchSnapshot(
         'navigating-down-and-up-should-restore-state_3_navigated-up-and-restored-state.png',
       );
     });
@@ -255,7 +264,7 @@ test.describe('Shell [visual]', () => {
     });
     await buttonActionsMenuTrigger.click();
 
-    expect(await page.screenshot()).toMatchSnapshot(
+    expect(await retrievePageScreenshot(page)).toMatchSnapshot(
       'actions-menu-copy-directory-path_1_after-click-on-trigger-button.png',
     );
 
@@ -264,7 +273,7 @@ test.describe('Shell [visual]', () => {
     });
     await menuItemCopyCwd.click();
 
-    expect(await page.screenshot()).toMatchSnapshot(
+    expect(await retrievePageScreenshot(page)).toMatchSnapshot(
       'actions-menu-copy-directory-path_2_after-click-on-menu-item.png',
     );
   });

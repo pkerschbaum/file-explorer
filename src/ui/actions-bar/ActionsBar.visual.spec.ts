@@ -1,7 +1,7 @@
 import { queries } from '@playwright-testing-library/test';
 import { expect, test } from '@playwright/test';
 
-import { bootstrap } from '@app-playwright/playwright.util';
+import { bootstrap, retrievePageScreenshot } from '@app-playwright/playwright.util';
 
 test.describe('ActionsBar [visual]', () => {
   test('given an error on an attempt to rename a resource, a snackbar should be shown', async ({
@@ -25,7 +25,7 @@ test.describe('ActionsBar [visual]', () => {
     const buttonOk = await queries.findByRole($document, 'button', { name: /OK/i });
     await buttonOk.click();
 
-    expect(await page.screenshot()).toMatchSnapshot(
+    expect(await retrievePageScreenshot(page)).toMatchSnapshot(
       'rename-resource-error_1_snackbar-should-be-shown.png',
     );
   });
@@ -49,7 +49,7 @@ test.describe('ActionsBar [visual]', () => {
     const buttonCreateFolder = await queries.findByRole($document, 'button', { name: /Create/i });
     await buttonCreateFolder.click();
 
-    expect(await page.screenshot()).toMatchSnapshot(
+    expect(await retrievePageScreenshot(page)).toMatchSnapshot(
       'create-folder-error_1_snackbar-should-be-shown.png',
     );
   });
@@ -69,7 +69,7 @@ test.describe('ActionsBar [visual]', () => {
     });
     await buttonOpen.click();
 
-    expect(await page.screenshot()).toMatchSnapshot(
+    expect(await retrievePageScreenshot(page)).toMatchSnapshot(
       'open-selected-file-error_1_snackbar-should-be-shown.png',
     );
   });
