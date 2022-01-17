@@ -1,6 +1,9 @@
+import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 
+import { numbers } from '@app/base/utils/numbers.util';
 import { NarrowUnion } from '@app/base/utils/types.util';
+import { uriHelper } from '@app/base/utils/uri-helper';
 import { PasteProcess, PASTE_PROCESS_STATUS } from '@app/domain/types';
 import { createStoreInstance } from '@app/global-state/store';
 import { Box } from '@app/ui/components-library';
@@ -92,3 +95,24 @@ const process_failure: NarrowUnion<PasteProcess, 'status', PASTE_PROCESS_STATUS.
 };
 export const Failure = Template.bind({});
 Failure.args = { process: process_failure };
+
+const process_manyResources: NarrowUnion<
+  PasteProcess,
+  'status',
+  PASTE_PROCESS_STATUS.RUNNING_PERFORMING_PASTE
+> = {
+  ...fakePasteProcessBase,
+  sourceUris: [
+    ...numbers
+      .sequence({ fromInclusive: 1, toInclusive: 100 })
+      .map((number) =>
+        uriHelper.parseUri(
+          Schemas.file,
+          `/home/testdir/testfile-${number.toString().padStart(5, '0')}.txt`,
+        ),
+      ),
+  ],
+  status: PASTE_PROCESS_STATUS.RUNNING_PERFORMING_PASTE,
+};
+export const ManyResources = Template.bind({});
+ManyResources.args = { process: process_manyResources };

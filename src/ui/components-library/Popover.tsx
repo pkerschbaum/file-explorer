@@ -19,6 +19,7 @@ import { Backdrop } from '@app/ui/components-library/Backdrop';
 import { Box } from '@app/ui/components-library/Box';
 import { useFramerMotionAnimations } from '@app/ui/components-library/DesignTokenContext';
 import { FocusScope } from '@app/ui/components-library/FocusScope';
+import { useUpdatePositionOnAnchorMovement } from '@app/ui/components-library/overlay';
 
 export { OverlayProvider } from '@react-aria/overlays';
 
@@ -52,47 +53,21 @@ export function usePopover<TriggerHTMLElement extends HTMLElement>(
     props.triggerRef,
   );
 
+  const anchorRef = props.triggerRef;
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { overlayProps: positionProps, updatePosition } = useOverlayPosition({
-    targetRef: props.triggerRef,
+    targetRef: anchorRef,
     overlayRef: popoverRef,
     placement: props.popover?.placement ?? 'bottom',
     offset: 0,
     isOpen: state.isOpen,
   });
 
-  React.useEffect(
-    function updatePositionOnTargetMovement() {
-      if (!props.triggerRef.current || !state.isOpen) {
-        return;
-      }
-
-      let currentRAFHandle: undefined | number;
-
-      // to detect movements of the popover trigger, use MutationObserver
-      const mutationObserver = new MutationObserver(function requestAnimationFrameOnMovement() {
-        if (currentRAFHandle !== undefined) {
-          // there is already a request for an animation frame pending --> return
-          return;
-        }
-
-        // request animation frame which will update the position of the popover
-        currentRAFHandle = requestAnimationFrame(() => {
-          currentRAFHandle = undefined;
-          updatePosition();
-        });
-      });
-      mutationObserver.observe(props.triggerRef.current, { attributes: true });
-
-      return function cleanUp() {
-        mutationObserver.disconnect();
-        if (currentRAFHandle !== undefined) {
-          cancelAnimationFrame(currentRAFHandle);
-        }
-      };
-    },
-    [props.triggerRef, state.isOpen, updatePosition],
-  );
+  useUpdatePositionOnAnchorMovement({
+    anchorElem: anchorRef.current,
+    isOpen: state.isOpen,
+    updatePosition,
+  });
 
   return {
     triggerProps: triggerProps as AriaButtonProps<any>,

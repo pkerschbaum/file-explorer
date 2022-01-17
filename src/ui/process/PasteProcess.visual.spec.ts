@@ -57,4 +57,13 @@ test.describe('PasteProcess [visual]', () => {
     const process = await queries.findByLabelText($document, /^Paste Process$/i);
     expect(await process.screenshot()).toMatchSnapshot('failure_1.png');
   });
+
+  test('Many Resources', async ({ page }) => {
+    const $document = await bootstrap({
+      page,
+      storybookIdToVisit: 'processes-paste--many-resources',
+    });
+    const process = await queries.findByLabelText($document, /^Paste Process$/i);
+    expect(await process.screenshot()).toMatchSnapshot('many-resources_1.png');
+  });
 });

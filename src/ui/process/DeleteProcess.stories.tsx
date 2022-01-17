@@ -1,7 +1,10 @@
+import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 
+import { numbers } from '@app/base/utils/numbers.util';
 import { NarrowUnion } from '@app/base/utils/types.util';
+import { uriHelper } from '@app/base/utils/uri-helper';
 import { DeleteProcess, DELETE_PROCESS_STATUS } from '@app/domain/types';
 import { createStoreInstance } from '@app/global-state/store';
 import { Box } from '@app/ui/components-library';
@@ -85,3 +88,20 @@ const process_veryLongResourceNames: NarrowUnion<
 };
 export const VeryLongResourceNames = Template.bind({});
 VeryLongResourceNames.args = { process: process_veryLongResourceNames };
+
+const process_manyResources: NarrowUnion<DeleteProcess, 'status', DELETE_PROCESS_STATUS.RUNNING> = {
+  ...fakeDeleteProcessBase,
+  uris: [
+    ...numbers
+      .sequence({ fromInclusive: 1, toInclusive: 100 })
+      .map((number) =>
+        uriHelper.parseUri(
+          Schemas.file,
+          `/home/testdir/testfile-${number.toString().padStart(5, '0')}.txt`,
+        ),
+      ),
+  ],
+  status: DELETE_PROCESS_STATUS.RUNNING,
+};
+export const ManyResources = Template.bind({});
+ManyResources.args = { process: process_manyResources };

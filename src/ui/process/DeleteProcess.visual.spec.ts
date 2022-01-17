@@ -48,4 +48,13 @@ test.describe('DeleteProcess [visual]', () => {
     const process = await queries.findByLabelText($document, /^Delete Process$/i);
     expect(await process.screenshot()).toMatchSnapshot('very-long-resource-name_1.png');
   });
+
+  test('Many Resources', async ({ page }) => {
+    const $document = await bootstrap({
+      page,
+      storybookIdToVisit: 'processes-delete--many-resources',
+    });
+    const process = await queries.findByLabelText($document, /^Delete Process$/i);
+    expect(await process.screenshot()).toMatchSnapshot('many-resources_1.png');
+  });
 });

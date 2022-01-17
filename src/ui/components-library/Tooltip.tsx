@@ -12,13 +12,19 @@ import { AnimatePresence } from 'framer-motion';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 
+import { commonStyles } from '@app/ui/common-styles';
 import { Box } from '@app/ui/components-library/Box';
 import { useFramerMotionAnimations } from '@app/ui/components-library/DesignTokenContext';
+import { useUpdatePositionOnAnchorMovement } from '@app/ui/components-library/overlay';
 
 export type Placement = ReactAriaPlacement;
 
-export type UseTooltipArgs<TriggerHTMLElement extends HTMLElement> = {
+export type UseTooltipArgs<
+  TriggerHTMLElement extends HTMLElement,
+  AnchorHTMLElement extends HTMLElement,
+> = {
   triggerRef: React.RefObject<TriggerHTMLElement>;
+  anchorRef?: React.RefObject<AnchorHTMLElement>;
   tooltip?: {
     isOpen?: boolean;
     placement?: Placement;
@@ -41,9 +47,10 @@ type TooltipInstance = {
   state: TooltipTriggerState;
 };
 
-export function useTooltip<TriggerHTMLElement extends HTMLElement>(
-  props: UseTooltipArgs<TriggerHTMLElement>,
-): UseTooltipReturnType {
+export function useTooltip<
+  TriggerHTMLElement extends HTMLElement,
+  AnchorHTMLElement extends HTMLElement,
+>(props: UseTooltipArgs<TriggerHTMLElement, AnchorHTMLElement>): UseTooltipReturnType {
   const tooltipRef = React.useRef<HTMLDivElement>(null);
 
   const tooltipTriggerProps: TooltipTriggerProps = { delay: 0 };
@@ -55,17 +62,26 @@ export function useTooltip<TriggerHTMLElement extends HTMLElement>(
     props.triggerRef,
   );
 
+  const anchorRef = props.anchorRef ?? props.triggerRef;
+  // eslint-disable-next-line @typescript-eslint/unbound-method
   const {
     overlayProps: positionProps,
     arrowProps,
     placement,
+    updatePosition,
   } = useOverlayPosition({
-    targetRef: props.triggerRef,
+    targetRef: anchorRef,
     overlayRef: tooltipRef,
     placement: props.tooltip?.placement ?? 'bottom',
     offset: props.tooltip?.offset?.mainAxis ?? 0,
     isOpen,
     containerPadding: 0,
+  });
+
+  useUpdatePositionOnAnchorMovement({
+    anchorElem: anchorRef.current,
+    isOpen: state.isOpen,
+    updatePosition,
   });
 
   return {
@@ -132,7 +148,11 @@ const TooltipInner = styled((props: TooltipProps) => {
 type StyleProps = TooltipProps;
 
 const TooltipRoot = styled(Box)`
+  max-height: 100vh;
+  max-width: 100vw;
   padding: var(--spacing-1) var(--spacing-2);
+  display: flex;
+  flex-direction: column;
 
   --border-to-use: 1px solid var(--color-bg-3);
   color: var(--color-fg);
@@ -220,4 +240,8 @@ const TooltipContent = styled(Box)`
      (cited from https://courses.joshwcomeau.com/css-for-js/02-rendering-logic-2/07-stacking-contexts)
    */
   position: relative;
+
+  ${commonStyles.layout.flex.shrinkAndFitVertical}
+  display: flex;
+  flex-direction: column;
 `;

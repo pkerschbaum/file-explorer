@@ -19,6 +19,7 @@ import MuiEditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import MuiErrorOutlineOutlinedIcon from '@mui/icons-material/ErrorOutlineOutlined';
 import MuiFolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import MuiFullscreenOutlinedIcon from '@mui/icons-material/FullscreenOutlined';
+import MuiInfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import MuiKeyboardArrowDownOutlinedIcon from '@mui/icons-material/KeyboardArrowDownOutlined';
 import MuiKeyboardArrowLeftOutlinedIcon from '@mui/icons-material/KeyboardArrowLeftOutlined';
 import MuiKeyboardArrowRightOutlinedIcon from '@mui/icons-material/KeyboardArrowRightOutlined';
@@ -128,6 +129,9 @@ export const FolderOutlinedIcon = styled((delegatedProps: Omit<IconProps, 'Compo
 })``;
 export const FullscreenOutlinedIcon = styled((delegatedProps: Omit<IconProps, 'Component'>) => {
   return <Icon Component={MuiFullscreenOutlinedIcon} {...delegatedProps} />;
+})``;
+export const InfoOutlinedIcon = styled((delegatedProps: Omit<IconProps, 'Component'>) => {
+  return <Icon Component={MuiInfoOutlinedIcon} {...delegatedProps} />;
 })``;
 export const KeyboardArrowDownOutlinedIcon = styled(
   (delegatedProps: Omit<IconProps, 'Component'>) => {

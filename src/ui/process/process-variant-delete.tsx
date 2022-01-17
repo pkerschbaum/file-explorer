@@ -12,6 +12,7 @@ import {
   LinearProgress,
 } from '@app/ui/components-library';
 import type { ProcessVariantProps } from '@app/ui/process/Process';
+import { ProcessResourcesList } from '@app/ui/process/ProcessResourcesList';
 
 type StatusMetaInfos = {
   [status in DELETE_PROCESS_STATUS]: {
@@ -100,14 +101,7 @@ export function computeProcessCardPropsFromDeleteProcess(
     summaryText: process.uris.map((uri) => uriHelper.extractBasename(uri)).join(', '),
     details: (
       <>
-        <ResourcesList>
-          <Box>Files/Folders:</Box>
-          {process.uris.map((uri) => {
-            const basename = uriHelper.extractBasename(uri);
-            return <ResourceBox key={uriHelper.getComparisonKey(uri)}>{basename}</ResourceBox>;
-          })}
-        </ResourcesList>
-
+        <ProcessResourcesList uris={process.uris} />
         <ContentList>{contentToRender}</ContentList>
       </>
     ),
@@ -122,17 +116,6 @@ const ErrorBox = styled(Box)`
   flex-direction: column;
   align-items: flex-start;
   gap: var(--spacing-2);
-`;
-
-const ResourcesList = styled(Box)`
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-1);
-`;
-
-const ResourceBox = styled(Box)`
-  font-weight: var(--font-weight-bold);
-  word-break: break-all;
 `;
 
 const ContentList = styled(Box)`
