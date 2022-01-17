@@ -20,6 +20,9 @@ export const useCwdSegments = (explorerId: string) =>
     (segment) => !segment.markedForRemoval,
   );
 
+export const useVersionOfExplorer = (explorerId: string) =>
+  useSelector((state) => state.explorersSlice.explorerPanels[explorerId].version);
+
 export const useCwd = (explorerId: string) =>
   useSelector((state) => {
     return extractCwdFromExplorerPanel(state.explorersSlice.explorerPanels[explorerId]);
@@ -79,12 +82,14 @@ export const useScrollTop = (explorerId: string, segmentIdx: number) =>
 export const useIdOfFocusedExplorerPanel = () =>
   useSelector((state) => state.explorersSlice.focusedExplorerPanelId);
 
-export function extractCwdSegmentsFromExplorerPanel(explorerPanel: ExplorerPanel) {
+export function extractCwdSegmentsFromExplorerPanel(
+  explorerPanel: Pick<ExplorerPanel, 'cwdSegments'>,
+) {
   const { cwdSegments } = explorerPanel;
   return cwdSegments.filter((segment) => !segment.markedForRemoval);
 }
 
-export function extractCwdFromExplorerPanel(explorerPanel: ExplorerPanel) {
+export function extractCwdFromExplorerPanel(explorerPanel: Pick<ExplorerPanel, 'cwdSegments'>) {
   const cwdSegments = extractCwdSegmentsFromExplorerPanel(explorerPanel);
   const newestSegmentNotScheduledToRemove = cwdSegments[cwdSegments.length - 1];
   invariant(newestSegmentNotScheduledToRemove);

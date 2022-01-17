@@ -48,6 +48,7 @@ export async function createStoreInstance(creationParams?: {
     const explorerId = generateExplorerId();
     explorerPanels[explorerId] = {
       cwdSegments: computeCwdSegmentsFromUri(cwdOfNewExplorer),
+      version: 1,
     };
   }
 

@@ -30,7 +30,7 @@ export async function reviveGlobalStateFromStorageState(
               resolveMetadata: false,
             },
           );
-          explorers[panel.id] = { cwdSegments: panel.cwdSegments };
+          explorers[panel.id] = { cwdSegments: panel.cwdSegments, version: 1 };
         } catch (error) {
           logger.error(`could not revive a explorer panel`, error, { panel });
         }

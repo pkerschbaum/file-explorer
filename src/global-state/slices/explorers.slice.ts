@@ -17,6 +17,7 @@ export type ExplorersMap = {
 
 export type ExplorerPanel = {
   cwdSegments: CwdSegment[];
+  version: number;
   markedForRemoval?: boolean;
 };
 
@@ -70,6 +71,7 @@ type UpdateCwdSegmentPayload = {
 type ChangeCwdPayload = {
   explorerId: string;
   newCwd: UriComponents;
+  keepExistingCwdSegments: boolean;
 };
 
 type ChangeFocusedExplorerPayload = {
@@ -100,7 +102,7 @@ export const reducer = createReducer(INITIAL_STATE, (builder) =>
         );
       }
 
-      state.explorerPanels[explorerId] = { cwdSegments };
+      state.explorerPanels[explorerId] = { cwdSegments, version: 1 };
       if (state.focusedExplorerPanelId === undefined) {
         state.focusedExplorerPanelId = explorerId;
       }
@@ -178,7 +180,7 @@ export const reducer = createReducer(INITIAL_STATE, (builder) =>
       }
     })
     .addCase(actions.changeCwd, (state, action) => {
-      const { explorerId, newCwd } = action.payload;
+      const { explorerId, newCwd, keepExistingCwdSegments } = action.payload;
 
       if (!isExplorerIdPresent(state, explorerId)) {
         throw new Error(
@@ -187,36 +189,57 @@ export const reducer = createReducer(INITIAL_STATE, (builder) =>
         );
       }
 
-      const currentCwdSegments = state.explorerPanels[explorerId].cwdSegments;
-      const newCwdSegments = computeCwdSegmentsFromUri(newCwd);
-      const maxSegmentsLength = Math.max(currentCwdSegments.length, newCwdSegments.length);
-      for (let idx = 0; idx < maxSegmentsLength; idx++) {
+      let newCwdSegments;
+      let explorerVersionToUse;
+      if (!keepExistingCwdSegments) {
         /**
-         * Copy old segment if the uri of the old segment is equal to the uri of the new segment (and
-         * the segment is not marked for removal) in order to keep the state of the old segments.
+         * If the cwd segments should not be kept, we just compute new CWD segments from the given URI
+         * and increment the version number of the explorer panel by 1. This version number is used by
+         * the ExplorerPanel component to completely unmount and remount, so that no animations are
+         * performed, all state is reset to its initial state, etc.
          */
-        if (
-          currentCwdSegments.length > idx &&
-          !currentCwdSegments[idx].markedForRemoval &&
-          newCwdSegments.length > idx &&
-          resources.isEqual(
-            URI.from(currentCwdSegments[idx].uri),
-            URI.from(newCwdSegments[idx].uri),
-          )
-        ) {
-          newCwdSegments[idx] = currentCwdSegments[idx];
-        }
+        newCwdSegments = computeCwdSegmentsFromUri(newCwd);
+        explorerVersionToUse = state.explorerPanels[explorerId].version + 1;
+      } else {
+        /**
+         * If the cwd segments should be kept, we keep the current version number of the explorer panel,
+         * compute new CWD segments from the given URI but take as much information as possible from
+         * the current CWD segments.
+         */
+        newCwdSegments = computeCwdSegmentsFromUri(newCwd);
+        explorerVersionToUse = state.explorerPanels[explorerId].version;
 
-        // If any segments in the current cwd are left, copy them with markedForRemoval set to true
-        if (currentCwdSegments.length > idx && idx >= newCwdSegments.length) {
-          newCwdSegments.push({
-            ...currentCwdSegments[idx],
-            markedForRemoval: true,
-          });
+        const currentCwdSegments = state.explorerPanels[explorerId].cwdSegments;
+        const maxSegmentsLength = Math.max(currentCwdSegments.length, newCwdSegments.length);
+        for (let idx = 0; idx < maxSegmentsLength; idx++) {
+          /**
+           * Copy old segment if the uri of the old segment is equal to the uri of the new segment (and
+           * the segment is not marked for removal) in order to keep the state of the old segments.
+           */
+          if (
+            currentCwdSegments.length > idx &&
+            !currentCwdSegments[idx].markedForRemoval &&
+            newCwdSegments.length > idx &&
+            resources.isEqual(
+              URI.from(currentCwdSegments[idx].uri),
+              URI.from(newCwdSegments[idx].uri),
+            )
+          ) {
+            newCwdSegments[idx] = currentCwdSegments[idx];
+          }
+
+          // If any segments in the current cwd are left, copy them with markedForRemoval set to true
+          if (currentCwdSegments.length > idx && idx >= newCwdSegments.length) {
+            newCwdSegments.push({
+              ...currentCwdSegments[idx],
+              markedForRemoval: true,
+            });
+          }
         }
       }
 
       state.explorerPanels[explorerId].cwdSegments = newCwdSegments;
+      state.explorerPanels[explorerId].version = explorerVersionToUse;
     })
     .addCase(actions.changeFocusedExplorer, (state, action) => {
       const { explorerId } = action.payload;

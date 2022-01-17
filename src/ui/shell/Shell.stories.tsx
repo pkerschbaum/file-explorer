@@ -81,12 +81,17 @@ export const MultipleTabs = Template.bind({});
           explorerPanels: {
             'panel-1': {
               cwdSegments: computeCwdSegmentsFromUri(URI.joinPath(URI.from(cwd), '..').toJSON()),
+              version: 1,
             },
-            'panel-2': { cwdSegments: computeCwdSegmentsFromUri(cwd) },
+            'panel-2': {
+              cwdSegments: computeCwdSegmentsFromUri(cwd),
+              version: 1,
+            },
             'panel-3': {
               cwdSegments: computeCwdSegmentsFromUri(
                 URI.joinPath(URI.from(cwd), 'test-folder').toJSON(),
               ),
+              version: 1,
             },
           },
           focusedExplorerPanelId: 'panel-2',

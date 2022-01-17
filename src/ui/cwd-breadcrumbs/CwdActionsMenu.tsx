@@ -92,7 +92,11 @@ export const CwdActionsMenu: React.FC<CwdActionsMenuProps> = ({ explorerId, menu
             isOpen={changeCwdPopoverInstance.state.isOpen}
             initialCwdValue={formatter.resourcePath(cwd)}
             onSubmit={async (newDir) => {
-              await changeCwd(explorerId, uriHelper.parseUri(cwd.scheme, newDir));
+              await changeCwd({
+                explorerId,
+                newCwd: uriHelper.parseUri(cwd.scheme, newDir),
+                keepExistingCwdSegments: false,
+              });
               changeCwdPopoverInstance.state.close();
               menuInstance.state.close();
             }}

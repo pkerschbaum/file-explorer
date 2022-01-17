@@ -31,7 +31,11 @@ const logger = createLogger('explorer.hooks');
 
 export async function openResources(explorerId: string, resources: ResourceForUI[]) {
   if (resources.length === 1 && resources[0].resourceType === RESOURCE_TYPE.DIRECTORY) {
-    await changeCwd(explorerId, URI.from(resources[0].uri));
+    await changeCwd({
+      explorerId,
+      newCwd: URI.from(resources[0].uri),
+      keepExistingCwdSegments: true,
+    });
   } else {
     await openFiles(
       resources
@@ -49,7 +53,15 @@ export function copyCwdIntoClipboard(explorerId: string) {
   globalThis.modules.nativeHost.clipboard.writeText(formatter.resourcePath(cwdUri));
 }
 
-export async function changeCwd(explorerId: string, newCwd: UriComponents) {
+export async function changeCwd({
+  explorerId,
+  newCwd,
+  keepExistingCwdSegments,
+}: {
+  explorerId: string;
+  newCwd: UriComponents;
+  keepExistingCwdSegments: boolean;
+}) {
   const newCwdUri = URI.from(newCwd);
   const stats = await globalThis.modules.fileSystem.resolve(newCwdUri);
   if (!stats.isDirectory) {
@@ -62,7 +74,7 @@ export async function changeCwd(explorerId: string, newCwd: UriComponents) {
 
   // change to the new directory and refresh resources of that directory
   globalThis.modules.dispatch(
-    explorerActions.changeCwd({ explorerId, newCwd: newCwdUri.toJSON() }),
+    explorerActions.changeCwd({ explorerId, newCwd: newCwdUri.toJSON(), keepExistingCwdSegments }),
   );
   await refreshResourcesOfDirectory({ directory: newCwd });
 }

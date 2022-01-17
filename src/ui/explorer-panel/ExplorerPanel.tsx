@@ -6,6 +6,7 @@ import { uriHelper } from '@app/base/utils/uri-helper';
 import {
   useCwdSegments,
   useIdOfFocusedExplorerPanel,
+  useVersionOfExplorer,
 } from '@app/global-state/slices/explorers.hooks';
 import { ActionsBar } from '@app/ui/actions-bar';
 import { Box, componentLibraryUtils } from '@app/ui/components-library';
@@ -29,13 +30,20 @@ export const ExplorerPanel = React.memo<ExplorerPanelProps>(function ExplorerPan
   customTitleBarUsed,
 }) {
   const cwdSegments = useCwdSegments(explorerId);
+  const versionOfExplorer = useVersionOfExplorer(explorerId);
   const focusedExplorerId = useIdOfFocusedExplorerPanel();
 
   const isActiveExplorer = explorerId === focusedExplorerId;
   const activeAnimationVariant = isActiveExplorer ? 'open' : 'closed';
 
   return (
-    <ExplorerContextProvider explorerId={explorerId}>
+    /**
+     * "key" is set to the current version of the explorer so that if the version changes, everything
+     * is remounted (thus, state is reinitialized) and no animations run.
+     * This is e.g. needed if the CWD changes in "destructive" way (e.g. the user enters a new CWD
+     * via the ChangeCwd form - no state should be kept then).
+     */
+    <ExplorerContextProvider explorerId={explorerId} key={versionOfExplorer}>
       <CwdBreadcrumbsContainer
         variants={{
           closed: { display: 'none' },

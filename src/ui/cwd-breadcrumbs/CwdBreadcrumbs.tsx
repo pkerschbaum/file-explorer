@@ -44,7 +44,9 @@ export const CwdBreadcrumbs: React.FC = () => {
             segmentFormatted={formattedUriSegments[idx]}
             isLastSegment={isLastSegment}
             isSecondToLastSegment={isSecondToLastSegment}
-            changeDirectory={() => changeCwd(explorerId, segment.uri)}
+            changeDirectory={() =>
+              changeCwd({ explorerId, newCwd: segment.uri, keepExistingCwdSegments: true })
+            }
           />
         );
       })}
