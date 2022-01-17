@@ -3,6 +3,7 @@ import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 
 import { numbers } from '@app/base/utils/numbers.util';
+import { uriHelper } from '@app/base/utils/uri-helper';
 import { PASTE_PROCESS_STATUS, RESOURCE_TYPE } from '@app/domain/types';
 import { computeCwdSegmentsFromUri } from '@app/global-state/slices/explorers.slice';
 import { createStoreInstance } from '@app/global-state/store';
@@ -109,7 +110,7 @@ export const ManyResources = Template.bind({});
     let resourcesToCreate: FileSystemResourceToCreate[] = [
       {
         type: RESOURCE_TYPE.DIRECTORY,
-        uri: URI.parse(`${Schemas.inMemory}:///home/testdir`),
+        uri: uriHelper.parseUri(Schemas.file, `/home/testdir`),
       },
     ];
     resourcesToCreate = [
@@ -117,10 +118,9 @@ export const ManyResources = Template.bind({});
       ...numbers.sequence({ fromInclusive: 1, toInclusive: 1001 }).map((number) => {
         const resource: FileSystemResourceToCreate = {
           type: RESOURCE_TYPE.FILE,
-          uri: URI.parse(
-            `${Schemas.inMemory}:///home/testdir/testfile-${number
-              .toString()
-              .padStart(5, '0')}.txt`,
+          uri: uriHelper.parseUri(
+            Schemas.file,
+            `/home/testdir/testfile-${number.toString().padStart(5, '0')}.txt`,
           ),
         };
         return resource;

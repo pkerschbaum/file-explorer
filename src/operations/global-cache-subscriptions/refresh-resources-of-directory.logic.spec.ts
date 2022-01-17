@@ -1,5 +1,4 @@
 import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
-import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { queries } from '@playwright-testing-library/test';
 import { expect, test } from '@playwright/test';
 
@@ -18,7 +17,7 @@ test.describe(
       const $document = await bootstrap({ page, storybookIdToVisit: 'shell--simple-case' });
       const queryKey = QUERY_KEYS.RESOURCES_OF_DIRECTORY({
         directoryId: uriHelper.getComparisonKey(
-          URI.parse(`${Schemas.inMemory}:///home/testdir`).toJSON(),
+          uriHelper.parseUri(Schemas.file, `/home/testdir`).toJSON(),
         ),
         resolveMetadata: true,
       });
@@ -34,9 +33,9 @@ test.describe(
       expect(cacheEntriesForCwd).toHaveLength(1);
       const initialCachedResourcesOfCwd = cacheEntriesForCwd[0].state.data as ResourceStat[];
 
-      const uriToCreate = URI.parse(
-        `${Schemas.inMemory}:///home/testdir/name-of-new-folder`,
-      ).toJSON();
+      const uriToCreate = uriHelper
+        .parseUri(Schemas.file, `/home/testdir/name-of-new-folder`)
+        .toJSON();
       await page.evaluate(
         (uriToCreate) => globalThis.modules.fileSystem.createFolder(uriToCreate),
         uriToCreate,

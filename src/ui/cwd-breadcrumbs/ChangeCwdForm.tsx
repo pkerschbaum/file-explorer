@@ -45,6 +45,7 @@ export const ChangeCwdForm: React.FC<ChangeCwdFormProps> = ({
 
   return (
     <form
+      aria-label="Change Directory Form"
       onSubmit={(e) => {
         e.preventDefault();
         void handleSubmit();

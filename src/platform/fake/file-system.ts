@@ -12,6 +12,7 @@ import dayjs from 'dayjs';
 
 import { assertIsUnreachable } from '@app/base/utils/assert.util';
 import { Writeable } from '@app/base/utils/types.util';
+import { uriHelper } from '@app/base/utils/uri-helper';
 import { RESOURCE_TYPE } from '@app/domain/types';
 import { convertUriComponentsToURIInstances } from '@app/platform/electron/file-system';
 import type { PlatformFileSystem } from '@app/platform/file-system.types';
@@ -37,7 +38,7 @@ export const createFakeFileSystem: (
   const logService = new LogService(logger);
   const fileService = new FileService(logService);
   const inMemoryFileSystemProvider = new InMemoryFileSystemProvider();
-  fileService.registerProvider(Schemas.inMemory, inMemoryFileSystemProvider);
+  fileService.registerProvider(Schemas.file, inMemoryFileSystemProvider);
 
   async function createResource({ type, uri, mtimeIso8601 }: FileSystemResourceToCreate) {
     if (type === RESOURCE_TYPE.DIRECTORY) {
@@ -73,50 +74,52 @@ export const createFakeFileSystem: (
 const defaultFileSystemResources: FileSystemResourceToCreate[] = [
   {
     type: RESOURCE_TYPE.DIRECTORY,
-    uri: URI.parse(`${Schemas.inMemory}:///home/testdir/aa test folder`),
+    uri: uriHelper.parseUri(Schemas.file, `/home/testdir/aa test folder`),
     mtimeIso8601: '2021-05-08T19:01:59.789Z',
   },
   {
     type: RESOURCE_TYPE.DIRECTORY,
-    uri: URI.parse(`${Schemas.inMemory}:///home/testdir/zz test folder`),
+    uri: uriHelper.parseUri(Schemas.file, `/home/testdir/zz test folder`),
     mtimeIso8601: '2021-05-08T01:05:15.012Z',
   },
   {
     type: RESOURCE_TYPE.DIRECTORY,
-    uri: URI.parse(`${Schemas.inMemory}:///home/testdir/test folder`),
+    uri: uriHelper.parseUri(Schemas.file, `/home/testdir/test folder`),
     mtimeIso8601: '2021-05-08T18:59:01.456Z',
   },
   {
     type: RESOURCE_TYPE.DIRECTORY,
-    uri: URI.parse(`${Schemas.inMemory}:///home/testdir/test-folder`),
+    uri: uriHelper.parseUri(Schemas.file, `/home/testdir/test-folder`),
     mtimeIso8601: '2021-05-08T18:59:01.456Z',
   },
   {
     type: RESOURCE_TYPE.FILE,
-    uri: URI.parse(`${Schemas.inMemory}:///home/testdir/testfile1.txt`),
+    uri: uriHelper.parseUri(Schemas.file, `/home/testdir/testfile1.txt`),
     mtimeIso8601: '2021-05-08T18:59:01.456Z',
   },
   {
     type: RESOURCE_TYPE.FILE,
-    uri: URI.parse(`${Schemas.inMemory}:///home/testdir/testfile2.docx`),
+    uri: uriHelper.parseUri(Schemas.file, `/home/testdir/testfile2.docx`),
     mtimeIso8601: '2021-05-08T18:59:01.456Z',
   },
   {
     type: RESOURCE_TYPE.FILE,
-    uri: URI.parse(`${Schemas.inMemory}:///home/testdir/testfile3.pdf`),
+    uri: uriHelper.parseUri(Schemas.file, `/home/testdir/testfile3.pdf`),
     mtimeIso8601: '2021-05-08T18:59:01.456Z',
   },
   {
     type: RESOURCE_TYPE.DIRECTORY,
-    uri: URI.parse(
-      `${Schemas.inMemory}:///home/testdir/zz test folder/zz test folder sub directory`,
+    uri: uriHelper.parseUri(
+      Schemas.file,
+      `/home/testdir/zz test folder/zz test folder sub directory`,
     ),
     mtimeIso8601: '2021-05-08T18:59:01.456Z',
   },
   {
     type: RESOURCE_TYPE.FILE,
-    uri: URI.parse(
-      `${Schemas.inMemory}:///home/testdir/zz test folder/zz test folder sub directory/testfile1.txt`,
+    uri: uriHelper.parseUri(
+      Schemas.file,
+      `/home/testdir/zz test folder/zz test folder sub directory/testfile1.txt`,
     ),
     mtimeIso8601: '2021-05-08T18:59:01.456Z',
   },

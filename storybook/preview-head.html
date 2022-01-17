@@ -8,3 +8,14 @@
     font-display: block;
   }
 </style>
+<script>
+  /**
+   * Set hard-coded Linux user agent since the entire browser (i.e. storybook) version of the file
+   * explorer is based on an InMemoryFileSystemProvider which only supports linux file system paths.
+   *
+   * User-Agent is set using this approach: https://stackoverflow.com/a/1307088/1700319
+   */
+  globalThis.navigator.__defineGetter__('userAgent', function () {
+    return 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36';
+  });
+</script>
