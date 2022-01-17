@@ -1,8 +1,9 @@
 import { Emitter } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/event';
 import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
-import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 
 import { functions } from '@app/base/utils/functions.util';
+import { uriHelper } from '@app/base/utils/uri-helper';
 import { CLIPBOARD_CHANGED_DATA_TYPE, PlatformNativeHost } from '@app/platform/native-host.types';
 
 export function createFakeNativeHost(): PlatformNativeHost {
@@ -12,7 +13,7 @@ export function createFakeNativeHost(): PlatformNativeHost {
 
   return {
     app: {
-      getPath: () => Promise.resolve(URI.parse(`${Schemas.inMemory}:///home/testdir`).toJSON()),
+      getPath: () => Promise.resolve(uriHelper.parseUri(Schemas.file, `/home/testdir`).toJSON()),
       isResourceQualifiedForThumbnail: () => false,
       getThumbnailURLForResource: () => undefined,
       isResourceQualifiedForNativeIcon: () => false,

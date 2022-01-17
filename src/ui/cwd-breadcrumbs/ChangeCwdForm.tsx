@@ -1,8 +1,11 @@
+import * as path from '@pkerschbaum/code-oss-file-service/out/vs/base/common/path';
+import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import * as React from 'react';
 import styled from 'styled-components';
 
 import { check } from '@app/base/utils/assert.util';
 import { Box, Button, commonComponentStyles, TextField } from '@app/ui/components-library';
+import { useResourcesOfDirectory } from '@app/ui/hooks/resources.hooks';
 
 type ChangeCwdFormProps = {
   isOpen: boolean;
@@ -16,6 +19,12 @@ export const ChangeCwdForm: React.FC<ChangeCwdFormProps> = ({
   onSubmit,
 }) => {
   const [cwdValue, setCwdValue] = React.useState(initialCwdValue);
+  const inputIsValidPath = check.isNonEmptyString(cwdValue) && path.isAbsolute(cwdValue);
+  const { isLoading, error } = useResourcesOfDirectory(URI.file(cwdValue), {
+    enabled: inputIsValidPath,
+  });
+  const resourcesForInputAreAvailable = !isLoading && !error;
+  const inputIsValid = inputIsValidPath && resourcesForInputAreAvailable;
 
   React.useEffect(
     function resetValueOnPopoverClose() {
@@ -25,8 +34,6 @@ export const ChangeCwdForm: React.FC<ChangeCwdFormProps> = ({
     },
     [initialCwdValue, isOpen],
   );
-
-  const inputIsValid = check.isNonEmptyString(cwdValue);
 
   async function handleSubmit() {
     if (!inputIsValid) {
@@ -38,6 +45,7 @@ export const ChangeCwdForm: React.FC<ChangeCwdFormProps> = ({
 
   return (
     <form
+      aria-label="Change Directory Form"
       onSubmit={(e) => {
         e.preventDefault();
         void handleSubmit();

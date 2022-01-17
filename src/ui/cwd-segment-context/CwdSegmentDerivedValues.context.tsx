@@ -16,7 +16,7 @@ import {
   useSetReasonForLastSelectionChange,
 } from '@app/ui/cwd-segment-context';
 import { useExplorerId } from '@app/ui/explorer-context';
-import { useEnrichResourcesWithTags, useResourcesForUI } from '@app/ui/hooks/resources.hooks';
+import { useEnrichResourcesWithTags, useResourcesOfDirectory } from '@app/ui/hooks/resources.hooks';
 import { createSelectableContext, usePrevious } from '@app/ui/utils/react.util';
 
 const USE_GALLERY_VIEW_PERCENTAGE = 0.75;
@@ -50,9 +50,9 @@ export const CwdSegmentDerivedValuesContextProvider: React.FC<
   const setKeysOfSelectedResources = useSetKeysOfSelectedResources();
   const setActiveResourcesView = useSetActiveResourcesView();
 
-  const { resources, dataAvailable } = useResourcesForUI(uri);
+  const { resources } = useResourcesOfDirectory(uri);
 
-  const resourcesWithTags = useEnrichResourcesWithTags(resources);
+  const resourcesWithTags = useEnrichResourcesWithTags(resources ?? []);
 
   /*
    * Compute resources to show:
@@ -159,7 +159,7 @@ export const CwdSegmentDerivedValuesContextProvider: React.FC<
       return;
     }
 
-    if (!dataAvailable) {
+    if (!resources) {
       return;
     }
 
@@ -180,12 +180,12 @@ export const CwdSegmentDerivedValuesContextProvider: React.FC<
     } else {
       setActiveResourcesView('table');
     }
-  }, [dataAvailable, activeResourcesView, resources, setActiveResourcesView]);
+  }, [activeResourcesView, resources, setActiveResourcesView]);
 
   return (
     <DerivedValuesContextProvider
       value={{
-        dataAvailable,
+        dataAvailable: resources !== undefined,
         resourcesToShow,
         selectedShownResources,
       }}

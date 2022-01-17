@@ -1,6 +1,5 @@
 import { IDisposable } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/lifecycle';
 import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
-import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { Query } from 'react-query';
 
 import { uriHelper } from '@app/base/utils/uri-helper';
@@ -68,7 +67,9 @@ describe('refresh-resources-of-directory', () => {
       queryKey: [
         RESOURCES_OF_DIRECTORY_KEY_PREFIX,
         {
-          directoryId: uriHelper.getComparisonKey(URI.parse(`${Schemas.inMemory}:///home/testdir`)),
+          directoryId: uriHelper.getComparisonKey(
+            uriHelper.parseUri(Schemas.file, `/home/testdir`),
+          ),
         },
       ],
     };
@@ -88,7 +89,7 @@ describe('refresh-resources-of-directory', () => {
           RESOURCES_OF_DIRECTORY_KEY_PREFIX,
           {
             directoryId: uriHelper.getComparisonKey(
-              URI.parse(`${Schemas.inMemory}:///home/testdir2`),
+              uriHelper.parseUri(Schemas.file, `/home/testdir2`),
             ),
           },
         ],
@@ -135,7 +136,9 @@ describe('refresh-resources-of-directory', () => {
       queryKey: [
         RESOURCES_OF_DIRECTORY_KEY_PREFIX,
         {
-          directoryId: uriHelper.getComparisonKey(URI.parse(`${Schemas.inMemory}:///home/testdir`)),
+          directoryId: uriHelper.getComparisonKey(
+            uriHelper.parseUri(Schemas.file, `/home/testdir`),
+          ),
         },
       ],
     };
@@ -152,7 +155,9 @@ describe('refresh-resources-of-directory', () => {
       queryKey: [
         RESOURCES_OF_DIRECTORY_KEY_PREFIX,
         {
-          directoryId: uriHelper.getComparisonKey(URI.parse(`${Schemas.inMemory}:///home/testdir`)),
+          directoryId: uriHelper.getComparisonKey(
+            uriHelper.parseUri(Schemas.file, `/home/testdir`),
+          ),
         },
       ],
     };
@@ -189,7 +194,7 @@ describe('refresh-resources-of-directory', () => {
           RESOURCES_OF_DIRECTORY_KEY_PREFIX,
           {
             directoryId: uriHelper.getComparisonKey(
-              URI.parse(`${Schemas.inMemory}:///home/testdir`),
+              uriHelper.parseUri(Schemas.file, `/home/testdir`),
             ),
           },
         ],
@@ -213,7 +218,7 @@ describe('refresh-resources-of-directory', () => {
           RESOURCES_OF_DIRECTORY_KEY_PREFIX,
           {
             directoryId: uriHelper.getComparisonKey(
-              URI.parse(`${Schemas.inMemory}:///home/testdir`),
+              uriHelper.parseUri(Schemas.file, `/home/testdir`),
             ),
           },
         ],

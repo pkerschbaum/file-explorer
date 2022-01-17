@@ -2,6 +2,7 @@ import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/ba
 import { IFileStat } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 import { useQuery } from 'react-query';
 
+import { CustomError } from '@app/base/custom-error';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { ResourceStat, RESOURCE_TYPE } from '@app/domain/types';
 import { QUERY_KEYS } from '@app/global-cache/query-keys';
@@ -24,6 +25,16 @@ export function useResources(
       const statsWithMetadata = await globalThis.modules.fileSystem.resolve(URI.from(directory), {
         resolveMetadata,
       });
+
+      if (!statsWithMetadata.isDirectory) {
+        throw new CustomError(
+          `could not resolve children of directory, reason: resolved resource is not a directory`,
+          {
+            directory,
+            statsWithMetadata,
+          },
+        );
+      }
 
       if (!statsWithMetadata.children) {
         return [];
