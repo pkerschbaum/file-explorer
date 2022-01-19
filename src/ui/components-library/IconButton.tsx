@@ -17,7 +17,9 @@ type IconButtonProps = IconButtonAriaProps &
   >;
 
 type IconButtonAriaProps = Required<Pick<AriaButtonProps<'button'>, 'aria-label'>> &
-  Pick<AriaButtonProps<'button'>, 'children' | 'onPress' | 'isDisabled'>;
+  Pick<AriaButtonProps<'button'>, 'children' | 'onPress' | 'isDisabled'> & {
+    ariaButtonProps?: AriaButtonProps<'button'>;
+  };
 
 type IconButtonComponentProps = {
   tooltipContent: React.ReactChild;
@@ -35,6 +37,7 @@ export const IconButton = styled(
       children,
       onPress,
       isDisabled,
+      ariaButtonProps: delegatedAriaButtonProps,
 
       /* component props */
       tooltipContent,
@@ -46,12 +49,15 @@ export const IconButton = styled(
       /* other props */
       ...delegatedProps
     } = props;
-    const reactAriaProps: AriaButtonProps<'button'> = {
-      'aria-label': ariaLabel,
-      children,
-      onPress,
-      isDisabled,
-    };
+    const reactAriaProps: AriaButtonProps<'button'> = mergeProps(
+      {
+        'aria-label': ariaLabel,
+        children,
+        onPress,
+        isDisabled,
+      },
+      delegatedAriaButtonProps ?? {},
+    );
 
     const buttonRef = useObjectRef(ref);
     const { buttonProps } = useButton(reactAriaProps, buttonRef);
@@ -105,9 +111,11 @@ export const IconButton = styled(
           <ButtonContent>{children}</ButtonContent>
         </IconButtonRoot>
 
-        <Tooltip tooltipInstance={tooltipInstance} overrideIsOpen={tooltipOverrideIsOpen}>
-          {tooltipContent}
-        </Tooltip>
+        {tooltipContent && (
+          <Tooltip tooltipInstance={tooltipInstance} overrideIsOpen={tooltipOverrideIsOpen}>
+            {tooltipContent}
+          </Tooltip>
+        )}
       </>
     );
   }),

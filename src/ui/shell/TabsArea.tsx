@@ -191,7 +191,7 @@ const ExplorerTabContent: React.FC<ExplorerTabContentProps> = (props) => {
         onPress={onSelect}
         handleRef={tabButtonHandleRef}
         endIcon={buttonEndIcon}
-        enableLayoutAnimation
+        enableLayoutAnimation="position"
       >
         {props.label}
       </TabButton>

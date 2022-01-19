@@ -2,6 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 import { windowClose, windowMinimize, windowToggleMaximized } from '@app/operations/app.operations';
+import { commonStyles } from '@app/ui/common-styles';
 import {
   Box,
   Button,
@@ -9,7 +10,7 @@ import {
   FullscreenOutlinedIcon,
   MinimizeOutlinedIcon,
 } from '@app/ui/components-library';
-import { ROOTCONTAINER_PADDING_FACTOR } from '@app/ui/shell/constants';
+import { ROOTCONTAINER_PADDING_FACTOR, WINDOW_CONTROLS_WIDTH } from '@app/ui/shell/constants';
 
 export const TITLE_BAR_GRID_AREA = 'shell-title-bar';
 
@@ -55,7 +56,7 @@ const WindowDragRegion = styled(Box)`
 
 const TitleBarWindowControls = styled(Box)`
   height: 100%;
-  justify-self: end;
+  width: ${WINDOW_CONTROLS_WIDTH}px;
 
   display: flex;
   /* re-enable pointer events (which would otherwise be disabled because of the parent setting pointer-events to "none") */
@@ -69,13 +70,13 @@ const TitleBarWindowControls = styled(Box)`
 `;
 
 const TitleBarButton = styled(Button)`
-  min-width: 0;
-  width: 46px;
+  ${commonStyles.layout.flex.shrinkAndFitHorizontal}
+
+  padding: 0;
   display: flex;
   justify-content: center;
   align-items: center;
 
-  padding: 0;
   color: inherit;
   background-color: inherit;
   cursor: default;

@@ -3,12 +3,7 @@ import styled from 'styled-components';
 
 import { createStoreInstance, RootStore } from '@app/global-state/store';
 import { Box } from '@app/ui/components-library';
-import {
-  ExplorerPanel,
-  EXPLORER_ACTIONSBAR_GRID_AREA,
-  EXPLORER_CWDBREADCRUMBS_GRID_AREA,
-  EXPLORER_RESOURCESVIEW_GRID_AREA,
-} from '@app/ui/explorer-panel/ExplorerPanel';
+import { ExplorerPanel, EXPLORER_PANEL_GRID_AREA } from '@app/ui/explorer-panel/ExplorerPanel';
 import { createQueryClient, Globals } from '@app/ui/Globals';
 
 import { initializeStorybookPlatformModules } from '@app-storybook/storybook-utils';
@@ -38,11 +33,9 @@ const Template: ComponentStory<typeof ExplorerPanel> = (args, { loaded }) => (
 const ExplorerPanelGrid = styled(Box)`
   height: 100%;
   display: grid;
-  grid-template-rows: max-content max-content 1fr;
-  grid-template-areas:
-    '${EXPLORER_CWDBREADCRUMBS_GRID_AREA}'
-    '${EXPLORER_ACTIONSBAR_GRID_AREA}'
-    '${EXPLORER_RESOURCESVIEW_GRID_AREA}';
+  grid-template-rows: 1fr;
+  grid-template-areas: '${EXPLORER_PANEL_GRID_AREA}';
+  grid-row-gap: var(--spacing-2);
 `;
 
 export const DefaultCase = Template.bind({});

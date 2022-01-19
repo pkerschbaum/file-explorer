@@ -30,7 +30,7 @@ type ButtonComponentProps = {
   startIcon?: React.ReactNode;
   endIcon?: React.ReactNode;
   handleRef?: React.RefObject<ButtonHandle>;
-  enableLayoutAnimation?: boolean;
+  enableLayoutAnimation?: boolean | 'size' | 'position';
 };
 
 export type ButtonHandle = {
@@ -104,7 +104,7 @@ export const Button = styled(
       [buttonRef],
     );
 
-    const animateLayout = enableLayoutAnimation && isAnimationAllowed;
+    const animateLayout = isAnimationAllowed && enableLayoutAnimation;
 
     return (
       <ButtonRoot
