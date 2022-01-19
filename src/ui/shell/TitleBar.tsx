@@ -2,6 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 import { windowClose, windowMinimize, windowToggleMaximized } from '@app/operations/app.operations';
+import { commonStyles } from '@app/ui/common-styles';
 import {
   Box,
   Button,
@@ -9,7 +10,7 @@ import {
   FullscreenOutlinedIcon,
   MinimizeOutlinedIcon,
 } from '@app/ui/components-library';
-import { ROOTCONTAINER_PADDING_FACTOR } from '@app/ui/shell/constants';
+import { ROOTCONTAINER_PADDING_FACTOR, WINDOW_CONTROLS_WIDTH } from '@app/ui/shell/constants';
 
 export const TITLE_BAR_GRID_AREA = 'shell-title-bar';
 
@@ -43,15 +44,23 @@ const WindowDragRegion = styled(Box)`
   margin-left: calc(-1 * ${ROOTCONTAINER_PADDING_FACTOR} * var(--spacing-1));
   margin-right: calc(-1 * ${ROOTCONTAINER_PADDING_FACTOR} * var(--spacing-1));
 
-  /* https://www.electronjs.org/docs/latest/tutorial/window-customization#set-custom-draggable-region */
+  /*
+    We want the title bar to be a "drag region" - uses should be able to drag the window around using the title bar.
+    See https://www.electronjs.org/docs/latest/tutorial/window-customization#set-custom-draggable-region.
+    Additionally we disable pointer events so that if something things overlapping with the title bar 
+    (e.g. CWD breadcrumbs) are still clickable. The drag region will still work.
+   */
+  pointer-events: none;
   -webkit-app-region: drag;
 `;
 
 const TitleBarWindowControls = styled(Box)`
   height: 100%;
-  justify-self: end;
+  width: ${WINDOW_CONTROLS_WIDTH}px;
 
   display: flex;
+  /* re-enable pointer events (which would otherwise be disabled because of the parent setting pointer-events to "none") */
+  pointer-events: initial;
 
   /* hide overflow because of the -1px margin trick applied on the last TitleBarButton to eliminate dead click space */
   overflow: hidden;
@@ -61,13 +70,13 @@ const TitleBarWindowControls = styled(Box)`
 `;
 
 const TitleBarButton = styled(Button)`
-  min-width: 0;
-  width: 46px;
+  ${commonStyles.layout.flex.shrinkAndFitHorizontal}
+
+  padding: 0;
   display: flex;
   justify-content: center;
   align-items: center;
 
-  padding: 0;
   color: inherit;
   background-color: inherit;
   cursor: default;

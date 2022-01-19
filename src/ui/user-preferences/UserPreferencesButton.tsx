@@ -1,40 +1,76 @@
 import * as React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-import { Box, IconButton, SettingsIcon } from '@app/ui/components-library';
-
-export const USER_PREFERENCES_SETTINGS_BUTTON_GRID_AREA = 'shell-app-settings-button';
+import {
+  Box,
+  IconButton,
+  Paper,
+  Popover,
+  SettingsIcon,
+  usePopover,
+} from '@app/ui/components-library';
+import {
+  PREFERENCES_BUTTON_WIDTH,
+  ROOTCONTAINER_PADDING_FACTOR,
+  TITLEBAR_HEIGHT,
+} from '@app/ui/shell/constants';
+import { UserPreferencesArea } from '@app/ui/user-preferences/UserPreferencesArea';
 
 type UserPreferencesButtonProps = {
-  userPreferencesSidebarOpen: boolean;
-  setUserPreferencesSidebarOpen: (open: boolean) => void;
+  customTitleBarUsed: boolean;
 };
 
 export const UserPreferencesButton: React.FC<UserPreferencesButtonProps> = ({
-  userPreferencesSidebarOpen,
-  setUserPreferencesSidebarOpen,
+  customTitleBarUsed,
 }) => {
-  const label = !userPreferencesSidebarOpen ? 'Open User Preferences' : 'Hide User Preferences';
+  const buttonRef = React.useRef<HTMLButtonElement>(null);
+
+  const { triggerProps, popoverInstance } = usePopover({
+    triggerRef: buttonRef,
+  });
+
+  const label = !popoverInstance.state.isOpen ? 'Open User Preferences' : '';
 
   return (
-    <UserPreferencesButtonContainer>
-      <IconButton
-        aria-label={label}
-        tooltipContent={label}
-        onPress={() => {
-          setUserPreferencesSidebarOpen(!userPreferencesSidebarOpen);
-        }}
-      >
-        <SettingsIcon />
-      </IconButton>
-    </UserPreferencesButtonContainer>
+    <>
+      <UserPreferencesButtonContainer styleProps={{ customTitleBarUsed }}>
+        <IconButton
+          ref={buttonRef}
+          aria-label={label}
+          tooltipContent={label}
+          onPress={() => popoverInstance.state.open()}
+          ariaButtonProps={triggerProps}
+        >
+          <SettingsIcon />
+        </IconButton>
+      </UserPreferencesButtonContainer>
+
+      <Popover popoverInstance={popoverInstance}>
+        <Paper>
+          <UserPreferencesArea />
+        </Paper>
+      </Popover>
+    </>
   );
 };
 
-const UserPreferencesButtonContainer = styled(Box)`
-  grid-area: ${USER_PREFERENCES_SETTINGS_BUTTON_GRID_AREA};
+type StyleProps = {
+  customTitleBarUsed: boolean;
+};
 
-  display: flex;
-  justify-content: flex-end;
-  align-items: flex-start;
+const UserPreferencesButtonContainer = styled(Box)<{ styleProps: StyleProps }>`
+  position: absolute;
+
+  /* If a custom title bar is used, overlap the CwdBreadcrumbs with the WindowDragRegion above it */
+  ${({ styleProps }) =>
+    styleProps.customTitleBarUsed
+      ? css`
+          top: calc(${ROOTCONTAINER_PADDING_FACTOR} * var(--spacing-1) + ${TITLEBAR_HEIGHT}px);
+        `
+      : css`
+          top: calc(${ROOTCONTAINER_PADDING_FACTOR} * var(--spacing-1));
+        `}
+  right: calc(${ROOTCONTAINER_PADDING_FACTOR} * var(--spacing-1));
+
+  width: ${PREFERENCES_BUTTON_WIDTH}px;
 `;

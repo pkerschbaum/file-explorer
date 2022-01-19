@@ -16,20 +16,12 @@ import {
   RadioGroup,
 } from '@app/ui/components-library';
 
-export const USER_PREFERENCES_SIDEBAR_GRID_AREA = 'shell-user-preferences-sidebar';
-
-type UserPreferencesSidebarProps = {
-  userPreferencesSidebarOpen: boolean;
-};
-
-export const UserPreferencesSidebar: React.FC<UserPreferencesSidebarProps> = ({
-  userPreferencesSidebarOpen,
-}) => {
+export const UserPreferencesArea: React.FC = () => {
   const activeTheme = useActiveTheme();
   const activeFileIconTheme = useActiveFileIconTheme();
 
   return (
-    <Container userPreferencesSidebarOpen={userPreferencesSidebarOpen}>
+    <Container>
       <RadioGroup
         label="Theme"
         value={activeTheme}
@@ -63,17 +55,14 @@ export const UserPreferencesSidebar: React.FC<UserPreferencesSidebarProps> = ({
           </StyledRadio>
         ))}
       </RadioGroup>
-
-      <Divider />
     </Container>
   );
 };
 
-const Container = styled(Paper)<{ userPreferencesSidebarOpen: boolean }>`
-  grid-area: ${USER_PREFERENCES_SIDEBAR_GRID_AREA};
+const Container = styled(Paper)`
   padding: var(--spacing-4);
 
-  display: ${({ userPreferencesSidebarOpen }) => (userPreferencesSidebarOpen ? 'flex' : 'none')};
+  display: flex;
   flex-direction: column;
   gap: var(--spacing-4);
 `;

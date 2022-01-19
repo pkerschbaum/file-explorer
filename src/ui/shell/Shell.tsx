@@ -4,34 +4,24 @@ import styled, { css } from 'styled-components';
 
 import { useExplorerPanels } from '@app/global-state/slices/explorers.hooks';
 import { Box } from '@app/ui/components-library';
-import {
-  ExplorerPanel,
-  EXPLORER_ACTIONSBAR_GRID_AREA,
-  EXPLORER_CWDBREADCRUMBS_GRID_AREA,
-  EXPLORER_RESOURCESVIEW_GRID_AREA,
-} from '@app/ui/explorer-panel/ExplorerPanel';
-import { ROOTCONTAINER_PADDING_FACTOR } from '@app/ui/shell/constants';
+import { ExplorerPanel, EXPLORER_PANEL_GRID_AREA } from '@app/ui/explorer-panel/ExplorerPanel';
+import { ROOTCONTAINER_PADDING_FACTOR, TITLEBAR_HEIGHT } from '@app/ui/shell/constants';
 import { ProcessesArea } from '@app/ui/shell/ProcessesArea';
 import { TabsArea } from '@app/ui/shell/TabsArea';
 import { TitleBar, TITLE_BAR_GRID_AREA } from '@app/ui/shell/TitleBar';
-import {
-  UserPreferencesButton,
-  UserPreferencesSidebar,
-  USER_PREFERENCES_SETTINGS_BUTTON_GRID_AREA,
-  USER_PREFERENCES_SIDEBAR_GRID_AREA,
-} from '@app/ui/user-preferences';
+import { UserPreferencesButton } from '@app/ui/user-preferences';
+
+export const TABS_AND_PROCESSES_GRID_AREA = 'shell-tabs-and-processes';
 
 const useCustomTitleBar = isWindows;
 
 export const Shell = React.memo(function Shell() {
-  const [userPreferencesSidebarOpen, setUserPreferencesSidebarOpen] = React.useState(false);
-
   const explorerPanels = useExplorerPanels();
 
   const explorersToShow = explorerPanels.filter((explorer) => !explorer.markedForRemoval);
 
   return (
-    <RootContainer userPreferencesSidebarOpen={userPreferencesSidebarOpen}>
+    <RootContainer>
       {useCustomTitleBar && <TitleBar />}
 
       <TabsAndProcesses>
@@ -47,53 +37,28 @@ export const Shell = React.memo(function Shell() {
         />
       ))}
 
-      <UserPreferencesButton
-        userPreferencesSidebarOpen={userPreferencesSidebarOpen}
-        setUserPreferencesSidebarOpen={setUserPreferencesSidebarOpen}
-      />
-
-      <UserPreferencesSidebar userPreferencesSidebarOpen={userPreferencesSidebarOpen} />
+      <UserPreferencesButton customTitleBarUsed={useCustomTitleBar} />
     </RootContainer>
   );
 });
 
-const CUSTOM_TITLE_BAR_GRID_CONFIGURATION = css<{ userPreferencesSidebarOpen: boolean }>`
-  grid-template-rows: 28px max-content max-content 1fr max-content;
+const CUSTOM_TITLE_BAR_GRID_CONFIGURATION = css`
+  grid-template-rows: ${TITLEBAR_HEIGHT}px 1fr;
   grid-template-areas:
-    '${TITLE_BAR_GRID_AREA} ${TITLE_BAR_GRID_AREA} ${TITLE_BAR_GRID_AREA} ${({
-      userPreferencesSidebarOpen,
-    }) => userPreferencesSidebarOpen && TITLE_BAR_GRID_AREA}'
-    'shell-tabs-and-processes ${EXPLORER_CWDBREADCRUMBS_GRID_AREA} ${USER_PREFERENCES_SETTINGS_BUTTON_GRID_AREA} ${({
-      userPreferencesSidebarOpen,
-    }) => userPreferencesSidebarOpen && USER_PREFERENCES_SETTINGS_BUTTON_GRID_AREA}'
-    'shell-tabs-and-processes ${EXPLORER_ACTIONSBAR_GRID_AREA} ${USER_PREFERENCES_SETTINGS_BUTTON_GRID_AREA} ${({
-      userPreferencesSidebarOpen,
-    }) => userPreferencesSidebarOpen && USER_PREFERENCES_SETTINGS_BUTTON_GRID_AREA}'
-    'shell-tabs-and-processes ${EXPLORER_RESOURCESVIEW_GRID_AREA} ${EXPLORER_RESOURCESVIEW_GRID_AREA} ${({
-      userPreferencesSidebarOpen,
-    }) => userPreferencesSidebarOpen && USER_PREFERENCES_SIDEBAR_GRID_AREA}';
+    '${TITLE_BAR_GRID_AREA} ${TITLE_BAR_GRID_AREA}'
+    '${TABS_AND_PROCESSES_GRID_AREA} ${EXPLORER_PANEL_GRID_AREA}';
 `;
 
-const NON_CUSTOM_TITLE_BAR_GRID_CONFIGURATION = css<{ userPreferencesSidebarOpen: boolean }>`
-  grid-template-rows: max-content max-content 1fr max-content;
-  grid-template-areas:
-    'shell-tabs-and-processes ${EXPLORER_CWDBREADCRUMBS_GRID_AREA} ${USER_PREFERENCES_SETTINGS_BUTTON_GRID_AREA} ${({
-      userPreferencesSidebarOpen,
-    }) => userPreferencesSidebarOpen && USER_PREFERENCES_SETTINGS_BUTTON_GRID_AREA}'
-    'shell-tabs-and-processes ${EXPLORER_ACTIONSBAR_GRID_AREA} ${USER_PREFERENCES_SETTINGS_BUTTON_GRID_AREA} ${({
-      userPreferencesSidebarOpen,
-    }) => userPreferencesSidebarOpen && USER_PREFERENCES_SETTINGS_BUTTON_GRID_AREA}'
-    'shell-tabs-and-processes ${EXPLORER_RESOURCESVIEW_GRID_AREA} ${EXPLORER_RESOURCESVIEW_GRID_AREA} ${({
-      userPreferencesSidebarOpen,
-    }) => userPreferencesSidebarOpen && USER_PREFERENCES_SIDEBAR_GRID_AREA}';
+const NON_CUSTOM_TITLE_BAR_GRID_CONFIGURATION = css`
+  grid-template-rows: 1fr;
+  grid-template-areas: '${TABS_AND_PROCESSES_GRID_AREA} ${EXPLORER_PANEL_GRID_AREA}';
 `;
 
-const RootContainer = styled(Box)<{ userPreferencesSidebarOpen: boolean }>`
+const RootContainer = styled(Box)`
   height: 100%;
 
   display: grid;
-  grid-template-columns: ${({ userPreferencesSidebarOpen }) =>
-    userPreferencesSidebarOpen ? '250px 1fr max-content max-content' : '250px 1fr max-content'};
+  grid-template-columns: 250px 1fr;
   ${useCustomTitleBar
     ? CUSTOM_TITLE_BAR_GRID_CONFIGURATION
     : NON_CUSTOM_TITLE_BAR_GRID_CONFIGURATION}
@@ -110,29 +75,27 @@ const RootContainer = styled(Box)<{ userPreferencesSidebarOpen: boolean }>`
 `;
 
 const TabsAndProcesses = styled(Box)`
+  min-height: 0;
+  height: 100%;
+  max-height: 100%;
+  grid-area: ${TABS_AND_PROCESSES_GRID_AREA};
+
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   gap: var(--spacing-4);
 
-  grid-area: shell-tabs-and-processes;
-
   /* If a custom title bar is used, overlap the TabsArea with the WindowDragRegion above it */
   ${() => {
     if (useCustomTitleBar) {
       return css`
-        margin-top: -24px;
+        /* 
+          If a custom title bar is used add negative margin-top to overlap a little bit with the 
+          window drag region above it.
+         */
+        margin-top: calc(-1 * (${TITLEBAR_HEIGHT}px - var(--spacing-1)));
         -webkit-app-region: no-drag;
       `;
     }
   }}
-
-  /* 
-   * Stretch to the end of the RootContainer (i.e., revert the padding-bottom of the RootContainer
-   * via negative margin-bottom).
-   * The goal is to get a more aesthetically pleasant overflow-y behavior: If the tabs and processes
-   * are too many to fit into the TabsAndProcesses container, the resulting overflow will reach till
-   * the lower border of the RootContainer.
-   */
-  margin-bottom: calc(-1 * ${ROOTCONTAINER_PADDING_FACTOR} * var(--spacing-1));
 `;

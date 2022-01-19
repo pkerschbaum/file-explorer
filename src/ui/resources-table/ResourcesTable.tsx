@@ -490,7 +490,7 @@ const ResourceIconContainer = styled(Box)`
   height: 100%;
   max-height: 100%;
 
-  padding-block: var(--padding-button-md-block);
+  margin-block: auto;
   display: flex;
   flex-direction: column;
   justify-content: center;

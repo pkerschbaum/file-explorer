@@ -1,1 +1,4 @@
 export const ROOTCONTAINER_PADDING_FACTOR = 2;
+export const TITLEBAR_HEIGHT = 28;
+export const WINDOW_CONTROLS_WIDTH = 3 * 46;
+export const PREFERENCES_BUTTON_WIDTH = 38;

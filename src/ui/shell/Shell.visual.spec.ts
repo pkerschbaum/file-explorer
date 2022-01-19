@@ -49,10 +49,10 @@ test.describe('Shell [visual]', () => {
       'open-and-close-sidebar_1_sidebar-open.png',
     );
 
-    const buttonHideUserPreferences = await queries.findByRole($document, 'button', {
-      name: /Hide User Preferences/i,
+    const buttonDismissUserPreferences = await queries.findByRole($document, 'button', {
+      name: /Dismiss/i,
     });
-    await buttonHideUserPreferences.click();
+    await buttonDismissUserPreferences.click({ force: true });
 
     expect(await retrievePageScreenshot(page)).toMatchSnapshot(
       'open-and-close-sidebar_2_sidebar-hidden.png',

@@ -15,10 +15,14 @@ import { CwdSegmentContextProvider, useActiveResourcesView } from '@app/ui/cwd-s
 import { ExplorerContextProvider } from '@app/ui/explorer-context';
 import { ResourcesGallery } from '@app/ui/resources-gallery';
 import { ResourcesTable } from '@app/ui/resources-table';
+import {
+  PREFERENCES_BUTTON_WIDTH,
+  ROOTCONTAINER_PADDING_FACTOR,
+  TITLEBAR_HEIGHT,
+  WINDOW_CONTROLS_WIDTH,
+} from '@app/ui/shell/constants';
 
-export const EXPLORER_CWDBREADCRUMBS_GRID_AREA = 'shell-explorer-cwd-breadcrumbs';
-export const EXPLORER_ACTIONSBAR_GRID_AREA = 'shell-explorer-actions-bar';
-export const EXPLORER_RESOURCESVIEW_GRID_AREA = 'shell-explorer-resources-view';
+export const EXPLORER_PANEL_GRID_AREA = 'shell-explorer-panel';
 
 type ExplorerPanelProps = {
   explorerId: string;
@@ -34,7 +38,11 @@ export const ExplorerPanel = React.memo<ExplorerPanelProps>(function ExplorerPan
   const focusedExplorerId = useIdOfFocusedExplorerPanel();
 
   const isActiveExplorer = explorerId === focusedExplorerId;
-  const activeAnimationVariant = isActiveExplorer ? 'open' : 'closed';
+
+  const styleProps: StyleProps = {
+    customTitleBarUsed,
+    hidden: !isActiveExplorer,
+  };
 
   return (
     /**
@@ -44,109 +52,139 @@ export const ExplorerPanel = React.memo<ExplorerPanelProps>(function ExplorerPan
      * via the ChangeCwd form - no state should be kept then).
      */
     <ExplorerContextProvider explorerId={explorerId} key={versionOfExplorer}>
-      <CwdBreadcrumbsContainer
-        variants={{
-          closed: { display: 'none' },
-          open: { display: 'block' },
-        }}
-        animate={activeAnimationVariant}
-        customTitleBarUsed={customTitleBarUsed}
-      >
-        <CwdBreadcrumbs />
-      </CwdBreadcrumbsContainer>
+      <ExplorerPanelContainer styleProps={styleProps}>
+        <CwdBreadcrumbsContainer styleProps={styleProps}>
+          <CwdBreadcrumbs />
+        </CwdBreadcrumbsContainer>
 
-      <AnimatePresence initial={false}>
-        {cwdSegments.map((segment, idx) => {
-          const isLastSegment = idx === cwdSegments.length - 1;
+        <AnimatePresence initial={false}>
+          {cwdSegments.map((segment, idx) => {
+            const isLastSegment = idx === cwdSegments.length - 1;
 
-          return (
-            <CwdSegmentContextProvider
-              key={uriHelper.getComparisonKey(segment.uri)}
-              segmentIdx={idx}
-            >
-              <ActionsBarAndResourcesView
-                isLastSegment={isLastSegment}
-                activeAnimationVariant={activeAnimationVariant}
-              />
-            </CwdSegmentContextProvider>
-          );
-        })}
-      </AnimatePresence>
+            return (
+              <CwdSegmentContextProvider
+                key={uriHelper.getComparisonKey(segment.uri)}
+                segmentIdx={idx}
+              >
+                {isLastSegment && (
+                  <ActionsBarContainer
+                    styleProps={styleProps}
+                    /**
+                     * If the last segment changes, the resources view is animated using a slide in/out
+                     * animation.
+                     * For the actions bar we have to animate to display: 'none' on exit because otherwise,
+                     * the "old" actions bar (i.e. the actions bar of the previous last segment) would
+                     * stay until the end of the resources view slide in/out animation - effectively
+                     * hiding the new actions bar.
+                     */
+                    variants={{
+                      closed: { display: 'none' },
+                      open: { display: 'block' },
+                    }}
+                    animate="open"
+                    exit="closed"
+                  >
+                    <ActionsBar />
+                  </ActionsBarContainer>
+                )}
+
+                <ResourcesView />
+              </CwdSegmentContextProvider>
+            );
+          })}
+        </AnimatePresence>
+      </ExplorerPanelContainer>
     </ExplorerContextProvider>
   );
 });
 
-const CwdBreadcrumbsContainer = styled(Box)<{ customTitleBarUsed: boolean }>`
-  /* If a custom title bar is used, overlap the CwdBreadcrumbs with the WindowDragRegion above it */
-  ${({ customTitleBarUsed }) => {
-    if (customTitleBarUsed) {
-      return css`
-        margin-top: -24px;
-        -webkit-app-region: no-drag;
-      `;
-    }
-  }}
+type StyleProps = {
+  customTitleBarUsed: boolean;
+  hidden: boolean;
+};
 
-  width: fit-content;
-  grid-area: ${EXPLORER_CWDBREADCRUMBS_GRID_AREA};
-`;
+const CWD_BREADCRUMBS_GRID_AREA = 'cwd-breadcrumbs';
+const ACTIONS_BAR_GRID_AREA = 'action-bar';
+const RESOURCES_VIEW_GRID_AREA = 'resources-view';
 
-const ActionsBarAndResourcesView = React.memo<{
-  isLastSegment: boolean;
-  activeAnimationVariant: string;
-}>(function ActionBarAndResourcesView({ isLastSegment, activeAnimationVariant }) {
-  return (
-    <>
-      {isLastSegment && (
-        <ActionsBarContainer
-          variants={{
-            closed: { display: 'none' },
-            open: { display: 'block' },
-          }}
-          animate={activeAnimationVariant}
-          exit="closed"
-        >
-          <ActionsBar />
-        </ActionsBarContainer>
-      )}
-
-      <ResourcesViewContainer
-        variants={{
-          closed: { display: 'none' },
-          open: { display: 'flex' },
-        }}
-        animate={activeAnimationVariant}
-        aria-hidden={!isLastSegment}
-      >
-        <ResourcesView />
-      </ResourcesViewContainer>
-    </>
-  );
-});
-
-const ActionsBarContainer = styled(Box)`
-  grid-area: ${EXPLORER_ACTIONSBAR_GRID_AREA};
-`;
-
-const ResourcesViewContainer = styled(Box)`
-  grid-area: ${EXPLORER_RESOURCESVIEW_GRID_AREA};
+const ExplorerPanelContainer = styled(Box)<{ styleProps: StyleProps }>`
+  grid-area: ${EXPLORER_PANEL_GRID_AREA};
   min-height: 0;
   height: 100%;
   max-height: 100%;
-  /* TODO workaround: set z-index: 0 so that Backdrops rendered in the ProcessesArea are *above* the ResourcesViewContainer */
-  z-index: 0;
 
-  display: flex;
-  flex-direction: column;
+  /* 
+    If a custom title bar is used, disable pointer events so that the user can click "through" the 
+    explorer panel on the title bar, to drag the window.
+   */
+  ${({ styleProps }) =>
+    styleProps.customTitleBarUsed &&
+    css`
+      pointer-events: none;
+    `}
 
-  /* add some padding-top for optical alignment */
-  padding-top: 1px;
+  ${({ styleProps }) =>
+    styleProps.hidden &&
+    css`
+      visibility: hidden;
+    `}
 
-  /* hide overflow for folder navigation animations */
-  overflow: hidden;
+  padding-bottom: calc(${ROOTCONTAINER_PADDING_FACTOR} * var(--spacing-1));
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: max-content max-content 1fr;
+  grid-template-areas:
+    '${CWD_BREADCRUMBS_GRID_AREA}'
+    '${ACTIONS_BAR_GRID_AREA}'
+    '${RESOURCES_VIEW_GRID_AREA}';
+  grid-row-gap: var(--spacing-2);
 `;
 
-const ResourcesView: React.FC = () => {
+const CwdBreadcrumbsContainer = styled(Box)<{ styleProps: StyleProps }>`
+  grid-area: ${CWD_BREADCRUMBS_GRID_AREA};
+  justify-self: start;
+
+  ${({ styleProps }) =>
+    styleProps.customTitleBarUsed
+      ? css`
+          /* 
+            If a custom title bar is used, 
+            - add margin-right to avoid overlapping with the window controls 
+            - and add negative margin-top to overlap the CwdBreadcrumbs a little bit with the window drag region above it
+           */
+          margin-right: ${WINDOW_CONTROLS_WIDTH}px;
+          margin-top: calc(-1 * (${TITLEBAR_HEIGHT}px - var(--spacing-1)));
+          -webkit-app-region: no-drag;
+        `
+      : css`
+          /* if no custom title bar is used, add margin-right to avoid overlapping with the user preferences button */
+          margin-right: ${PREFERENCES_BUTTON_WIDTH}px;
+        `}
+
+  /* make sure to restore pointer events for children (needed if a custom title bar is used) */
+  & > * {
+    pointer-events: initial;
+  }
+`;
+
+const ActionsBarContainer = styled(Box)<{ styleProps: StyleProps }>`
+  grid-area: ${ACTIONS_BAR_GRID_AREA};
+  justify-self: start;
+
+  ${({ styleProps }) =>
+    styleProps.customTitleBarUsed &&
+    css`
+      /* if a custom title bar is used, add margin-right to avoid overlapping with the user preferences button */
+      margin-right: ${PREFERENCES_BUTTON_WIDTH}px;
+    `}
+
+  /* make sure to restore pointer events for children (needed if a custom title bar is used) */
+  & > * {
+    pointer-events: initial;
+  }
+`;
+
+const ResourcesView: React.FC = React.memo(function ResourcesViewMemoized() {
   const activeResourcesView = useActiveResourcesView();
   const isAnimationAllowed = componentLibraryUtils.useIsAnimationAllowed();
   const variants = {
@@ -178,11 +216,28 @@ const ResourcesView: React.FC = () => {
       };
 
   return (
-    <ResourcesViewSlideBox {...animations}>
-      {activeResourcesView === 'gallery' ? <ResourcesGallery /> : <ResourcesTable />}
-    </ResourcesViewSlideBox>
+    <ResourcesViewContainer>
+      <ResourcesViewSlideBox {...animations}>
+        {activeResourcesView === 'gallery' ? <ResourcesGallery /> : <ResourcesTable />}
+      </ResourcesViewSlideBox>
+    </ResourcesViewContainer>
   );
-};
+});
+
+const ResourcesViewContainer = styled(Box)`
+  grid-area: ${RESOURCES_VIEW_GRID_AREA};
+
+  /* make sure to restore pointer events for children (needed if a custom title bar is used) */
+  & > * {
+    pointer-events: initial;
+  }
+
+  /* TODO workaround: set z-index: 0 so that Backdrops rendered in the ProcessesArea are *above* the ResourcesViewContainer */
+  z-index: 0;
+
+  /* hide overflow for folder navigation animations */
+  overflow: hidden;
+`;
 
 const ResourcesViewSlideBox = styled(Box)`
   height: 100%;

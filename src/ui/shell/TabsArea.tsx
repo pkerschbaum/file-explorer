@@ -187,7 +187,12 @@ const ExplorerTabContent: React.FC<ExplorerTabContentProps> = (props) => {
 
   return (
     <>
-      <TabButton onPress={onSelect} handleRef={tabButtonHandleRef} endIcon={buttonEndIcon}>
+      <TabButton
+        onPress={onSelect}
+        handleRef={tabButtonHandleRef}
+        endIcon={buttonEndIcon}
+        enableLayoutAnimation="position"
+      >
         {props.label}
       </TabButton>
       {!props.removeExplorerActionDisabled && (
