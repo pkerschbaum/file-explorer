@@ -43,7 +43,13 @@ const WindowDragRegion = styled(Box)`
   margin-left: calc(-1 * ${ROOTCONTAINER_PADDING_FACTOR} * var(--spacing-1));
   margin-right: calc(-1 * ${ROOTCONTAINER_PADDING_FACTOR} * var(--spacing-1));
 
-  /* https://www.electronjs.org/docs/latest/tutorial/window-customization#set-custom-draggable-region */
+  /*
+    We want the title bar to be a "drag region" - uses should be able to drag the window around using the title bar.
+    See https://www.electronjs.org/docs/latest/tutorial/window-customization#set-custom-draggable-region.
+    Additionally we disable pointer events so that if something things overlapping with the title bar 
+    (e.g. CWD breadcrumbs) are still clickable. The drag region will still work.
+   */
+  pointer-events: none;
   -webkit-app-region: drag;
 `;
 
@@ -52,6 +58,8 @@ const TitleBarWindowControls = styled(Box)`
   justify-self: end;
 
   display: flex;
+  /* re-enable pointer events (which would otherwise be disabled because of the parent setting pointer-events to "none") */
+  pointer-events: initial;
 
   /* hide overflow because of the -1px margin trick applied on the last TitleBarButton to eliminate dead click space */
   overflow: hidden;
