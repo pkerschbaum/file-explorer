@@ -25,7 +25,7 @@ export const Shell = React.memo(function Shell() {
       {useCustomTitleBar && <TitleBar />}
 
       <TabsAndProcesses>
-        <TabsArea explorersToShow={explorersToShow} />
+        <TabsArea explorersToShow={explorersToShow} customTitleBarUsed={useCustomTitleBar} />
         <ProcessesArea />
       </TabsAndProcesses>
 
@@ -84,18 +84,4 @@ const TabsAndProcesses = styled(Box)`
   flex-direction: column;
   justify-content: space-between;
   gap: var(--spacing-4);
-
-  /* If a custom title bar is used, overlap the TabsArea with the WindowDragRegion above it */
-  ${() => {
-    if (useCustomTitleBar) {
-      return css`
-        /* 
-          If a custom title bar is used add negative margin-top to overlap a little bit with the 
-          window drag region above it.
-         */
-        margin-top: calc(-1 * (${TITLEBAR_HEIGHT}px - var(--spacing-1)));
-        -webkit-app-region: no-drag;
-      `;
-    }
-  }}
 `;
