@@ -12,6 +12,8 @@ import { Box, componentLibraryUtils, useFramerMotionAnimations } from '@app/ui/c
 import { doesKeyboardEventKeyMatchPrintedKey, PRINTED_KEY } from '@app/ui/constants';
 import {
   useChangeSelection,
+  useIsLastSelectedResource,
+  useIsResourceSelected,
   useKeyOfLastSelectedResource,
   useKeyOfResourceToRename,
   useReasonForLastSelectionChange,
@@ -19,7 +21,6 @@ import {
   useRenameResource,
   useResourcesToShow,
   useScrollTop,
-  useSelectedShownResources,
   useSetKeyOfResourceToRename,
   useSetScrollTop,
   useStartNativeDnDForSelectedResources,
@@ -174,9 +175,13 @@ export const ResourcesGallery: React.FC = () => {
           assertIsUnreachable();
         }
 
-        changeSelection(idxOfResourceToSelect, {
-          ctrl: e.ctrlKey,
-          shift: e.shiftKey,
+        changeSelection({
+          idxOfResource: idxOfResourceToSelect,
+          modifiers: {
+            ctrl: e.ctrlKey,
+            shift: e.shiftKey,
+          },
+          reasonForSelectionChange: REASON_FOR_SELECTION_CHANGE.USER_CHANGED_SELECTION_VIA_KEYBOARD,
         });
       },
       enableForRepeatedKeyboardEvent: true,
@@ -214,7 +219,8 @@ const ResourceTile: React.FC<ResourceTileProps> = ({ resource, idxOfResource }) 
   const tileRef = React.useRef<HTMLDivElement>(null);
 
   const explorerId = useExplorerId();
-  const selectedShownResources = useSelectedShownResources();
+  const isResourceSelected = useIsResourceSelected(resource.key);
+  const isLastSelectedResource = useIsLastSelectedResource(resource.key);
   const reasonForLastSelectionChange = useReasonForLastSelectionChange();
   const renameResource = useRenameResource();
   const startNativeDnDForSelectedResources = useStartNativeDnDForSelectedResources();
@@ -222,11 +228,8 @@ const ResourceTile: React.FC<ResourceTileProps> = ({ resource, idxOfResource }) 
   const keyOfResourceToRename = useKeyOfResourceToRename();
   const setKeyOfResourceToRename = useSetKeyOfResourceToRename();
 
-  const isResourceSelected = !!selectedShownResources.find(
-    (selectedResource) => selectedResource.key === resource.key,
-  );
-  const wasResourceSelectedLastRender = usePrevious(isResourceSelected);
-  const tileGotSelected = !wasResourceSelectedLastRender && isResourceSelected;
+  const wasResourceLastSelectedResource = usePrevious(isLastSelectedResource);
+  const tileGotSelected = !wasResourceLastSelectedResource && isLastSelectedResource;
 
   React.useEffect(
     function scrollElementIntoViewOnSelection() {
@@ -234,7 +237,8 @@ const ResourceTile: React.FC<ResourceTileProps> = ({ resource, idxOfResource }) 
 
       if (
         tileGotSelected &&
-        (reasonForLastSelectionChange === REASON_FOR_SELECTION_CHANGE.USER_CHANGED_SELECTION ||
+        (reasonForLastSelectionChange ===
+          REASON_FOR_SELECTION_CHANGE.USER_CHANGED_SELECTION_VIA_KEYBOARD ||
           reasonForLastSelectionChange === REASON_FOR_SELECTION_CHANGE.NEW_FOLDER_WAS_CREATED)
       ) {
         tileRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
@@ -270,9 +274,13 @@ const ResourceTile: React.FC<ResourceTileProps> = ({ resource, idxOfResource }) 
         startNativeDnDForSelectedResources();
       }}
       onClick={(e) =>
-        changeSelection(idxOfResource, {
-          ctrl: e.ctrlKey,
-          shift: e.shiftKey,
+        changeSelection({
+          idxOfResource,
+          modifiers: {
+            ctrl: e.ctrlKey,
+            shift: e.shiftKey,
+          },
+          reasonForSelectionChange: REASON_FOR_SELECTION_CHANGE.USER_CHANGED_SELECTION_VIA_POINTER,
         })
       }
       onDoubleClick={() => openResources(explorerId, [resource])}

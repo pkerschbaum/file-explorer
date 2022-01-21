@@ -1,6 +1,6 @@
 import invariant from 'tiny-invariant';
 
-import { ExplorerPanel } from '@app/global-state/slices/explorers.slice';
+import { ExplorerPanel, RenameHistoryKeys } from '@app/global-state/slices/explorers.slice';
 import { useSelector } from '@app/global-state/store';
 
 export type ExplorerPanelEntry = ExplorerPanel & {
@@ -59,7 +59,10 @@ export const useKeyOfResourceSelectionGotStartedWith = (explorerId: string, segm
         .keyOfResourceSelectionGotStartedWith,
   );
 
-export const useKeyOfLastSelectedResource = (explorerId: string, segmentIdx: number) => {
+export const useKeyOfLastSelectedResource = (
+  explorerId: string,
+  segmentIdx: number,
+): RenameHistoryKeys | undefined => {
   return useSelector((state) => {
     const keysOfSelectedResources =
       state.explorersSlice.explorerPanels[explorerId].cwdSegments[segmentIdx].selection

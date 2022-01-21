@@ -42,7 +42,11 @@ type CwdSegmentOperationsContext = {
   scheduleDeleteSelectedResources: () => void;
   createFolderInExplorer: (folderName: string) => Promise<void>;
   startNativeDnDForSelectedResources: () => void;
-  changeSelection: (idxOfResource: number, modifiers: { ctrl: boolean; shift: boolean }) => void;
+  changeSelection: (args: {
+    idxOfResource: number;
+    modifiers: { ctrl: boolean; shift: boolean };
+    reasonForSelectionChange: REASON_FOR_SELECTION_CHANGE;
+  }) => void;
   selectAll: () => void;
 };
 
@@ -99,7 +103,9 @@ export const CwdSegmentOperationsContextProvider: React.FC<
   ) => {
     try {
       const uriToRenameTo = URI.joinPath(URI.from(resourceToRename.uri), '..', newBaseName);
-      setReasonForLastSelectionChange(REASON_FOR_SELECTION_CHANGE.USER_CHANGED_SELECTION);
+      setReasonForLastSelectionChange(
+        REASON_FOR_SELECTION_CHANGE.USER_CHANGED_SELECTION_VIA_KEYBOARD,
+      );
       setKeysOfSelectedResources((currentKeysOfSelectedResources) => {
         const oldKeyOfRenamedResource = uriHelper.getComparisonKey(resourceToRename.uri);
         const newKeyOfRenamedResource = uriHelper.getComparisonKey(uriToRenameTo);
@@ -176,10 +182,11 @@ export const CwdSegmentOperationsContextProvider: React.FC<
   const startNativeDnDForSelectedResources: CwdSegmentOperationsContext['startNativeDnDForSelectedResources'] =
     () => startNativeFileDnD(urisOfSelectedShownResources);
 
-  const changeSelection: CwdSegmentOperationsContext['changeSelection'] = (
+  const changeSelection: CwdSegmentOperationsContext['changeSelection'] = ({
     idxOfResource,
     modifiers,
-  ) => {
+    reasonForSelectionChange,
+  }) => {
     if (idxOfResource < 0 || idxOfResource >= resourcesToShow.length) {
       return;
     }
@@ -189,7 +196,7 @@ export const CwdSegmentOperationsContextProvider: React.FC<
       (selectedResource) => selectedResource.key === resource.key,
     );
     function selectResources(resources: ResourceForUI[]) {
-      setReasonForLastSelectionChange(REASON_FOR_SELECTION_CHANGE.USER_CHANGED_SELECTION);
+      setReasonForLastSelectionChange(reasonForSelectionChange);
       setKeysOfSelectedResources(resources.map((resource) => [resource.key]));
     }
 
@@ -238,7 +245,7 @@ export const CwdSegmentOperationsContextProvider: React.FC<
   };
 
   const selectAll: CwdSegmentOperationsContext['selectAll'] = () => {
-    setReasonForLastSelectionChange(REASON_FOR_SELECTION_CHANGE.USER_CHANGED_SELECTION);
+    setReasonForLastSelectionChange(REASON_FOR_SELECTION_CHANGE.RESET);
     setKeysOfSelectedResources(resourcesToShow.map((resource) => [resource.key]));
   };
 

@@ -47,6 +47,7 @@ import {
   useReasonForLastSelectionChange,
   useIsResourceSelected,
   useStartNativeDnDForSelectedResources,
+  useIsLastSelectedResource,
 } from '@app/ui/cwd-segment-context';
 import { useExplorerId } from '@app/ui/explorer-context';
 import { ResourceIcon } from '@app/ui/resource-icon';
@@ -204,9 +205,13 @@ const ResourcesTableBody: React.FC<ResourcesTableBodyProps> = ({ tableContainerR
           assertIsUnreachable();
         }
 
-        changeSelection(idxOfResourceToSelect, {
-          ctrl: e.ctrlKey,
-          shift: e.shiftKey,
+        changeSelection({
+          idxOfResource: idxOfResourceToSelect,
+          modifiers: {
+            ctrl: e.ctrlKey,
+            shift: e.shiftKey,
+          },
+          reasonForSelectionChange: REASON_FOR_SELECTION_CHANGE.USER_CHANGED_SELECTION_VIA_KEYBOARD,
         });
       },
       enableForRepeatedKeyboardEvent: true,
@@ -230,11 +235,7 @@ const EagerTableBody: React.FC<EagerTableBodyProps> = ({ resourcesToShow }) => (
   <TableBody>
     <AnimatePresence>
       {resourcesToShow.map((resourceToShow, index) => (
-        <ResourceRow
-          key={resourceToShow.key}
-          resource={resourceToShow}
-          idxOfResourceForRow={index}
-        />
+        <ResourceRow key={resourceToShow.key} resource={resourceToShow} idxOfResource={index} />
       ))}
     </AnimatePresence>
   </TableBody>
@@ -287,7 +288,7 @@ const VirtualizedTableBody: React.FC<VirtualizedTableBodyProps> = ({
         <ResourceRow
           key={virtualRow.key}
           resource={resourcesToShow[virtualRow.index]}
-          idxOfResourceForRow={virtualRow.index}
+          idxOfResource={virtualRow.index}
           virtualRowStart={virtualRow.start}
         />
       ))}
@@ -297,19 +298,20 @@ const VirtualizedTableBody: React.FC<VirtualizedTableBodyProps> = ({
 
 type ResourceRowProps = {
   resource: ResourceForUI;
-  idxOfResourceForRow: number;
+  idxOfResource: number;
   virtualRowStart?: number;
 };
 
 const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
   resource,
-  idxOfResourceForRow,
+  idxOfResource,
   virtualRowStart,
 }) {
   const rowRef = React.useRef<HTMLTableRowElement>(null);
 
   const explorerId = useExplorerId();
   const isResourceSelected = useIsResourceSelected(resource.key);
+  const isLastSelectedResource = useIsLastSelectedResource(resource.key);
   const reasonForLastSelectionChange = useReasonForLastSelectionChange();
   const renameResource = useRenameResource();
   const startNativeDnDForSelectedResources = useStartNativeDnDForSelectedResources();
@@ -330,8 +332,8 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
     [isResourceSelected, resource],
   );
 
-  const wasResourceSelectedLastRender = usePrevious(isResourceSelected);
-  const tileGotSelected = !wasResourceSelectedLastRender && isResourceSelected;
+  const wasResourceLastSelectedResource = usePrevious(isLastSelectedResource);
+  const tileGotSelected = !wasResourceLastSelectedResource && isLastSelectedResource;
 
   React.useEffect(
     function scrollElementIntoViewOnSelection() {
@@ -339,7 +341,8 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
 
       if (
         tileGotSelected &&
-        (reasonForLastSelectionChange === REASON_FOR_SELECTION_CHANGE.USER_CHANGED_SELECTION ||
+        (reasonForLastSelectionChange ===
+          REASON_FOR_SELECTION_CHANGE.USER_CHANGED_SELECTION_VIA_KEYBOARD ||
           reasonForLastSelectionChange === REASON_FOR_SELECTION_CHANGE.NEW_FOLDER_WAS_CREATED)
       ) {
         rowRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
@@ -389,9 +392,14 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
           startNativeDnDForSelectedResources();
         },
         onClick: (e: React.MouseEvent<HTMLTableRowElement>) =>
-          changeSelection(idxOfResourceForRow, {
-            ctrl: e.ctrlKey,
-            shift: e.shiftKey,
+          changeSelection({
+            idxOfResource,
+            modifiers: {
+              ctrl: e.ctrlKey,
+              shift: e.shiftKey,
+            },
+            reasonForSelectionChange:
+              REASON_FOR_SELECTION_CHANGE.USER_CHANGED_SELECTION_VIA_POINTER,
           }),
         onDoubleClick: () => openResources(explorerId, [resource]),
       })}

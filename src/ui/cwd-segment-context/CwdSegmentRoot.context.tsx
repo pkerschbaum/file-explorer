@@ -80,6 +80,16 @@ export function useKeyOfLastSelectedResource() {
   return globalStateHooks.useKeyOfLastSelectedResource(explorerId, segmentIdx);
 }
 
+export function useIsLastSelectedResource(resourceKey: string) {
+  const explorerId = useExplorerId();
+  const segmentIdx = useSegmentIdx();
+  const keyOfLastSelectedResource = globalStateHooks.useKeyOfLastSelectedResource(
+    explorerId,
+    segmentIdx,
+  );
+  return (keyOfLastSelectedResource ?? []).includes(resourceKey);
+}
+
 export function useActiveResourcesView() {
   const explorerId = useExplorerId();
   const segmentIdx = useSegmentIdx();
