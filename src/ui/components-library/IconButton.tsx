@@ -76,13 +76,12 @@ export const IconButton = styled(
      * We want the arrow of the tooltip to point on that outline while not overlapping it.
      * That's why we set a offset for the tooltip which equals the padding plus the outline width.
      *
-     * If the padding is disabled, the IconButton's rounded box does not take up any space (but it
-     * still shows on hover/focus). In that case, we have to add an additional offset, otherwise the
-     * Tooltip would leak into the rounded box.
+     * If the padding is disabled, we have to add a little bit of padding so that the Tooltip does not
+     * intersect with the outline of the IconButton.
      */
     let tooltipOffsetToUse = iconButtonPadding + DESIGN_TOKENS.OUTLINE_WIDTH;
     if (disablePadding) {
-      tooltipOffsetToUse += DESIGN_TOKENS.SPACING_2;
+      tooltipOffsetToUse += 3;
     }
     const { triggerProps, tooltipInstance } = useTooltip({
       triggerRef: buttonRef,
@@ -133,14 +132,13 @@ const IconButtonRoot = styled(motion.button)<{ styleProps: StyleProps }>`
     css`
       --icon-button-padding: ${scProps.iconButtonPadding}px;
     `}
+  padding: var(--icon-button-padding);
   ${({ styleProps: scProps }) =>
-    scProps.disablePadding
-      ? css`
-          padding: 0;
-        `
-      : css`
-          padding: var(--icon-button-padding);
-        `}
+    scProps.disablePadding &&
+    css`
+      /* if the padding is disabled (i.e. it should not take up any space), undo padding via negative margin */
+      margin: calc(-1 * var(--icon-button-padding));
+    `}
 
   color: var(--color-fg-0);
   background-color: transparent;
@@ -168,14 +166,7 @@ const ButtonContent = styled(Box)`
 const FocusAndHoverCircle = styled(Box)<{ styleProps: StyleProps }>`
   pointer-events: none;
   position: absolute;
-  ${({ styleProps }) =>
-    !styleProps.disablePadding
-      ? css`
-          inset: 0;
-        `
-      : css`
-          inset: calc(-1 * var(--icon-button-padding));
-        `}
+  inset: 0;
 
   border-radius: 50%;
   /* transition taken from @mui/material <Button> component, with duration reduced from 250ms to 150ms */
