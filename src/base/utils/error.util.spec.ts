@@ -7,7 +7,9 @@ describe('errors.util', () => {
         new Error('fake-error-message'),
       );
 
-      const regexMultilineError = /^Error: fake-error-message\s*at .+\s*at .+/;
+      // complex regex created by https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-super-linear-backtracking.html
+      const regexMultilineError =
+        /^Error: fake-error-message\s*at .+(?:[\n\r\u2028\u2029]\s*)?at .+/;
       expect(actualMessage).toMatch(regexMultilineError);
     });
 

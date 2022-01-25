@@ -13,7 +13,7 @@ import {
 } from '@app/platform/electron/protocol/common/app';
 import { CLIPBOARD_CHANGED_DATA_TYPE, PlatformNativeHost } from '@app/platform/native-host.types';
 
-const USE_NATIVE_ICON_FOR_REGEX = /(?:exe|ico|dll|iso)/i;
+const USE_NATIVE_ICON_FOR_REGEX = /exe|ico|dll|iso/i;
 const THUMBNAIL_AVAILABLE_FOR_MIME_TYPE = ['image/png', 'image/jpeg', 'image/svg+xml'];
 
 export const createNativeHost = () => {

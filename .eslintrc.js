@@ -18,6 +18,7 @@ module.exports = {
     'plugin:storybook/recommended',
     'plugin:playwright/playwright-test',
     'plugin:eslint-comments/recommended',
+    'plugin:regexp/recommended',
   ],
   /**
    * add "only-warn" plugin to change all errors to warnings.
@@ -25,7 +26,7 @@ module.exports = {
    * allows to distinguish ESLint warnings from other errors (e.g. TypeScript compile errors) in the
    * code editor (e.g. VS Code).
    */
-  plugins: ['only-warn', 'node', 'import', 'jsx-a11y', 'code-import-patterns'],
+  plugins: ['only-warn', 'node', 'import', 'jsx-a11y', 'code-import-patterns', 'regexp'],
   ignorePatterns: ['**/*.js'],
   rules: {
     curly: 'error',
