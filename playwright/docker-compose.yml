@@ -11,7 +11,7 @@ services:
       - ../src:/app/src
       - ../test-results:/app/test-results
     environment:
-      - STORYBOOK_HOST=host.docker.internal
+      - WEB_APP_ORIGIN=host.docker.internal:6006
     # allow access to the host (https://stackoverflow.com/a/43541732/1700319)
     extra_hosts:
       - 'host.docker.internal:host-gateway'

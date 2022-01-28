@@ -4,7 +4,7 @@ import { BrowserContext, expect, PlaywrightTestArgs } from '@playwright/test';
 import path from 'path';
 import * as sinon from 'sinon';
 
-const STORYBOOK_HOST = process.env.STORYBOOK_HOST ?? 'localhost';
+const WEB_APP_ORIGIN = process.env.WEB_APP_ORIGIN ?? 'localhost:6006';
 
 declare global {
   // eslint-disable-next-line no-var
@@ -24,7 +24,7 @@ export async function bootstrap({
 }) {
   await Promise.all([
     page.goto(
-      `http://${STORYBOOK_HOST}:6006/iframe.html?viewMode=story&args=&id=${storybookIdToVisit}`,
+      `http://${WEB_APP_ORIGIN}/iframe.html?viewMode=story&args=&id=${storybookIdToVisit}`,
       { waitUntil: 'networkidle' },
     ),
     page.waitForResponse(/fonts\/SegoeUI-VF.ttf/i),
