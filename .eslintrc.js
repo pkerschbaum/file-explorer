@@ -12,6 +12,7 @@ module.exports = {
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
     'plugin:import/recommended',
     'plugin:import/typescript',
+    'plugin:node/recommended',
     'plugin:react/recommended',
     'plugin:react-hooks/recommended',
     'plugin:jsx-a11y/recommended',
@@ -47,6 +48,9 @@ module.exports = {
     'import/order': [
       'error',
       {
+        alphabetize: { order: 'asc', caseInsensitive: true },
+        'newlines-between': 'always',
+        pathGroupsExcludedImportTypes: ['builtin'],
         groups: [['builtin', 'external'], 'parent', 'sibling', 'index'],
         pathGroups: [
           {
@@ -69,9 +73,6 @@ module.exports = {
             position: 'after',
           },
         ],
-        pathGroupsExcludedImportTypes: ['builtin'],
-        alphabetize: { order: 'asc', caseInsensitive: true },
-        'newlines-between': 'always',
       },
     ],
     'jsx-a11y/no-autofocus': 'off',
@@ -98,9 +99,13 @@ module.exports = {
           'disable this eslint rule for the line in question and provide an explanation why the rule is needed.',
       },
     ],
-    'node/no-process-env': 'error',
-    'node/process-exit-as-throw': 'off',
     'node/no-deprecated-api': 'off',
+    'node/no-missing-import': 'off',
+    'node/no-process-env': 'error',
+    'node/no-unpublished-import': 'off',
+    'node/no-unpublished-require': 'off',
+    'node/no-unsupported-features/es-syntax': 'off',
+    'node/process-exit-as-throw': 'off',
     'object-shorthand': 'error',
     'prefer-template': 'error',
     'react/prop-types': 'off',

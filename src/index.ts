@@ -89,7 +89,7 @@ const activeTheme: AvailableTheme =
 app.on('ready', () => {
   async function bootstrap() {
     if (config.isDevEnviroment && !process.argv.includes('--noDevServer')) {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      // eslint-disable-next-line @typescript-eslint/no-var-requires, node/no-missing-require
       await require('./electron-devtools').installExtensions();
     }
 
