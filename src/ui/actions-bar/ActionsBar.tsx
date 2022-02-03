@@ -7,7 +7,6 @@ import { formatter } from '@app/base/utils/formatter.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { useDraftPasteState } from '@app/global-state/slices/processes.hooks';
 import { CreateFolder } from '@app/ui/actions-bar/CreateFolder';
-import { FilterInput } from '@app/ui/actions-bar/FilterInput';
 import {
   Box,
   Button,
@@ -16,7 +15,6 @@ import {
   ContentCutOutlinedIcon,
   ContentPasteOutlinedIcon,
   DeleteOutlinedIcon,
-  Divider,
   EditOutlinedIcon,
   LaunchOutlinedIcon,
   Tooltip,
@@ -201,12 +199,6 @@ export const ActionsBar: React.FC = () => {
 
   return (
     <ActionBarContainer role="menubar">
-      <Box style={{ alignSelf: 'flex-end' }}>
-        <FilterInput />
-      </Box>
-
-      <Divider orientation="vertical" />
-
       <ActionBarButtons>
         <Button
           handleRef={openButtonHandleRef}

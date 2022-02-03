@@ -238,11 +238,13 @@ export async function waitForAnimations({ page }: { page: PlaywrightTestArgs['pa
        * is animating, schedule a setTimeout to finish the "waitForAnimations" promise).
        */
       const checkIfElemIsAnimatingIntervalId = setInterval(function checkIfSomeElemIsAnimating() {
+        const currentCountOfAnimatedElems = getCountOfAnimatedElems();
+
         /**
          * If there is currently no element animating, schedule a setTimeout which will resolve the
          * "waitForAnimations" promise given that within the timeout, no element start to animate again.
          */
-        if (getCountOfAnimatedElems() < 1 && resolveTimeoutId === undefined) {
+        if (currentCountOfAnimatedElems < 1 && resolveTimeoutId === undefined) {
           resolveTimeoutId = setTimeout(function resolvePromise() {
             stopRejecting();
             clearInterval(checkIfElemIsAnimatingIntervalId);
@@ -254,7 +256,7 @@ export async function waitForAnimations({ page }: { page: PlaywrightTestArgs['pa
          * If there is at least one element animating, and there is a "resolveTimeout" scheduled,
          * clear that timeout.
          */
-        if (getCountOfAnimatedElems() > 0 && resolveTimeoutId !== undefined) {
+        if (currentCountOfAnimatedElems > 0 && resolveTimeoutId !== undefined) {
           stopResolving();
         }
       }, INTERVAL_CHECK_IF_ANIMATIONS_ARE_FINISHED);

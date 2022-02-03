@@ -76,14 +76,17 @@ const TextFieldLabel = styled.label`
   margin-bottom: var(--spacing-1);
 `;
 
-const TextFieldInput = styled.input`
+export const TextFieldInput = styled.input`
+  --textfield-input_padding-block: var(--padding-button-md-block);
+  --textfield-input_padding-inline: var(--padding-button-md-inline);
   --border-bottom-width-default: 1px;
   --border-bottom-width-focus: 3px;
   --border-bottom-width-difference: calc(
     var(--border-bottom-width-focus) - var(--border-bottom-width-default)
   );
   --bg-color-default: var(--color-bg-1);
-  padding: var(--padding-button-md-block) var(--padding-button-md-inline);
+  padding-block: var(--textfield-input_padding-block);
+  padding-inline: var(--textfield-input_padding-inline);
   margin-block: auto;
 
   color: var(--color-fg-0);
@@ -97,8 +100,10 @@ const TextFieldInput = styled.input`
     /* 
       When the input is focused, border-bottom of the input will gain some width.
       To avoid a layout shift when that happens, reduce the padding-bottom by the same amount.
-    */
-    padding-bottom: calc(var(--padding-button-md-block) - var(--border-bottom-width-difference));
+     */
+    padding-bottom: calc(
+      var(--textfield-input_padding-block) - var(--border-bottom-width-difference)
+    );
     border-bottom: var(--border-bottom-width-focus) solid var(--color-primary-main);
     background-color: var(--color-bg-0-dark);
   }

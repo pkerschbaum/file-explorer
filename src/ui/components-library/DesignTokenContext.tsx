@@ -387,6 +387,7 @@ export const DesignTokenProvider: React.FC = ({ children }) => {
         --font-size-md: 1rem;
         --font-size-lg: ${`${(DESIGN_TOKENS.BASE_FONTSIZE + 2) / DESIGN_TOKENS.BASE_FONTSIZE}rem`};
         --font-size-xl: ${`${(DESIGN_TOKENS.BASE_FONTSIZE + 4) / DESIGN_TOKENS.BASE_FONTSIZE}rem`};
+        --font-weight-normal: 400;
         --font-weight-bold: 700;
 
         --border-width-1: 1px;

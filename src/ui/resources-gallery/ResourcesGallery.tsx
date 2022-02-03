@@ -7,6 +7,7 @@ import { formatter } from '@app/base/utils/formatter.util';
 import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
 import { REASON_FOR_SELECTION_CHANGE } from '@app/global-state/slices/explorers.slice';
 import { openResources } from '@app/operations/explorer.operations';
+import { FilterInput } from '@app/ui/actions-bar/FilterInput';
 import { commonStyles } from '@app/ui/common-styles';
 import { Box, componentLibraryUtils, useFramerMotionAnimations } from '@app/ui/components-library';
 import { doesKeyboardEventKeyMatchPrintedKey, PRINTED_KEY } from '@app/ui/constants';
@@ -189,18 +190,33 @@ export const ResourcesGallery: React.FC = () => {
   });
 
   return (
-    <GalleryRoot
-      ref={galleryRootRef}
-      onScroll={(e) => debouncedSetScrollTop(e.currentTarget.scrollTop)}
-    >
-      {resourcesToShow.map((resource, idx) => (
-        <ResourceTile key={resource.key} resource={resource} idxOfResource={idx} />
-      ))}
+    <GalleryRoot>
+      <GalleryFilterInput />
+
+      <GalleryTilesContainer
+        ref={galleryRootRef}
+        onScroll={(e) => debouncedSetScrollTop(e.currentTarget.scrollTop)}
+      >
+        {resourcesToShow.map((resource, idx) => (
+          <ResourceTile key={resource.key} resource={resource} idxOfResource={idx} />
+        ))}
+      </GalleryTilesContainer>
     </GalleryRoot>
   );
 };
 
 const GalleryRoot = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+`;
+
+const GalleryFilterInput = styled(FilterInput)`
+  scrollbar-gutter: stable;
+  overflow: hidden;
+`;
+
+const GalleryTilesContainer = styled(Box)`
   ${commonStyles.layout.flex.shrinkAndFitVertical}
 
   display: grid;

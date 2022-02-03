@@ -14,6 +14,7 @@ import {
   removeTagsFromResources,
   triggerPreloadContentsOfResource,
 } from '@app/operations/resource.operations';
+import { FilterInput } from '@app/ui/actions-bar/FilterInput';
 import { commonStyles } from '@app/ui/common-styles';
 import {
   Box,
@@ -21,6 +22,7 @@ import {
   componentLibraryUtils,
   Skeleton,
   TextField,
+  TextFieldInput,
   useFramerMotionAnimations,
   useVirtual,
 } from '@app/ui/components-library';
@@ -78,7 +80,9 @@ export const ResourcesTable: React.FC = () => {
     >
       <StyledTableHead>
         <Row>
-          <NameHeadCell>Name</NameHeadCell>
+          <NameHeadCell>
+            <TableFilterInput />
+          </NameHeadCell>
           <SizeHeadCell>Size</SizeHeadCell>
           <MtimeHeadCell>Last Modified</MtimeHeadCell>
         </Row>
@@ -108,21 +112,33 @@ const headCellStyles = css`
   ${cellStyles}
 
   text-align: start;
-  font-weight: var(--font-weight-bold);
 `;
 
 const NameHeadCell = styled(HeadCell)`
   ${headCellStyles}
+  font-weight: var(--font-weight-normal);
   width: 100%;
+
+  display: flex;
+  gap: var(--spacing-4);
+`;
+
+const TableFilterInput = styled(FilterInput)`
+  & ${TextFieldInput} {
+    --textfield-input_padding-block: 2px;
+    --textfield-input_padding-inline: 5px;
+  }
 `;
 
 const SizeHeadCell = styled(HeadCell)`
   ${headCellStyles}
+  font-weight: var(--font-weight-bold);
   min-width: 90px;
 `;
 
 const MtimeHeadCell = styled(HeadCell)`
   ${headCellStyles}
+  font-weight: var(--font-weight-bold);
   min-width: 155px;
 `;
 
@@ -566,19 +582,14 @@ const StyledResourceRenameInput = styled(ResourceRenameInput)`
      TextField container and the TextField input.
      Also, width is set to 100% so that it takes up the full width of the row.
    */
-  --padding-block-for-rename-textfield: 3px;
   & > ${TextField} {
     padding-left: calc(${ResourceNameFormattedSpacingFactor} * var(--spacing-1) - 1px);
   }
 
-  & > ${TextField} > input {
-    padding-inline: calc(${ResourceNameFormattedSpacingFactor} * var(--spacing-1));
-    padding-block: var(--padding-block-for-rename-textfield);
-  }
-
-  & > ${TextField} > input:focus {
-    padding-bottom: calc(
-      var(--padding-block-for-rename-textfield) - var(--border-bottom-width-difference)
+  & > ${TextField} ${TextFieldInput} {
+    --textfield-input_padding-block: 3px;
+    --textfield-input_padding-inline: calc(
+      ${ResourceNameFormattedSpacingFactor} * var(--spacing-1)
     );
   }
 `;
