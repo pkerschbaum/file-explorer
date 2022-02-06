@@ -1,4 +1,5 @@
 .webpack
+.yarn
 node_modules
 out
 src/static
