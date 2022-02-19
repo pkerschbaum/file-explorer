@@ -1,3 +1,4 @@
+import { LayoutGroup } from 'framer-motion';
 import * as React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
@@ -198,11 +199,13 @@ export const Globals: React.FC<GlobalsProps> = ({ queryClient, store, children }
               <GlobalStyle />
               {/* class "show-file-icons" will enable file icon theme of code-oss project */}
               <FileIconThemeLoader>
-                <OverlayProvider style={{ height: '100%' }}>
-                  <RootContainer className="show-file-icons">
-                    <AppMessagesContext>{children}</AppMessagesContext>
-                  </RootContainer>
-                </OverlayProvider>
+                <LayoutGroup>
+                  <OverlayProvider style={{ height: '100%' }}>
+                    <RootContainer className="show-file-icons">
+                      <AppMessagesContext>{children}</AppMessagesContext>
+                    </RootContainer>
+                  </OverlayProvider>
+                </LayoutGroup>
               </FileIconThemeLoader>
             </DesignTokenProvider>
           </GlobalShortcutsContextProvider>
