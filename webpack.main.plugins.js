@@ -1,6 +1,10 @@
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
+const SOURCE_PATH_OF_NODE_MODULES = path.resolve(__dirname, 'node_modules');
+const WEBPACK_PATH = path.join('.');
+const WEBPACK_PATH_OF_NODE_MODULES = path.join(WEBPACK_PATH, 'node_modules');
+
 const SHARP_NODE_MODULES_TO_COPY = [
   'sharp',
   'color',
@@ -11,8 +15,21 @@ const SHARP_NODE_MODULES_TO_COPY = [
   'simple-swizzle',
   'semver',
 ];
-const NODE_MODULES_BASE_PATH = path.resolve(__dirname, 'node_modules');
-const NODE_MODULES_TARGET_PATH = path.join('.', 'node_modules');
+
+const SOURCE_PATH_OF_WORKER_SCRIPT = path.join(
+  SOURCE_PATH_OF_NODE_MODULES,
+  '@pkerschbaum',
+  'code-oss-file-service',
+  'out',
+  'vs',
+  'base',
+  'node',
+  'delete-recursive-using-child-process_child-script.js',
+);
+const WEBPACK_PATH_OF_WORKER_SCRIPT = path.join(
+  WEBPACK_PATH,
+  'delete-recursive-using-child-process_child-script.js',
+);
 
 module.exports = [
   /**
@@ -24,10 +41,19 @@ module.exports = [
     return new CopyWebpackPlugin({
       patterns: [
         {
-          from: path.join(NODE_MODULES_BASE_PATH, moduleName),
-          to: path.join(NODE_MODULES_TARGET_PATH, moduleName),
+          from: path.join(SOURCE_PATH_OF_NODE_MODULES, moduleName),
+          to: path.join(WEBPACK_PATH_OF_NODE_MODULES, moduleName),
         },
       ],
     });
+  }),
+
+  new CopyWebpackPlugin({
+    patterns: [
+      {
+        from: SOURCE_PATH_OF_WORKER_SCRIPT,
+        to: WEBPACK_PATH_OF_WORKER_SCRIPT,
+      },
+    ],
   }),
 ];

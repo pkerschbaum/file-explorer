@@ -24,6 +24,7 @@ import invariant from 'tiny-invariant';
 
 import { config } from '@app/config';
 import { registerListeners as registerAppListeners } from '@app/platform/electron/ipc/electron-main/app';
+import { registerListeners as registerFileServiceListeners } from '@app/platform/electron/ipc/electron-main/file-service';
 import { registerListeners as registerFileDragStartListeners } from '@app/platform/electron/ipc/electron-main/file-drag-start';
 import { registerListeners as registerPersistentStoreListeners } from '@app/platform/electron/ipc/electron-main/persistent-store';
 import { registerListeners as registerShellListeners } from '@app/platform/electron/ipc/electron-main/shell';
@@ -95,6 +96,7 @@ app.on('ready', () => {
 
     // register IPC handlers
     registerFileDragStartListeners();
+    registerFileServiceListeners();
     registerAppListeners();
     registerPersistentStoreListeners(store);
     registerShellListeners();

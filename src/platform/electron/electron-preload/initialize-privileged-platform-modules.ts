@@ -10,6 +10,7 @@ import {
   IpcFileDragStart,
   FILEDRAGSTART_CHANNEL,
 } from '@app/platform/electron/ipc/common/file-drag-start';
+import { FILE_SERVICE_CHANNEL } from '@app/platform/electron/ipc/common/file-service';
 import { PERSISTENT_STORE_CHANNEL } from '@app/platform/electron/ipc/common/persistent-store';
 import { IpcShell, SHELL_CHANNEL } from '@app/platform/electron/ipc/common/shell';
 import { IpcWindow, WINDOW_CHANNEL } from '@app/platform/electron/ipc/common/window';
@@ -57,6 +58,8 @@ const CLIPBOARD_FILELIST_FORMAT = `${config.productName}/file-list`;
 
 export function initializePrivilegedPlatformModules() {
   const fileService = bootstrapDiskFileService();
+  fileService.del = (...args) =>
+    ipcRenderer.invoke(FILE_SERVICE_CHANNEL.DELETE_RECURSIVE, { uri: args[0] });
 
   window.privileged = {
     // eslint-disable-next-line node/no-process-env

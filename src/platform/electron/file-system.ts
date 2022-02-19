@@ -34,11 +34,11 @@ export function convertUriComponentsToURIInstances(
     async resolve(resource, options?) {
       return origFileSystem.resolve(URI.from(resource), options) as Promise<IFileStatWithMetadata>;
     },
-    async del(resource, options?) {
-      return origFileSystem.del(URI.from(resource), options);
+    async del(resource) {
+      return origFileSystem.del(URI.from(resource));
     },
-    async trash(resource, options?) {
-      return origFileSystem.trash(URI.from(resource), options);
+    async trash(resource) {
+      return origFileSystem.trash(URI.from(resource));
     },
     async copy(source, target, overwrite?, coordinationArgs?) {
       return origFileSystem.copy(URI.from(source), URI.from(target), overwrite, coordinationArgs);

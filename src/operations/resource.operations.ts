@@ -59,9 +59,8 @@ export async function runDeleteProcess(deleteProcessId: string, options: { useTr
   try {
     await Promise.all(
       deleteProcess.uris.map(async (uri) => {
-        let fileStat;
         try {
-          fileStat = await globalThis.modules.fileSystem.resolve(URI.from(uri));
+          await globalThis.modules.fileSystem.resolve(URI.from(uri));
         } catch (err) {
           logger.warn(
             `could not resolve resource which should get deleted --> skipping deletion of the resource.`,
@@ -72,9 +71,9 @@ export async function runDeleteProcess(deleteProcessId: string, options: { useTr
 
         try {
           if (options.useTrash) {
-            await globalThis.modules.fileSystem.trash(uri, { recursive: fileStat.isDirectory });
+            await globalThis.modules.fileSystem.trash(uri);
           } else {
-            await globalThis.modules.fileSystem.del(uri, { recursive: fileStat.isDirectory });
+            await globalThis.modules.fileSystem.del(uri);
           }
         } catch (err) {
           logger.error(`could not delete resources`, err);
@@ -303,9 +302,7 @@ export async function executeCopyOrMove({
      * since "findValidPasteFileTarget" makes sure that the paste target URI is new, without conflict.
      */
     try {
-      await globalThis.modules.fileSystem.del(targetResource.uri, {
-        recursive: sourceResource.fileStat.isDirectory,
-      });
+      await globalThis.modules.fileSystem.del(targetResource.uri);
     } catch {
       // ignore
     }
