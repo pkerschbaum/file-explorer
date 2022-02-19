@@ -43,6 +43,7 @@ type ProtocolBufferResponse = electron.ProtocolResponse & {
   data: Buffer;
 };
 
+// Skip resizing of SVGs (because vector images should just get served to the UI)
 const THUMBNAIL_RESIZE_BLOCKLIST = ['image/svg+xml'];
 async function getThumbnail(request: electron.ProtocolRequest): Promise<ProtocolStreamResponse> {
   const parsed = new URL(request.url);
@@ -64,9 +65,12 @@ async function getThumbnail(request: electron.ProtocolRequest): Promise<Protocol
   if (finalMimeType === undefined || THUMBNAIL_RESIZE_BLOCKLIST.includes(finalMimeType)) {
     thumbnailStream = fs.createReadStream(uri.fsPath);
   } else {
-    thumbnailStream = fs
-      .createReadStream(uri.fsPath)
-      .pipe(sharp().resize({ height: parsedHeight }));
+    thumbnailStream = fs.createReadStream(uri.fsPath).pipe(
+      sharp({
+        // set animated to `true` to keep animated GIFs and WebPs
+        animated: true,
+      }).resize({ height: parsedHeight }),
+    );
   }
 
   return {
