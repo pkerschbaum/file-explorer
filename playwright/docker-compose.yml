@@ -1,7 +1,7 @@
 version: '3.9'
 
 services:
-  playwright-svc:
+  playwright-service:
     build:
       context: ../
       dockerfile: ./playwright/Dockerfile

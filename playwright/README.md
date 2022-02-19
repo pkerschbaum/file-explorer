@@ -15,16 +15,16 @@ To run the Docker container, use these two commands:
 
 1. Build the Docker image:
    ```sh
-   docker-compose -f ./docker-compose.yml build playwright-svc
+   docker-compose -f ./docker-compose.yml build playwright-service
    ```
 2. Create a container and run the tests:
 
    ```sh
-   docker-compose -f ./docker-compose.yml run --rm playwright-svc
+   docker-compose -f ./docker-compose.yml run --rm playwright-service
 
    # Additional arguments are passed through to "playwright test", therefore you can use all CLI options from here: https://playwright.dev/docs/test-cli.
    # E.g. to run only a specific spec file:
-   docker-compose -f ./docker-compose.yml run --rm playwright-svc ./src/ui/shell/Shell.visual.spec.ts
+   docker-compose -f ./docker-compose.yml run --rm playwright-service ./src/ui/shell/Shell.visual.spec.ts
    ```
 
 This project uses a NPM script `test:pw-docker` to abstract the two docker-compose commands away, see the script here: [`../package.json`](../package.json).
