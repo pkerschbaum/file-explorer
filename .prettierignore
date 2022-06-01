@@ -1,7 +1,7 @@
 .webpack
-.yarn
 node_modules
 out
 src/static
 storybook-static
 test-results
+pnpm-lock.yaml
