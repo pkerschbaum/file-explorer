@@ -98,6 +98,12 @@ module.exports = {
           'Do not check in hard-coded timeouts. If there is no other choice, ' +
           'disable this eslint rule for the line in question and provide an explanation why the rule is needed.',
       },
+      {
+        selector: "MemberExpression[object.name='JSON'][property.name='stringify']",
+        message:
+          '`JSON.stringify` does throw on circular references; it might be safe were you attempt to use it, ' +
+          'but we suggest to just use `json.safeStringify` from @app/base/utils/json.util.ts instead.',
+      },
     ],
     'node/no-deprecated-api': 'off',
     'node/no-missing-import': 'off',
@@ -117,6 +123,10 @@ module.exports = {
           {
             target: /\/src\/base\/utils\/arrays\.util\.ts$/,
             allowedPatterns: ['match-sorter'],
+          },
+          {
+            target: /\/src\/base\/utils\/json\.util\.ts$/,
+            allowedPatterns: ['safe-stable-stringify'],
           },
           {
             target: /\/src\/global-cache\/.+/,

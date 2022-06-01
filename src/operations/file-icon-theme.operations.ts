@@ -12,6 +12,7 @@ import axios from 'axios';
 
 import { check } from '@app/base/utils/assert.util';
 import { formatter } from '@app/base/utils/formatter.util';
+import { json } from '@app/base/utils/json.util';
 import { FileIconTheme } from '@app/domain/constants';
 
 export type LanguageExtensionPointJsonEntry = {
@@ -37,7 +38,7 @@ const httpIconThemeFileService: { readFile: IFileService['readFile'] } = {
 
     return {
       value: {
-        toString: () => JSON.stringify(resourceJson),
+        toString: () => json.safeStringify(resourceJson),
       },
     } as IFileContent;
   },

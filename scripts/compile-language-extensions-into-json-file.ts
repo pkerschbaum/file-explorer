@@ -5,6 +5,7 @@ import { VSBuffer } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import path from 'path';
 
+import { json as jsonUtil } from '@app/base/utils/json.util';
 import { LanguageExtensionPointJsonEntry } from '@app/operations/file-icon-theme.operations';
 import { bootstrapDiskFileService } from '@app/platform/electron/electron-preload/bootstrap-disk-file-service';
 
@@ -58,7 +59,7 @@ async function compileLanguageExtensionsIntoJsonFile() {
       const parseErrors: json.ParseError[] = [];
       const packageJsonParsed = json.parse(packageJsonFileContent.value.toString(), parseErrors);
       if (parseErrors.length > 0) {
-        throw new Error(`could not parse json! parseErrors=${JSON.stringify(parseErrors)}`);
+        throw new Error(`could not parse json! parseErrors=${jsonUtil.safeStringify(parseErrors)}`);
       }
 
       if (!Array.isArray(packageJsonParsed?.contributes?.languages)) {
@@ -72,7 +73,11 @@ async function compileLanguageExtensionsIntoJsonFile() {
 
   packagesWithExtensionPoint.sort((a, b) => a.packageName.localeCompare(b.packageName));
 
-  const newLanguageExtensionPointsContent = JSON.stringify(packagesWithExtensionPoint);
+  const newLanguageExtensionPointsContent = jsonUtil.safeStringify(
+    packagesWithExtensionPoint,
+    null,
+    2,
+  );
   if (origLanguageExtensionPointsContent === newLanguageExtensionPointsContent) {
     console.log('no change detected for language-extension-points');
     return;

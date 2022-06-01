@@ -6,6 +6,7 @@ import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { Query } from 'react-query';
 
 import { functions } from '@app/base/utils/functions.util';
+import { json } from '@app/base/utils/json.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import {
   isResourcesOfDirectoryQueryKey,
@@ -119,7 +120,7 @@ function addDirectoryWatcherIfNonePresent(
     const didFilesChangeDisposable = globalThis.modules.fileSystem.onDidFilesChange((e) => {
       logger.debug(
         'did receive onDidFilesChange event --> checking if refreshing resources of directory is necessary...',
-        { queryKey, fileChangesEvent: JSON.parse(JSON.stringify(e)) as {} },
+        { queryKey, fileChangesEvent: JSON.parse(json.safeStringify(e)) as {} },
       );
       if (e.affects(directoryUri)) {
         logger.debug('refreshing of resources is necessary, trigger refresh...', { queryKey });

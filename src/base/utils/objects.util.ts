@@ -1,3 +1,4 @@
+import { json } from '@app/base/utils/json.util';
 import { ObjectLiteral, IsJsonable } from '@app/base/utils/types.util';
 
 export const objects = {
@@ -18,7 +19,7 @@ function shallowCopy<T>(inObject: T): T {
 }
 
 function deepCopyJson<T>(inObj: IsJsonable<T>): IsJsonable<T> {
-  return JSON.parse(JSON.stringify(inObj));
+  return JSON.parse(json.safeStringify(inObj));
 }
 
 // https://stackoverflow.com/a/52323412/1700319
