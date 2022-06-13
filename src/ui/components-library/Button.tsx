@@ -8,7 +8,7 @@ import invariant from 'tiny-invariant';
 
 import { Box } from '@app/ui/components-library/Box';
 import { Paper } from '@app/ui/components-library/Paper';
-import { componentLibraryUtils } from '@app/ui/components-library/utils';
+import { componentLibraryUtils, ReactMotionProps } from '@app/ui/components-library/utils';
 
 type ButtonProps = ButtonAriaProps &
   ButtonComponentProps &
@@ -211,7 +211,12 @@ const variantRules = css<{ styleProps: StyleProps }>`
   }}
 `;
 
-const ButtonRoot = styled(motion.button)<{ styleProps: StyleProps }>`
+const ButtonRoot = styled(
+  /**
+   * Override motion.button type definition because it "onAnimationStart" of framer-motion conflicts with "onAnimationStart" of @types/react
+   */
+  motion.button as React.FC<ReactMotionProps<'button', HTMLButtonElement>>,
+)<{ styleProps: StyleProps }>`
   min-width: 45px;
 
   /* 

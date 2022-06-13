@@ -8,6 +8,7 @@ import styled, { css } from 'styled-components';
 import { Box } from '@app/ui/components-library/Box';
 import { DESIGN_TOKENS } from '@app/ui/components-library/DesignTokenContext';
 import { Placement, Tooltip, useTooltip } from '@app/ui/components-library/Tooltip';
+import { ReactMotionProps } from '@app/ui/components-library/utils';
 
 type IconButtonProps = IconButtonAriaProps &
   IconButtonComponentProps &
@@ -124,7 +125,12 @@ type StyleProps = IconButtonProps & {
   iconButtonPadding: number;
 };
 
-const IconButtonRoot = styled(motion.button)<{ styleProps: StyleProps }>`
+const IconButtonRoot = styled(
+  /**
+   * Override motion.button type definition because it "onAnimationStart" of framer-motion conflicts with "onAnimationStart" of @types/react
+   */
+  motion.button as React.FC<ReactMotionProps<'button', HTMLButtonElement>>,
+)<{ styleProps: StyleProps }>`
   position: relative;
 
   display: flex;

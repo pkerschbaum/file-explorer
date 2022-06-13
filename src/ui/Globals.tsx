@@ -162,6 +162,7 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 export type GlobalsProps = {
+  children: React.ReactNode;
   queryClient: QueryClient;
   store: RootStore;
 };
@@ -214,7 +215,11 @@ export const Globals: React.FC<GlobalsProps> = ({ queryClient, store, children }
   );
 };
 
-const FileIconThemeLoader: React.FC = ({ children }) => {
+type FileIconThemeLoaderProps = {
+  children: React.ReactNode;
+};
+
+const FileIconThemeLoader: React.FC<FileIconThemeLoaderProps> = ({ children }) => {
   const [fileIconThemeCssRulesGotLoaded, setFileIconThemeCssRulesGotLoaded] = React.useState(false);
 
   const activeFileIconTheme = useActiveFileIconTheme();

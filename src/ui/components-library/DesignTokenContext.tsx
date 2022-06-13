@@ -249,7 +249,11 @@ export const DESIGN_TOKENS = {
   OUTLINE_WIDTH: 2,
 } as const;
 
-export const DesignTokenProvider: React.FC = ({ children }) => {
+interface DesignTokenProviderProps {
+  children: React.ReactNode;
+}
+
+export const DesignTokenProvider: React.FC<DesignTokenProviderProps> = ({ children }) => {
   const activeTheme = useActiveTheme();
   const isAnimationAllowed = componentLibraryUtils.useIsAnimationAllowed();
 
