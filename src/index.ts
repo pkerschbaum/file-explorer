@@ -125,6 +125,8 @@ function createMainWindow(): BrowserWindow {
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
       contextIsolation: false,
+      nodeIntegration: true,
+      sandbox: false,
     },
     backgroundColor: THEMES[activeTheme].background[0],
     show: false,

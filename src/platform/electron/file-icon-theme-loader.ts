@@ -2,7 +2,7 @@ import { loadCssRules } from '@app/operations/file-icon-theme.operations';
 import type { PlatformFileIconThemeLoader } from '@app/platform/file-icon-theme-loader.types';
 
 const FILE_ICON_THEME_RELATIVE_PATH = './icon-theme/';
-const FILE_ICON_THEME_PATH_REPLACE_REGEX = /file:\/\/\/icon-theme\//g;
+const FILE_ICON_THEME_PATH_REPLACE_REGEX = /vscode-file:\/\/.+icon-theme\//g;
 
 export const createFileIconThemeLoader = () => {
   const instance: PlatformFileIconThemeLoader = {

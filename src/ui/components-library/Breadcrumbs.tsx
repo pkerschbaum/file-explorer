@@ -3,7 +3,7 @@ import {
   useBreadcrumbItem as useReactAriaBreadcrumbItem,
 } from '@react-aria/breadcrumbs';
 import { mergeProps } from '@react-aria/utils';
-import { AriaBreadcrumbItemProps, AriaBreadcrumbsProps } from '@react-types/breadcrumbs';
+import { AriaBreadcrumbItemProps, SpectrumBreadcrumbsProps } from '@react-types/breadcrumbs';
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -12,7 +12,7 @@ import { Box } from '@app/ui/components-library/Box';
 type BreadcrumbsProps = BreadcrumbsAriaProps &
   Omit<React.ComponentPropsWithoutRef<'nav'>, keyof BreadcrumbsAriaProps>;
 
-type BreadcrumbsAriaProps = Required<Pick<AriaBreadcrumbsProps<unknown>, 'children'>>;
+type BreadcrumbsAriaProps = Required<Pick<SpectrumBreadcrumbsProps<unknown>, 'children'>>;
 
 export const Breadcrumbs = styled((props: BreadcrumbsProps) => {
   const {
@@ -22,7 +22,7 @@ export const Breadcrumbs = styled((props: BreadcrumbsProps) => {
     /* other props */
     ...delegatedProps
   } = props;
-  const reactAriaProps: AriaBreadcrumbsProps<unknown> = {
+  const reactAriaProps: SpectrumBreadcrumbsProps<unknown> = {
     children,
   };
 
