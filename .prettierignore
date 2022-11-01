@@ -1,7 +1,7 @@
-.webpack
-node_modules
-out
-src/static
-storybook-static
-test-results
+**/node_modules
+packages/app/out
+packages/app/.webpack
+packages/app/src/static
+packages/app/storybook-static
+packages/app/test-results
 pnpm-lock.yaml

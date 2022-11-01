@@ -1,6 +1,0 @@
-{
-  "integrationFolder": "src",
-  "testFiles": "**/*.visual.spec.ts",
-  "videoCompression": false,
-  "modifyObstructiveCode": false
-}
