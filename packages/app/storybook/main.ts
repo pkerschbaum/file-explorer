@@ -16,6 +16,11 @@ const getStories = () =>
   });
 
 module.exports = {
+  reactOptions: {
+    // disable React StrictMode because @react-aria libs do not support it currently (https://github.com/adobe/react-spectrum/issues/779)
+    strictMode: false,
+  },
+
   stories: (list: any) => [...list, ...getStories()],
   addons: [
     '@storybook/addon-links',
