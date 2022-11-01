@@ -18,6 +18,11 @@
     "prettier": "^2.7.1",
     "rimraf": "^3.0.2"
   },
+  "pnpm": {
+    "overrides": {
+      "@mui/styled-engine": "npm:@mui/styled-engine-sc@^5.10.6"
+    }
+  },
   "packageManager": "pnpm@7.11.0",
   "engines": {
     "pnpm": "^7.11.0"

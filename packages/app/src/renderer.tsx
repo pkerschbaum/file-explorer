@@ -1,4 +1,4 @@
-import ReactDOM from 'react-dom';
+import * as ReactDOM from 'react-dom/client';
 import invariant from 'tiny-invariant';
 
 import { createStoreInstance } from '@app/global-state/store';
@@ -34,11 +34,10 @@ async function rendererScriptEntryPoint() {
   // render React application
   const rootContainer = document.getElementById('root');
   invariant(rootContainer);
-  ReactDOM.render(
+  ReactDOM.createRoot(rootContainer).render(
     <Globals queryClient={queryClient} store={store}>
       <Shell />
     </Globals>,
-    rootContainer,
   );
 }
 

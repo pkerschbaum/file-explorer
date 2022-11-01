@@ -243,7 +243,7 @@ module.exports = {
           },
           {
             target: /\/src\/renderer\.tsx$/,
-            allowedPatterns: ['react-dom'],
+            allowedPatterns: ['react-dom/client'],
           },
           {
             target: /\/src\/.+/,
@@ -280,6 +280,8 @@ module.exports = {
         ],
       },
     ],
+    'playwright/no-force-option': 'off',
+    'playwright/no-wait-for-timeout': 'off',
     '@typescript-eslint/ban-types': [
       'error',
       {
@@ -297,6 +299,7 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-floating-promises': 'error',
     '@typescript-eslint/no-meaningless-void-operator': 'error',
+    '@typescript-eslint/no-misused-promises': 'off',
     '@typescript-eslint/no-namespace': [
       'error',
       {

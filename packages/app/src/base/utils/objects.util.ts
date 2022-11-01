@@ -19,7 +19,11 @@ function shallowCopy<T>(inObject: T): T {
 }
 
 function deepCopyJson<T>(inObj: IsJsonable<T>): IsJsonable<T> {
-  return JSON.parse(json.safeStringify(inObj));
+  const stringified = json.safeStringify(inObj);
+  if (stringified === undefined) {
+    return inObj;
+  }
+  return JSON.parse(stringified);
 }
 
 // https://stackoverflow.com/a/52323412/1700319

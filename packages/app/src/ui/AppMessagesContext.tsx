@@ -62,7 +62,7 @@ export const AppMessagesContext: React.FC<AppMessagesContextProps> = ({ children
   return (
     <PushAppMessageContextProvider value={pushAppMessage}>
       {children}
-      <AnimatePresence exitBeforeEnter>
+      <AnimatePresence mode="wait">
         {currentMessage && (
           <Snackbar
             key={currentMessageIdx}

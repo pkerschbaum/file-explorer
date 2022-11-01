@@ -1,6 +1,10 @@
 import { CombinedState, configureStore, PreloadedState } from '@reduxjs/toolkit';
 import { NoInfer } from '@reduxjs/toolkit/dist/tsHelpers';
-import { createSelectorHook, useDispatch as useReduxDispatch } from 'react-redux';
+import {
+  TypedUseSelectorHook,
+  useDispatch as useReduxDispatch,
+  useSelector as useReduxSelector,
+} from 'react-redux';
 
 import { check } from '@app/base/utils/assert.util';
 import { numbers } from '@app/base/utils/numbers.util';
@@ -93,5 +97,5 @@ export async function createStoreInstance(creationParams?: {
 export type RootStore = Awaited<ReturnType<typeof createStoreInstance>>;
 export type AppDispatch = RootStore['dispatch'];
 
-export const useSelector = createSelectorHook<RootState>();
-export const useDispatch = () => useReduxDispatch<AppDispatch>();
+export const useSelector: TypedUseSelectorHook<RootState> = useReduxSelector;
+export const useDispatch: () => AppDispatch = useReduxDispatch;
