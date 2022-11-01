@@ -2,8 +2,8 @@ import * as React from 'react';
 import styled, { css } from 'styled-components';
 
 import { formatter } from '@app/base/utils/formatter.util';
+import type { ExplorerPanelEntry } from '@app/global-state/slices/explorers.hooks';
 import {
-  ExplorerPanelEntry,
   extractCwdSegmentsFromExplorerPanel,
   useIdOfFocusedExplorerPanel,
 } from '@app/global-state/slices/explorers.hooks';
@@ -12,9 +12,9 @@ import {
   changeFocusedExplorer,
   removeExplorerPanel,
 } from '@app/operations/app.operations';
+import type { ButtonHandle } from '@app/ui/components-library';
 import {
   Box,
-  ButtonHandle,
   Button,
   IconButton,
   Tabs,

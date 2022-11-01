@@ -1,6 +1,6 @@
-import { CancellationTokenSource } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/cancellation';
-import { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import { IFileStatWithMetadata } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
+import type { CancellationTokenSource } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/cancellation';
+import type { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import type { IFileStatWithMetadata } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 
 export type UpdateFn<T> = (currentValue: T) => T;
 

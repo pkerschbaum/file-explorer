@@ -1,12 +1,12 @@
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import { CombinedState, PreloadedState } from '@reduxjs/toolkit';
-import { NoInfer } from '@reduxjs/toolkit/dist/tsHelpers';
+import type { CombinedState, PreloadedState } from '@reduxjs/toolkit';
+import type { NoInfer } from '@reduxjs/toolkit/dist/tsHelpers';
 
 import { extractCwdFromExplorerPanel } from '@app/global-state/slices/explorers.hooks';
-import { ExplorersMap } from '@app/global-state/slices/explorers.slice';
+import type { ExplorersMap } from '@app/global-state/slices/explorers.slice';
 import type { RootState } from '@app/global-state/store';
 import { createLogger } from '@app/operations/create-logger';
-import { StorageState } from '@app/platform/persistent-storage.types';
+import type { StorageState } from '@app/platform/persistent-storage.types';
 
 const logger = createLogger('storage-state.operations');
 

@@ -1,10 +1,9 @@
-import { ipcMain, IpcMainInvokeEvent } from 'electron';
+import type { IpcMainInvokeEvent } from 'electron';
+import { ipcMain } from 'electron';
 import type Store from 'electron-store';
 
-import {
-  IpcPersistentStore,
-  PERSISTENT_STORE_CHANNEL,
-} from '@app/platform/electron/ipc/common/persistent-store';
+import type { IpcPersistentStore } from '@app/platform/electron/ipc/common/persistent-store';
+import { PERSISTENT_STORE_CHANNEL } from '@app/platform/electron/ipc/common/persistent-store';
 
 export function registerListeners(store: Store): void {
   const readPersistedData = createReadPersistedDataHandler(store);

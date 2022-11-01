@@ -3,8 +3,8 @@ import {
   useBreadcrumbItem as useReactAriaBreadcrumbItem,
 } from '@react-aria/breadcrumbs';
 import { mergeProps } from '@react-aria/utils';
-import { AriaBreadcrumbItemProps, SpectrumBreadcrumbsProps } from '@react-types/breadcrumbs';
-import * as React from 'react';
+import type { AriaBreadcrumbItemProps, SpectrumBreadcrumbsProps } from '@react-types/breadcrumbs';
+import type * as React from 'react';
 import styled from 'styled-components';
 
 import { Box } from '@app/ui/components-library/Box';

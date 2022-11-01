@@ -1,9 +1,10 @@
-import { IFileStatWithMetadata } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
-import { ComponentMeta, ComponentStory } from '@storybook/react';
+import type { IFileStatWithMetadata } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
+import type { ComponentMeta, ComponentStory } from '@storybook/react';
 import invariant from 'tiny-invariant';
 
 import { extractCwdSegmentsFromExplorerPanel } from '@app/global-state/slices/explorers.hooks';
-import { createStoreInstance, RootStore } from '@app/global-state/store';
+import type { RootStore } from '@app/global-state/store';
+import { createStoreInstance } from '@app/global-state/store';
 import { CwdSegmentContextProvider } from '@app/ui/cwd-segment-context';
 import { ExplorerContextProvider } from '@app/ui/explorer-context';
 import { createQueryClient, Globals } from '@app/ui/Globals';

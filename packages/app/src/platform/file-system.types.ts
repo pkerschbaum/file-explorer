@@ -1,7 +1,7 @@
-import { IDisposable } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/lifecycle';
-import { CoordinationArgs } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
-import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import {
+import type { IDisposable } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/lifecycle';
+import type { CoordinationArgs } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
+import type { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import type {
   FileDeleteOptions,
   IFileService,
   IFileStat,

@@ -1,10 +1,8 @@
-import { CombinedState, configureStore, PreloadedState } from '@reduxjs/toolkit';
-import { NoInfer } from '@reduxjs/toolkit/dist/tsHelpers';
-import {
-  TypedUseSelectorHook,
-  useDispatch as useReduxDispatch,
-  useSelector as useReduxSelector,
-} from 'react-redux';
+import type { CombinedState, PreloadedState } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
+import type { NoInfer } from '@reduxjs/toolkit/dist/tsHelpers';
+import type { TypedUseSelectorHook } from 'react-redux';
+import { useDispatch as useReduxDispatch, useSelector as useReduxSelector } from 'react-redux';
 
 import { check } from '@app/base/utils/assert.util';
 import { numbers } from '@app/base/utils/numbers.util';
@@ -12,9 +10,9 @@ import { typedPath } from '@app/base/utils/types.util';
 import { loggerMiddleware } from '@app/global-state/logger.middleware';
 import { persistMiddleware } from '@app/global-state/persist-state.middleware';
 import { rootReducer } from '@app/global-state/reducers';
+import type { ExplorersMap } from '@app/global-state/slices/explorers.slice';
 import {
   computeCwdSegmentsFromUri,
-  ExplorersMap,
   generateExplorerId,
 } from '@app/global-state/slices/explorers.slice';
 import { getDefaultExplorerCwd } from '@app/operations/app.operations';

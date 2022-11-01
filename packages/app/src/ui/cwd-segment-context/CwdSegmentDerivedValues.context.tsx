@@ -2,7 +2,8 @@ import * as React from 'react';
 
 import { arrays } from '@app/base/utils/arrays.util';
 import { check } from '@app/base/utils/assert.util';
-import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
+import type { ResourceForUI } from '@app/domain/types';
+import { RESOURCE_TYPE } from '@app/domain/types';
 import { useSegmentUri } from '@app/global-state/slices/explorers.hooks';
 import { REASON_FOR_SELECTION_CHANGE } from '@app/global-state/slices/explorers.slice';
 import { isResourceQualifiedForThumbnail } from '@app/operations/app.operations';

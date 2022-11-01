@@ -1,4 +1,5 @@
-import { PASTE_PROCESS_STATUS, AppProcess, PROCESS_TYPE } from '@app/domain/types';
+import type { AppProcess } from '@app/domain/types';
+import { PASTE_PROCESS_STATUS, PROCESS_TYPE } from '@app/domain/types';
 import { useSelector } from '@app/global-state/store';
 
 export const useDraftPasteState = () =>

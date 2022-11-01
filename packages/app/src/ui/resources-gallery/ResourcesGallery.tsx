@@ -4,7 +4,8 @@ import invariant from 'tiny-invariant';
 
 import { assertIsUnreachable, check } from '@app/base/utils/assert.util';
 import { formatter } from '@app/base/utils/formatter.util';
-import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
+import type { ResourceForUI } from '@app/domain/types';
+import { RESOURCE_TYPE } from '@app/domain/types';
 import { REASON_FOR_SELECTION_CHANGE } from '@app/global-state/slices/explorers.slice';
 import { openResources } from '@app/operations/explorer.operations';
 import { commonStyles } from '@app/ui/common-styles';

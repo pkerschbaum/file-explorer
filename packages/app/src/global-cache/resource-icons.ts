@@ -1,5 +1,6 @@
-import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import { FileKind } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
+import type { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import type { FileKind } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 import * as React from 'react';
 import { useQuery } from 'react-query';
 

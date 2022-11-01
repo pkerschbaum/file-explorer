@@ -1,6 +1,7 @@
 import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
 import * as resources from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
-import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import type { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 
 import { CustomError } from '@app/base/custom-error';
 import { arrays } from '@app/base/utils/arrays.util';

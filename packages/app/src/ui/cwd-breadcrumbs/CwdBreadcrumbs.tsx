@@ -7,8 +7,8 @@ import { formatter } from '@app/base/utils/formatter.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { useCwdSegments } from '@app/global-state/slices/explorers.hooks';
 import { changeCwd } from '@app/operations/explorer.operations';
+import type { ButtonHandle } from '@app/ui/components-library';
 import {
-  ButtonHandle,
   Box,
   Breadcrumbs,
   Button,

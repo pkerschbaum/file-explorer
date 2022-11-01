@@ -1,6 +1,6 @@
 import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import { ComponentMeta, ComponentStory } from '@storybook/react';
+import type { ComponentMeta, ComponentStory } from '@storybook/react';
 
 import { numbers } from '@app/base/utils/numbers.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
@@ -8,7 +8,7 @@ import { PASTE_PROCESS_STATUS, RESOURCE_TYPE } from '@app/domain/types';
 import { computeCwdSegmentsFromUri } from '@app/global-state/slices/explorers.slice';
 import { createStoreInstance } from '@app/global-state/store';
 import { getDefaultExplorerCwd } from '@app/operations/app.operations';
-import { FileSystemResourceToCreate } from '@app/platform/fake/file-system';
+import type { FileSystemResourceToCreate } from '@app/platform/fake/file-system';
 import { createQueryClient, Globals } from '@app/ui/Globals';
 import { Shell } from '@app/ui/shell';
 

@@ -1,4 +1,4 @@
-import { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import type { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import React from 'react';
 import styled from 'styled-components';
 

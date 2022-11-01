@@ -1,8 +1,9 @@
-import { HTMLMotionProps, motion } from 'framer-motion';
+import type { HTMLMotionProps } from 'framer-motion';
+import { motion } from 'framer-motion';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 
-import { ReactMotionProps } from '@app/ui/components-library/utils';
+import type { ReactMotionProps } from '@app/ui/components-library/utils';
 
 export type RowProps = RowComponentProps &
   Omit<ReactMotionProps<'tr', HTMLTableRowElement>, keyof RowComponentProps>;

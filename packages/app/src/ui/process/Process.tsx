@@ -1,11 +1,13 @@
-import * as React from 'react';
+import type * as React from 'react';
 
 import { assertIsUnreachable } from '@app/base/utils/assert.util';
-import { AppProcess, PROCESS_TYPE } from '@app/domain/types';
+import type { AppProcess } from '@app/domain/types';
+import { PROCESS_TYPE } from '@app/domain/types';
 import { removeProcess } from '@app/operations/resource.operations';
 import { computeProcessCardPropsFromDeleteProcess } from '@app/ui/process/process-variant-delete';
 import { computeProcessCardPropsFromPasteProcess } from '@app/ui/process/process-variant-paste';
-import { ProcessCard, ProcessCardProps } from '@app/ui/process/ProcessCard';
+import type { ProcessCardProps } from '@app/ui/process/ProcessCard';
+import { ProcessCard } from '@app/ui/process/ProcessCard';
 
 export type ProcessVariantProps = Omit<ProcessCardProps, 'className' | 'onRemove'>;
 

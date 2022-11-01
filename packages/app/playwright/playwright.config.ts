@@ -1,5 +1,5 @@
 /* eslint-disable import/no-default-export, @typescript-eslint/no-var-requires */
-import { PlaywrightTestConfig } from '@playwright/test';
+import type { PlaywrightTestConfig } from '@playwright/test';
 import moduleAlias from 'module-alias';
 
 const moduleAliases: { [alias: string]: string } = require('../package-module-aliases');

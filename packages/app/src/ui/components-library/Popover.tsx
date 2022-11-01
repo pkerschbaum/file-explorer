@@ -8,9 +8,10 @@ import {
   OverlayContainer,
 } from '@react-aria/overlays';
 import { mergeProps } from '@react-aria/utils';
-import { OverlayTriggerState, useOverlayTriggerState } from '@react-stately/overlays';
-import { AriaButtonProps } from '@react-types/button';
-import { PositionProps } from '@react-types/overlays';
+import type { OverlayTriggerState } from '@react-stately/overlays';
+import { useOverlayTriggerState } from '@react-stately/overlays';
+import type { AriaButtonProps } from '@react-types/button';
+import type { PositionProps } from '@react-types/overlays';
 import { AnimatePresence } from 'framer-motion';
 import * as React from 'react';
 import styled from 'styled-components';

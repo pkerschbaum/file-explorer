@@ -10,13 +10,13 @@ import {
   revealCwdInOSExplorer,
 } from '@app/operations/explorer.operations';
 import { APP_MESSAGE_SEVERITY, usePushAppMessage } from '@app/ui/AppMessagesContext';
+import type { MenuInstance } from '@app/ui/components-library';
 import {
   Paper,
   Popover,
   usePopover,
   Item,
   MenuPopup,
-  MenuInstance,
   ArrowRightAltOutlinedIcon,
   FolderOutlinedIcon,
   ContentCopyOutlinedIcon,

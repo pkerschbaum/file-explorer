@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 
-import { ResourceForUI } from '@app/domain/types';
+import type { ResourceForUI } from '@app/domain/types';
 import {
   getNativeIconURLForResource,
   getThumbnailURLForResource,

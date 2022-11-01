@@ -1,10 +1,11 @@
 import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
-import { ComponentMeta, ComponentStory } from '@storybook/react';
+import type { ComponentMeta, ComponentStory } from '@storybook/react';
 
 import { numbers } from '@app/base/utils/numbers.util';
-import { NarrowUnion } from '@app/base/utils/types.util';
+import type { NarrowUnion } from '@app/base/utils/types.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
-import { PasteProcess, PASTE_PROCESS_STATUS } from '@app/domain/types';
+import type { PasteProcess } from '@app/domain/types';
+import { PASTE_PROCESS_STATUS } from '@app/domain/types';
 import { createStoreInstance } from '@app/global-state/store';
 import { Box } from '@app/ui/components-library';
 import { createQueryClient, Globals } from '@app/ui/Globals';

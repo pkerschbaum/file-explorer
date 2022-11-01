@@ -2,7 +2,8 @@ import styled from 'styled-components';
 
 import { assertIsUnreachable } from '@app/base/utils/assert.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
-import { DeleteProcess as DeleteProcessType, DELETE_PROCESS_STATUS } from '@app/domain/types';
+import type { DeleteProcess as DeleteProcessType } from '@app/domain/types';
+import { DELETE_PROCESS_STATUS } from '@app/domain/types';
 import { removeProcess, runDeleteProcess } from '@app/operations/resource.operations';
 import {
   Box,

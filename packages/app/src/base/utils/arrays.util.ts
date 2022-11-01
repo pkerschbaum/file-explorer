@@ -1,4 +1,5 @@
-import { matchSorter, MatchSorterOptions } from 'match-sorter';
+import type { MatchSorterOptions } from 'match-sorter';
+import { matchSorter } from 'match-sorter';
 
 export const arrays = {
   flatten,

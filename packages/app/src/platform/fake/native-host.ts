@@ -1,10 +1,11 @@
 import { Emitter } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/event';
 import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
-import { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import type { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 
 import { functions } from '@app/base/utils/functions.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
-import { CLIPBOARD_CHANGED_DATA_TYPE, PlatformNativeHost } from '@app/platform/native-host.types';
+import type { PlatformNativeHost } from '@app/platform/native-host.types';
+import { CLIPBOARD_CHANGED_DATA_TYPE } from '@app/platform/native-host.types';
 
 export function createFakeNativeHost(): PlatformNativeHost {
   let currentClipboardText = '';

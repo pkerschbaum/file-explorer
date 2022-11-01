@@ -1,25 +1,23 @@
 import { useFocus } from '@react-aria/interactions';
-import {
-  AriaMenuItemProps,
-  AriaMenuOptions,
-  useMenu as useReactAriaMenu,
-  useMenuItem,
-  useMenuTrigger,
-} from '@react-aria/menu';
+import type { AriaMenuItemProps, AriaMenuOptions } from '@react-aria/menu';
+import { useMenu as useReactAriaMenu, useMenuItem, useMenuTrigger } from '@react-aria/menu';
 import { useOverlayPosition } from '@react-aria/overlays';
 import { mergeProps, useObjectRef } from '@react-aria/utils';
 import { Item as ReactAriaItem } from '@react-stately/collections';
-import { MenuTriggerState, useMenuTriggerState } from '@react-stately/menu';
-import { TreeProps, TreeState, useTreeState } from '@react-stately/tree';
-import { AriaButtonProps } from '@react-types/button';
-import { MenuTriggerProps } from '@react-types/menu';
-import { PositionProps } from '@react-types/overlays';
-import { ItemProps as ReactAriaItemProps, Node } from '@react-types/shared';
+import type { MenuTriggerState } from '@react-stately/menu';
+import { useMenuTriggerState } from '@react-stately/menu';
+import type { TreeProps, TreeState } from '@react-stately/tree';
+import { useTreeState } from '@react-stately/tree';
+import type { AriaButtonProps } from '@react-types/button';
+import type { MenuTriggerProps } from '@react-types/menu';
+import type { PositionProps } from '@react-types/overlays';
+import type { ItemProps as ReactAriaItemProps, Node } from '@react-types/shared';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 
 import { Paper } from '@app/ui/components-library/Paper';
-import { Popover, PopoverInstance } from '@app/ui/components-library/Popover';
+import type { PopoverInstance } from '@app/ui/components-library/Popover';
+import { Popover } from '@app/ui/components-library/Popover';
 
 type UseMenuArgs<TriggerHTMLElement extends HTMLElement> = {
   triggerRef: React.RefObject<TriggerHTMLElement>;

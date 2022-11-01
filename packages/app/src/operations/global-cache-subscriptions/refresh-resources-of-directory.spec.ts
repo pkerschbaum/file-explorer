@@ -1,12 +1,12 @@
-import { IDisposable } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/lifecycle';
+import type { IDisposable } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/lifecycle';
 import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
-import { Query } from 'react-query';
+import type { Query } from 'react-query';
 
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { RESOURCES_OF_DIRECTORY_KEY_PREFIX } from '@app/global-cache/query-keys';
-import { QueryCacheNotifyEvent } from '@app/operations/global-cache-subscriptions';
+import type { QueryCacheNotifyEvent } from '@app/operations/global-cache-subscriptions';
 import { createRefreshResourcesOfDirectorySubscription } from '@app/operations/global-cache-subscriptions/refresh-resources-of-directory';
-import { PlatformFileSystem } from '@app/platform/file-system.types';
+import type { PlatformFileSystem } from '@app/platform/file-system.types';
 
 import { initializeFakePlatformModules } from '@app-test/utils/fake-platform-modules';
 

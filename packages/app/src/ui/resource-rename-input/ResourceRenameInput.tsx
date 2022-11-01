@@ -1,10 +1,10 @@
 import * as extpath from '@pkerschbaum/code-oss-file-service/out/vs/base/common/extpath';
-import { KeyboardEvent } from '@react-types/shared';
+import type { KeyboardEvent } from '@react-types/shared';
 import * as React from 'react';
 import styled from 'styled-components';
 
 import { check } from '@app/base/utils/assert.util';
-import { ResourceForUI } from '@app/domain/types';
+import type { ResourceForUI } from '@app/domain/types';
 import { commonStyles } from '@app/ui/common-styles';
 import { Button, FocusScope, TextField } from '@app/ui/components-library';
 import { doesKeyboardEventKeyMatchPrintedKey, PRINTED_KEY } from '@app/ui/constants';

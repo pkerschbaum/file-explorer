@@ -1,5 +1,6 @@
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import electron, { app, protocol } from 'electron';
+import type electron from 'electron';
+import { app, protocol } from 'electron';
 import FileType from 'file-type';
 import fs from 'fs';
 import mime from 'mime';

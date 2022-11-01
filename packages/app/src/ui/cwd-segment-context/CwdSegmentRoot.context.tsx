@@ -1,6 +1,6 @@
-import { UpdateFn } from '@app/domain/types';
+import type { UpdateFn } from '@app/domain/types';
 import * as globalStateHooks from '@app/global-state/slices/explorers.hooks';
-import {
+import type {
   REASON_FOR_SELECTION_CHANGE,
   RenameHistoryKeys,
   ResourcesView,

@@ -1,8 +1,8 @@
-import { Event } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/event';
-import { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import { app } from 'electron';
+import type { Event } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/event';
+import type { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import type { app } from 'electron';
 
-import { ResourceForUI } from '@app/domain/types';
+import type { ResourceForUI } from '@app/domain/types';
 
 export type PlatformNativeHost = {
   app: {

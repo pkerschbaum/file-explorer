@@ -1,9 +1,9 @@
-import { Event } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/event';
+import type { Event } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/event';
 import * as React from 'react';
 import * as useContextSelectorLib from 'use-context-selector';
 
 import { functions } from '@app/base/utils/functions.util';
-import { FunctionType } from '@app/base/utils/types.util';
+import type { FunctionType } from '@app/base/utils/types.util';
 
 export type EventHandler<E extends keyof WindowEventMap> = {
   condition: (e: WindowEventMap[E]) => boolean;

@@ -1,18 +1,19 @@
 import { VSBuffer } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/buffer';
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import { FileService } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/fileService';
+import type { FileService } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/fileService';
 import { clipboard, ipcRenderer } from 'electron';
 
 import { config } from '@app/config';
 import { bootstrapDiskFileService } from '@app/platform/electron/electron-preload/bootstrap-disk-file-service';
-import { IpcApp, APP_CHANNEL } from '@app/platform/electron/ipc/common/app';
-import {
-  IpcFileDragStart,
-  FILEDRAGSTART_CHANNEL,
-} from '@app/platform/electron/ipc/common/file-drag-start';
+import type { IpcApp } from '@app/platform/electron/ipc/common/app';
+import { APP_CHANNEL } from '@app/platform/electron/ipc/common/app';
+import type { IpcFileDragStart } from '@app/platform/electron/ipc/common/file-drag-start';
+import { FILEDRAGSTART_CHANNEL } from '@app/platform/electron/ipc/common/file-drag-start';
 import { PERSISTENT_STORE_CHANNEL } from '@app/platform/electron/ipc/common/persistent-store';
-import { IpcShell, SHELL_CHANNEL } from '@app/platform/electron/ipc/common/shell';
-import { IpcWindow, WINDOW_CHANNEL } from '@app/platform/electron/ipc/common/window';
+import type { IpcShell } from '@app/platform/electron/ipc/common/shell';
+import { SHELL_CHANNEL } from '@app/platform/electron/ipc/common/shell';
+import type { IpcWindow } from '@app/platform/electron/ipc/common/window';
+import { WINDOW_CHANNEL } from '@app/platform/electron/ipc/common/window';
 
 declare global {
   interface Window {

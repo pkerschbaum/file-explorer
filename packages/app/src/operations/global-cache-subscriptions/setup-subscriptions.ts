@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Query, QueryCache } from 'react-query';
+import type { Query, QueryCache } from 'react-query';
 
 import { check } from '@app/base/utils/assert.util';
 import { createRefreshResourcesOfDirectorySubscription } from '@app/operations/global-cache-subscriptions/refresh-resources-of-directory';

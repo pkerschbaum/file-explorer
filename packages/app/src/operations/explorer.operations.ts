@@ -3,25 +3,27 @@ import { extname, basename } from '@pkerschbaum/code-oss-file-service/out/vs/bas
 import { isLinux } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/platform';
 import type { ReportProgressArgs } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
 import * as resources from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
-import { Constants } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uint';
-import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import type { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import * as uuid from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uuid';
-import { IFileStat } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
+import type { IFileStat } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 import invariant from 'tiny-invariant';
 
 import { CustomError } from '@app/base/custom-error';
 import { check } from '@app/base/utils/assert.util';
 import { formatter } from '@app/base/utils/formatter.util';
+import { numbers } from '@app/base/utils/numbers.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
-import { PASTE_PROCESS_STATUS, ResourceForUI, RESOURCE_TYPE, UpdateFn } from '@app/domain/types';
+import type { ResourceForUI, UpdateFn } from '@app/domain/types';
+import { PASTE_PROCESS_STATUS, RESOURCE_TYPE } from '@app/domain/types';
 import { mapFileStatToResource, refreshResourcesOfDirectory } from '@app/global-cache/resources';
 import { extractCwdFromExplorerPanel } from '@app/global-state/slices/explorers.hooks';
-import {
-  actions as explorerActions,
+import type {
   REASON_FOR_SELECTION_CHANGE,
   RenameHistoryKeys,
   ResourcesView,
 } from '@app/global-state/slices/explorers.slice';
+import { actions as explorerActions } from '@app/global-state/slices/explorers.slice';
 import { actions as processesActions } from '@app/global-state/slices/processes.slice';
 import { createLogger } from '@app/operations/create-logger';
 import { executeCopyOrMove, openFiles, resolveDeep } from '@app/operations/resource.operations';
@@ -488,7 +490,7 @@ function incrementResourceName(name: string, isFolder: boolean): string {
         return number === 0
           ? // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
             `${g1}`
-          : number < Constants.MAX_SAFE_SMALL_INTEGER
+          : number < numbers.Constants.MAX_SAFE_SMALL_INTEGER
           ? // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
             `${g1} ${number + 1}`
           : // eslint-disable-next-line @typescript-eslint/restrict-template-expressions

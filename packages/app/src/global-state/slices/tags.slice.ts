@@ -1,6 +1,6 @@
 import { createAction, createReducer } from '@reduxjs/toolkit';
 
-import { ResourcesToTags, Tag } from '@app/domain/types';
+import type { ResourcesToTags, Tag } from '@app/domain/types';
 
 type TagsMap = {
   [id in Tag['id']]: Omit<Tag, 'id'>;

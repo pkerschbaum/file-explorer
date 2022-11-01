@@ -1,11 +1,11 @@
-import { QueryClient } from 'react-query';
+import type { QueryClient } from 'react-query';
 
-import { AppDispatch, RootStore } from '@app/global-state/store';
-import { PlatformFileIconThemeLoader } from '@app/platform/file-icon-theme-loader.types';
-import { PlatformFileSystem } from '@app/platform/file-system.types';
-import { PlatformLogWriter } from '@app/platform/log-writer.types';
-import { PlatformNativeHost } from '@app/platform/native-host.types';
-import { PlatformPersistentStorage } from '@app/platform/persistent-storage.types';
+import type { AppDispatch, RootStore } from '@app/global-state/store';
+import type { PlatformFileIconThemeLoader } from '@app/platform/file-icon-theme-loader.types';
+import type { PlatformFileSystem } from '@app/platform/file-system.types';
+import type { PlatformLogWriter } from '@app/platform/log-writer.types';
+import type { PlatformNativeHost } from '@app/platform/native-host.types';
+import type { PlatformPersistentStorage } from '@app/platform/persistent-storage.types';
 
 type GlobalModules = {
   queryClient: QueryClient;

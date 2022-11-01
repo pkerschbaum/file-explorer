@@ -1,7 +1,7 @@
 import { nanoid } from '@reduxjs/toolkit';
 
 import { objects } from '@app/base/utils/objects.util';
-import { Tag } from '@app/domain/types';
+import type { Tag } from '@app/domain/types';
 import { actions } from '@app/global-state/slices/tags.slice';
 import { createLogger } from '@app/operations/create-logger';
 

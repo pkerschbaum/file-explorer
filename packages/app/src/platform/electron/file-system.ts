@@ -1,6 +1,6 @@
 import { normalize } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/path';
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import { IFileStatWithMetadata } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
+import type { IFileStatWithMetadata } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 
 import type {
   PlatformFileSystem,

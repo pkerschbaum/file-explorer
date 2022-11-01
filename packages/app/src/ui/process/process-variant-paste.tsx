@@ -4,7 +4,8 @@ import { assertIsUnreachable } from '@app/base/utils/assert.util';
 import { byteSize } from '@app/base/utils/byte-size.util';
 import { formatter } from '@app/base/utils/formatter.util';
 import { numbers } from '@app/base/utils/numbers.util';
-import { PasteProcess as PasteProcessType, PASTE_PROCESS_STATUS } from '@app/domain/types';
+import type { PasteProcess as PasteProcessType } from '@app/domain/types';
+import { PASTE_PROCESS_STATUS } from '@app/domain/types';
 import {
   Box,
   Button,

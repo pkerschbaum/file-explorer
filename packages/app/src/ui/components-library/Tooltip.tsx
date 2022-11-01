@@ -1,13 +1,11 @@
 import { OverlayContainer, useOverlayPosition } from '@react-aria/overlays';
-import {
-  TooltipTriggerAria,
-  useTooltip as useReactAriaTooltip,
-  useTooltipTrigger,
-} from '@react-aria/tooltip';
+import type { TooltipTriggerAria } from '@react-aria/tooltip';
+import { useTooltip as useReactAriaTooltip, useTooltipTrigger } from '@react-aria/tooltip';
 import { mergeProps } from '@react-aria/utils';
-import { TooltipTriggerState, useTooltipTriggerState } from '@react-stately/tooltip';
-import { Placement as ReactAriaPlacement, PlacementAxis } from '@react-types/overlays';
-import { TooltipTriggerProps } from '@react-types/tooltip';
+import type { TooltipTriggerState } from '@react-stately/tooltip';
+import { useTooltipTriggerState } from '@react-stately/tooltip';
+import type { Placement as ReactAriaPlacement, PlacementAxis } from '@react-types/overlays';
+import type { TooltipTriggerProps } from '@react-types/tooltip';
 import { AnimatePresence } from 'framer-motion';
 import * as React from 'react';
 import styled, { css } from 'styled-components';

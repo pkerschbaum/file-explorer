@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { CustomError } from '@app/base/custom-error';
 import { objects } from '@app/base/utils/objects.util';
-import { JsonObject } from '@app/base/utils/types.util';
+import type { JsonObject } from '@app/base/utils/types.util';
 
 type Logger = {
   debug: <A, B>(

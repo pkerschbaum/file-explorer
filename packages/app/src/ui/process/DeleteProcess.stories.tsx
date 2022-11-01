@@ -1,11 +1,12 @@
 import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import { ComponentMeta, ComponentStory } from '@storybook/react';
+import type { ComponentMeta, ComponentStory } from '@storybook/react';
 
 import { numbers } from '@app/base/utils/numbers.util';
-import { NarrowUnion } from '@app/base/utils/types.util';
+import type { NarrowUnion } from '@app/base/utils/types.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
-import { DeleteProcess, DELETE_PROCESS_STATUS } from '@app/domain/types';
+import type { DeleteProcess } from '@app/domain/types';
+import { DELETE_PROCESS_STATUS } from '@app/domain/types';
 import { createStoreInstance } from '@app/global-state/store';
 import { Box } from '@app/ui/components-library';
 import { createQueryClient, Globals } from '@app/ui/Globals';

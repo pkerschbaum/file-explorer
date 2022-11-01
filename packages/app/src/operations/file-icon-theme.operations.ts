@@ -1,9 +1,9 @@
 import { getIconClasses, loadFileIconThemeCssRules } from '@pkerschbaum/code-oss-file-icon-theme';
 import { ModesRegistry } from '@pkerschbaum/code-oss-file-icon-theme/out/vs/editor/common/modes/modesRegistry';
-import { ILanguageExtensionPoint } from '@pkerschbaum/code-oss-file-icon-theme/out/vs/editor/common/services/modeService';
+import type { ILanguageExtensionPoint } from '@pkerschbaum/code-oss-file-icon-theme/out/vs/editor/common/services/modeService';
 import * as path from '@pkerschbaum/code-oss-file-service/out/vs/base/common/path';
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import {
+import type {
   FileKind,
   IFileContent,
   IFileService,
@@ -13,7 +13,7 @@ import axios from 'axios';
 import { check } from '@app/base/utils/assert.util';
 import { formatter } from '@app/base/utils/formatter.util';
 import { json } from '@app/base/utils/json.util';
-import { FileIconTheme } from '@app/domain/constants';
+import type { FileIconTheme } from '@app/domain/constants';
 
 export type LanguageExtensionPointJsonEntry = {
   packageName: string;

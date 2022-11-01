@@ -1,7 +1,8 @@
-import { ComponentMeta, ComponentStory } from '@storybook/react';
+import type { ComponentMeta, ComponentStory } from '@storybook/react';
 import styled from 'styled-components';
 
-import { createStoreInstance, RootStore } from '@app/global-state/store';
+import type { RootStore } from '@app/global-state/store';
+import { createStoreInstance } from '@app/global-state/store';
 import { Box } from '@app/ui/components-library';
 import { ExplorerPanel, EXPLORER_PANEL_GRID_AREA } from '@app/ui/explorer-panel/ExplorerPanel';
 import { createQueryClient, Globals } from '@app/ui/Globals';

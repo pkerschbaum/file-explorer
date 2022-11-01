@@ -1,14 +1,15 @@
 import { useButton } from '@react-aria/button';
 import { mergeProps, useObjectRef } from '@react-aria/utils';
-import { AriaButtonProps } from '@react-types/button';
+import type { AriaButtonProps } from '@react-types/button';
 import { motion } from 'framer-motion';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 
 import { Box } from '@app/ui/components-library/Box';
 import { DESIGN_TOKENS } from '@app/ui/components-library/DesignTokenContext';
-import { Placement, Tooltip, useTooltip } from '@app/ui/components-library/Tooltip';
-import { ReactMotionProps } from '@app/ui/components-library/utils';
+import type { Placement } from '@app/ui/components-library/Tooltip';
+import { Tooltip, useTooltip } from '@app/ui/components-library/Tooltip';
+import type { ReactMotionProps } from '@app/ui/components-library/utils';
 
 type IconButtonProps = IconButtonAriaProps &
   IconButtonComponentProps &

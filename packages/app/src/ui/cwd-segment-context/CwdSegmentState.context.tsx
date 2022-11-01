@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useImmer } from 'use-immer';
 
-import { UpdateFn } from '@app/domain/types';
+import type { UpdateFn } from '@app/domain/types';
 import { useSegmentUri } from '@app/global-state/slices/explorers.hooks';
 import { useSegmentIdx } from '@app/ui/cwd-segment-context/CwdSegmentRoot.context';
 import { useExplorerId } from '@app/ui/explorer-context';

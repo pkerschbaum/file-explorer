@@ -1,6 +1,6 @@
 import { useButton } from '@react-aria/button';
 import { mergeProps, useObjectRef } from '@react-aria/utils';
-import { AriaButtonProps } from '@react-types/button';
+import type { AriaButtonProps } from '@react-types/button';
 import { motion } from 'framer-motion';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
@@ -8,7 +8,8 @@ import invariant from 'tiny-invariant';
 
 import { Box } from '@app/ui/components-library/Box';
 import { Paper } from '@app/ui/components-library/Paper';
-import { componentLibraryUtils, ReactMotionProps } from '@app/ui/components-library/utils';
+import type { ReactMotionProps } from '@app/ui/components-library/utils';
+import { componentLibraryUtils } from '@app/ui/components-library/utils';
 
 type ButtonProps = ButtonAriaProps &
   ButtonComponentProps &

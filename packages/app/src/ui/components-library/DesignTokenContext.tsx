@@ -1,14 +1,10 @@
-import { createTheme, Theme } from '@mui/material';
+import type { Theme } from '@mui/material';
+import { createTheme } from '@mui/material';
 import * as d3 from 'd3-color';
-import { MotionProps, Target } from 'framer-motion';
+import type { MotionProps, Target } from 'framer-motion';
 import * as React from 'react';
-import {
-  createGlobalStyle,
-  css,
-  FlattenSimpleInterpolation,
-  keyframes,
-  ThemeProvider,
-} from 'styled-components';
+import type { FlattenSimpleInterpolation } from 'styled-components';
+import { createGlobalStyle, css, keyframes, ThemeProvider } from 'styled-components';
 import invariant from 'tiny-invariant';
 
 import { assertIsUnreachable } from '@app/base/utils/assert.util';

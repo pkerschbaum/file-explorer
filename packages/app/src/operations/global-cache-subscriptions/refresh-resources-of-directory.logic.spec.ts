@@ -3,7 +3,7 @@ import { queries } from '@playwright-testing-library/test';
 import { expect, test } from '@playwright/test';
 
 import { uriHelper } from '@app/base/utils/uri-helper';
-import { ResourceStat } from '@app/domain/types';
+import type { ResourceStat } from '@app/domain/types';
 import { QUERY_KEYS } from '@app/global-cache/query-keys';
 
 import { bootstrap } from '@app-playwright/playwright.util';

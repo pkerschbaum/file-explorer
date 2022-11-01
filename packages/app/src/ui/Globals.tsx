@@ -7,7 +7,7 @@ import styled, { createGlobalStyle, css } from 'styled-components';
 import { config } from '@app/config';
 import { FILE_ICON_THEMES } from '@app/domain/constants';
 import { useActiveFileIconTheme } from '@app/global-state/slices/user.hooks';
-import { RootStore } from '@app/global-state/store';
+import type { RootStore } from '@app/global-state/store';
 import { useGlobalCacheSubscriptions } from '@app/operations/global-cache-subscriptions';
 import { setGlobalModules } from '@app/operations/global-modules';
 import { AppMessagesContext } from '@app/ui/AppMessagesContext';

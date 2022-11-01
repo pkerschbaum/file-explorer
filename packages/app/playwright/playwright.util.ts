@@ -1,6 +1,7 @@
 /* eslint-disable node/no-process-env */
 import { getDocument } from '@playwright-testing-library/test';
-import { BrowserContext, expect, PlaywrightTestArgs } from '@playwright/test';
+import type { BrowserContext, PlaywrightTestArgs } from '@playwright/test';
+import { expect } from '@playwright/test';
 import path from 'path';
 import * as sinon from 'sinon';
 

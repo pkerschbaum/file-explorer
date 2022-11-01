@@ -11,7 +11,8 @@ import {
   NATIVE_FILE_ICON_PROTOCOL_SCHEME,
   THUMBNAIL_PROTOCOL_SCHEME,
 } from '@app/platform/electron/protocol/common/app';
-import { CLIPBOARD_CHANGED_DATA_TYPE, PlatformNativeHost } from '@app/platform/native-host.types';
+import type { PlatformNativeHost } from '@app/platform/native-host.types';
+import { CLIPBOARD_CHANGED_DATA_TYPE } from '@app/platform/native-host.types';
 
 const USE_NATIVE_ICON_FOR_REGEX = /exe|ico|dll|iso/i;
 const THUMBNAIL_AVAILABLE_FOR_MIME_TYPE = [

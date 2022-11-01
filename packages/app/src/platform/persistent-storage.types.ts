@@ -1,6 +1,6 @@
-import { CwdSegment } from '@app/global-state/slices/explorers.slice';
-import { TagsState } from '@app/global-state/slices/tags.slice';
-import { UserState } from '@app/global-state/slices/user.slice';
+import type { CwdSegment } from '@app/global-state/slices/explorers.slice';
+import type { TagsState } from '@app/global-state/slices/tags.slice';
+import type { UserState } from '@app/global-state/slices/user.slice';
 
 export type PlatformPersistentStorage = {
   write: (entireValue: StorageState) => Promise<void>;

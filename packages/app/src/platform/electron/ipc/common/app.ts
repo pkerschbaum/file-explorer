@@ -1,4 +1,4 @@
-import { app } from 'electron';
+import type { app } from 'electron';
 
 import { config } from '@app/config';
 

@@ -2,8 +2,8 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 import { check } from '@app/base/utils/assert.util';
+import type { ButtonHandle } from '@app/ui/components-library';
 import {
-  ButtonHandle,
   Button,
   Popover,
   TextField,

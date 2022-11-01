@@ -1,7 +1,7 @@
 import { queries } from '@playwright-testing-library/test';
 import { expect, test } from '@playwright/test';
 
-import { AvailableFileIconTheme } from '@app/domain/constants';
+import type { AvailableFileIconTheme } from '@app/domain/constants';
 
 import { bootstrap } from '@app-playwright/playwright.util';
 

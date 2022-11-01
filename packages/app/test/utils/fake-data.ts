@@ -1,18 +1,12 @@
 import { CancellationTokenSource } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/cancellation';
 import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import { IFileStatWithMetadata } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
+import type { IFileStatWithMetadata } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 import dayjs from 'dayjs';
 
 import { uriHelper } from '@app/base/utils/uri-helper';
-import {
-  DELETE_PROCESS_STATUS,
-  PasteProcessBase,
-  AppProcess,
-  PROCESS_TYPE,
-  PASTE_PROCESS_STATUS,
-  DeleteProcessBase,
-} from '@app/domain/types';
+import type { PasteProcessBase, AppProcess, DeleteProcessBase } from '@app/domain/types';
+import { DELETE_PROCESS_STATUS, PROCESS_TYPE, PASTE_PROCESS_STATUS } from '@app/domain/types';
 
 export const fakeFileStat: IFileStatWithMetadata = {
   isDirectory: false,

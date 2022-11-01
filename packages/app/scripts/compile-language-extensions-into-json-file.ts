@@ -1,12 +1,12 @@
 /* eslint-disable no-console */
 import * as json from '@pkerschbaum/code-oss-file-icon-theme/out/vs/base/common/json';
-import { ILanguageExtensionPoint } from '@pkerschbaum/code-oss-file-icon-theme/out/vs/editor/common/services/modeService';
+import type { ILanguageExtensionPoint } from '@pkerschbaum/code-oss-file-icon-theme/out/vs/editor/common/services/modeService';
 import { VSBuffer } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/buffer';
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import path from 'path';
 
 import { json as jsonUtil } from '@app/base/utils/json.util';
-import { LanguageExtensionPointJsonEntry } from '@app/operations/file-icon-theme.operations';
+import type { LanguageExtensionPointJsonEntry } from '@app/operations/file-icon-theme.operations';
 import { bootstrapDiskFileService } from '@app/platform/electron/electron-preload/bootstrap-disk-file-service';
 
 const CODE_OSS_FILE_ICON_THEME_LANGUAGES_PATH = URI.file(

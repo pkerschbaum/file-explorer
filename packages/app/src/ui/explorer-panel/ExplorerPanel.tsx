@@ -1,4 +1,5 @@
-import { AnimatePresence, Transition, Variants } from 'framer-motion';
+import type { Transition, Variants } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 

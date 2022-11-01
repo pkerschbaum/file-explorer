@@ -1,6 +1,6 @@
 import invariant from 'tiny-invariant';
 
-import { ExplorerPanel, RenameHistoryKeys } from '@app/global-state/slices/explorers.slice';
+import type { ExplorerPanel, RenameHistoryKeys } from '@app/global-state/slices/explorers.slice';
 import { useSelector } from '@app/global-state/store';
 
 export type ExplorerPanelEntry = ExplorerPanel & {

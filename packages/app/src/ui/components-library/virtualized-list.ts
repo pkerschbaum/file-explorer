@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { Options, useVirtual as useReactVirtual } from 'react-virtual';
+import type { Options } from 'react-virtual';
+import { useVirtual as useReactVirtual } from 'react-virtual';
 
 import { useForceUpdate } from '@app/ui/utils/react.util';
 

@@ -1,10 +1,11 @@
-import { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import type { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { FileKind } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 import * as React from 'react';
 
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { config } from '@app/config';
-import { ResourceStat, ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
+import type { ResourceStat, ResourceForUI } from '@app/domain/types';
+import { RESOURCE_TYPE } from '@app/domain/types';
 import { useResourceIconClasses } from '@app/global-cache/resource-icons';
 import { useResources } from '@app/global-cache/resources';
 import { useResourcesToTags } from '@app/global-state/slices/tags.hooks';

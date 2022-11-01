@@ -1,12 +1,15 @@
 import * as platform from '@pkerschbaum/code-oss-file-service/out/vs/base/common/platform';
 import * as resources from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
-import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import type { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 
 import { check } from '@app/base/utils/assert.util';
-import { byteSize, ByteUnit } from '@app/base/utils/byte-size.util';
+import type { ByteUnit } from '@app/base/utils/byte-size.util';
+import { byteSize } from '@app/base/utils/byte-size.util';
 import { numbers } from '@app/base/utils/numbers.util';
 import { i18n } from '@app/domain/i18n';
-import { ResourceForUI, RESOURCE_TYPE } from '@app/domain/types';
+import type { ResourceForUI } from '@app/domain/types';
+import { RESOURCE_TYPE } from '@app/domain/types';
 
 export const formatter = { bytes, date, resourceExtension, resourcePath, uriSegments };
 

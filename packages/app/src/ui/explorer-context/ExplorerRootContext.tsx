@@ -1,12 +1,10 @@
-import React from 'react';
+import type * as React from 'react';
 
 import { useIdOfFocusedExplorerPanel } from '@app/global-state/slices/explorers.hooks';
-import {
-  ShortcutMap,
-  RegisterShortcutsResultMap,
-  useRegisterGlobalShortcuts,
-} from '@app/ui/GlobalShortcutsContext';
-import { createContext, EventHandler, useWindowEvent } from '@app/ui/utils/react.util';
+import type { ShortcutMap, RegisterShortcutsResultMap } from '@app/ui/GlobalShortcutsContext';
+import { useRegisterGlobalShortcuts } from '@app/ui/GlobalShortcutsContext';
+import type { EventHandler } from '@app/ui/utils/react.util';
+import { createContext, useWindowEvent } from '@app/ui/utils/react.util';
 
 type ExplorerContext = { explorerId: string };
 

@@ -1,5 +1,5 @@
 import { json } from '@app/base/utils/json.util';
-import { ObjectLiteral, IsJsonable } from '@app/base/utils/types.util';
+import type { ObjectLiteral, IsJsonable } from '@app/base/utils/types.util';
 
 export const objects = {
   shallowCopy,

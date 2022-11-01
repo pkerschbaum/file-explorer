@@ -1,16 +1,14 @@
-import {
-  DisposableStore,
-  IDisposable,
-} from '@pkerschbaum/code-oss-file-service/out/vs/base/common/lifecycle';
+import type { IDisposable } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/lifecycle';
+import { DisposableStore } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/lifecycle';
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import { Query } from 'react-query';
+import type { Query } from 'react-query';
 
 import { functions } from '@app/base/utils/functions.util';
 import { json } from '@app/base/utils/json.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
+import type { ResourcesOfDirectoryKey } from '@app/global-cache/query-keys';
 import {
   isResourcesOfDirectoryQueryKey,
-  ResourcesOfDirectoryKey,
   RESOURCES_OF_DIRECTORY_KEY_PREFIX,
 } from '@app/global-cache/query-keys';
 import { refreshResourcesOfDirectory } from '@app/global-cache/resources';

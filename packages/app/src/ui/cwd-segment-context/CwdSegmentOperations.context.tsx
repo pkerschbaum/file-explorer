@@ -4,7 +4,7 @@ import * as React from 'react';
 import { arrays } from '@app/base/utils/arrays.util';
 import { errorsUtil } from '@app/base/utils/errors.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
-import { ResourceForUI } from '@app/domain/types';
+import type { ResourceForUI } from '@app/domain/types';
 import { REASON_FOR_SELECTION_CHANGE } from '@app/global-state/slices/explorers.slice';
 import { startNativeFileDnD } from '@app/operations/app.operations';
 import { createFolder, openResources, pasteResources } from '@app/operations/explorer.operations';
@@ -20,17 +20,10 @@ import {
   useSetReasonForLastSelectionChange,
 } from '@app/ui/cwd-segment-context';
 import { useExplorerId, useIsActiveExplorer } from '@app/ui/explorer-context';
-import {
-  ShortcutMap,
-  useRegisterGlobalShortcuts,
-  RegisterShortcutsResultMap,
-} from '@app/ui/GlobalShortcutsContext';
-import {
-  createContext,
-  EventHandler,
-  useLatestValueRef,
-  useWindowEvent,
-} from '@app/ui/utils/react.util';
+import type { ShortcutMap, RegisterShortcutsResultMap } from '@app/ui/GlobalShortcutsContext';
+import { useRegisterGlobalShortcuts } from '@app/ui/GlobalShortcutsContext';
+import type { EventHandler } from '@app/ui/utils/react.util';
+import { createContext, useLatestValueRef, useWindowEvent } from '@app/ui/utils/react.util';
 
 type CwdSegmentOperationsContext = {
   copySelectedResources: () => void;

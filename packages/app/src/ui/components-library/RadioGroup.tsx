@@ -4,8 +4,12 @@ import { useFocusRing } from '@react-aria/focus';
 import { useRadio, useRadioGroup } from '@react-aria/radio';
 import { mergeProps } from '@react-aria/utils';
 import { VisuallyHidden } from '@react-aria/visually-hidden';
-import { RadioGroupState, useRadioGroupState } from '@react-stately/radio';
-import { AriaRadioProps, RadioGroupProps as ReactAriaRadioGroupProps } from '@react-types/radio';
+import type { RadioGroupState } from '@react-stately/radio';
+import { useRadioGroupState } from '@react-stately/radio';
+import type {
+  AriaRadioProps,
+  RadioGroupProps as ReactAriaRadioGroupProps,
+} from '@react-types/radio';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 

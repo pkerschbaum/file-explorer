@@ -1,5 +1,5 @@
 import useMediaMatch from '@rooks/use-media-match';
-import { MotionProps } from 'framer-motion';
+import type { MotionProps } from 'framer-motion';
 
 import { config } from '@app/config';
 

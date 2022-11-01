@@ -7,10 +7,10 @@ import { formatter } from '@app/base/utils/formatter.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { useDraftPasteState } from '@app/global-state/slices/processes.hooks';
 import { CreateFolder } from '@app/ui/actions-bar/CreateFolder';
+import type { ButtonHandle } from '@app/ui/components-library';
 import {
   Box,
   Button,
-  ButtonHandle,
   ContentCopyOutlinedIcon,
   ContentCutOutlinedIcon,
   ContentPasteOutlinedIcon,

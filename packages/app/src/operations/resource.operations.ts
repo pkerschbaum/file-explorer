@@ -1,23 +1,22 @@
-import { CancellationTokenSource } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/cancellation';
+import type { CancellationTokenSource } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/cancellation';
 import type { ReportProgressArgs } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
-import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import type { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import * as uuid from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uuid';
-import { IFileStatWithMetadata } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
+import type { IFileStatWithMetadata } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 
 import { CustomError } from '@app/base/custom-error';
 import { formatter } from '@app/base/utils/formatter.util';
 import { objects } from '@app/base/utils/objects.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
-import {
+import type {
   DeleteProcess,
-  DELETE_PROCESS_STATUS,
   ResourceStatMap,
   ResourcesToTags,
-  PROCESS_TYPE,
   Tag,
   ResourceStat,
-  RESOURCE_TYPE,
 } from '@app/domain/types';
+import { DELETE_PROCESS_STATUS, PROCESS_TYPE, RESOURCE_TYPE } from '@app/domain/types';
 import {
   getCachedResourcesOfDirectory,
   refreshResourcesOfDirectory,

@@ -1,7 +1,7 @@
 import { VSBuffer } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/buffer';
 import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
-import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import { IStat } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
+import type { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import type { IStat } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 import { FileService } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/fileService';
 import { InMemoryFileSystemProvider } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/inMemoryFilesystemProvider';
 import {
@@ -11,7 +11,7 @@ import {
 import dayjs from 'dayjs';
 
 import { assertIsUnreachable } from '@app/base/utils/assert.util';
-import { Writeable } from '@app/base/utils/types.util';
+import type { Writeable } from '@app/base/utils/types.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { RESOURCE_TYPE } from '@app/domain/types';
 import { convertUriComponentsToURIInstances } from '@app/platform/electron/file-system';

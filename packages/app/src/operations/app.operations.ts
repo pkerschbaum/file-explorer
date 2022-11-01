@@ -1,14 +1,15 @@
-import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import type { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 
 import { CustomError } from '@app/base/custom-error';
 import { check } from '@app/base/utils/assert.util';
 import { formatter } from '@app/base/utils/formatter.util';
 import { objects } from '@app/base/utils/objects.util';
-import { ResourceForUI } from '@app/domain/types';
+import type { ResourceForUI } from '@app/domain/types';
+import type { CwdSegment } from '@app/global-state/slices/explorers.slice';
 import {
   actions,
   computeCwdSegmentsFromUri,
-  CwdSegment,
   generateExplorerId,
 } from '@app/global-state/slices/explorers.slice';
 

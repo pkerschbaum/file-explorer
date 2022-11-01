@@ -1,5 +1,6 @@
 import * as resources from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
-import { URI, UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import type { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import * as uuid from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uuid';
 import { createAction, createReducer } from '@reduxjs/toolkit';
 
