@@ -30,6 +30,7 @@ export enum ELECTRON_PROCESS_TYPE {
   MAIN = 'MAIN',
   RENDERER = 'RENDERER',
   WORKER = 'WORKER',
+  UTILITY = 'UTILITY',
 }
 
 // https://www.electronjs.org/docs/latest/api/process#processtype-readonly
@@ -40,4 +41,6 @@ export const typeOfActiveElectronProcess: ELECTRON_PROCESS_TYPE =
     ? ELECTRON_PROCESS_TYPE.MAIN
     : safe_process.type === 'worker'
     ? ELECTRON_PROCESS_TYPE.WORKER
+    : safe_process.type === 'utility'
+    ? ELECTRON_PROCESS_TYPE.UTILITY
     : assertIsUnreachable(safe_process.type);

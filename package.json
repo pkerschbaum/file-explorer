@@ -13,9 +13,9 @@
     "w:compile:dry-run": "pnpm --recursive run pkg:compile:dry-run"
   },
   "devDependencies": {
-    "husky": "^8.0.1",
-    "lint-staged": "^13.0.3",
-    "prettier": "^2.7.1",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.1.0",
+    "prettier": "^2.8.1",
     "rimraf": "^3.0.2"
   },
   "pnpm": {

@@ -66,6 +66,7 @@ export function useTooltip<
     overlayProps: positionProps,
     arrowProps,
     placement,
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- no unbount this problem for PositionAria props
     updatePosition,
   } = useOverlayPosition({
     targetRef: anchorRef,

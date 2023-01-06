@@ -1,6 +1,6 @@
 {
   "editor.rulers": [100],
-  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.tsdk": "packages/app/node_modules/typescript/lib",
   "search.exclude": {
     "packages/app/src/static": true
   }
