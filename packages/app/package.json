@@ -20,7 +20,7 @@
     "pretest:pw": "playwright install",
     "test:pw": "playwright test --config=playwright/playwright.config.ts",
     "test:pw:update": "pnpm run test:pw --update-snapshots",
-    "test:pw-docker": "docker-compose -f ./playwright/docker-compose.yml build playwright-service && docker-compose -f ./playwright/docker-compose.yml run --rm playwright-service",
+    "test:pw-docker": "docker compose -f ./playwright/docker-compose.yml build playwright-service && docker compose -f ./playwright/docker-compose.yml run --rm playwright-service",
     "test:pw-docker:update": "pnpm run test:pw-docker --update-snapshots",
     "storybook": "cross-env STORYBOOK_RQDEVTOOLS_ENABLED=false start-storybook -c storybook -p 6006",
     "build-storybook": "cross-env STORYBOOK_RQDEVTOOLS_ENABLED=false build-storybook -c storybook",

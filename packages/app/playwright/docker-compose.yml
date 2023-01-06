@@ -3,13 +3,13 @@ version: '3.9'
 services:
   playwright-service:
     build:
-      context: ../
-      dockerfile: ./playwright/Dockerfile
+      context: ../../../
+      dockerfile: ./packages/app/playwright/Dockerfile
       # Playwright needs 1GB shared memory space (https://playwright.dev/docs/ci#docker)
       shm_size: '1gb'
     volumes:
-      - ../src:/app/src
-      - ../test-results:/app/test-results
+      - ../src:/file-explorer/packages/app/src
+      - ../test-results:/file-explorer/packages/app/test-results
     environment:
       - WEB_APP_ORIGIN=host.docker.internal:6006
     # allow access to the host (https://stackoverflow.com/a/43541732/1700319)

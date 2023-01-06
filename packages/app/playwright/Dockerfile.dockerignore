@@ -1,7 +1,7 @@
-.webpack
-node_modules
-out
-src
-storybook-static
-test-results
-TODO.md
+**/node_modules
+packages/app/.webpack
+packages/app/out
+packages/app/src
+packages/app/storybook-static
+packages/app/test-results
+packages/app/TODO.md
