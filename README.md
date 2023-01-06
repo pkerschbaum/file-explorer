@@ -4,7 +4,7 @@
 
 - [Development](#development)
   - [Prerequisites](#prerequisites)
-  - [Build & Run](#build--run)
+  - [Build \& Run](#build--run)
   - [Additional commands for development](#additional-commands-for-development)
 
 ## Development
@@ -15,7 +15,7 @@
   - You can skip the installation of `yarn`, it is not needed for this repository.
   - For the NodeJS version to use, please refer to the file [.nvmrc](./.nvmrc) of this project. This is the version of NodeJS the project should be developed with.  
     It is recommended to use [nvm](https://github.com/nvm-sh/nvm) and run `nvm use`, this will automatically switch to the NodeJS version mentioned in `.nvmrc`.
-- This monorepo uses [`pnpm`](https://pnpm.io/) as package manager.  
+- This monorepo ("workspace") uses [`pnpm`](https://pnpm.io/) as package manager.  
   For installation instructions see [pnpm.io/installation](https://pnpm.io/installation); it should boil down to this command:
 
   ```sh
@@ -33,7 +33,7 @@
 1. **Run an initial build:**
 
    ```sh
-   pnpm run mr:build
+   pnpm run w:build
    ```
 
 1. **Start the app:**
@@ -45,4 +45,4 @@
 
 ### Additional commands for development
 
-See `scripts` of [`./package.json`](./package.json) for available monorepo scripts.
+See `scripts` of [`./package.json`](./package.json) for available scripts in the workspace.

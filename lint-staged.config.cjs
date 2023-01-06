@@ -56,7 +56,7 @@ module.exports = {
    */
   "**/*.{js,jsx,mjs,cjs,ts,tsx,mts,cts}": (files) => {
     return [
-      `pnpm run mr:compile:dry-run`,
+      `pnpm run w:compile:dry-run`,
       ...computeEslintShellCommandsPerPackage(files),
       `prettier --write --ignore-unknown ${files
         .map((file) => `"${file}"`)
