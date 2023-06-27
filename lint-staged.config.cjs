@@ -41,7 +41,7 @@ function computeEslintShellCommandsPerPackage(files) {
       continue;
     }
     eslintCommandsToExecute.push(
-      `pnpm --filter "${nameOfPackage}" run pkg:lint:file ${filesList
+      `pnpm --filter "${nameOfPackage}" run lint:file ${filesList
         .map((file) => `"${file}"`)
         .join(" ")}`
     );
@@ -56,7 +56,7 @@ module.exports = {
    */
   "**/*.{js,jsx,mjs,cjs,ts,tsx,mts,cts}": (files) => {
     return [
-      `pnpm run w:compile:dry-run`,
+      `pnpm run compile:dry-run`,
       ...computeEslintShellCommandsPerPackage(files),
       `prettier --write --ignore-unknown ${files
         .map((file) => `"${file}"`)

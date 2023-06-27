@@ -3,14 +3,14 @@
   "private": true,
   "scripts": {
     "prepare": "husky install",
-    "w:nuke": "pnpm run --parallel pkg:nuke && pnpm run w:nuke:node-modules",
-    "w:nuke:artifacts": "pnpm run --parallel pkg:nuke:artifacts",
-    "w:nuke:node-modules": "pnpm --parallel exec rimraf node_modules && rimraf node_modules",
-    "w:lint": "pnpm run --parallel pkg:lint",
-    "w:lint:fix": "pnpm run --parallel pkg:lint:fix",
-    "w:format": "prettier --write --ignore-unknown .",
-    "w:build": "pnpm --recursive run pkg:build",
-    "w:compile:dry-run": "pnpm --recursive run pkg:compile:dry-run"
+    "nuke": "pnpm run --parallel nuke && pnpm run nuke:node-modules",
+    "nuke:artifacts": "pnpm run --parallel nuke:artifacts",
+    "nuke:node-modules": "pnpm --parallel exec rimraf node_modules && rimraf node_modules",
+    "lint": "pnpm run --parallel lint",
+    "lint:fix": "pnpm run --parallel lint:fix",
+    "format": "prettier --write --ignore-unknown .",
+    "build": "pnpm --recursive run build",
+    "compile:dry-run": "pnpm --recursive run compile:dry-run"
   },
   "devDependencies": {
     "husky": "^8.0.3",

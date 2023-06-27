@@ -33,7 +33,7 @@
 1. **Run an initial build:**
 
    ```sh
-   pnpm run w:build
+   pnpm run build
    ```
 
 1. **Start the app:**
