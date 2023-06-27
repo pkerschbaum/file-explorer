@@ -1,5 +1,5 @@
 {
-  "name": "pkerschbaum-homepage",
+  "name": "file-explorer",
   "private": true,
   "scripts": {
     "prepare": "husky install",
@@ -23,8 +23,8 @@
       "@mui/styled-engine": "npm:@mui/styled-engine-sc@^5.10.6"
     }
   },
-  "packageManager": "pnpm@7.11.0",
   "engines": {
-    "pnpm": "^7.11.0"
-  }
+    "pnpm": "^8.1.1"
+  },
+  "packageManager": "pnpm@8.1.1"
 }
