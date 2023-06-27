@@ -6,8 +6,8 @@
   "main": ".webpack/main",
   "scripts": {
     "prepare": "node ./scripts/modify-tsserver-to-defer-type-truncation.js",
-    "nuke": "pnpm run nuke:artifacts && rimraf node_modules",
-    "nuke:artifacts": "rimraf .webpack out storybook-static test-results",
+    "nuke": "pnpm run nuke:artifacts && del-cli \"node_modules\"",
+    "nuke:artifacts": "del-cli \".webpack\" \"out\" \"storybook-static\" \"test-results\"",
     "start": "cross-env NODE_ENV=development cross-env ELECTRONAPP_RQDEVTOOLS_ENABLED=false electron-forge start",
     "start:prod": "./out/file-explorer-linux-x64/file-explorer",
     "compile:dry-run": "tsc --noEmit",

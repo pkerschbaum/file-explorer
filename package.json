@@ -5,7 +5,7 @@
     "prepare": "husky install",
     "nuke": "pnpm run --parallel nuke && pnpm run nuke:node-modules",
     "nuke:artifacts": "pnpm run --parallel nuke:artifacts",
-    "nuke:node-modules": "pnpm --parallel exec rimraf node_modules && rimraf node_modules",
+    "nuke:node-modules": "del-cli \"**/node_modules\"",
     "lint": "pnpm run --parallel lint",
     "lint:fix": "pnpm run --parallel lint:fix",
     "format": "prettier --write --ignore-unknown .",
@@ -13,10 +13,10 @@
     "compile:dry-run": "pnpm --recursive run compile:dry-run"
   },
   "devDependencies": {
+    "del-cli": "^5.0.0",
     "husky": "^8.0.3",
     "lint-staged": "^13.1.0",
-    "prettier": "^2.8.1",
-    "rimraf": "^3.0.2"
+    "prettier": "^2.8.1"
   },
   "pnpm": {
     "overrides": {
