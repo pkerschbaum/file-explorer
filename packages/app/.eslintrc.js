@@ -33,6 +33,7 @@ module.exports = {
     curly: 'error',
     'eslint-comments/disable-enable-pair': ['error', { allowWholeFile: true }],
     'import/first': 'error',
+    'import/namespace': 'off',
     'import/newline-after-import': 'error',
     'import/no-absolute-path': 'error',
     'import/no-cycle': 'error',
@@ -234,8 +235,12 @@ module.exports = {
             allowedPatterns: ['file-type', 'fs', 'sharp'],
           },
           {
-            target: /\/src\/platform\/.+/,
+            target: /\/src\/platform\/electron\/.+/,
             allowedPatterns: ['electron', 'electron-store'],
+          },
+          {
+            target: /\/src\/platform\/native-host.types.ts$/,
+            allowedPatterns: ['electron'],
           },
           {
             target: /\/src\/index\.ts$/,
