@@ -1,7 +1,7 @@
-import type { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import { FileKind } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 import * as React from 'react';
 
+import { FileKind } from '@app/base/files';
+import type { UriComponents } from '@app/base/uri';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { config } from '@app/config';
 import type { ResourceStat, ResourceForUI } from '@app/domain/types';

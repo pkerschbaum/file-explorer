@@ -1,9 +1,7 @@
-import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
-import * as resources from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
-import type { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-
 import { CustomError } from '@app/base/custom-error';
+import { network } from '@app/base/network';
+import { resources } from '@app/base/resources';
+import { URI, UriComponents } from '@app/base/uri';
 import { arrays } from '@app/base/utils/arrays.util';
 import { check } from '@app/base/utils/assert.util';
 
@@ -16,22 +14,22 @@ export const uriHelper = {
   getDistinctParents,
 };
 
-function parseUri(scheme: string, path: string): URI {
+function parseUri(scheme: string, path: string): UriComponents {
   if (path === '') {
     throw new Error(`empty uri is not allowed`);
   }
 
   // use Uri.file to handle specifics of fs paths, see
   // https://github.com/Microsoft/vscode-uri/blob/42f608bc8c934d066127b849081a5eeb7614bb30/src/index.ts#L682-L700
-  return scheme === Schemas.file ? URI.file(path) : URI.parse(`${scheme}://${path}`);
+  return scheme === network.Schemas.file ? URI.file(path) : URI.parse(`${scheme}://${path}`);
 }
 
 function extractBasename(uri: UriComponents): string {
-  return resources.basename(URI.from(uri));
+  return resources.basename(uri);
 }
 
 function extractExtension(uri: UriComponents): string | undefined {
-  let extension: string | undefined = resources.extname(URI.from(uri));
+  let extension: string | undefined = resources.extname(uri);
 
   if (check.isEmptyString(extension)) {
     extension = undefined;
@@ -41,12 +39,12 @@ function extractExtension(uri: UriComponents): string | undefined {
 }
 
 function getComparisonKey(uri: UriComponents): string {
-  return resources.extUri.getComparisonKey(URI.from(uri));
+  return resources.extUri.getComparisonKey(uri);
 }
 
 function splitUriIntoSegments(uri: UriComponents): UriComponents[] {
   // compute segments of URI
-  let uriSegments: URI[] = [URI.from(uri)];
+  let uriSegments: UriComponents[] = [uri];
   let currentUriSegment = uriSegments[0];
   let currentIteration = 1;
   // eslint-disable-next-line no-constant-condition
@@ -70,12 +68,12 @@ function splitUriIntoSegments(uri: UriComponents): UriComponents[] {
   }
   uriSegments = uriSegments.reverse();
 
-  return uriSegments.map((uri) => uri.toJSON());
+  return uriSegments;
 }
 
 function getDistinctParents(resources: UriComponents[]): UriComponents[] {
   return arrays.uniqueValues(
-    resources.map((resource) => URI.joinPath(URI.from(resource), '..')),
+    resources.map((resource) => URI.joinPath(resource, '..')),
     (resource) => uriHelper.getComparisonKey(resource),
   );
 }

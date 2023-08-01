@@ -1,8 +1,6 @@
-import * as platform from '@pkerschbaum/code-oss-file-service/out/vs/base/common/platform';
-import * as resources from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
-import type { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-
+import { platform } from '@app/base/platform';
+import { resources } from '@app/base/resources';
+import { URI, UriComponents } from '@app/base/uri';
 import { check } from '@app/base/utils/assert.util';
 import type { ByteUnit } from '@app/base/utils/byte-size.util';
 import { byteSize } from '@app/base/utils/byte-size.util';
@@ -53,11 +51,11 @@ function resourceExtension(resource: Pick<ResourceForUI, 'extension' | 'resource
 }
 
 function resourcePath(resource: UriComponents): string {
-  return URI.from(resource).fsPath;
+  return URI.fsPath(resource);
 }
 
 function uriSegments(segments: UriComponents[]): string[] {
-  const formattedSegments = segments.map((uriSegment) => resources.basename(URI.from(uriSegment)));
+  const formattedSegments = segments.map((uriSegment) => resources.basename(uriSegment));
 
   // if the first segment is empty, it is the root directory of a unix system.
   if (check.isEmptyString(formattedSegments[0])) {

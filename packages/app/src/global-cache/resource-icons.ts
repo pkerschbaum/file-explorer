@@ -1,11 +1,10 @@
-import type { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import type { FileKind } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 import * as React from 'react';
 import { useQuery } from 'react-query';
 
+import { loadIconClasses } from '@app/base/file-icon-theme';
+import type { FileKind } from '@app/base/files';
+import type { UriComponents } from '@app/base/uri';
 import { QUERY_KEYS } from '@app/global-cache/query-keys';
-import { loadIconClasses } from '@app/operations/file-icon-theme.operations';
 
 export declare namespace IconClassesQuery {
   export type Args = { uri?: UriComponents; resourceKind: FileKind };
@@ -17,7 +16,7 @@ export function useResourceIconClasses({
   resourceKind,
 }: IconClassesQuery.Args): IconClassesQuery.Result {
   const resource = {
-    uri: uri === undefined ? undefined : URI.from(uri).toJSON(),
+    uri,
     resourceKind,
   };
 
@@ -37,8 +36,5 @@ export function useResourceIconClasses({
 }
 
 function fetchIconClasses(resource: IconClassesQuery.Args) {
-  return loadIconClasses(
-    resource.uri === undefined ? undefined : URI.from(resource.uri),
-    resource.resourceKind,
-  );
+  return loadIconClasses(resource.uri, resource.resourceKind);
 }

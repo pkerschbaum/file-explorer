@@ -1,7 +1,7 @@
-import type { Event } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/event';
 import * as React from 'react';
 import * as useContextSelectorLib from 'use-context-selector';
 
+import type { Event } from '@app/base/event';
 import { functions } from '@app/base/utils/functions.util';
 import type { FunctionType } from '@app/base/utils/types.util';
 

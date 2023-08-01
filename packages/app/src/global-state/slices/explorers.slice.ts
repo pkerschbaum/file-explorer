@@ -1,11 +1,10 @@
-import * as resources from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
-import type { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import * as uuid from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uuid';
 import { createAction, createReducer } from '@reduxjs/toolkit';
 
+import { resources } from '@app/base/resources';
+import type { UriComponents } from '@app/base/uri';
 import { check } from '@app/base/utils/assert.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
+import { uuid } from '@app/base/uuid';
 
 export type ExplorerSliceState = {
   explorerPanels: ExplorersMap;
@@ -222,10 +221,7 @@ export const reducer = createReducer(INITIAL_STATE, (builder) =>
             currentCwdSegments.length > idx &&
             !currentCwdSegments[idx].markedForRemoval &&
             newCwdSegments.length > idx &&
-            resources.isEqual(
-              URI.from(currentCwdSegments[idx].uri),
-              URI.from(newCwdSegments[idx].uri),
-            )
+            resources.isEqual(currentCwdSegments[idx].uri, newCwdSegments[idx].uri)
           ) {
             newCwdSegments[idx] = currentCwdSegments[idx];
           }

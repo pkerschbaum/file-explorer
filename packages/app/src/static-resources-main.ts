@@ -1,5 +1,4 @@
-import * as path from '@pkerschbaum/code-oss-file-service/out/vs/base/common/path';
-
+import { path } from '@app/base/path';
 import { ELECTRON_PROCESS_TYPE, typeOfActiveElectronProcess } from '@app/base/utils/electron.util';
 
 if (typeOfActiveElectronProcess !== ELECTRON_PROCESS_TYPE.MAIN) {

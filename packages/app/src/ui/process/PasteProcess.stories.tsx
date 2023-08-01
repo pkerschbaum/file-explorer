@@ -1,6 +1,6 @@
-import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
 import type { ComponentMeta, ComponentStory } from '@storybook/react';
 
+import { network } from '@app/base/network';
 import { numbers } from '@app/base/utils/numbers.util';
 import type { NarrowUnion } from '@app/base/utils/types.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
@@ -108,7 +108,7 @@ const process_manyResources: NarrowUnion<
       .sequence({ fromInclusive: 1, toInclusive: 100 })
       .map((number) =>
         uriHelper.parseUri(
-          Schemas.file,
+          network.Schemas.file,
           `/home/testdir/testfile-${number.toString().padStart(5, '0')}.txt`,
         ),
       ),

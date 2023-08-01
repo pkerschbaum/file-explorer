@@ -1,7 +1,7 @@
-import { isWindows } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/platform';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 
+import { platform } from '@app/base/platform';
 import { useExplorerPanels } from '@app/global-state/slices/explorers.hooks';
 import { Box } from '@app/ui/components-library';
 import { ExplorerPanel, EXPLORER_PANEL_GRID_AREA } from '@app/ui/explorer-panel/ExplorerPanel';
@@ -13,7 +13,7 @@ import { UserPreferencesButton } from '@app/ui/user-preferences';
 
 export const TABS_AND_PROCESSES_GRID_AREA = 'shell-tabs-and-processes';
 
-const useCustomTitleBar = isWindows;
+const useCustomTitleBar = platform.isWindows;
 
 export const Shell = React.memo(function Shell() {
   const explorerPanels = useExplorerPanels();

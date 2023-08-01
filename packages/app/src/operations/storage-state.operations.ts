@@ -1,4 +1,3 @@
-import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import type { CombinedState, PreloadedState } from '@reduxjs/toolkit';
 import type { NoInfer } from '@reduxjs/toolkit/dist/tsHelpers';
 
@@ -24,12 +23,9 @@ export async function reviveGlobalStateFromStorageState(
       storageState.activeExplorerPanels.map(async (panel) => {
         try {
           // make sure the CWD is still present and reachable
-          await globalThis.modules.fileSystem.resolve(
-            URI.from(extractCwdFromExplorerPanel(panel)),
-            {
-              resolveMetadata: false,
-            },
-          );
+          await globalThis.modules.fileSystem.resolve(extractCwdFromExplorerPanel(panel), {
+            resolveMetadata: false,
+          });
           explorers[panel.id] = { cwdSegments: panel.cwdSegments, version: 1 };
         } catch (error) {
           logger.error(`could not revive a explorer panel`, error, { panel });

@@ -1,9 +1,8 @@
-import type { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import type { IFileStat } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 import { useQuery } from 'react-query';
 
 import { CustomError } from '@app/base/custom-error';
+import type { IFileStat } from '@app/base/files';
+import type { UriComponents } from '@app/base/uri';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import type { ResourceStat } from '@app/domain/types';
 import { RESOURCE_TYPE } from '@app/domain/types';
@@ -24,7 +23,7 @@ export function useResources(
       resolveMetadata,
     }),
     async () => {
-      const statsWithMetadata = await globalThis.modules.fileSystem.resolve(URI.from(directory), {
+      const statsWithMetadata = await globalThis.modules.fileSystem.resolve(directory, {
         resolveMetadata,
       });
 
@@ -95,7 +94,7 @@ export function mapFileStatToResource(resource: IFileStat): ResourceStat {
 
   return {
     key: uriHelper.getComparisonKey(resource.resource),
-    uri: resource.resource.toJSON(),
+    uri: resource.resource,
     resourceType,
     size: resource.size,
     mtime: resource.mtime,

@@ -1,19 +1,15 @@
-import { getIconClasses, loadFileIconThemeCssRules } from '@pkerschbaum/code-oss-file-icon-theme';
 import { ModesRegistry } from '@pkerschbaum/code-oss-file-icon-theme/out/vs/editor/common/modes/modesRegistry';
 import type { ILanguageExtensionPoint } from '@pkerschbaum/code-oss-file-icon-theme/out/vs/editor/common/services/modeService';
-import * as path from '@pkerschbaum/code-oss-file-service/out/vs/base/common/path';
-import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import type {
-  FileKind,
-  IFileContent,
-  IFileService,
-} from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 import axios from 'axios';
 
+import type { IFileContent, IFileService } from '@app/base/files';
+import { path } from '@app/base/path';
+import { URI } from '@app/base/uri';
 import { check } from '@app/base/utils/assert.util';
 import { formatter } from '@app/base/utils/formatter.util';
 import { json } from '@app/base/utils/json.util';
 import type { FileIconTheme } from '@app/domain/constants';
+import { loadFileIconThemeCssRules } from '@app/platform/browser/file-icon-theme';
 
 export type LanguageExtensionPointJsonEntry = {
   packageName: string;
@@ -83,11 +79,4 @@ export async function loadCssRules({
   const cssRules = cssRulesPostProcessing(iconThemeCssRules);
 
   return cssRules;
-}
-
-export function loadIconClasses(
-  resource: URI | undefined,
-  fileKind: FileKind,
-): string[] | Promise<string[]> {
-  return getIconClasses(resource, fileKind);
 }

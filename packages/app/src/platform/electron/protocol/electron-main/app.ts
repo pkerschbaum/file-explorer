@@ -1,4 +1,3 @@
-import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import type electron from 'electron';
 import { app, protocol } from 'electron';
 import FileType from 'file-type';
@@ -7,6 +6,7 @@ import mime from 'mime';
 import sharp from 'sharp';
 import invariant from 'tiny-invariant';
 
+import { URI } from '@app/base/uri';
 import { check } from '@app/base/utils/assert.util';
 import { numbers } from '@app/base/utils/numbers.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
@@ -55,7 +55,7 @@ async function getThumbnail(request: electron.ProtocolRequest): Promise<Protocol
   const parsedHeight = numbers.convert(requestedHeight);
   invariant(parsedHeight !== undefined);
 
-  const mimeTypeBasedOnContent = (await FileType.fromFile(uri.fsPath))?.mime;
+  const mimeTypeBasedOnContent = (await FileType.fromFile(URI.fsPath(uri)))?.mime;
   const extension = uriHelper.extractExtension(uri);
   const mimeTypeBasedOnExtension = check.isNullishOrEmptyString(extension)
     ? undefined
@@ -64,9 +64,9 @@ async function getThumbnail(request: electron.ProtocolRequest): Promise<Protocol
 
   let thumbnailStream;
   if (finalMimeType === undefined || THUMBNAIL_RESIZE_BLOCKLIST.includes(finalMimeType)) {
-    thumbnailStream = fs.createReadStream(uri.fsPath);
+    thumbnailStream = fs.createReadStream(URI.fsPath(uri));
   } else {
-    thumbnailStream = fs.createReadStream(uri.fsPath).pipe(
+    thumbnailStream = fs.createReadStream(URI.fsPath(uri)).pipe(
       sharp({
         // set animated to `true` to keep animated GIFs and WebPs
         animated: true,
@@ -90,7 +90,7 @@ async function getNativeFileIcon(
   // property "pathname" has a leading slash --> remove that (https://developer.mozilla.org/en-US/docs/Web/API/URL/pathname)
   const path = parsed.pathname.substring(1);
   const uri = URI.parse(decodeURIComponent(path));
-  const icon = await app.getFileIcon(uri.fsPath, { size: 'large' });
+  const icon = await app.getFileIcon(URI.fsPath(uri), { size: 'large' });
 
   return {
     data: icon.toPNG(),

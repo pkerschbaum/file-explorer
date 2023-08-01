@@ -1,7 +1,7 @@
-import type { IDisposable } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/lifecycle';
-import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
 import type { Query } from 'react-query';
 
+import type { IDisposable } from '@app/base/lifecycle';
+import { network } from '@app/base/network';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { RESOURCES_OF_DIRECTORY_KEY_PREFIX } from '@app/global-cache/query-keys';
 import type { QueryCacheNotifyEvent } from '@app/operations/global-cache-subscriptions';
@@ -68,7 +68,7 @@ describe('refresh-resources-of-directory', () => {
         RESOURCES_OF_DIRECTORY_KEY_PREFIX,
         {
           directoryId: uriHelper.getComparisonKey(
-            uriHelper.parseUri(Schemas.file, `/home/testdir`),
+            uriHelper.parseUri(network.Schemas.file, `/home/testdir`),
           ),
         },
       ],
@@ -89,7 +89,7 @@ describe('refresh-resources-of-directory', () => {
           RESOURCES_OF_DIRECTORY_KEY_PREFIX,
           {
             directoryId: uriHelper.getComparisonKey(
-              uriHelper.parseUri(Schemas.file, `/home/testdir2`),
+              uriHelper.parseUri(network.Schemas.file, `/home/testdir2`),
             ),
           },
         ],
@@ -137,7 +137,7 @@ describe('refresh-resources-of-directory', () => {
         RESOURCES_OF_DIRECTORY_KEY_PREFIX,
         {
           directoryId: uriHelper.getComparisonKey(
-            uriHelper.parseUri(Schemas.file, `/home/testdir`),
+            uriHelper.parseUri(network.Schemas.file, `/home/testdir`),
           ),
         },
       ],
@@ -156,7 +156,7 @@ describe('refresh-resources-of-directory', () => {
         RESOURCES_OF_DIRECTORY_KEY_PREFIX,
         {
           directoryId: uriHelper.getComparisonKey(
-            uriHelper.parseUri(Schemas.file, `/home/testdir`),
+            uriHelper.parseUri(network.Schemas.file, `/home/testdir`),
           ),
         },
       ],
@@ -194,7 +194,7 @@ describe('refresh-resources-of-directory', () => {
           RESOURCES_OF_DIRECTORY_KEY_PREFIX,
           {
             directoryId: uriHelper.getComparisonKey(
-              uriHelper.parseUri(Schemas.file, `/home/testdir`),
+              uriHelper.parseUri(network.Schemas.file, `/home/testdir`),
             ),
           },
         ],
@@ -218,7 +218,7 @@ describe('refresh-resources-of-directory', () => {
           RESOURCES_OF_DIRECTORY_KEY_PREFIX,
           {
             directoryId: uriHelper.getComparisonKey(
-              uriHelper.parseUri(Schemas.file, `/home/testdir`),
+              uriHelper.parseUri(network.Schemas.file, `/home/testdir`),
             ),
           },
         ],

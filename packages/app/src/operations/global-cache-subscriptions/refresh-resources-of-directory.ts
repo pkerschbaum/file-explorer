@@ -1,8 +1,7 @@
-import type { IDisposable } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/lifecycle';
-import { DisposableStore } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/lifecycle';
-import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import type { Query } from 'react-query';
 
+import { DisposableStore, IDisposable } from '@app/base/lifecycle';
+import { URI } from '@app/base/uri';
 import { functions } from '@app/base/utils/functions.util';
 import { json } from '@app/base/utils/json.util';
 import { uriHelper } from '@app/base/utils/uri-helper';

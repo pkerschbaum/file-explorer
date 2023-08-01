@@ -1,8 +1,8 @@
-import * as path from '@pkerschbaum/code-oss-file-service/out/vs/base/common/path';
-import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import * as React from 'react';
 import styled from 'styled-components';
 
+import { path } from '@app/base/path';
+import { URI } from '@app/base/uri';
 import { check } from '@app/base/utils/assert.util';
 import { Box, Button, commonComponentStyles, TextField } from '@app/ui/components-library';
 import { useResourcesOfDirectory } from '@app/ui/hooks/resources.hooks';
