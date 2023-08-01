@@ -1,14 +1,14 @@
 import type { Query } from 'react-query';
 
-import type { IDisposable } from '@app/base/lifecycle';
-import { network } from '@app/base/network';
-import { uriHelper } from '@app/base/utils/uri-helper';
-import { RESOURCES_OF_DIRECTORY_KEY_PREFIX } from '@app/global-cache/query-keys';
-import type { QueryCacheNotifyEvent } from '@app/operations/global-cache-subscriptions';
-import { createRefreshResourcesOfDirectorySubscription } from '@app/operations/global-cache-subscriptions/refresh-resources-of-directory';
-import type { PlatformFileSystem } from '@app/platform/file-system.types';
+import type { IDisposable } from '#pkg/base/lifecycle';
+import { network } from '#pkg/base/network';
+import { uriHelper } from '#pkg/base/utils/uri-helper';
+import { RESOURCES_OF_DIRECTORY_KEY_PREFIX } from '#pkg/global-cache/query-keys';
+import type { QueryCacheNotifyEvent } from '#pkg/operations/global-cache-subscriptions';
+import { createRefreshResourcesOfDirectorySubscription } from '#pkg/operations/global-cache-subscriptions/refresh-resources-of-directory';
+import type { PlatformFileSystem } from '#pkg/platform/file-system.types';
 
-import { initializeFakePlatformModules } from '@app-test/utils/fake-platform-modules';
+import { initializeFakePlatformModules } from '#pkg-test/utils/fake-platform-modules';
 
 class DummyDisposable implements IDisposable {
   public isDisposed = false;

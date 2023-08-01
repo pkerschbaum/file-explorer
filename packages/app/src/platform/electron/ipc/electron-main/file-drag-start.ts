@@ -2,9 +2,9 @@ import type { IpcMainEvent, Item } from 'electron';
 import { ipcMain } from 'electron';
 import invariant from 'tiny-invariant';
 
-import type { IpcFileDragStart } from '@app/platform/electron/ipc/common/file-drag-start';
-import { FILEDRAGSTART_CHANNEL } from '@app/platform/electron/ipc/common/file-drag-start';
-import { OUTLINE_INSERT_DRIVE_FILE_ICON_PATH } from '@app/static-resources-main';
+import type { IpcFileDragStart } from '#pkg/platform/electron/ipc/common/file-drag-start';
+import { FILEDRAGSTART_CHANNEL } from '#pkg/platform/electron/ipc/common/file-drag-start';
+import { OUTLINE_INSERT_DRIVE_FILE_ICON_PATH } from '#pkg/static-resources-main';
 
 export function registerListeners(): void {
   ipcMain.on(FILEDRAGSTART_CHANNEL, fileDragStartHandler);

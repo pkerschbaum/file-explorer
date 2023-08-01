@@ -3,25 +3,25 @@ import { AnimatePresence } from 'framer-motion';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 
-import { uriHelper } from '@app/base/utils/uri-helper';
+import { uriHelper } from '#pkg/base/utils/uri-helper';
 import {
   useCwdSegments,
   useIdOfFocusedExplorerPanel,
   useVersionOfExplorer,
-} from '@app/global-state/slices/explorers.hooks';
-import { ActionsBar } from '@app/ui/actions-bar';
-import { Box, componentLibraryUtils } from '@app/ui/components-library';
-import { CwdBreadcrumbs } from '@app/ui/cwd-breadcrumbs';
-import { CwdSegmentContextProvider, useActiveResourcesView } from '@app/ui/cwd-segment-context';
-import { ExplorerContextProvider } from '@app/ui/explorer-context';
-import { ResourcesGallery } from '@app/ui/resources-gallery';
-import { ResourcesTable } from '@app/ui/resources-table';
+} from '#pkg/global-state/slices/explorers.hooks';
+import { ActionsBar } from '#pkg/ui/actions-bar';
+import { Box, componentLibraryUtils } from '#pkg/ui/components-library';
+import { CwdBreadcrumbs } from '#pkg/ui/cwd-breadcrumbs';
+import { CwdSegmentContextProvider, useActiveResourcesView } from '#pkg/ui/cwd-segment-context';
+import { ExplorerContextProvider } from '#pkg/ui/explorer-context';
+import { ResourcesGallery } from '#pkg/ui/resources-gallery';
+import { ResourcesTable } from '#pkg/ui/resources-table';
 import {
   PREFERENCES_BUTTON_WIDTH,
   ROOTCONTAINER_PADDING_FACTOR,
   TITLEBAR_HEIGHT,
   WINDOW_CONTROLS_WIDTH,
-} from '@app/ui/shell/constants';
+} from '#pkg/ui/shell/constants';
 
 export const EXPLORER_PANEL_GRID_AREA = 'shell-explorer-panel';
 

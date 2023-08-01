@@ -1,9 +1,9 @@
 import { queries } from '@playwright-testing-library/test';
 import { expect, test } from '@playwright/test';
 
-import { uriHelper } from '@app/base/utils/uri-helper';
+import { uriHelper } from '#pkg/base/utils/uri-helper';
 
-import { bootstrap } from '@app-playwright/playwright.util';
+import { bootstrap } from '#pkg-playwright/playwright.util';
 
 test.describe('ActionsBar [logic]', () => {
   test('Click on button "Copy" should store selected resources in clipboard and "pasteShouldMove: false" in global-state', async ({

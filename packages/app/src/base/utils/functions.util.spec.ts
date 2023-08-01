@@ -1,4 +1,4 @@
-import { functions } from '@app/base/utils/functions.util';
+import { functions } from '#pkg/base/utils/functions.util';
 
 describe('functions.util', () => {
   describe('debounce', () => {

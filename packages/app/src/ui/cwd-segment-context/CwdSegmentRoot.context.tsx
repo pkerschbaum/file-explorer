@@ -1,19 +1,19 @@
-import type { UpdateFn } from '@app/domain/types';
-import * as globalStateHooks from '@app/global-state/slices/explorers.hooks';
+import type { UpdateFn } from '#pkg/domain/types';
+import * as globalStateHooks from '#pkg/global-state/slices/explorers.hooks';
 import type {
   REASON_FOR_SELECTION_CHANGE,
   RenameHistoryKeys,
   ResourcesView,
-} from '@app/global-state/slices/explorers.slice';
+} from '#pkg/global-state/slices/explorers.slice';
 import {
   setFilterInput,
   setKeysOfSelectedResources,
   setActiveResourcesView,
   setScrollTop,
   setReasonForLastSelectionChange,
-} from '@app/operations/explorer.operations';
-import { useExplorerId } from '@app/ui/explorer-context';
-import { createContext } from '@app/ui/utils/react.util';
+} from '#pkg/operations/explorer.operations';
+import { useExplorerId } from '#pkg/ui/explorer-context';
+import { createContext } from '#pkg/ui/utils/react.util';
 
 type CwdSegmentRootContext = { segmentIdx: number };
 

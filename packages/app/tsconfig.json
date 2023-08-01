@@ -10,10 +10,10 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "paths": {
-      "@app/*": ["./src/*"],
-      "@app-test/*": ["./test/*"],
-      "@app-storybook/*": ["./storybook/*"],
-      "@app-playwright/*": ["./playwright/*"]
+      "#pkg/*": ["./src/*"],
+      "#pkg-test/*": ["./test/*"],
+      "#pkg-storybook/*": ["./storybook/*"],
+      "#pkg-playwright/*": ["./playwright/*"]
     },
     "types": ["node", "jest"],
 

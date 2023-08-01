@@ -1,5 +1,5 @@
-import { arrays } from '@app/base/utils/arrays.util';
-import { objects } from '@app/base/utils/objects.util';
+import { arrays } from '#pkg/base/utils/arrays.util';
+import { objects } from '#pkg/base/utils/objects.util';
 
 describe('arrays.util', () => {
   it('flatten', () => {

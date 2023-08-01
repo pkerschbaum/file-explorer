@@ -4,8 +4,8 @@ import { mergeProps, useObjectRef } from '@react-aria/utils';
 import * as React from 'react';
 import styled from 'styled-components';
 
-import { Box } from '@app/ui/components-library/Box';
-import type { DataAttributes } from '@app/ui/components-library/utils';
+import { Box } from '#pkg/ui/components-library/Box';
+import type { DataAttributes } from '#pkg/ui/components-library/utils';
 
 type TextFieldProps = TextFieldAriaProps &
   TextFieldComponentProps &

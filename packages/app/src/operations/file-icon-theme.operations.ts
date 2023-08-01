@@ -2,14 +2,14 @@ import { ModesRegistry } from '@pkerschbaum/code-oss-file-icon-theme/out/vs/edit
 import type { ILanguageExtensionPoint } from '@pkerschbaum/code-oss-file-icon-theme/out/vs/editor/common/services/modeService';
 import axios from 'axios';
 
-import type { IFileContent, IFileService } from '@app/base/files';
-import { path } from '@app/base/path';
-import { URI } from '@app/base/uri';
-import { check } from '@app/base/utils/assert.util';
-import { formatter } from '@app/base/utils/formatter.util';
-import { json } from '@app/base/utils/json.util';
-import type { FileIconTheme } from '@app/domain/constants';
-import { loadFileIconThemeCssRules } from '@app/platform/browser/file-icon-theme';
+import type { IFileContent, IFileService } from '#pkg/base/files';
+import { path } from '#pkg/base/path';
+import { URI } from '#pkg/base/uri';
+import { check } from '#pkg/base/utils/assert.util';
+import { formatter } from '#pkg/base/utils/formatter.util';
+import { json } from '#pkg/base/utils/json.util';
+import type { FileIconTheme } from '#pkg/domain/constants';
+import { loadFileIconThemeCssRules } from '#pkg/platform/browser/file-icon-theme';
 
 export type LanguageExtensionPointJsonEntry = {
   packageName: string;

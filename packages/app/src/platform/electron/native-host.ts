@@ -1,18 +1,18 @@
 import mime from 'mime';
 import invariant from 'tiny-invariant';
 
-import { Emitter } from '@app/base/event';
-import { network } from '@app/base/network';
-import { URI } from '@app/base/uri';
-import { check } from '@app/base/utils/assert.util';
-import { numbers } from '@app/base/utils/numbers.util';
-import { uriHelper } from '@app/base/utils/uri-helper';
+import { Emitter } from '#pkg/base/event';
+import { network } from '#pkg/base/network';
+import { URI } from '#pkg/base/uri';
+import { check } from '#pkg/base/utils/assert.util';
+import { numbers } from '#pkg/base/utils/numbers.util';
+import { uriHelper } from '#pkg/base/utils/uri-helper';
 import {
   NATIVE_FILE_ICON_PROTOCOL_SCHEME,
   THUMBNAIL_PROTOCOL_SCHEME,
-} from '@app/platform/electron/protocol/common/app';
-import type { PlatformNativeHost } from '@app/platform/native-host.types';
-import { CLIPBOARD_CHANGED_DATA_TYPE } from '@app/platform/native-host.types';
+} from '#pkg/platform/electron/protocol/common/app';
+import type { PlatformNativeHost } from '#pkg/platform/native-host.types';
+import { CLIPBOARD_CHANGED_DATA_TYPE } from '#pkg/platform/native-host.types';
 
 const USE_NATIVE_ICON_FOR_REGEX = /exe|ico|dll|iso/i;
 const THUMBNAIL_AVAILABLE_FOR_MIME_TYPE = [

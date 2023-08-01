@@ -2,7 +2,7 @@ import * as React from 'react';
 import type { Options } from 'react-virtual';
 import { useVirtual as useReactVirtual } from 'react-virtual';
 
-import { useForceUpdate } from '@app/ui/utils/react.util';
+import { useForceUpdate } from '#pkg/ui/utils/react.util';
 
 export function useVirtual<T>(options: Options<T>) {
   /**

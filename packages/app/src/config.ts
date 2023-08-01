@@ -1,5 +1,5 @@
 /* eslint-disable node/no-process-env -- config.ts is the only place where reading from process.env is allowed */
-import { safe_window } from '@app/base/utils/electron.util';
+import { safe_window } from '#pkg/base/utils/electron.util';
 
 const processEnvToUse = safe_window?.privileged?.processEnv ?? process.env;
 

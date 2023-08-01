@@ -1,10 +1,10 @@
 import { createAction, createReducer } from '@reduxjs/toolkit';
 
-import { resources } from '@app/base/resources';
-import type { UriComponents } from '@app/base/uri';
-import { check } from '@app/base/utils/assert.util';
-import { uriHelper } from '@app/base/utils/uri-helper';
-import { uuid } from '@app/base/uuid';
+import { resources } from '#pkg/base/resources';
+import type { UriComponents } from '#pkg/base/uri';
+import { check } from '#pkg/base/utils/assert.util';
+import { uriHelper } from '#pkg/base/utils/uri-helper';
+import { uuid } from '#pkg/base/uuid';
 
 export type ExplorerSliceState = {
   explorerPanels: ExplorersMap;

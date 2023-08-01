@@ -1,19 +1,19 @@
 import type { ComponentMeta, ComponentStory } from '@storybook/react';
 
-import { network } from '@app/base/network';
-import { numbers } from '@app/base/utils/numbers.util';
-import type { NarrowUnion } from '@app/base/utils/types.util';
-import { uriHelper } from '@app/base/utils/uri-helper';
-import type { PasteProcess } from '@app/domain/types';
-import { PASTE_PROCESS_STATUS } from '@app/domain/types';
-import { createStoreInstance } from '@app/global-state/store';
-import { Box } from '@app/ui/components-library';
-import { createQueryClient, Globals } from '@app/ui/Globals';
-import { Process } from '@app/ui/process/Process';
+import { network } from '#pkg/base/network';
+import { numbers } from '#pkg/base/utils/numbers.util';
+import type { NarrowUnion } from '#pkg/base/utils/types.util';
+import { uriHelper } from '#pkg/base/utils/uri-helper';
+import type { PasteProcess } from '#pkg/domain/types';
+import { PASTE_PROCESS_STATUS } from '#pkg/domain/types';
+import { createStoreInstance } from '#pkg/global-state/store';
+import { Box } from '#pkg/ui/components-library';
+import { createQueryClient, Globals } from '#pkg/ui/Globals';
+import { Process } from '#pkg/ui/process/Process';
 
-import { fakePasteProcessBase } from '@app-test/utils/fake-data';
+import { fakePasteProcessBase } from '#pkg-test/utils/fake-data';
 
-import { initializeStorybookPlatformModules } from '@app-storybook/storybook-utils';
+import { initializeStorybookPlatformModules } from '#pkg-storybook/storybook-utils';
 
 export default {
   title: 'Processes / Paste',

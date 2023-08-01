@@ -1,7 +1,7 @@
 import useMediaMatch from '@rooks/use-media-match';
 import type { MotionProps } from 'framer-motion';
 
-import { config } from '@app/config';
+import { config } from '#pkg/config';
 
 export const componentLibraryUtils = {
   generateMotionLayoutId,

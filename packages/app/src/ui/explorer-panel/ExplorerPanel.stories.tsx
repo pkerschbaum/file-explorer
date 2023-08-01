@@ -1,13 +1,13 @@
 import type { ComponentMeta, ComponentStory } from '@storybook/react';
 import styled from 'styled-components';
 
-import type { RootStore } from '@app/global-state/store';
-import { createStoreInstance } from '@app/global-state/store';
-import { Box } from '@app/ui/components-library';
-import { ExplorerPanel, EXPLORER_PANEL_GRID_AREA } from '@app/ui/explorer-panel/ExplorerPanel';
-import { createQueryClient, Globals } from '@app/ui/Globals';
+import type { RootStore } from '#pkg/global-state/store';
+import { createStoreInstance } from '#pkg/global-state/store';
+import { Box } from '#pkg/ui/components-library';
+import { ExplorerPanel, EXPLORER_PANEL_GRID_AREA } from '#pkg/ui/explorer-panel/ExplorerPanel';
+import { createQueryClient, Globals } from '#pkg/ui/Globals';
 
-import { initializeStorybookPlatformModules } from '@app-storybook/storybook-utils';
+import { initializeStorybookPlatformModules } from '#pkg-storybook/storybook-utils';
 
 export default {
   title: 'ExplorerPanel',

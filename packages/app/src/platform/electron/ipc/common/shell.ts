@@ -1,4 +1,4 @@
-import { config } from '@app/config';
+import { config } from '#pkg/config';
 
 export declare namespace IpcShell {
   namespace OpenPath {

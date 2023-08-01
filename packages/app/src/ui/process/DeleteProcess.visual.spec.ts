@@ -1,7 +1,7 @@
 import { queries } from '@playwright-testing-library/test';
 import { expect, test } from '@playwright/test';
 
-import { bootstrap } from '@app-playwright/playwright.util';
+import { bootstrap } from '#pkg-playwright/playwright.util';
 
 test.describe('DeleteProcess [visual]', () => {
   test('Pending for User Input', async ({ page }) => {

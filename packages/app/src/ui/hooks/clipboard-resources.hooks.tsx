@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { CLIPBOARD_CHANGED_DATA_TYPE } from '@app/platform/native-host.types';
+import { CLIPBOARD_CHANGED_DATA_TYPE } from '#pkg/platform/native-host.types';
 
 export function useClipboardResources() {
   const [clipboardResources, setClipboardResources] = React.useState(() =>

@@ -3,11 +3,11 @@ import * as React from 'react';
 import styled from 'styled-components';
 import invariant from 'tiny-invariant';
 
-import { formatter } from '@app/base/utils/formatter.util';
-import { uriHelper } from '@app/base/utils/uri-helper';
-import { useCwdSegments } from '@app/global-state/slices/explorers.hooks';
-import { changeCwd } from '@app/operations/explorer.operations';
-import type { ButtonHandle } from '@app/ui/components-library';
+import { formatter } from '#pkg/base/utils/formatter.util';
+import { uriHelper } from '#pkg/base/utils/uri-helper';
+import { useCwdSegments } from '#pkg/global-state/slices/explorers.hooks';
+import { changeCwd } from '#pkg/operations/explorer.operations';
+import type { ButtonHandle } from '#pkg/ui/components-library';
 import {
   Box,
   Breadcrumbs,
@@ -16,14 +16,14 @@ import {
   useMenu,
   useBreadcrumbItem,
   KeyboardArrowDownOutlinedIcon,
-} from '@app/ui/components-library';
-import { PRINTED_KEY, MOUSE_BUTTONS } from '@app/ui/constants';
-import { CwdActionsMenu } from '@app/ui/cwd-breadcrumbs/CwdActionsMenu';
+} from '#pkg/ui/components-library';
+import { PRINTED_KEY, MOUSE_BUTTONS } from '#pkg/ui/constants';
+import { CwdActionsMenu } from '#pkg/ui/cwd-breadcrumbs/CwdActionsMenu';
 import {
   useExplorerId,
   useRegisterExplorerAuxclickHandler,
   useRegisterExplorerShortcuts,
-} from '@app/ui/explorer-context';
+} from '#pkg/ui/explorer-context';
 
 export const CwdBreadcrumbs: React.FC = () => {
   const explorerId = useExplorerId();

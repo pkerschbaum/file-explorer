@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 
-import type { ReactMotionProps } from '@app/ui/components-library/utils';
+import type { ReactMotionProps } from '#pkg/ui/components-library/utils';
 
 export type RowProps = RowComponentProps &
   Omit<ReactMotionProps<'tr', HTMLTableRowElement>, keyof RowComponentProps>;

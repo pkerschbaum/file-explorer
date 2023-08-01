@@ -1,13 +1,13 @@
-import { platform } from '@app/base/platform';
-import { resources } from '@app/base/resources';
-import { URI, UriComponents } from '@app/base/uri';
-import { check } from '@app/base/utils/assert.util';
-import type { ByteUnit } from '@app/base/utils/byte-size.util';
-import { byteSize } from '@app/base/utils/byte-size.util';
-import { numbers } from '@app/base/utils/numbers.util';
-import { i18n } from '@app/domain/i18n';
-import type { ResourceForUI } from '@app/domain/types';
-import { RESOURCE_TYPE } from '@app/domain/types';
+import { platform } from '#pkg/base/platform';
+import { resources } from '#pkg/base/resources';
+import { URI, UriComponents } from '#pkg/base/uri';
+import { check } from '#pkg/base/utils/assert.util';
+import type { ByteUnit } from '#pkg/base/utils/byte-size.util';
+import { byteSize } from '#pkg/base/utils/byte-size.util';
+import { numbers } from '#pkg/base/utils/numbers.util';
+import { i18n } from '#pkg/domain/i18n';
+import type { ResourceForUI } from '#pkg/domain/types';
+import { RESOURCE_TYPE } from '#pkg/domain/types';
 
 export const formatter = { bytes, date, resourceExtension, resourcePath, uriSegments };
 

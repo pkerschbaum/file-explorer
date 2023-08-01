@@ -1,10 +1,10 @@
 const path = require('path');
 
 const moduleAliases = {
-  '@app': path.resolve(__dirname, './src'),
-  '@app-test': path.resolve(__dirname, './test'),
-  '@app-storybook': path.resolve(__dirname, './storybook'),
-  '@app-playwright': path.resolve(__dirname, './playwright'),
+  '#pkg': path.resolve(__dirname, './src'),
+  '#pkg-test': path.resolve(__dirname, './test'),
+  '#pkg-storybook': path.resolve(__dirname, './storybook'),
+  '#pkg-playwright': path.resolve(__dirname, './playwright'),
 };
 
 module.exports = moduleAliases;

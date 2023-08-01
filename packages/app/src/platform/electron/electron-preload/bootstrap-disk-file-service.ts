@@ -4,8 +4,8 @@ import {
   LogService,
 } from '@pkerschbaum/code-oss-file-service/out/vs/platform/log/common/log';
 
-import { FileService } from '@app/base/fileService';
-import { network } from '@app/base/network';
+import { FileService } from '#pkg/base/fileService';
+import { network } from '#pkg/base/network';
 
 export function bootstrapDiskFileService() {
   const logger = new ConsoleMainLogger();

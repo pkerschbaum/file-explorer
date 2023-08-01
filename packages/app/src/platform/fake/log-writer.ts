@@ -1,5 +1,5 @@
-import { functions } from '@app/base/utils/functions.util';
-import type { PlatformLogWriter } from '@app/platform/log-writer.types';
+import { functions } from '#pkg/base/utils/functions.util';
+import type { PlatformLogWriter } from '#pkg/platform/log-writer.types';
 
 export const createNoopLogWriter = () => {
   const instance: PlatformLogWriter = {

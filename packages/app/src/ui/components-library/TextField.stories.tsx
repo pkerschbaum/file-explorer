@@ -1,12 +1,12 @@
 import type { ComponentMeta, ComponentStory } from '@storybook/react';
 import { within, userEvent } from '@storybook/testing-library';
 
-import { createStoreInstance } from '@app/global-state/store';
-import { Box } from '@app/ui/components-library/Box';
-import { TextField } from '@app/ui/components-library/TextField';
-import { createQueryClient, Globals } from '@app/ui/Globals';
+import { createStoreInstance } from '#pkg/global-state/store';
+import { Box } from '#pkg/ui/components-library/Box';
+import { TextField } from '#pkg/ui/components-library/TextField';
+import { createQueryClient, Globals } from '#pkg/ui/Globals';
 
-import { initializeStorybookPlatformModules } from '@app-storybook/storybook-utils';
+import { initializeStorybookPlatformModules } from '#pkg-storybook/storybook-utils';
 
 export default {
   title: 'Component Library / TextField',

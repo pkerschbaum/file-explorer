@@ -1,8 +1,8 @@
 import * as React from 'react';
 import type { Query, QueryCache } from 'react-query';
 
-import { check } from '@app/base/utils/assert.util';
-import { createRefreshResourcesOfDirectorySubscription } from '@app/operations/global-cache-subscriptions/refresh-resources-of-directory';
+import { check } from '#pkg/base/utils/assert.util';
+import { createRefreshResourcesOfDirectorySubscription } from '#pkg/operations/global-cache-subscriptions/refresh-resources-of-directory';
 
 export type QueryCacheSubscription = {
   subscription: {

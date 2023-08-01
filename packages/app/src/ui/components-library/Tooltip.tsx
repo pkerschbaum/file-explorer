@@ -10,10 +10,10 @@ import { AnimatePresence } from 'framer-motion';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 
-import { commonStyles } from '@app/ui/common-styles';
-import { Box } from '@app/ui/components-library/Box';
-import { useFramerMotionAnimations } from '@app/ui/components-library/DesignTokenContext';
-import { useUpdatePositionOnAnchorMovement } from '@app/ui/components-library/overlay';
+import { commonStyles } from '#pkg/ui/common-styles';
+import { Box } from '#pkg/ui/components-library/Box';
+import { useFramerMotionAnimations } from '#pkg/ui/components-library/DesignTokenContext';
+import { useUpdatePositionOnAnchorMovement } from '#pkg/ui/components-library/overlay';
 
 export type Placement = ReactAriaPlacement;
 

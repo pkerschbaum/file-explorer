@@ -1,12 +1,12 @@
 import { queries } from '@playwright-testing-library/test';
 import { expect, test } from '@playwright/test';
 
-import { network } from '@app/base/network';
-import { resources } from '@app/base/resources';
-import { URI } from '@app/base/uri';
-import { uriHelper } from '@app/base/utils/uri-helper';
+import { network } from '#pkg/base/network';
+import { resources } from '#pkg/base/resources';
+import { URI } from '#pkg/base/uri';
+import { uriHelper } from '#pkg/base/utils/uri-helper';
 
-import { bootstrap } from '@app-playwright/playwright.util';
+import { bootstrap } from '#pkg-playwright/playwright.util';
 
 test.describe('CwdBreadcrumbs [logic]', () => {
   test('ActionsMenu - click on "Copy Directory Path" should put the CWD path into the clipboard', async ({

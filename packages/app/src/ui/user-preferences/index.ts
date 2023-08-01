@@ -1,1 +1,1 @@
-export * from '@app/ui/user-preferences/UserPreferencesButton';
+export * from '#pkg/ui/user-preferences/UserPreferencesButton';

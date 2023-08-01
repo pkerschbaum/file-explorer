@@ -1,8 +1,8 @@
 import { getIconClasses } from '@pkerschbaum/code-oss-file-icon-theme';
 import * as CodeOSSURI from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 
-import type { FileKind } from '@app/base/files';
-import type { UriComponents } from '@app/base/uri';
+import type { FileKind } from '#pkg/base/files';
+import type { UriComponents } from '#pkg/base/uri';
 
 export function loadIconClasses(
   resource: UriComponents | undefined,

@@ -1,8 +1,8 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 
-import type { RootState } from '@app/global-state/store';
-import { createLogger } from '@app/operations/create-logger';
-import type { StorageState } from '@app/platform/persistent-storage.types';
+import type { RootState } from '#pkg/global-state/store';
+import { createLogger } from '#pkg/operations/create-logger';
+import type { StorageState } from '#pkg/platform/persistent-storage.types';
 
 const logger = createLogger('store-persist-middleware');
 

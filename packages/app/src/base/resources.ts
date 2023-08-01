@@ -1,7 +1,7 @@
 import * as codeOSSResources from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
 import * as CodeOSSURI from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 
-import type { UriComponents } from '@app/base/uri';
+import type { UriComponents } from '#pkg/base/uri';
 
 export type CoordinationArgs = codeOSSResources.CoordinationArgs;
 export type ReportProgressArgs = codeOSSResources.ReportProgressArgs;

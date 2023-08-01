@@ -4,23 +4,23 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 import { Provider as ReactReduxProvider } from 'react-redux';
 import styled, { createGlobalStyle, css } from 'styled-components';
 
-import { config } from '@app/config';
-import { FILE_ICON_THEMES } from '@app/domain/constants';
-import { useActiveFileIconTheme } from '@app/global-state/slices/user.hooks';
-import type { RootStore } from '@app/global-state/store';
-import { useGlobalCacheSubscriptions } from '@app/operations/global-cache-subscriptions';
-import { setGlobalModules } from '@app/operations/global-modules';
-import { AppMessagesContext } from '@app/ui/AppMessagesContext';
+import { config } from '#pkg/config';
+import { FILE_ICON_THEMES } from '#pkg/domain/constants';
+import { useActiveFileIconTheme } from '#pkg/global-state/slices/user.hooks';
+import type { RootStore } from '#pkg/global-state/store';
+import { useGlobalCacheSubscriptions } from '#pkg/operations/global-cache-subscriptions';
+import { setGlobalModules } from '#pkg/operations/global-modules';
+import { AppMessagesContext } from '#pkg/ui/AppMessagesContext';
 import {
   componentLibraryUtils,
   DesignTokenProvider,
   DESIGN_TOKENS,
   OverlayProvider,
-} from '@app/ui/components-library';
+} from '#pkg/ui/components-library';
 import {
   DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED,
   GlobalShortcutsContextProvider,
-} from '@app/ui/GlobalShortcutsContext';
+} from '#pkg/ui/GlobalShortcutsContext';
 
 export function createQueryClient() {
   return new QueryClient({

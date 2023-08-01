@@ -1,15 +1,15 @@
 import type { ComponentMeta, ComponentStory } from '@storybook/react';
 import invariant from 'tiny-invariant';
 
-import { extractCwdSegmentsFromExplorerPanel } from '@app/global-state/slices/explorers.hooks';
-import type { RootStore } from '@app/global-state/store';
-import { createStoreInstance } from '@app/global-state/store';
-import { CwdSegmentContextProvider } from '@app/ui/cwd-segment-context';
-import { ExplorerContextProvider } from '@app/ui/explorer-context';
-import { createQueryClient, Globals } from '@app/ui/Globals';
-import { ResourcesGallery } from '@app/ui/resources-gallery';
+import { extractCwdSegmentsFromExplorerPanel } from '#pkg/global-state/slices/explorers.hooks';
+import type { RootStore } from '#pkg/global-state/store';
+import { createStoreInstance } from '#pkg/global-state/store';
+import { CwdSegmentContextProvider } from '#pkg/ui/cwd-segment-context';
+import { ExplorerContextProvider } from '#pkg/ui/explorer-context';
+import { createQueryClient, Globals } from '#pkg/ui/Globals';
+import { ResourcesGallery } from '#pkg/ui/resources-gallery';
 
-import { initializeStorybookPlatformModules } from '@app-storybook/storybook-utils';
+import { initializeStorybookPlatformModules } from '#pkg-storybook/storybook-utils';
 
 export default {
   title: 'ResourcesGallery',

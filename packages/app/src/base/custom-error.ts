@@ -1,4 +1,4 @@
-import type { ObjectLiteral } from '@app/base/utils/types.util';
+import type { ObjectLiteral } from '#pkg/base/utils/types.util';
 
 // https://stackoverflow.com/a/48342359/1700319
 export class CustomError extends Error {

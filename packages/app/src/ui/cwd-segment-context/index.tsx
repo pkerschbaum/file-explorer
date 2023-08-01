@@ -1,12 +1,12 @@
-import { CwdSegmentDerivedValuesContextProvider } from '@app/ui/cwd-segment-context/CwdSegmentDerivedValues.context';
-import { CwdSegmentOperationsContextProvider } from '@app/ui/cwd-segment-context/CwdSegmentOperations.context';
-import { CwdSegmentRootContextProvider } from '@app/ui/cwd-segment-context/CwdSegmentRoot.context';
-import { CwdSegmentStateContextProvider } from '@app/ui/cwd-segment-context/CwdSegmentState.context';
+import { CwdSegmentDerivedValuesContextProvider } from '#pkg/ui/cwd-segment-context/CwdSegmentDerivedValues.context';
+import { CwdSegmentOperationsContextProvider } from '#pkg/ui/cwd-segment-context/CwdSegmentOperations.context';
+import { CwdSegmentRootContextProvider } from '#pkg/ui/cwd-segment-context/CwdSegmentRoot.context';
+import { CwdSegmentStateContextProvider } from '#pkg/ui/cwd-segment-context/CwdSegmentState.context';
 
-export * from '@app/ui/cwd-segment-context/CwdSegmentOperations.context';
-export * from '@app/ui/cwd-segment-context/CwdSegmentDerivedValues.context';
-export * from '@app/ui/cwd-segment-context/CwdSegmentRoot.context';
-export * from '@app/ui/cwd-segment-context/CwdSegmentState.context';
+export * from '#pkg/ui/cwd-segment-context/CwdSegmentOperations.context';
+export * from '#pkg/ui/cwd-segment-context/CwdSegmentDerivedValues.context';
+export * from '#pkg/ui/cwd-segment-context/CwdSegmentRoot.context';
+export * from '#pkg/ui/cwd-segment-context/CwdSegmentState.context';
 
 type CwdSegmentContextProviderProps = {
   segmentIdx: number;

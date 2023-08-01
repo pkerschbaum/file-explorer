@@ -1,1 +1,1 @@
-export * from '@app/ui/shell/Shell';
+export * from '#pkg/ui/shell/Shell';

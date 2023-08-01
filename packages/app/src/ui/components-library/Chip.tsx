@@ -1,9 +1,9 @@
 import type * as React from 'react';
 import styled from 'styled-components';
 
-import { Box } from '@app/ui/components-library/Box';
-import { IconButton } from '@app/ui/components-library/IconButton';
-import { CancelIcon } from '@app/ui/components-library/icons';
+import { Box } from '#pkg/ui/components-library/Box';
+import { IconButton } from '#pkg/ui/components-library/IconButton';
+import { CancelIcon } from '#pkg/ui/components-library/icons';
 
 type ChipProps = ChipComponentProps &
   Omit<

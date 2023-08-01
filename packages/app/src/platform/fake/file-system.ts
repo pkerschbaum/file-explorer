@@ -4,17 +4,17 @@ import {
 } from '@pkerschbaum/code-oss-file-service/out/vs/platform/log/common/log';
 import dayjs from 'dayjs';
 
-import { VSBuffer } from '@app/base/buffer';
-import type { IStat } from '@app/base/files';
-import { FileService, fileServiceUriInstancesToComponents } from '@app/base/fileService';
-import { InMemoryFileSystemProvider } from '@app/base/inMemoryFilesystemProvider';
-import { network } from '@app/base/network';
-import { URI, UriComponents } from '@app/base/uri';
-import { assertIsUnreachable } from '@app/base/utils/assert.util';
-import type { Writeable } from '@app/base/utils/types.util';
-import { uriHelper } from '@app/base/utils/uri-helper';
-import { RESOURCE_TYPE } from '@app/domain/types';
-import type { PlatformFileSystem } from '@app/platform/file-system.types';
+import { VSBuffer } from '#pkg/base/buffer';
+import type { IStat } from '#pkg/base/files';
+import { FileService, fileServiceUriInstancesToComponents } from '#pkg/base/fileService';
+import { InMemoryFileSystemProvider } from '#pkg/base/inMemoryFilesystemProvider';
+import { network } from '#pkg/base/network';
+import { URI, UriComponents } from '#pkg/base/uri';
+import { assertIsUnreachable } from '#pkg/base/utils/assert.util';
+import type { Writeable } from '#pkg/base/utils/types.util';
+import { uriHelper } from '#pkg/base/utils/uri-helper';
+import { RESOURCE_TYPE } from '#pkg/domain/types';
+import type { PlatformFileSystem } from '#pkg/platform/file-system.types';
 
 type WritableIStat = Writeable<IStat>;
 

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
-import { Box } from '@app/ui/components-library/Box';
-import { useFramerMotionAnimations } from '@app/ui/components-library/DesignTokenContext';
+import { Box } from '#pkg/ui/components-library/Box';
+import { useFramerMotionAnimations } from '#pkg/ui/components-library/DesignTokenContext';
 
 type BackdropProps = BackdropComponentProps &
   Omit<

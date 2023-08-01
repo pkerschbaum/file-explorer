@@ -1,2 +1,2 @@
-export * from '@app/ui/components-library/visual-key/VisualKey';
-export * from '@app/ui/components-library/visual-key/key-to-visualization-map';
+export * from '#pkg/ui/components-library/visual-key/VisualKey';
+export * from '#pkg/ui/components-library/visual-key/key-to-visualization-map';

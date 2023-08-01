@@ -1,15 +1,15 @@
 import * as React from 'react';
 
-import { URI } from '@app/base/uri';
-import { arrays } from '@app/base/utils/arrays.util';
-import { errorsUtil } from '@app/base/utils/errors.util';
-import { uriHelper } from '@app/base/utils/uri-helper';
-import type { ResourceForUI } from '@app/domain/types';
-import { REASON_FOR_SELECTION_CHANGE } from '@app/global-state/slices/explorers.slice';
-import { startNativeFileDnD } from '@app/operations/app.operations';
-import { createFolder, openResources, pasteResources } from '@app/operations/explorer.operations';
-import * as resourceOperations from '@app/operations/resource.operations';
-import { APP_MESSAGE_SEVERITY, usePushAppMessage } from '@app/ui/AppMessagesContext';
+import { URI } from '#pkg/base/uri';
+import { arrays } from '#pkg/base/utils/arrays.util';
+import { errorsUtil } from '#pkg/base/utils/errors.util';
+import { uriHelper } from '#pkg/base/utils/uri-helper';
+import type { ResourceForUI } from '#pkg/domain/types';
+import { REASON_FOR_SELECTION_CHANGE } from '#pkg/global-state/slices/explorers.slice';
+import { startNativeFileDnD } from '#pkg/operations/app.operations';
+import { createFolder, openResources, pasteResources } from '#pkg/operations/explorer.operations';
+import * as resourceOperations from '#pkg/operations/resource.operations';
+import { APP_MESSAGE_SEVERITY, usePushAppMessage } from '#pkg/ui/AppMessagesContext';
 import {
   useIsActiveCwdSegment,
   useKeyOfResourceSelectionGotStartedWith,
@@ -18,12 +18,12 @@ import {
   useSetKeyOfResourceToRename,
   useSetKeysOfSelectedResources,
   useSetReasonForLastSelectionChange,
-} from '@app/ui/cwd-segment-context';
-import { useExplorerId, useIsActiveExplorer } from '@app/ui/explorer-context';
-import type { ShortcutMap, RegisterShortcutsResultMap } from '@app/ui/GlobalShortcutsContext';
-import { useRegisterGlobalShortcuts } from '@app/ui/GlobalShortcutsContext';
-import type { EventHandler } from '@app/ui/utils/react.util';
-import { createContext, useLatestValueRef, useWindowEvent } from '@app/ui/utils/react.util';
+} from '#pkg/ui/cwd-segment-context';
+import { useExplorerId, useIsActiveExplorer } from '#pkg/ui/explorer-context';
+import type { ShortcutMap, RegisterShortcutsResultMap } from '#pkg/ui/GlobalShortcutsContext';
+import { useRegisterGlobalShortcuts } from '#pkg/ui/GlobalShortcutsContext';
+import type { EventHandler } from '#pkg/ui/utils/react.util';
+import { createContext, useLatestValueRef, useWindowEvent } from '#pkg/ui/utils/react.util';
 
 type CwdSegmentOperationsContext = {
   copySelectedResources: () => void;

@@ -1,7 +1,7 @@
 import type * as React from 'react';
 import styled from 'styled-components';
 
-import { commonStyles } from '@app/ui/common-styles';
+import { commonStyles } from '#pkg/ui/common-styles';
 import {
   Backdrop,
   Box,
@@ -10,7 +10,7 @@ import {
   IconButton,
   Paper,
   RotatingAutorenewOutlinedIcon,
-} from '@app/ui/components-library';
+} from '#pkg/ui/components-library';
 
 export type ProcessCardProps = {
   summaryIcon: React.ReactNode;

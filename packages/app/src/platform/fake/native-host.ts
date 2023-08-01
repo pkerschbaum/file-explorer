@@ -1,10 +1,10 @@
-import { Emitter } from '@app/base/event';
-import { network } from '@app/base/network';
-import type { UriComponents } from '@app/base/uri';
-import { functions } from '@app/base/utils/functions.util';
-import { uriHelper } from '@app/base/utils/uri-helper';
-import type { PlatformNativeHost } from '@app/platform/native-host.types';
-import { CLIPBOARD_CHANGED_DATA_TYPE } from '@app/platform/native-host.types';
+import { Emitter } from '#pkg/base/event';
+import { network } from '#pkg/base/network';
+import type { UriComponents } from '#pkg/base/uri';
+import { functions } from '#pkg/base/utils/functions.util';
+import { uriHelper } from '#pkg/base/utils/uri-helper';
+import type { PlatformNativeHost } from '#pkg/platform/native-host.types';
+import { CLIPBOARD_CHANGED_DATA_TYPE } from '#pkg/platform/native-host.types';
 
 export function createFakeNativeHost(): PlatformNativeHost {
   let currentClipboardText = '';

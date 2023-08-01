@@ -1,7 +1,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 
-import type { JsonObject } from '@app/base/utils/types.util';
-import { createLogger } from '@app/operations/create-logger';
+import type { JsonObject } from '#pkg/base/utils/types.util';
+import { createLogger } from '#pkg/operations/create-logger';
 
 const logger = createLogger('store-logger-middleware');
 

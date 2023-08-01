@@ -1,5 +1,5 @@
-import { loadCssRules } from '@app/operations/file-icon-theme.operations';
-import type { PlatformFileIconThemeLoader } from '@app/platform/file-icon-theme-loader.types';
+import { loadCssRules } from '#pkg/operations/file-icon-theme.operations';
+import type { PlatformFileIconThemeLoader } from '#pkg/platform/file-icon-theme-loader.types';
 
 const FILE_ICON_THEME_RELATIVE_PATH = './icon-theme/';
 const FILE_ICON_THEME_PATH_REPLACE_REGEX = /vscode-file:\/\/.+icon-theme\//g;

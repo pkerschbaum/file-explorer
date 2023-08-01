@@ -1,8 +1,8 @@
 import type { app } from 'electron';
 
-import type { Event } from '@app/base/event';
-import type { UriComponents } from '@app/base/uri';
-import type { ResourceForUI } from '@app/domain/types';
+import type { Event } from '#pkg/base/event';
+import type { UriComponents } from '#pkg/base/uri';
+import type { ResourceForUI } from '#pkg/domain/types';
 
 export type PlatformNativeHost = {
   app: {

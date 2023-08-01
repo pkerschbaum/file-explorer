@@ -30,7 +30,7 @@ module.exports = {
   staticDirs: ['../src/static'],
 
   /**
-   * - allow @app path alias (https://github.com/storybookjs/storybook/issues/11989#issuecomment-715524391)
+   * - allow #pkg path alias (https://github.com/storybookjs/storybook/issues/11989#issuecomment-715524391)
    * - workaround for framer-motion issue (https://github.com/framer/motion/issues/1307#issuecomment-954046207)
    */
   webpackFinal: (config: any) => {

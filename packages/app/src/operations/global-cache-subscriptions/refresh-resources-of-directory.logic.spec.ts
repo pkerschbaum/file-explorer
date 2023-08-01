@@ -1,12 +1,12 @@
 import { queries } from '@playwright-testing-library/test';
 import { expect, test } from '@playwright/test';
 
-import { network } from '@app/base/network';
-import { uriHelper } from '@app/base/utils/uri-helper';
-import type { ResourceStat } from '@app/domain/types';
-import { QUERY_KEYS } from '@app/global-cache/query-keys';
+import { network } from '#pkg/base/network';
+import { uriHelper } from '#pkg/base/utils/uri-helper';
+import type { ResourceStat } from '#pkg/domain/types';
+import { QUERY_KEYS } from '#pkg/global-cache/query-keys';
 
-import { bootstrap } from '@app-playwright/playwright.util';
+import { bootstrap } from '#pkg-playwright/playwright.util';
 
 test.describe('Refresh resources of currently open directories if any change occurs in the underlying file system [logic]', () => {
   test('If a new folder pops up in the file system in the currently opened directory, the cache should be refreshed', async ({

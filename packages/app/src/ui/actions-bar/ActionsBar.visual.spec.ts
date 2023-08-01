@@ -1,7 +1,7 @@
 import { queries } from '@playwright-testing-library/test';
 import { expect, test } from '@playwright/test';
 
-import { bootstrap, retrievePageScreenshot } from '@app-playwright/playwright.util';
+import { bootstrap, retrievePageScreenshot } from '#pkg-playwright/playwright.util';
 
 test.describe('ActionsBar [visual]', () => {
   test('given an error on an attempt to rename a resource, a snackbar should be shown', async ({

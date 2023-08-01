@@ -1,1 +1,1 @@
-export * from '@app/operations/global-cache-subscriptions/setup-subscriptions';
+export * from '#pkg/operations/global-cache-subscriptions/setup-subscriptions';

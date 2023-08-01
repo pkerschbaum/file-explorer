@@ -2,15 +2,15 @@ import * as React from 'react';
 import styled, { css } from 'styled-components';
 import invariant from 'tiny-invariant';
 
-import { assertIsUnreachable, check } from '@app/base/utils/assert.util';
-import { formatter } from '@app/base/utils/formatter.util';
-import type { ResourceForUI } from '@app/domain/types';
-import { RESOURCE_TYPE } from '@app/domain/types';
-import { REASON_FOR_SELECTION_CHANGE } from '@app/global-state/slices/explorers.slice';
-import { openResources } from '@app/operations/explorer.operations';
-import { commonStyles } from '@app/ui/common-styles';
-import { Box, componentLibraryUtils, useFramerMotionAnimations } from '@app/ui/components-library';
-import { doesKeyboardEventKeyMatchPrintedKey, PRINTED_KEY } from '@app/ui/constants';
+import { assertIsUnreachable, check } from '#pkg/base/utils/assert.util';
+import { formatter } from '#pkg/base/utils/formatter.util';
+import type { ResourceForUI } from '#pkg/domain/types';
+import { RESOURCE_TYPE } from '#pkg/domain/types';
+import { REASON_FOR_SELECTION_CHANGE } from '#pkg/global-state/slices/explorers.slice';
+import { openResources } from '#pkg/operations/explorer.operations';
+import { commonStyles } from '#pkg/ui/common-styles';
+import { Box, componentLibraryUtils, useFramerMotionAnimations } from '#pkg/ui/components-library';
+import { doesKeyboardEventKeyMatchPrintedKey, PRINTED_KEY } from '#pkg/ui/constants';
 import {
   useChangeSelection,
   useIsLastSelectedResource,
@@ -25,11 +25,11 @@ import {
   useSetKeyOfResourceToRename,
   useSetScrollTop,
   useStartNativeDnDForSelectedResources,
-} from '@app/ui/cwd-segment-context';
-import { useExplorerId } from '@app/ui/explorer-context';
-import { ResourceIcon } from '@app/ui/resource-icon';
-import { ResourceRenameInput } from '@app/ui/resource-rename-input';
-import { useDebounceFn, usePrevious, useRunCallbackOnMount } from '@app/ui/utils/react.util';
+} from '#pkg/ui/cwd-segment-context';
+import { useExplorerId } from '#pkg/ui/explorer-context';
+import { ResourceIcon } from '#pkg/ui/resource-icon';
+import { ResourceRenameInput } from '#pkg/ui/resource-rename-input';
+import { useDebounceFn, usePrevious, useRunCallbackOnMount } from '#pkg/ui/utils/react.util';
 
 const TILE_HEIGHT = 200;
 

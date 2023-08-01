@@ -1,6 +1,6 @@
-import type { CancellationTokenSource } from '@app/base/cancellation';
-import type { IFileStatWithMetadata } from '@app/base/files';
-import type { UriComponents } from '@app/base/uri';
+import type { CancellationTokenSource } from '#pkg/base/cancellation';
+import type { IFileStatWithMetadata } from '#pkg/base/files';
+import type { UriComponents } from '#pkg/base/uri';
 
 export type UpdateFn<T> = (currentValue: T) => T;
 

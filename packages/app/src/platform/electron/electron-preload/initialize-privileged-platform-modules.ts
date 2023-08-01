@@ -1,19 +1,19 @@
 import { clipboard, ipcRenderer } from 'electron';
 
-import { VSBuffer } from '@app/base/buffer';
-import { fileServiceUriInstancesToComponents, PlatformFileService } from '@app/base/fileService';
-import { URI, UriComponents } from '@app/base/uri';
-import { config } from '@app/config';
-import { bootstrapDiskFileService } from '@app/platform/electron/electron-preload/bootstrap-disk-file-service';
-import type { IpcApp } from '@app/platform/electron/ipc/common/app';
-import { APP_CHANNEL } from '@app/platform/electron/ipc/common/app';
-import type { IpcFileDragStart } from '@app/platform/electron/ipc/common/file-drag-start';
-import { FILEDRAGSTART_CHANNEL } from '@app/platform/electron/ipc/common/file-drag-start';
-import { PERSISTENT_STORE_CHANNEL } from '@app/platform/electron/ipc/common/persistent-store';
-import type { IpcShell } from '@app/platform/electron/ipc/common/shell';
-import { SHELL_CHANNEL } from '@app/platform/electron/ipc/common/shell';
-import type { IpcWindow } from '@app/platform/electron/ipc/common/window';
-import { WINDOW_CHANNEL } from '@app/platform/electron/ipc/common/window';
+import { VSBuffer } from '#pkg/base/buffer';
+import { fileServiceUriInstancesToComponents, PlatformFileService } from '#pkg/base/fileService';
+import { URI, UriComponents } from '#pkg/base/uri';
+import { config } from '#pkg/config';
+import { bootstrapDiskFileService } from '#pkg/platform/electron/electron-preload/bootstrap-disk-file-service';
+import type { IpcApp } from '#pkg/platform/electron/ipc/common/app';
+import { APP_CHANNEL } from '#pkg/platform/electron/ipc/common/app';
+import type { IpcFileDragStart } from '#pkg/platform/electron/ipc/common/file-drag-start';
+import { FILEDRAGSTART_CHANNEL } from '#pkg/platform/electron/ipc/common/file-drag-start';
+import { PERSISTENT_STORE_CHANNEL } from '#pkg/platform/electron/ipc/common/persistent-store';
+import type { IpcShell } from '#pkg/platform/electron/ipc/common/shell';
+import { SHELL_CHANNEL } from '#pkg/platform/electron/ipc/common/shell';
+import type { IpcWindow } from '#pkg/platform/electron/ipc/common/window';
+import { WINDOW_CHANNEL } from '#pkg/platform/electron/ipc/common/window';
 
 declare global {
   interface Window {

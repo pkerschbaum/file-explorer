@@ -1,9 +1,9 @@
 import { mergeProps } from '@react-aria/utils';
 import styled from 'styled-components';
 
-import { Box } from '@app/ui/components-library/Box';
-import { componentLibraryUtils } from '@app/ui/components-library/utils';
-import { createContext } from '@app/ui/utils/react.util';
+import { Box } from '#pkg/ui/components-library/Box';
+import { componentLibraryUtils } from '#pkg/ui/components-library/utils';
+import { createContext } from '#pkg/ui/utils/react.util';
 
 const INDICATOR_MOTION_LAYOUT_ID = componentLibraryUtils.generateMotionLayoutId();
 

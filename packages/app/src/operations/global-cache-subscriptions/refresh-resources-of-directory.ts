@@ -1,21 +1,21 @@
 import type { Query } from 'react-query';
 
-import { DisposableStore, IDisposable } from '@app/base/lifecycle';
-import { URI } from '@app/base/uri';
-import { functions } from '@app/base/utils/functions.util';
-import { json } from '@app/base/utils/json.util';
-import { uriHelper } from '@app/base/utils/uri-helper';
-import type { ResourcesOfDirectoryKey } from '@app/global-cache/query-keys';
+import { DisposableStore, IDisposable } from '#pkg/base/lifecycle';
+import { URI } from '#pkg/base/uri';
+import { functions } from '#pkg/base/utils/functions.util';
+import { json } from '#pkg/base/utils/json.util';
+import { uriHelper } from '#pkg/base/utils/uri-helper';
+import type { ResourcesOfDirectoryKey } from '#pkg/global-cache/query-keys';
 import {
   isResourcesOfDirectoryQueryKey,
   RESOURCES_OF_DIRECTORY_KEY_PREFIX,
-} from '@app/global-cache/query-keys';
-import { refreshResourcesOfDirectory } from '@app/global-cache/resources';
-import { createLogger } from '@app/operations/create-logger';
+} from '#pkg/global-cache/query-keys';
+import { refreshResourcesOfDirectory } from '#pkg/global-cache/resources';
+import { createLogger } from '#pkg/operations/create-logger';
 import type {
   QueryCacheNotifyEvent,
   QueryCacheSubscription,
-} from '@app/operations/global-cache-subscriptions/setup-subscriptions';
+} from '#pkg/operations/global-cache-subscriptions/setup-subscriptions';
 
 const logger = createLogger('refresh-resources-of-directory');
 

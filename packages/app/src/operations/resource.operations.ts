@@ -1,30 +1,30 @@
-import type { CancellationTokenSource } from '@app/base/cancellation';
-import { CustomError } from '@app/base/custom-error';
-import type { IFileStatWithMetadata } from '@app/base/files';
-import type { ReportProgressArgs } from '@app/base/resources';
-import type { UriComponents } from '@app/base/uri';
-import { formatter } from '@app/base/utils/formatter.util';
-import { objects } from '@app/base/utils/objects.util';
-import { uriHelper } from '@app/base/utils/uri-helper';
-import { uuid } from '@app/base/uuid';
+import type { CancellationTokenSource } from '#pkg/base/cancellation';
+import { CustomError } from '#pkg/base/custom-error';
+import type { IFileStatWithMetadata } from '#pkg/base/files';
+import type { ReportProgressArgs } from '#pkg/base/resources';
+import type { UriComponents } from '#pkg/base/uri';
+import { formatter } from '#pkg/base/utils/formatter.util';
+import { objects } from '#pkg/base/utils/objects.util';
+import { uriHelper } from '#pkg/base/utils/uri-helper';
+import { uuid } from '#pkg/base/uuid';
 import type {
   DeleteProcess,
   ResourceStatMap,
   ResourcesToTags,
   Tag,
   ResourceStat,
-} from '@app/domain/types';
-import { DELETE_PROCESS_STATUS, PROCESS_TYPE, RESOURCE_TYPE } from '@app/domain/types';
+} from '#pkg/domain/types';
+import { DELETE_PROCESS_STATUS, PROCESS_TYPE, RESOURCE_TYPE } from '#pkg/domain/types';
 import {
   getCachedResourcesOfDirectory,
   refreshResourcesOfDirectory,
   setCachedResourcesOfDirectory,
-} from '@app/global-cache/resources';
-import { mapProcess } from '@app/global-state/slices/processes.hooks';
-import { actions } from '@app/global-state/slices/processes.slice';
-import { actions as tagsSliceActions } from '@app/global-state/slices/tags.slice';
-import { createLogger } from '@app/operations/create-logger';
-import * as tagOperations from '@app/operations/tag.operations';
+} from '#pkg/global-cache/resources';
+import { mapProcess } from '#pkg/global-state/slices/processes.hooks';
+import { actions } from '#pkg/global-state/slices/processes.slice';
+import { actions as tagsSliceActions } from '#pkg/global-state/slices/tags.slice';
+import { createLogger } from '#pkg/operations/create-logger';
+import * as tagOperations from '#pkg/operations/tag.operations';
 
 const logger = createLogger('resource.operations');
 

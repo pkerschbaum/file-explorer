@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-import type { PlatformLogWriter } from '@app/platform/log-writer.types';
+import type { PlatformLogWriter } from '#pkg/platform/log-writer.types';
 
 export const createLogWriter = () => {
   const instance: PlatformLogWriter = {

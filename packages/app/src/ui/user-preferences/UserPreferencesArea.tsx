@@ -1,15 +1,15 @@
 import type React from 'react';
 import styled from 'styled-components';
 
-import type { AvailableFileIconTheme } from '@app/domain/constants';
-import { FILE_ICON_THEMES } from '@app/domain/constants';
-import { useActiveFileIconTheme, useActiveTheme } from '@app/global-state/slices/user.hooks';
+import type { AvailableFileIconTheme } from '#pkg/domain/constants';
+import { FILE_ICON_THEMES } from '#pkg/domain/constants';
+import { useActiveFileIconTheme, useActiveTheme } from '#pkg/global-state/slices/user.hooks';
 import {
   setActiveFileIconTheme,
   setActiveTheme,
-} from '@app/operations/user-preferences.operations';
-import type { AvailableTheme } from '@app/ui/components-library';
-import { availableThemes, Divider, Paper, Radio, RadioGroup } from '@app/ui/components-library';
+} from '#pkg/operations/user-preferences.operations';
+import type { AvailableTheme } from '#pkg/ui/components-library';
+import { availableThemes, Divider, Paper, Radio, RadioGroup } from '#pkg/ui/components-library';
 
 export const UserPreferencesArea: React.FC = () => {
   const activeTheme = useActiveTheme();

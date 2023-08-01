@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { uiUtils } from '@app/ui/utils/ui.utils';
+import { uiUtils } from '#pkg/ui/utils/ui.utils';
 
 export function useUpdatePositionOnAnchorMovement({
   anchorElem,

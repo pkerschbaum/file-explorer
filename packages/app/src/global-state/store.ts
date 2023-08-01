@@ -4,19 +4,19 @@ import type { NoInfer } from '@reduxjs/toolkit/dist/tsHelpers';
 import type { TypedUseSelectorHook } from 'react-redux';
 import { useDispatch as useReduxDispatch, useSelector as useReduxSelector } from 'react-redux';
 
-import { check } from '@app/base/utils/assert.util';
-import { numbers } from '@app/base/utils/numbers.util';
-import { typedPath } from '@app/base/utils/types.util';
-import { loggerMiddleware } from '@app/global-state/logger.middleware';
-import { persistMiddleware } from '@app/global-state/persist-state.middleware';
-import { rootReducer } from '@app/global-state/reducers';
-import type { ExplorersMap } from '@app/global-state/slices/explorers.slice';
+import { check } from '#pkg/base/utils/assert.util';
+import { numbers } from '#pkg/base/utils/numbers.util';
+import { typedPath } from '#pkg/base/utils/types.util';
+import { loggerMiddleware } from '#pkg/global-state/logger.middleware';
+import { persistMiddleware } from '#pkg/global-state/persist-state.middleware';
+import { rootReducer } from '#pkg/global-state/reducers';
+import type { ExplorersMap } from '#pkg/global-state/slices/explorers.slice';
 import {
   computeCwdSegmentsFromUri,
   generateExplorerId,
-} from '@app/global-state/slices/explorers.slice';
-import { getDefaultExplorerCwd } from '@app/operations/app.operations';
-import { createLogger } from '@app/operations/create-logger';
+} from '#pkg/global-state/slices/explorers.slice';
+import { getDefaultExplorerCwd } from '#pkg/operations/app.operations';
+import { createLogger } from '#pkg/operations/create-logger';
 
 export type RootState = ReturnType<typeof rootReducer>;
 

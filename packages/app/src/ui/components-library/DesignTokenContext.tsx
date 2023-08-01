@@ -7,9 +7,9 @@ import type { FlattenSimpleInterpolation } from 'styled-components';
 import { createGlobalStyle, css, keyframes, ThemeProvider } from 'styled-components';
 import invariant from 'tiny-invariant';
 
-import { assertIsUnreachable } from '@app/base/utils/assert.util';
-import { useActiveTheme } from '@app/global-state/slices/user.hooks';
-import { componentLibraryUtils } from '@app/ui/components-library/utils';
+import { assertIsUnreachable } from '#pkg/base/utils/assert.util';
+import { useActiveTheme } from '#pkg/global-state/slices/user.hooks';
+import { componentLibraryUtils } from '#pkg/ui/components-library/utils';
 
 declare module '@mui/material/styles' {
   interface Theme {

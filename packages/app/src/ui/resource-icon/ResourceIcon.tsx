@@ -1,15 +1,15 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 
-import type { ResourceForUI } from '@app/domain/types';
+import type { ResourceForUI } from '#pkg/domain/types';
 import {
   getNativeIconURLForResource,
   getThumbnailURLForResource,
   isResourceQualifiedForNativeIcon,
   isResourceQualifiedForThumbnail,
-} from '@app/operations/app.operations';
-import { Box } from '@app/ui/components-library';
-import { useThemeResourceIconClasses } from '@app/ui/hooks/resources.hooks';
+} from '#pkg/operations/app.operations';
+import { Box } from '#pkg/ui/components-library';
+import { useThemeResourceIconClasses } from '#pkg/ui/hooks/resources.hooks';
 
 type ResourceIconProps = {
   resource: ResourceForUI;

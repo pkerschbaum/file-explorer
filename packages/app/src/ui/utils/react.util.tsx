@@ -1,9 +1,9 @@
 import * as React from 'react';
 import * as useContextSelectorLib from 'use-context-selector';
 
-import type { Event } from '@app/base/event';
-import { functions } from '@app/base/utils/functions.util';
-import type { FunctionType } from '@app/base/utils/types.util';
+import type { Event } from '#pkg/base/event';
+import { functions } from '#pkg/base/utils/functions.util';
+import type { FunctionType } from '#pkg/base/utils/types.util';
 
 export type EventHandler<E extends keyof WindowEventMap> = {
   condition: (e: WindowEventMap[E]) => boolean;

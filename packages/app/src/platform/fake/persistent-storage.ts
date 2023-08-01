@@ -1,4 +1,4 @@
-import type { PlatformPersistentStorage } from '@app/platform/persistent-storage.types';
+import type { PlatformPersistentStorage } from '#pkg/platform/persistent-storage.types';
 
 export function createFakePersistentStorage(): PlatformPersistentStorage {
   let currentValue: Record<string, unknown> = {};

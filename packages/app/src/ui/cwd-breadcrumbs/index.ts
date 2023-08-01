@@ -1,1 +1,1 @@
-export * from '@app/ui/cwd-breadcrumbs/CwdBreadcrumbs';
+export * from '#pkg/ui/cwd-breadcrumbs/CwdBreadcrumbs';

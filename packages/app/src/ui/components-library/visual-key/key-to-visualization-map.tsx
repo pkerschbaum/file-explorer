@@ -9,9 +9,9 @@ import {
   KeyboardArrowUpOutlinedIcon,
   KeyboardReturnOutlinedIcon,
   KeyboardTabOutlinedIcon,
-} from '@app/ui/components-library/icons';
-import { VisualKey } from '@app/ui/components-library/visual-key';
-import { PRINTED_KEY } from '@app/ui/constants';
+} from '#pkg/ui/components-library/icons';
+import { VisualKey } from '#pkg/ui/components-library/visual-key';
+import { PRINTED_KEY } from '#pkg/ui/constants';
 
 export const KEY_TO_VISUALIZATION_MAP: { [key in PRINTED_KEY]: React.ReactNode } = {
   [PRINTED_KEY.A]: (

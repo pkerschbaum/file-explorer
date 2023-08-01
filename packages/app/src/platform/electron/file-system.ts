@@ -1,6 +1,6 @@
-import { path } from '@app/base/path';
-import { URI } from '@app/base/uri';
-import type { PlatformFileSystem } from '@app/platform/file-system.types';
+import { path } from '#pkg/base/path';
+import { URI } from '#pkg/base/uri';
+import type { PlatformFileSystem } from '#pkg/platform/file-system.types';
 
 export const createFileSystem = () => {
   const instance: PlatformFileSystem = {

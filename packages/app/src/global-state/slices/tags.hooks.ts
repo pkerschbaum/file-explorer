@@ -1,4 +1,4 @@
-import { useSelector } from '@app/global-state/store';
+import { useSelector } from '#pkg/global-state/store';
 
 export function useResourcesToTags() {
   return useSelector((state) => state.tagsSlice.resourcesToTags);

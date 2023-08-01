@@ -1,15 +1,15 @@
-import { CustomError } from '@app/base/custom-error';
-import type { UriComponents } from '@app/base/uri';
-import { check } from '@app/base/utils/assert.util';
-import { formatter } from '@app/base/utils/formatter.util';
-import { objects } from '@app/base/utils/objects.util';
-import type { ResourceForUI } from '@app/domain/types';
-import type { CwdSegment } from '@app/global-state/slices/explorers.slice';
+import { CustomError } from '#pkg/base/custom-error';
+import type { UriComponents } from '#pkg/base/uri';
+import { check } from '#pkg/base/utils/assert.util';
+import { formatter } from '#pkg/base/utils/formatter.util';
+import { objects } from '#pkg/base/utils/objects.util';
+import type { ResourceForUI } from '#pkg/domain/types';
+import type { CwdSegment } from '#pkg/global-state/slices/explorers.slice';
 import {
   actions,
   computeCwdSegmentsFromUri,
   generateExplorerId,
-} from '@app/global-state/slices/explorers.slice';
+} from '#pkg/global-state/slices/explorers.slice';
 
 export async function addExplorerPanel(cwdSegmentsToClone?: CwdSegment[]) {
   let cwdSegmentsOfNewExplorer;

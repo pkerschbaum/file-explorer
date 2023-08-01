@@ -16,11 +16,11 @@ import { AnimatePresence } from 'framer-motion';
 import * as React from 'react';
 import styled from 'styled-components';
 
-import { Backdrop } from '@app/ui/components-library/Backdrop';
-import { Box } from '@app/ui/components-library/Box';
-import { useFramerMotionAnimations } from '@app/ui/components-library/DesignTokenContext';
-import { FocusScope } from '@app/ui/components-library/FocusScope';
-import { useUpdatePositionOnAnchorMovement } from '@app/ui/components-library/overlay';
+import { Backdrop } from '#pkg/ui/components-library/Backdrop';
+import { Box } from '#pkg/ui/components-library/Box';
+import { useFramerMotionAnimations } from '#pkg/ui/components-library/DesignTokenContext';
+import { FocusScope } from '#pkg/ui/components-library/FocusScope';
+import { useUpdatePositionOnAnchorMovement } from '#pkg/ui/components-library/overlay';
 
 export { OverlayProvider } from '@react-aria/overlays';
 

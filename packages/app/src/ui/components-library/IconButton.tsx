@@ -5,11 +5,11 @@ import { motion } from 'framer-motion';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 
-import { Box } from '@app/ui/components-library/Box';
-import { DESIGN_TOKENS } from '@app/ui/components-library/DesignTokenContext';
-import type { Placement } from '@app/ui/components-library/Tooltip';
-import { Tooltip, useTooltip } from '@app/ui/components-library/Tooltip';
-import type { ReactMotionProps } from '@app/ui/components-library/utils';
+import { Box } from '#pkg/ui/components-library/Box';
+import { DESIGN_TOKENS } from '#pkg/ui/components-library/DesignTokenContext';
+import type { Placement } from '#pkg/ui/components-library/Tooltip';
+import { Tooltip, useTooltip } from '#pkg/ui/components-library/Tooltip';
+import type { ReactMotionProps } from '#pkg/ui/components-library/utils';
 
 type IconButtonProps = IconButtonAriaProps &
   IconButtonComponentProps &

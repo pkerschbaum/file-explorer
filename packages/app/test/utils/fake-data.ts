@@ -1,12 +1,12 @@
 import dayjs from 'dayjs';
 
-import { CancellationTokenSource } from '@app/base/cancellation';
-import type { IFileStatWithMetadata } from '@app/base/files';
-import { network } from '@app/base/network';
-import { URI } from '@app/base/uri';
-import { uriHelper } from '@app/base/utils/uri-helper';
-import type { PasteProcessBase, AppProcess, DeleteProcessBase } from '@app/domain/types';
-import { DELETE_PROCESS_STATUS, PROCESS_TYPE, PASTE_PROCESS_STATUS } from '@app/domain/types';
+import { CancellationTokenSource } from '#pkg/base/cancellation';
+import type { IFileStatWithMetadata } from '#pkg/base/files';
+import { network } from '#pkg/base/network';
+import { URI } from '#pkg/base/uri';
+import { uriHelper } from '#pkg/base/utils/uri-helper';
+import type { PasteProcessBase, AppProcess, DeleteProcessBase } from '#pkg/domain/types';
+import { DELETE_PROCESS_STATUS, PROCESS_TYPE, PASTE_PROCESS_STATUS } from '#pkg/domain/types';
 
 export const fakeFileStat: IFileStatWithMetadata = {
   isDirectory: false,

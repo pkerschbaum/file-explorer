@@ -2,9 +2,9 @@ import type { IpcMainInvokeEvent } from 'electron';
 import { ipcMain } from 'electron';
 import invariant from 'tiny-invariant';
 
-import type { WindowRef } from '@app/index';
-import type { IpcWindow } from '@app/platform/electron/ipc/common/window';
-import { WINDOW_CHANNEL } from '@app/platform/electron/ipc/common/window';
+import type { WindowRef } from '#pkg/index';
+import type { IpcWindow } from '#pkg/platform/electron/ipc/common/window';
+import { WINDOW_CHANNEL } from '#pkg/platform/electron/ipc/common/window';
 
 export function registerListeners(windowRef: WindowRef): void {
   const minimizeHandler = createWindowMinimizeHandler(windowRef);

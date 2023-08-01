@@ -1,9 +1,9 @@
 import type { IpcMainInvokeEvent } from 'electron';
 import { ipcMain, shell } from 'electron';
 
-import { check } from '@app/base/utils/assert.util';
-import type { IpcShell } from '@app/platform/electron/ipc/common/shell';
-import { SHELL_CHANNEL } from '@app/platform/electron/ipc/common/shell';
+import { check } from '#pkg/base/utils/assert.util';
+import type { IpcShell } from '#pkg/platform/electron/ipc/common/shell';
+import { SHELL_CHANNEL } from '#pkg/platform/electron/ipc/common/shell';
 
 export function registerListeners(): void {
   ipcMain.handle(SHELL_CHANNEL.OPEN_PATH, openPathHandler);

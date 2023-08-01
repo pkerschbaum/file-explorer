@@ -1,16 +1,16 @@
 import * as React from 'react';
 
-import { errorsUtil } from '@app/base/utils/errors.util';
-import { formatter } from '@app/base/utils/formatter.util';
-import { uriHelper } from '@app/base/utils/uri-helper';
-import { useCwd } from '@app/global-state/slices/explorers.hooks';
+import { errorsUtil } from '#pkg/base/utils/errors.util';
+import { formatter } from '#pkg/base/utils/formatter.util';
+import { uriHelper } from '#pkg/base/utils/uri-helper';
+import { useCwd } from '#pkg/global-state/slices/explorers.hooks';
 import {
   changeCwd,
   copyCwdIntoClipboard,
   revealCwdInOSExplorer,
-} from '@app/operations/explorer.operations';
-import { APP_MESSAGE_SEVERITY, usePushAppMessage } from '@app/ui/AppMessagesContext';
-import type { MenuInstance } from '@app/ui/components-library';
+} from '#pkg/operations/explorer.operations';
+import { APP_MESSAGE_SEVERITY, usePushAppMessage } from '#pkg/ui/AppMessagesContext';
+import type { MenuInstance } from '#pkg/ui/components-library';
 import {
   Paper,
   Popover,
@@ -20,8 +20,8 @@ import {
   ArrowRightAltOutlinedIcon,
   FolderOutlinedIcon,
   ContentCopyOutlinedIcon,
-} from '@app/ui/components-library';
-import { ChangeCwdForm } from '@app/ui/cwd-breadcrumbs/ChangeCwdForm';
+} from '#pkg/ui/components-library';
+import { ChangeCwdForm } from '#pkg/ui/cwd-breadcrumbs/ChangeCwdForm';
 
 enum CWD_ACTIONS_MENU_ACTION {
   REVEAL_IN_OS_FILE_EXPLORER = 'reveal-in-os-file-explorer',

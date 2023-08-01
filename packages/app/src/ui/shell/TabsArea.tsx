@@ -1,18 +1,18 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 
-import { formatter } from '@app/base/utils/formatter.util';
-import type { ExplorerPanelEntry } from '@app/global-state/slices/explorers.hooks';
+import { formatter } from '#pkg/base/utils/formatter.util';
+import type { ExplorerPanelEntry } from '#pkg/global-state/slices/explorers.hooks';
 import {
   extractCwdSegmentsFromExplorerPanel,
   useIdOfFocusedExplorerPanel,
-} from '@app/global-state/slices/explorers.hooks';
+} from '#pkg/global-state/slices/explorers.hooks';
 import {
   addExplorerPanel,
   changeFocusedExplorer,
   removeExplorerPanel,
-} from '@app/operations/app.operations';
-import type { ButtonHandle } from '@app/ui/components-library';
+} from '#pkg/operations/app.operations';
+import type { ButtonHandle } from '#pkg/ui/components-library';
 import {
   Box,
   Button,
@@ -22,10 +22,10 @@ import {
   useTab,
   AddCircleOutlineOutlinedIcon,
   CloseOutlinedIcon,
-} from '@app/ui/components-library';
-import { PRINTED_KEY } from '@app/ui/constants';
-import { useRegisterGlobalShortcuts } from '@app/ui/GlobalShortcutsContext';
-import { TITLEBAR_HEIGHT } from '@app/ui/shell/constants';
+} from '#pkg/ui/components-library';
+import { PRINTED_KEY } from '#pkg/ui/constants';
+import { useRegisterGlobalShortcuts } from '#pkg/ui/GlobalShortcutsContext';
+import { TITLEBAR_HEIGHT } from '#pkg/ui/shell/constants';
 
 type TabsAreaProps = {
   explorersToShow: ExplorerPanelEntry[];

@@ -24,10 +24,10 @@
 
 import * as React from 'react';
 
-import { objects } from '@app/base/utils/objects.util';
-import { KEY_TO_VISUALIZATION_MAP } from '@app/ui/components-library/visual-key';
-import { PRINTED_KEY, doesKeyboardEventKeyMatchPrintedKey } from '@app/ui/constants';
-import { createContext } from '@app/ui/utils/react.util';
+import { objects } from '#pkg/base/utils/objects.util';
+import { KEY_TO_VISUALIZATION_MAP } from '#pkg/ui/components-library/visual-key';
+import { PRINTED_KEY, doesKeyboardEventKeyMatchPrintedKey } from '#pkg/ui/constants';
+import { createContext } from '#pkg/ui/utils/react.util';
 
 export const DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED = {
   datasetAttr: {

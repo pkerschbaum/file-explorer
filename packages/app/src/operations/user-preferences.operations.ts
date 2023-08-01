@@ -1,6 +1,6 @@
-import type { AvailableFileIconTheme } from '@app/domain/constants';
-import { actions } from '@app/global-state/slices/user.slice';
-import type { AvailableTheme } from '@app/ui/components-library';
+import type { AvailableFileIconTheme } from '#pkg/domain/constants';
+import { actions } from '#pkg/global-state/slices/user.slice';
+import type { AvailableTheme } from '#pkg/ui/components-library';
 
 export function setActiveTheme(newActiveTheme: AvailableTheme) {
   globalThis.modules.dispatch(actions.setActiveTheme({ theme: newActiveTheme }));

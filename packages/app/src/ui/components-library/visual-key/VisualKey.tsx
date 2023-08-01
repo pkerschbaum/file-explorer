@@ -1,9 +1,9 @@
 import type * as React from 'react';
 import styled from 'styled-components';
 
-import { assertIsUnreachable } from '@app/base/utils/assert.util';
-import { Box } from '@app/ui/components-library/Box';
-import { DESIGN_TOKENS } from '@app/ui/components-library/DesignTokenContext';
+import { assertIsUnreachable } from '#pkg/base/utils/assert.util';
+import { Box } from '#pkg/ui/components-library/Box';
+import { DESIGN_TOKENS } from '#pkg/ui/components-library/DesignTokenContext';
 
 type VisualKeyProps = IconVisualKey | CharVisualKey;
 

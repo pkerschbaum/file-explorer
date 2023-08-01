@@ -55,21 +55,21 @@ module.exports = {
         groups: [['builtin', 'external'], 'parent', 'sibling', 'index'],
         pathGroups: [
           {
-            pattern: '@app/**',
+            pattern: '#pkg/**',
             group: 'parent',
           },
           {
-            pattern: '@app-test/**',
-            group: 'parent',
-            position: 'after',
-          },
-          {
-            pattern: '@app-storybook/**',
+            pattern: '#pkg-test/**',
             group: 'parent',
             position: 'after',
           },
           {
-            pattern: '@app-playwright/**',
+            pattern: '#pkg-storybook/**',
+            group: 'parent',
+            position: 'after',
+          },
+          {
+            pattern: '#pkg-playwright/**',
             group: 'parent',
             position: 'after',
           },
@@ -103,7 +103,7 @@ module.exports = {
         selector: "MemberExpression[object.name='JSON'][property.name='stringify']",
         message:
           '`JSON.stringify` does throw on circular references; it might be safe were you attempt to use it, ' +
-          'but we suggest to just use `json.safeStringify` from @app/base/utils/json.util.ts instead.',
+          'but we suggest to just use `json.safeStringify` from #pkg/base/utils/json.util.ts instead.',
       },
       {
         selector: "MemberExpression[object.name='URI'][property.name='from']",
@@ -169,7 +169,7 @@ module.exports = {
                 pattern: /^@mui\/icons-material/,
                 errorMessage:
                   "Don't import from @mui/icons-material directly. " +
-                  'Add a wrapped icon in @app/ui/component-library/icons.tsx instead (so that behavior of all icons is consistent).',
+                  'Add a wrapped icon in #pkg/ui/component-library/icons.tsx instead (so that behavior of all icons is consistent).',
               },
             ],
           },
@@ -192,7 +192,7 @@ module.exports = {
             allowedPatterns: [/^@react-aria/, /^@react-stately/],
             forbiddenPatterns: [
               {
-                pattern: /^@app\/ui\/components-library$/,
+                pattern: /^#pkg\/ui\/components-library$/,
                 errorMessage:
                   'Inside the components-library, prefer to import directly from the other components instead of the index file.',
               },
@@ -204,12 +204,12 @@ module.exports = {
               {
                 pattern: /^(?:@react-aria(?!\/utils|\/interactions)|@react-stately)/,
                 errorMessage:
-                  "Don't import from @react-aria or @react-stately directly. Implement reusable components in the component library (@app/ui/component-library).",
+                  "Don't import from @react-aria or @react-stately directly. Implement reusable components in the component library (#pkg/ui/component-library).",
               },
               {
-                pattern: /^@app\/ui\/components-library\/[A-Z].+/,
+                pattern: /^#pkg\/ui\/components-library\/[A-Z].+/,
                 errorMessage:
-                  'Prefer to just use the import "@app/ui/components-library" instead of reaching for the component files.',
+                  'Prefer to just use the import "#pkg/ui/components-library" instead of reaching for the component files.',
               },
             ],
           },
@@ -310,7 +310,7 @@ module.exports = {
               'mime',
               'serialize-error',
               'tiny-invariant',
-              /^@app.+/,
+              /^#pkg.+/,
               /^@pkerschbaum\/code-oss-file-icon-theme/,
             ],
           },

@@ -1,7 +1,7 @@
 import { queries } from '@playwright-testing-library/test';
 import { expect, test } from '@playwright/test';
 
-import { bootstrap } from '@app-playwright/playwright.util';
+import { bootstrap } from '#pkg-playwright/playwright.util';
 
 test.describe('PasteProcess [visual]', () => {
   test('Running Determining Total Size', async ({ page }) => {

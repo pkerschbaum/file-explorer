@@ -1,16 +1,16 @@
 import type * as React from 'react';
 import styled from 'styled-components';
 
-import { windowClose, windowMinimize, windowToggleMaximized } from '@app/operations/app.operations';
-import { commonStyles } from '@app/ui/common-styles';
+import { windowClose, windowMinimize, windowToggleMaximized } from '#pkg/operations/app.operations';
+import { commonStyles } from '#pkg/ui/common-styles';
 import {
   Box,
   Button,
   CloseOutlinedIcon,
   FullscreenOutlinedIcon,
   MinimizeOutlinedIcon,
-} from '@app/ui/components-library';
-import { ROOTCONTAINER_PADDING_FACTOR, WINDOW_CONTROLS_WIDTH } from '@app/ui/shell/constants';
+} from '#pkg/ui/components-library';
+import { ROOTCONTAINER_PADDING_FACTOR, WINDOW_CONTROLS_WIDTH } from '#pkg/ui/shell/constants';
 
 export const TITLE_BAR_GRID_AREA = 'shell-title-bar';
 

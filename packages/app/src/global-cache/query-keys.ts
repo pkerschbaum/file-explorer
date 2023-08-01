@@ -1,4 +1,4 @@
-import type { IconClassesQuery } from '@app/global-cache/resource-icons';
+import type { IconClassesQuery } from '#pkg/global-cache/resource-icons';
 
 export const RESOURCES_OF_DIRECTORY_KEY_PREFIX = 'resources-of-directory';
 type ResourcesOfDirectoryOptions = { directoryId: string; resolveMetadata?: boolean };

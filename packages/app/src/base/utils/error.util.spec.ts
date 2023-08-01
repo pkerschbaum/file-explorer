@@ -1,4 +1,4 @@
-import { errorsUtil } from '@app/base/utils/errors.util';
+import { errorsUtil } from '#pkg/base/utils/errors.util';
 
 describe('errors.util', () => {
   describe('computeVerboseMessageFromError', () => {

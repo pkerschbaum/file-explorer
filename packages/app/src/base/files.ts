@@ -1,6 +1,6 @@
 import * as codeOSSFiles from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 
-import type { UriComponents } from '@app/base/uri';
+import type { UriComponents } from '#pkg/base/uri';
 
 export type IFileStat = Omit<codeOSSFiles.IFileStat, 'resource' | 'children'> & {
   readonly resource: UriComponents;

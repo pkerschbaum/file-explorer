@@ -1,1 +1,1 @@
-export * from '@app/ui/resource-icon/ResourceIcon';
+export * from '#pkg/ui/resource-icon/ResourceIcon';

@@ -1,11 +1,11 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
-import { path } from '@app/base/path';
-import { URI } from '@app/base/uri';
-import { check } from '@app/base/utils/assert.util';
-import { Box, Button, commonComponentStyles, TextField } from '@app/ui/components-library';
-import { useResourcesOfDirectory } from '@app/ui/hooks/resources.hooks';
+import { path } from '#pkg/base/path';
+import { URI } from '#pkg/base/uri';
+import { check } from '#pkg/base/utils/assert.util';
+import { Box, Button, commonComponentStyles, TextField } from '#pkg/ui/components-library';
+import { useResourcesOfDirectory } from '#pkg/ui/hooks/resources.hooks';
 
 type ChangeCwdFormProps = {
   isOpen: boolean;

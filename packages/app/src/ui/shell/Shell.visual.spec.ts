@@ -7,7 +7,7 @@ import {
   letBrowserUpdateStuffDependingOnClock,
   retrievePageScreenshot,
   waitForAnimations,
-} from '@app-playwright/playwright.util';
+} from '#pkg-playwright/playwright.util';
 
 test.describe('Shell [visual]', () => {
   test('with processes', async ({ page }) => {

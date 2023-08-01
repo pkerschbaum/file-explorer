@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import type { UriComponents } from '@app/base/uri';
-import { uriHelper } from '@app/base/utils/uri-helper';
-import { commonStyles } from '@app/ui/common-styles';
-import { Box, InfoOutlinedIcon, Tooltip, useTooltip } from '@app/ui/components-library';
+import type { UriComponents } from '#pkg/base/uri';
+import { uriHelper } from '#pkg/base/utils/uri-helper';
+import { commonStyles } from '#pkg/ui/common-styles';
+import { Box, InfoOutlinedIcon, Tooltip, useTooltip } from '#pkg/ui/components-library';
 
 const CUTOFF_INDEX = 2;
 

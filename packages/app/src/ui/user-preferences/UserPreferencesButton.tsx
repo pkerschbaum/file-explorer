@@ -8,13 +8,13 @@ import {
   Popover,
   SettingsIcon,
   usePopover,
-} from '@app/ui/components-library';
+} from '#pkg/ui/components-library';
 import {
   PREFERENCES_BUTTON_WIDTH,
   ROOTCONTAINER_PADDING_FACTOR,
   TITLEBAR_HEIGHT,
-} from '@app/ui/shell/constants';
-import { UserPreferencesArea } from '@app/ui/user-preferences/UserPreferencesArea';
+} from '#pkg/ui/shell/constants';
+import { UserPreferencesArea } from '#pkg/ui/user-preferences/UserPreferencesArea';
 
 type UserPreferencesButtonProps = {
   customTitleBarUsed: boolean;

@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { useImmer } from 'use-immer';
 
-import type { UpdateFn } from '@app/domain/types';
-import { useSegmentUri } from '@app/global-state/slices/explorers.hooks';
-import { useSegmentIdx } from '@app/ui/cwd-segment-context/CwdSegmentRoot.context';
-import { useExplorerId } from '@app/ui/explorer-context';
-import { createSelectableContext } from '@app/ui/utils/react.util';
+import type { UpdateFn } from '#pkg/domain/types';
+import { useSegmentUri } from '#pkg/global-state/slices/explorers.hooks';
+import { useSegmentIdx } from '#pkg/ui/cwd-segment-context/CwdSegmentRoot.context';
+import { useExplorerId } from '#pkg/ui/explorer-context';
+import { createSelectableContext } from '#pkg/ui/utils/react.util';
 
 export type CwdSegmentState = {
   keyOfResourceToRename: string | undefined;

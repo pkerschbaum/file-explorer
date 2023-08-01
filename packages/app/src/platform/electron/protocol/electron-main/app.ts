@@ -6,14 +6,14 @@ import mime from 'mime';
 import sharp from 'sharp';
 import invariant from 'tiny-invariant';
 
-import { URI } from '@app/base/uri';
-import { check } from '@app/base/utils/assert.util';
-import { numbers } from '@app/base/utils/numbers.util';
-import { uriHelper } from '@app/base/utils/uri-helper';
+import { URI } from '#pkg/base/uri';
+import { check } from '#pkg/base/utils/assert.util';
+import { numbers } from '#pkg/base/utils/numbers.util';
+import { uriHelper } from '#pkg/base/utils/uri-helper';
 import {
   NATIVE_FILE_ICON_PROTOCOL_SCHEME,
   THUMBNAIL_PROTOCOL_SCHEME,
-} from '@app/platform/electron/protocol/common/app';
+} from '#pkg/platform/electron/protocol/common/app';
 
 const DEFAULT_ERROR = {
   error: -2, // "A generic failure occurred." from https://source.chromium.org/chromium/chromium/src/+/master:net/base/net_error_list.h;l=32

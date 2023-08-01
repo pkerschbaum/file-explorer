@@ -1,16 +1,16 @@
 import * as React from 'react';
 
-import { FileKind } from '@app/base/files';
-import type { UriComponents } from '@app/base/uri';
-import { uriHelper } from '@app/base/utils/uri-helper';
-import { config } from '@app/config';
-import type { ResourceStat, ResourceForUI } from '@app/domain/types';
-import { RESOURCE_TYPE } from '@app/domain/types';
-import { useResourceIconClasses } from '@app/global-cache/resource-icons';
-import { useResources } from '@app/global-cache/resources';
-import { useResourcesToTags } from '@app/global-state/slices/tags.hooks';
-import { createLogger } from '@app/operations/create-logger';
-import { getTagsOfResource } from '@app/operations/resource.operations';
+import { FileKind } from '#pkg/base/files';
+import type { UriComponents } from '#pkg/base/uri';
+import { uriHelper } from '#pkg/base/utils/uri-helper';
+import { config } from '#pkg/config';
+import type { ResourceStat, ResourceForUI } from '#pkg/domain/types';
+import { RESOURCE_TYPE } from '#pkg/domain/types';
+import { useResourceIconClasses } from '#pkg/global-cache/resource-icons';
+import { useResources } from '#pkg/global-cache/resources';
+import { useResourcesToTags } from '#pkg/global-state/slices/tags.hooks';
+import { createLogger } from '#pkg/operations/create-logger';
+import { getTagsOfResource } from '#pkg/operations/resource.operations';
 
 const logger = createLogger('resources.hooks');
 

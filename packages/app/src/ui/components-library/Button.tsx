@@ -6,10 +6,10 @@ import * as React from 'react';
 import styled, { css } from 'styled-components';
 import invariant from 'tiny-invariant';
 
-import { Box } from '@app/ui/components-library/Box';
-import { Paper } from '@app/ui/components-library/Paper';
-import type { ReactMotionProps } from '@app/ui/components-library/utils';
-import { componentLibraryUtils } from '@app/ui/components-library/utils';
+import { Box } from '#pkg/ui/components-library/Box';
+import { Paper } from '#pkg/ui/components-library/Paper';
+import type { ReactMotionProps } from '#pkg/ui/components-library/utils';
+import { componentLibraryUtils } from '#pkg/ui/components-library/utils';
 
 type ButtonProps = ButtonAriaProps &
   ButtonComponentProps &

@@ -1,11 +1,11 @@
 import { createAction, createReducer } from '@reduxjs/toolkit';
 
-import type { CancellationTokenSource } from '@app/base/cancellation';
-import type { UriComponents } from '@app/base/uri';
-import { arrays } from '@app/base/utils/arrays.util';
-import type { AppProcess, DeleteProcess } from '@app/domain/types';
-import { PASTE_PROCESS_STATUS, PROCESS_TYPE, DELETE_PROCESS_STATUS } from '@app/domain/types';
-import { createLogger } from '@app/operations/create-logger';
+import type { CancellationTokenSource } from '#pkg/base/cancellation';
+import type { UriComponents } from '#pkg/base/uri';
+import { arrays } from '#pkg/base/utils/arrays.util';
+import type { AppProcess, DeleteProcess } from '#pkg/domain/types';
+import { PASTE_PROCESS_STATUS, PROCESS_TYPE, DELETE_PROCESS_STATUS } from '#pkg/domain/types';
+import { createLogger } from '#pkg/operations/create-logger';
 
 export type ProcessesSliceState = {
   draftPasteState?: {

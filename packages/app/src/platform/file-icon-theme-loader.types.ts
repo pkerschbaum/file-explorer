@@ -1,4 +1,4 @@
-import type { FileIconTheme } from '@app/domain/constants';
+import type { FileIconTheme } from '#pkg/domain/constants';
 
 export type PlatformFileIconThemeLoader = {
   loadCssRules: (fileIconThemePathFragment: FileIconTheme['fsPathFragment']) => Promise<string>;

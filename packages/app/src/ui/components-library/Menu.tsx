@@ -15,9 +15,9 @@ import type { ItemProps as ReactAriaItemProps, Node } from '@react-types/shared'
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 
-import { Paper } from '@app/ui/components-library/Paper';
-import type { PopoverInstance } from '@app/ui/components-library/Popover';
-import { Popover } from '@app/ui/components-library/Popover';
+import { Paper } from '#pkg/ui/components-library/Paper';
+import type { PopoverInstance } from '#pkg/ui/components-library/Popover';
+import { Popover } from '#pkg/ui/components-library/Popover';
 
 type UseMenuArgs<TriggerHTMLElement extends HTMLElement> = {
   triggerRef: React.RefObject<TriggerHTMLElement>;

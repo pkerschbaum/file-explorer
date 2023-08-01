@@ -1,9 +1,9 @@
 import { queries } from '@playwright-testing-library/test';
 import { expect, test } from '@playwright/test';
 
-import type { AvailableFileIconTheme } from '@app/domain/constants';
+import type { AvailableFileIconTheme } from '#pkg/domain/constants';
 
-import { bootstrap } from '@app-playwright/playwright.util';
+import { bootstrap } from '#pkg-playwright/playwright.util';
 
 test.describe('UserPreferences [logic]', () => {
   test('Change of theme should be reflected in global state and persisted storage', async ({

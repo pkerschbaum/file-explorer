@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { useQuery } from 'react-query';
 
-import { loadIconClasses } from '@app/base/file-icon-theme';
-import type { FileKind } from '@app/base/files';
-import type { UriComponents } from '@app/base/uri';
-import { QUERY_KEYS } from '@app/global-cache/query-keys';
+import { loadIconClasses } from '#pkg/base/file-icon-theme';
+import type { FileKind } from '#pkg/base/files';
+import type { UriComponents } from '#pkg/base/uri';
+import { QUERY_KEYS } from '#pkg/global-cache/query-keys';
 
 export declare namespace IconClassesQuery {
   export type Args = { uri?: UriComponents; resourceKind: FileKind };

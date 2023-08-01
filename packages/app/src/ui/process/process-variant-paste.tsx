@@ -1,11 +1,11 @@
 import styled, { css } from 'styled-components';
 
-import { assertIsUnreachable } from '@app/base/utils/assert.util';
-import { byteSize } from '@app/base/utils/byte-size.util';
-import { formatter } from '@app/base/utils/formatter.util';
-import { numbers } from '@app/base/utils/numbers.util';
-import type { PasteProcess as PasteProcessType } from '@app/domain/types';
-import { PASTE_PROCESS_STATUS } from '@app/domain/types';
+import { assertIsUnreachable } from '#pkg/base/utils/assert.util';
+import { byteSize } from '#pkg/base/utils/byte-size.util';
+import { formatter } from '#pkg/base/utils/formatter.util';
+import { numbers } from '#pkg/base/utils/numbers.util';
+import type { PasteProcess as PasteProcessType } from '#pkg/domain/types';
+import { PASTE_PROCESS_STATUS } from '#pkg/domain/types';
 import {
   Box,
   Button,
@@ -13,9 +13,9 @@ import {
   ContentCutOutlinedIcon,
   DoubleArrowIcon,
   LinearProgress,
-} from '@app/ui/components-library';
-import type { ProcessVariantProps } from '@app/ui/process/Process';
-import { ProcessResourcesList } from '@app/ui/process/ProcessResourcesList';
+} from '#pkg/ui/components-library';
+import type { ProcessVariantProps } from '#pkg/ui/process/Process';
+import { ProcessResourcesList } from '#pkg/ui/process/ProcessResourcesList';
 
 type StatusMetaInfos = {
   [status in PASTE_PROCESS_STATUS]: {

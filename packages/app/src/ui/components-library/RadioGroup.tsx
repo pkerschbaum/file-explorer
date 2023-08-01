@@ -13,9 +13,9 @@ import type {
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 
-import { Box } from '@app/ui/components-library/Box';
-import { CircleIcon, CircleOutlinedIcon } from '@app/ui/components-library/icons';
-import { createContext } from '@app/ui/utils/react.util';
+import { Box } from '#pkg/ui/components-library/Box';
+import { CircleIcon, CircleOutlinedIcon } from '#pkg/ui/components-library/icons';
+import { createContext } from '#pkg/ui/utils/react.util';
 
 const RadioGroupContext = createContext<RadioGroupState>('RadioGroupContext');
 const useRadioGroupContext = RadioGroupContext.useContextValue;

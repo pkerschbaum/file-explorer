@@ -1,15 +1,15 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 
-import { platform } from '@app/base/platform';
-import { useExplorerPanels } from '@app/global-state/slices/explorers.hooks';
-import { Box } from '@app/ui/components-library';
-import { ExplorerPanel, EXPLORER_PANEL_GRID_AREA } from '@app/ui/explorer-panel/ExplorerPanel';
-import { ROOTCONTAINER_PADDING_FACTOR, TITLEBAR_HEIGHT } from '@app/ui/shell/constants';
-import { ProcessesArea } from '@app/ui/shell/ProcessesArea';
-import { TabsArea } from '@app/ui/shell/TabsArea';
-import { TitleBar, TITLE_BAR_GRID_AREA } from '@app/ui/shell/TitleBar';
-import { UserPreferencesButton } from '@app/ui/user-preferences';
+import { platform } from '#pkg/base/platform';
+import { useExplorerPanels } from '#pkg/global-state/slices/explorers.hooks';
+import { Box } from '#pkg/ui/components-library';
+import { ExplorerPanel, EXPLORER_PANEL_GRID_AREA } from '#pkg/ui/explorer-panel/ExplorerPanel';
+import { ROOTCONTAINER_PADDING_FACTOR, TITLEBAR_HEIGHT } from '#pkg/ui/shell/constants';
+import { ProcessesArea } from '#pkg/ui/shell/ProcessesArea';
+import { TabsArea } from '#pkg/ui/shell/TabsArea';
+import { TitleBar, TITLE_BAR_GRID_AREA } from '#pkg/ui/shell/TitleBar';
+import { UserPreferencesButton } from '#pkg/ui/user-preferences';
 
 export const TABS_AND_PROCESSES_GRID_AREA = 'shell-tabs-and-processes';
 

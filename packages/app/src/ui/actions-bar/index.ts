@@ -1,1 +1,1 @@
-export * from '@app/ui/actions-bar/ActionsBar';
+export * from '#pkg/ui/actions-bar/ActionsBar';

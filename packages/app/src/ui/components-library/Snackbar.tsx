@@ -1,11 +1,11 @@
 import type * as React from 'react';
 import styled, { css } from 'styled-components';
 
-import { assertIsUnreachable, check } from '@app/base/utils/assert.util';
-import { Box } from '@app/ui/components-library/Box';
-import { Button } from '@app/ui/components-library/Button';
-import { useFramerMotionAnimations } from '@app/ui/components-library/DesignTokenContext';
-import { ErrorOutlineOutlinedIcon } from '@app/ui/components-library/icons';
+import { assertIsUnreachable, check } from '#pkg/base/utils/assert.util';
+import { Box } from '#pkg/ui/components-library/Box';
+import { Button } from '#pkg/ui/components-library/Button';
+import { useFramerMotionAnimations } from '#pkg/ui/components-library/DesignTokenContext';
+import { ErrorOutlineOutlinedIcon } from '#pkg/ui/components-library/icons';
 
 export enum SNACKBAR_SEVERITY {
   WARNING = 'WARNING',

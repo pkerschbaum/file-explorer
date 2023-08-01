@@ -1,19 +1,19 @@
 import * as ReactDOM from 'react-dom/client';
 import invariant from 'tiny-invariant';
 
-import { createStoreInstance } from '@app/global-state/store';
-import { setGlobalModules } from '@app/operations/global-modules';
+import { createStoreInstance } from '#pkg/global-state/store';
+import { setGlobalModules } from '#pkg/operations/global-modules';
 import {
   readStorageState,
   reviveGlobalStateFromStorageState,
-} from '@app/operations/storage-state.operations';
-import { createLogWriter } from '@app/platform/browser/log-writer';
-import { createFileIconThemeLoader } from '@app/platform/electron/file-icon-theme-loader';
-import { createFileSystem } from '@app/platform/electron/file-system';
-import { createNativeHost } from '@app/platform/electron/native-host';
-import { createPersistentStorage } from '@app/platform/electron/persistent-storage';
-import { createQueryClient, Globals } from '@app/ui/Globals';
-import { Shell } from '@app/ui/shell';
+} from '#pkg/operations/storage-state.operations';
+import { createLogWriter } from '#pkg/platform/browser/log-writer';
+import { createFileIconThemeLoader } from '#pkg/platform/electron/file-icon-theme-loader';
+import { createFileSystem } from '#pkg/platform/electron/file-system';
+import { createNativeHost } from '#pkg/platform/electron/native-host';
+import { createPersistentStorage } from '#pkg/platform/electron/persistent-storage';
+import { createQueryClient, Globals } from '#pkg/ui/Globals';
+import { Shell } from '#pkg/ui/shell';
 
 async function rendererScriptEntryPoint() {
   // set up platform modules

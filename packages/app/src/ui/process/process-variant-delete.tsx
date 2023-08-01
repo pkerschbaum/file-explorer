@@ -1,19 +1,19 @@
 import styled from 'styled-components';
 
-import { assertIsUnreachable } from '@app/base/utils/assert.util';
-import { uriHelper } from '@app/base/utils/uri-helper';
-import type { DeleteProcess as DeleteProcessType } from '@app/domain/types';
-import { DELETE_PROCESS_STATUS } from '@app/domain/types';
-import { removeProcess, runDeleteProcess } from '@app/operations/resource.operations';
+import { assertIsUnreachable } from '#pkg/base/utils/assert.util';
+import { uriHelper } from '#pkg/base/utils/uri-helper';
+import type { DeleteProcess as DeleteProcessType } from '#pkg/domain/types';
+import { DELETE_PROCESS_STATUS } from '#pkg/domain/types';
+import { removeProcess, runDeleteProcess } from '#pkg/operations/resource.operations';
 import {
   Box,
   Button,
   DeleteForeverOutlinedIcon,
   DeleteOutlinedIcon,
   LinearProgress,
-} from '@app/ui/components-library';
-import type { ProcessVariantProps } from '@app/ui/process/Process';
-import { ProcessResourcesList } from '@app/ui/process/ProcessResourcesList';
+} from '#pkg/ui/components-library';
+import type { ProcessVariantProps } from '#pkg/ui/process/Process';
+import { ProcessResourcesList } from '#pkg/ui/process/ProcessResourcesList';
 
 type StatusMetaInfos = {
   [status in DELETE_PROCESS_STATUS]: {

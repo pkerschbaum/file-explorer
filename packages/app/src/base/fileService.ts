@@ -2,8 +2,8 @@ import * as codeOSSUri from '@pkerschbaum/code-oss-file-service/out/vs/base/comm
 import type * as codeOSSFiles from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 import * as codeOSSFileService from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/fileService';
 
-import { VSBuffer, type VSBufferReadable, type VSBufferReadableStream } from '@app/base/buffer';
-import type { Event } from '@app/base/event';
+import { VSBuffer, type VSBufferReadable, type VSBufferReadableStream } from '#pkg/base/buffer';
+import type { Event } from '#pkg/base/event';
 import type {
   FileDeleteOptions,
   IFileStat,
@@ -11,10 +11,10 @@ import type {
   IResolveFileOptions,
   IResolveMetadataFileOptions,
   IWatchOptions,
-} from '@app/base/files';
-import type { IDisposable } from '@app/base/lifecycle';
-import type { CoordinationArgs } from '@app/base/resources';
-import type { UriComponents } from '@app/base/uri';
+} from '#pkg/base/files';
+import type { IDisposable } from '#pkg/base/lifecycle';
+import type { CoordinationArgs } from '#pkg/base/resources';
+import type { UriComponents } from '#pkg/base/uri';
 
 export class FileService extends codeOSSFileService.FileService {
   public override createFolder(

@@ -4,9 +4,9 @@ import type { AriaProgressBarProps } from '@react-types/progress';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 
-import { check } from '@app/base/utils/assert.util';
-import { Box } from '@app/ui/components-library/Box';
-import { componentLibraryUtils } from '@app/ui/components-library/utils';
+import { check } from '#pkg/base/utils/assert.util';
+import { Box } from '#pkg/ui/components-library/Box';
+import { componentLibraryUtils } from '#pkg/ui/components-library/utils';
 
 type LinearProgressProps = LinearProgressAriaProps &
   Omit<

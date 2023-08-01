@@ -1,4 +1,4 @@
-import { assertIsUnreachable } from '@app/base/utils/assert.util';
+import { assertIsUnreachable } from '#pkg/base/utils/assert.util';
 
 export const safe_process = (function safe_readVariable() {
   try {

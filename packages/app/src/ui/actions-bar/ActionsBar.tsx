@@ -2,12 +2,12 @@ import * as React from 'react';
 import styled from 'styled-components';
 import invariant from 'tiny-invariant';
 
-import { assertIsUnreachable, check } from '@app/base/utils/assert.util';
-import { formatter } from '@app/base/utils/formatter.util';
-import { uriHelper } from '@app/base/utils/uri-helper';
-import { useDraftPasteState } from '@app/global-state/slices/processes.hooks';
-import { CreateFolder } from '@app/ui/actions-bar/CreateFolder';
-import type { ButtonHandle } from '@app/ui/components-library';
+import { assertIsUnreachable, check } from '#pkg/base/utils/assert.util';
+import { formatter } from '#pkg/base/utils/formatter.util';
+import { uriHelper } from '#pkg/base/utils/uri-helper';
+import { useDraftPasteState } from '#pkg/global-state/slices/processes.hooks';
+import { CreateFolder } from '#pkg/ui/actions-bar/CreateFolder';
+import type { ButtonHandle } from '#pkg/ui/components-library';
 import {
   Box,
   Button,
@@ -22,8 +22,8 @@ import {
   Tooltip,
   useTooltip,
   ViewComfyIcon,
-} from '@app/ui/components-library';
-import { PRINTED_KEY } from '@app/ui/constants';
+} from '#pkg/ui/components-library';
+import { PRINTED_KEY } from '#pkg/ui/constants';
 import {
   useFilterInput,
   useSelectedShownResources,
@@ -37,13 +37,13 @@ import {
   useRegisterCwdSegmentShortcuts,
   useSetActiveResourcesView,
   useSelectAll,
-} from '@app/ui/cwd-segment-context';
+} from '#pkg/ui/cwd-segment-context';
 import {
   DATA_ATTRIBUTE_WINDOW_KEYDOWNHANDLERS_ENABLED,
   ShortcutPriority,
-} from '@app/ui/GlobalShortcutsContext';
-import { useClipboardResources } from '@app/ui/hooks/clipboard-resources.hooks';
-import { useDebouncedValue } from '@app/ui/utils/react.util';
+} from '#pkg/ui/GlobalShortcutsContext';
+import { useClipboardResources } from '#pkg/ui/hooks/clipboard-resources.hooks';
+import { useDebouncedValue } from '#pkg/ui/utils/react.util';
 
 export const ActionsBar: React.FC = () => {
   const draftPasteState = useDraftPasteState();

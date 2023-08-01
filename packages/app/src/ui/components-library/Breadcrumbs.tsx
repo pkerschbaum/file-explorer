@@ -7,7 +7,7 @@ import type { AriaBreadcrumbItemProps, SpectrumBreadcrumbsProps } from '@react-t
 import type * as React from 'react';
 import styled from 'styled-components';
 
-import { Box } from '@app/ui/components-library/Box';
+import { Box } from '#pkg/ui/components-library/Box';
 
 type BreadcrumbsProps = BreadcrumbsAriaProps &
   Omit<React.ComponentPropsWithoutRef<'nav'>, keyof BreadcrumbsAriaProps>;

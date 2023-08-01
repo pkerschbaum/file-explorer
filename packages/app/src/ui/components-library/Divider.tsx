@@ -4,7 +4,7 @@ import { mergeProps } from '@react-aria/utils';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 
-import { Box } from '@app/ui/components-library/Box';
+import { Box } from '#pkg/ui/components-library/Box';
 
 type DividerProps = DividerAriaProps &
   Omit<

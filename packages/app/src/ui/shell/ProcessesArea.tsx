@@ -1,11 +1,11 @@
 import type * as React from 'react';
 import styled from 'styled-components';
 
-import { arrays } from '@app/base/utils/arrays.util';
-import { useProcesses } from '@app/global-state/slices/processes.hooks';
-import { Box } from '@app/ui/components-library';
-import { Process } from '@app/ui/process';
-import { ROOTCONTAINER_PADDING_FACTOR } from '@app/ui/shell/constants';
+import { arrays } from '#pkg/base/utils/arrays.util';
+import { useProcesses } from '#pkg/global-state/slices/processes.hooks';
+import { Box } from '#pkg/ui/components-library';
+import { Process } from '#pkg/ui/process';
+import { ROOTCONTAINER_PADDING_FACTOR } from '#pkg/ui/shell/constants';
 
 export const ProcessesArea: React.FC = () => {
   const processes = useProcesses();

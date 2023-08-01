@@ -1,7 +1,7 @@
 import * as codeOSSFileIconTheme from '@pkerschbaum/code-oss-file-icon-theme';
 
-import type { IFileService } from '@app/base/files';
-import { URI, UriComponents } from '@app/base/uri';
+import type { IFileService } from '#pkg/base/files';
+import { URI, UriComponents } from '#pkg/base/uri';
 
 export function loadFileIconThemeCssRules({
   fileIconThemeUri,

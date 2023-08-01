@@ -1,5 +1,5 @@
-import { path } from '@app/base/path';
-import { ELECTRON_PROCESS_TYPE, typeOfActiveElectronProcess } from '@app/base/utils/electron.util';
+import { path } from '#pkg/base/path';
+import { ELECTRON_PROCESS_TYPE, typeOfActiveElectronProcess } from '#pkg/base/utils/electron.util';
 
 if (typeOfActiveElectronProcess !== ELECTRON_PROCESS_TYPE.MAIN) {
   throw new Error(`should be in main process here, but is not`);

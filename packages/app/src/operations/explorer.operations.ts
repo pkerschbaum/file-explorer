@@ -1,30 +1,30 @@
 import invariant from 'tiny-invariant';
 
-import { CancellationTokenSource } from '@app/base/cancellation';
-import { CustomError } from '@app/base/custom-error';
-import type { IFileStat } from '@app/base/files';
-import { path } from '@app/base/path';
-import { platform } from '@app/base/platform';
-import { ReportProgressArgs, resources } from '@app/base/resources';
-import { URI, UriComponents } from '@app/base/uri';
-import { check } from '@app/base/utils/assert.util';
-import { formatter } from '@app/base/utils/formatter.util';
-import { numbers } from '@app/base/utils/numbers.util';
-import { uriHelper } from '@app/base/utils/uri-helper';
-import { uuid } from '@app/base/uuid';
-import type { ResourceForUI, UpdateFn } from '@app/domain/types';
-import { PASTE_PROCESS_STATUS, RESOURCE_TYPE } from '@app/domain/types';
-import { mapFileStatToResource, refreshResourcesOfDirectory } from '@app/global-cache/resources';
-import { extractCwdFromExplorerPanel } from '@app/global-state/slices/explorers.hooks';
+import { CancellationTokenSource } from '#pkg/base/cancellation';
+import { CustomError } from '#pkg/base/custom-error';
+import type { IFileStat } from '#pkg/base/files';
+import { path } from '#pkg/base/path';
+import { platform } from '#pkg/base/platform';
+import { ReportProgressArgs, resources } from '#pkg/base/resources';
+import { URI, UriComponents } from '#pkg/base/uri';
+import { check } from '#pkg/base/utils/assert.util';
+import { formatter } from '#pkg/base/utils/formatter.util';
+import { numbers } from '#pkg/base/utils/numbers.util';
+import { uriHelper } from '#pkg/base/utils/uri-helper';
+import { uuid } from '#pkg/base/uuid';
+import type { ResourceForUI, UpdateFn } from '#pkg/domain/types';
+import { PASTE_PROCESS_STATUS, RESOURCE_TYPE } from '#pkg/domain/types';
+import { mapFileStatToResource, refreshResourcesOfDirectory } from '#pkg/global-cache/resources';
+import { extractCwdFromExplorerPanel } from '#pkg/global-state/slices/explorers.hooks';
 import type {
   REASON_FOR_SELECTION_CHANGE,
   RenameHistoryKeys,
   ResourcesView,
-} from '@app/global-state/slices/explorers.slice';
-import { actions as explorerActions } from '@app/global-state/slices/explorers.slice';
-import { actions as processesActions } from '@app/global-state/slices/processes.slice';
-import { createLogger } from '@app/operations/create-logger';
-import { executeCopyOrMove, openFiles, resolveDeep } from '@app/operations/resource.operations';
+} from '#pkg/global-state/slices/explorers.slice';
+import { actions as explorerActions } from '#pkg/global-state/slices/explorers.slice';
+import { actions as processesActions } from '#pkg/global-state/slices/processes.slice';
+import { createLogger } from '#pkg/operations/create-logger';
+import { executeCopyOrMove, openFiles, resolveDeep } from '#pkg/operations/resource.operations';
 
 const UPDATE_INTERVAL_MS = 500;
 const logger = createLogger('explorer.hooks');

@@ -1,12 +1,12 @@
 import { useQuery } from 'react-query';
 
-import { CustomError } from '@app/base/custom-error';
-import type { IFileStat } from '@app/base/files';
-import type { UriComponents } from '@app/base/uri';
-import { uriHelper } from '@app/base/utils/uri-helper';
-import type { ResourceStat } from '@app/domain/types';
-import { RESOURCE_TYPE } from '@app/domain/types';
-import { QUERY_KEYS } from '@app/global-cache/query-keys';
+import { CustomError } from '#pkg/base/custom-error';
+import type { IFileStat } from '#pkg/base/files';
+import type { UriComponents } from '#pkg/base/uri';
+import { uriHelper } from '#pkg/base/utils/uri-helper';
+import type { ResourceStat } from '#pkg/domain/types';
+import { RESOURCE_TYPE } from '#pkg/domain/types';
+import { QUERY_KEYS } from '#pkg/global-cache/query-keys';
 
 type ResourcesQuery = {
   directory: UriComponents;

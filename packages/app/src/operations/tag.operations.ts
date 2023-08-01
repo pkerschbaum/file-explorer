@@ -1,9 +1,9 @@
 import { nanoid } from '@reduxjs/toolkit';
 
-import { objects } from '@app/base/utils/objects.util';
-import type { Tag } from '@app/domain/types';
-import { actions } from '@app/global-state/slices/tags.slice';
-import { createLogger } from '@app/operations/create-logger';
+import { objects } from '#pkg/base/utils/objects.util';
+import type { Tag } from '#pkg/domain/types';
+import { actions } from '#pkg/global-state/slices/tags.slice';
+import { createLogger } from '#pkg/operations/create-logger';
 
 const logger = createLogger('tag.hooks');
 

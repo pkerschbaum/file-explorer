@@ -1,9 +1,9 @@
-import { CustomError } from '@app/base/custom-error';
-import { network } from '@app/base/network';
-import { resources } from '@app/base/resources';
-import { URI, UriComponents } from '@app/base/uri';
-import { arrays } from '@app/base/utils/arrays.util';
-import { check } from '@app/base/utils/assert.util';
+import { CustomError } from '#pkg/base/custom-error';
+import { network } from '#pkg/base/network';
+import { resources } from '#pkg/base/resources';
+import { URI, UriComponents } from '#pkg/base/uri';
+import { arrays } from '#pkg/base/utils/arrays.util';
+import { check } from '#pkg/base/utils/assert.util';
 
 export const uriHelper = {
   parseUri,

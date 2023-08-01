@@ -2,12 +2,12 @@ import type { KeyboardEvent } from '@react-types/shared';
 import * as React from 'react';
 import styled from 'styled-components';
 
-import { extpath } from '@app/base/extpath';
-import { check } from '@app/base/utils/assert.util';
-import type { ResourceForUI } from '@app/domain/types';
-import { commonStyles } from '@app/ui/common-styles';
-import { Button, FocusScope, TextField } from '@app/ui/components-library';
-import { doesKeyboardEventKeyMatchPrintedKey, PRINTED_KEY } from '@app/ui/constants';
+import { extpath } from '#pkg/base/extpath';
+import { check } from '#pkg/base/utils/assert.util';
+import type { ResourceForUI } from '#pkg/domain/types';
+import { commonStyles } from '#pkg/ui/common-styles';
+import { Button, FocusScope, TextField } from '#pkg/ui/components-library';
+import { doesKeyboardEventKeyMatchPrintedKey, PRINTED_KEY } from '#pkg/ui/constants';
 
 type ResourceRenameInputProps = {
   resource: ResourceForUI;

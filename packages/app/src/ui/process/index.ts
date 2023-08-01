@@ -1,1 +1,1 @@
-export * from '@app/ui/process/Process';
+export * from '#pkg/ui/process/Process';

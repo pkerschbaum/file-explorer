@@ -1,9 +1,9 @@
 import { AnimatePresence } from 'framer-motion';
 import * as React from 'react';
 
-import type { SnackbarAction } from '@app/ui/components-library';
-import { Snackbar, SNACKBAR_SEVERITY } from '@app/ui/components-library';
-import { createContext } from '@app/ui/utils/react.util';
+import type { SnackbarAction } from '#pkg/ui/components-library';
+import { Snackbar, SNACKBAR_SEVERITY } from '#pkg/ui/components-library';
+import { createContext } from '#pkg/ui/utils/react.util';
 
 export const APP_MESSAGE_SEVERITY = SNACKBAR_SEVERITY;
 export type APP_MESSAGE_SEVERITY = SNACKBAR_SEVERITY;

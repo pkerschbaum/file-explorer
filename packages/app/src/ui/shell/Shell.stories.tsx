@@ -1,24 +1,24 @@
 import type { ComponentMeta, ComponentStory } from '@storybook/react';
 
-import { network } from '@app/base/network';
-import { URI } from '@app/base/uri';
-import { numbers } from '@app/base/utils/numbers.util';
-import { uriHelper } from '@app/base/utils/uri-helper';
-import { PASTE_PROCESS_STATUS, RESOURCE_TYPE } from '@app/domain/types';
-import { computeCwdSegmentsFromUri } from '@app/global-state/slices/explorers.slice';
-import { createStoreInstance } from '@app/global-state/store';
-import { getDefaultExplorerCwd } from '@app/operations/app.operations';
-import type { FileSystemResourceToCreate } from '@app/platform/fake/file-system';
-import { createQueryClient, Globals } from '@app/ui/Globals';
-import { Shell } from '@app/ui/shell';
+import { network } from '#pkg/base/network';
+import { URI } from '#pkg/base/uri';
+import { numbers } from '#pkg/base/utils/numbers.util';
+import { uriHelper } from '#pkg/base/utils/uri-helper';
+import { PASTE_PROCESS_STATUS, RESOURCE_TYPE } from '#pkg/domain/types';
+import { computeCwdSegmentsFromUri } from '#pkg/global-state/slices/explorers.slice';
+import { createStoreInstance } from '#pkg/global-state/store';
+import { getDefaultExplorerCwd } from '#pkg/operations/app.operations';
+import type { FileSystemResourceToCreate } from '#pkg/platform/fake/file-system';
+import { createQueryClient, Globals } from '#pkg/ui/Globals';
+import { Shell } from '#pkg/ui/shell';
 
 import {
   fakeDeleteProcess,
   fakePasteProcess,
   fakePasteProcessBase,
-} from '@app-test/utils/fake-data';
+} from '#pkg-test/utils/fake-data';
 
-import { initializeStorybookPlatformModules } from '@app-storybook/storybook-utils';
+import { initializeStorybookPlatformModules } from '#pkg-storybook/storybook-utils';
 
 export default {
   title: 'Shell',

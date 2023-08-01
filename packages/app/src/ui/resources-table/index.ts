@@ -1,1 +1,1 @@
-export * from '@app/ui/resources-table/ResourcesTable';
+export * from '#pkg/ui/resources-table/ResourcesTable';

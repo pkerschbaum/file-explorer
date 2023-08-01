@@ -1,8 +1,8 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
-import { check } from '@app/base/utils/assert.util';
-import type { ButtonHandle } from '@app/ui/components-library';
+import { check } from '#pkg/base/utils/assert.util';
+import type { ButtonHandle } from '#pkg/ui/components-library';
 import {
   Button,
   Popover,
@@ -12,8 +12,8 @@ import {
   Box,
   commonComponentStyles,
   CreateNewFolderOutlinedIcon,
-} from '@app/ui/components-library';
-import { useCreateFolderInExplorer } from '@app/ui/cwd-segment-context';
+} from '#pkg/ui/components-library';
+import { useCreateFolderInExplorer } from '#pkg/ui/cwd-segment-context';
 
 type CreateFolderProps = {
   buttonHandleRef?: React.RefObject<ButtonHandle>;

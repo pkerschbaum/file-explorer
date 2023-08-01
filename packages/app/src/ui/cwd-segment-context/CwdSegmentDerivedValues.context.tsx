@@ -1,12 +1,12 @@
 import * as React from 'react';
 
-import { arrays } from '@app/base/utils/arrays.util';
-import { check } from '@app/base/utils/assert.util';
-import type { ResourceForUI } from '@app/domain/types';
-import { RESOURCE_TYPE } from '@app/domain/types';
-import { useSegmentUri } from '@app/global-state/slices/explorers.hooks';
-import { REASON_FOR_SELECTION_CHANGE } from '@app/global-state/slices/explorers.slice';
-import { isResourceQualifiedForThumbnail } from '@app/operations/app.operations';
+import { arrays } from '#pkg/base/utils/arrays.util';
+import { check } from '#pkg/base/utils/assert.util';
+import type { ResourceForUI } from '#pkg/domain/types';
+import { RESOURCE_TYPE } from '#pkg/domain/types';
+import { useSegmentUri } from '#pkg/global-state/slices/explorers.hooks';
+import { REASON_FOR_SELECTION_CHANGE } from '#pkg/global-state/slices/explorers.slice';
+import { isResourceQualifiedForThumbnail } from '#pkg/operations/app.operations';
 import {
   useActiveResourcesView,
   useFilterInput,
@@ -15,10 +15,10 @@ import {
   useSetActiveResourcesView,
   useSetKeysOfSelectedResources,
   useSetReasonForLastSelectionChange,
-} from '@app/ui/cwd-segment-context';
-import { useExplorerId } from '@app/ui/explorer-context';
-import { useEnrichResourcesWithTags, useResourcesOfDirectory } from '@app/ui/hooks/resources.hooks';
-import { createSelectableContext, usePrevious } from '@app/ui/utils/react.util';
+} from '#pkg/ui/cwd-segment-context';
+import { useExplorerId } from '#pkg/ui/explorer-context';
+import { useEnrichResourcesWithTags, useResourcesOfDirectory } from '#pkg/ui/hooks/resources.hooks';
+import { createSelectableContext, usePrevious } from '#pkg/ui/utils/react.util';
 
 const USE_GALLERY_VIEW_PERCENTAGE = 0.75;
 

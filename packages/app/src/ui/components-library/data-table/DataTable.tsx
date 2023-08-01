@@ -1,8 +1,8 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
-import { commonStyles } from '@app/ui/common-styles';
-import { Box } from '@app/ui/components-library/Box';
+import { commonStyles } from '#pkg/ui/common-styles';
+import { Box } from '#pkg/ui/components-library/Box';
 
 export type DataTableProps = DataTableComponentProps &
   Omit<
