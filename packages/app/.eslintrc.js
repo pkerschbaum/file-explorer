@@ -263,6 +263,14 @@ module.exports = {
             allowedPatterns: ['file-type', 'node:fs', 'sharp'],
           },
           {
+            target: /\/src\/platform\/electron\/file-explorer-agent\/.+$/,
+            allowedPatterns: ['cors', /^@trpc\/server.*/, 'socket.io'],
+          },
+          {
+            target: /\/src\/platform\/electron\/file-explorer-agent-client\/.+$/,
+            allowedPatterns: ['@trpc/client', 'socket.io-client'],
+          },
+          {
             target: /\/src\/platform\/electron\/.+/,
             allowedPatterns: ['electron', 'electron-store'],
           },
@@ -311,6 +319,7 @@ module.exports = {
               'mime',
               'serialize-error',
               'tiny-invariant',
+              'zod',
               /^#pkg.+/,
               /^@pkerschbaum\/code-oss-file-icon-theme/,
             ],

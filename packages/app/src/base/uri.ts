@@ -1,6 +1,14 @@
 import * as codeOSSUri from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import { z } from 'zod';
 
-export type UriComponents = codeOSSUri.UriComponents;
+export const schema_uriComponents = z.object({
+  scheme: z.string(),
+  path: z.string(),
+  authority: z.string().optional(),
+  query: z.string().optional(),
+  fragment: z.string().optional(),
+});
+export type UriComponents = z.infer<typeof schema_uriComponents>;
 
 export const URI = {
   file(path: string): UriComponents {
