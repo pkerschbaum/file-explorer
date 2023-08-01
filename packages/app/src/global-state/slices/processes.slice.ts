@@ -1,7 +1,7 @@
-import type { CancellationTokenSource } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/cancellation';
-import type { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import { createAction, createReducer } from '@reduxjs/toolkit';
 
+import type { CancellationTokenSource } from '@app/base/cancellation';
+import type { UriComponents } from '@app/base/uri';
 import { arrays } from '@app/base/utils/arrays.util';
 import type { AppProcess, DeleteProcess } from '@app/domain/types';
 import { PASTE_PROCESS_STATUS, PROCESS_TYPE, DELETE_PROCESS_STATUS } from '@app/domain/types';

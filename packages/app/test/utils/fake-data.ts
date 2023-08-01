@@ -1,9 +1,9 @@
-import { CancellationTokenSource } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/cancellation';
-import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
-import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import type { IFileStatWithMetadata } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 import dayjs from 'dayjs';
 
+import { CancellationTokenSource } from '@app/base/cancellation';
+import type { IFileStatWithMetadata } from '@app/base/files';
+import { network } from '@app/base/network';
+import { URI } from '@app/base/uri';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import type { PasteProcessBase, AppProcess, DeleteProcessBase } from '@app/domain/types';
 import { DELETE_PROCESS_STATUS, PROCESS_TYPE, PASTE_PROCESS_STATUS } from '@app/domain/types';
@@ -13,7 +13,7 @@ export const fakeFileStat: IFileStatWithMetadata = {
   isFile: true,
   isSymbolicLink: false,
   name: 'test-file.txt',
-  resource: uriHelper.parseUri(Schemas.file, `/home/testdir/testfile.txt`),
+  resource: uriHelper.parseUri(network.Schemas.file, `/home/testdir/testfile.txt`),
   ctime: dayjs('2021-03-05T17:49:51.123Z').unix(),
   mtime: dayjs('2021-05-08T18:59:01.456Z').unix(),
   readonly: false,
@@ -26,11 +26,11 @@ export const fakePasteProcessBase: PasteProcessBase = {
   type: PROCESS_TYPE.PASTE,
   pasteShouldMove: false,
   sourceUris: [
-    fakeFileStat.resource.toJSON(),
-    URI.joinPath(fakeFileStat.resource, './testfile2.docx').toJSON(),
-    URI.joinPath(fakeFileStat.resource, './testfile3.pdf').toJSON(),
+    fakeFileStat.resource,
+    URI.joinPath(fakeFileStat.resource, './testfile2.docx'),
+    URI.joinPath(fakeFileStat.resource, './testfile3.pdf'),
   ],
-  destinationDirectory: uriHelper.parseUri(Schemas.file, `/home/testdir/`).toJSON(),
+  destinationDirectory: uriHelper.parseUri(network.Schemas.file, `/home/testdir/`),
   cancellationTokenSource: new CancellationTokenSource(),
   totalSize: 1024 * 1024 * 10, // 10MB
   bytesProcessed: 1024 * 1024 * 2, // 2MB
@@ -46,9 +46,9 @@ export const fakeDeleteProcessBase: DeleteProcessBase = {
   id: 'fake-delete-process-id',
   type: PROCESS_TYPE.DELETE,
   uris: [
-    fakeFileStat.resource.toJSON(),
-    URI.joinPath(fakeFileStat.resource, './testfile2.docx').toJSON(),
-    URI.joinPath(fakeFileStat.resource, './testfile3.pdf').toJSON(),
+    fakeFileStat.resource,
+    URI.joinPath(fakeFileStat.resource, './testfile2.docx'),
+    URI.joinPath(fakeFileStat.resource, './testfile3.pdf'),
   ],
 };
 

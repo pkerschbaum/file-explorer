@@ -1,6 +1,6 @@
-import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import * as React from 'react';
 
+import { URI } from '@app/base/uri';
 import { arrays } from '@app/base/utils/arrays.util';
 import { errorsUtil } from '@app/base/utils/errors.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
@@ -95,7 +95,7 @@ export const CwdSegmentOperationsContextProvider: React.FC<
     newBaseName,
   ) => {
     try {
-      const uriToRenameTo = URI.joinPath(URI.from(resourceToRename.uri), '..', newBaseName);
+      const uriToRenameTo = URI.joinPath(resourceToRename.uri, '..', newBaseName);
       setReasonForLastSelectionChange(
         REASON_FOR_SELECTION_CHANGE.USER_CHANGED_SELECTION_VIA_KEYBOARD,
       );

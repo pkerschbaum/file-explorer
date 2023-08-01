@@ -1,7 +1,7 @@
-import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
-import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import type { ComponentMeta, ComponentStory } from '@storybook/react';
 
+import { network } from '@app/base/network';
+import { URI } from '@app/base/uri';
 import { numbers } from '@app/base/utils/numbers.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { PASTE_PROCESS_STATUS, RESOURCE_TYPE } from '@app/domain/types';
@@ -81,7 +81,7 @@ export const MultipleTabs = Template.bind({});
         explorersSlice: {
           explorerPanels: {
             'panel-1': {
-              cwdSegments: computeCwdSegmentsFromUri(URI.joinPath(URI.from(cwd), '..').toJSON()),
+              cwdSegments: computeCwdSegmentsFromUri(URI.joinPath(cwd, '..')),
               version: 1,
             },
             'panel-2': {
@@ -89,9 +89,7 @@ export const MultipleTabs = Template.bind({});
               version: 1,
             },
             'panel-3': {
-              cwdSegments: computeCwdSegmentsFromUri(
-                URI.joinPath(URI.from(cwd), 'test-folder').toJSON(),
-              ),
+              cwdSegments: computeCwdSegmentsFromUri(URI.joinPath(cwd, 'test-folder')),
               version: 1,
             },
           },
@@ -110,7 +108,7 @@ export const ManyResources = Template.bind({});
     let resourcesToCreate: FileSystemResourceToCreate[] = [
       {
         type: RESOURCE_TYPE.DIRECTORY,
-        uri: uriHelper.parseUri(Schemas.file, `/home/testdir`),
+        uri: uriHelper.parseUri(network.Schemas.file, `/home/testdir`),
       },
     ];
     resourcesToCreate = [
@@ -119,7 +117,7 @@ export const ManyResources = Template.bind({});
         const resource: FileSystemResourceToCreate = {
           type: RESOURCE_TYPE.FILE,
           uri: uriHelper.parseUri(
-            Schemas.file,
+            network.Schemas.file,
             `/home/testdir/testfile-${number.toString().padStart(5, '0')}.txt`,
           ),
         };

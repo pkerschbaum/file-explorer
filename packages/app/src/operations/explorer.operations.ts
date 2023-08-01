@@ -1,19 +1,17 @@
-import { CancellationTokenSource } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/cancellation';
-import { extname, basename } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/path';
-import { isLinux } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/platform';
-import type { ReportProgressArgs } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
-import * as resources from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
-import type { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import * as uuid from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uuid';
-import type { IFileStat } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 import invariant from 'tiny-invariant';
 
+import { CancellationTokenSource } from '@app/base/cancellation';
 import { CustomError } from '@app/base/custom-error';
+import type { IFileStat } from '@app/base/files';
+import { path } from '@app/base/path';
+import { platform } from '@app/base/platform';
+import { ReportProgressArgs, resources } from '@app/base/resources';
+import { URI, UriComponents } from '@app/base/uri';
 import { check } from '@app/base/utils/assert.util';
 import { formatter } from '@app/base/utils/formatter.util';
 import { numbers } from '@app/base/utils/numbers.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
+import { uuid } from '@app/base/uuid';
 import type { ResourceForUI, UpdateFn } from '@app/domain/types';
 import { PASTE_PROCESS_STATUS, RESOURCE_TYPE } from '@app/domain/types';
 import { mapFileStatToResource, refreshResourcesOfDirectory } from '@app/global-cache/resources';
@@ -35,7 +33,7 @@ export async function openResources(explorerId: string, resources: ResourceForUI
   if (resources.length === 1 && resources[0].resourceType === RESOURCE_TYPE.DIRECTORY) {
     await changeCwd({
       explorerId,
-      newCwd: URI.from(resources[0].uri),
+      newCwd: resources[0].uri,
       keepExistingCwdSegments: true,
     });
   } else {
@@ -64,8 +62,7 @@ export async function changeCwd({
   newCwd: UriComponents;
   keepExistingCwdSegments: boolean;
 }) {
-  const newCwdUri = URI.from(newCwd);
-  const stats = await globalThis.modules.fileSystem.resolve(newCwdUri);
+  const stats = await globalThis.modules.fileSystem.resolve(newCwd);
   if (!stats.isDirectory) {
     throw Error(
       `could not change directory, reason: uri is not a valid directory. uri: ${formatter.resourcePath(
@@ -76,15 +73,13 @@ export async function changeCwd({
 
   // change to the new directory and refresh resources of that directory
   globalThis.modules.dispatch(
-    explorerActions.changeCwd({ explorerId, newCwd: newCwdUri.toJSON(), keepExistingCwdSegments }),
+    explorerActions.changeCwd({ explorerId, newCwd, keepExistingCwdSegments }),
   );
   await refreshResourcesOfDirectory({ directory: newCwd });
 }
 
 export async function pasteResources(explorerId: string) {
-  const clipboardResources = globalThis.modules.nativeHost.clipboard
-    .readResources()
-    .map((r) => URI.from(r));
+  const clipboardResources = globalThis.modules.nativeHost.clipboard.readResources();
   const draftPasteState = globalThis.modules.store.getState().processesSlice.draftPasteState;
   if (clipboardResources.length === 0 || draftPasteState === undefined) {
     return;
@@ -93,7 +88,7 @@ export async function pasteResources(explorerId: string) {
   const cwd = extractCwdFromExplorerPanel(
     globalThis.modules.store.getState().explorersSlice.explorerPanels[explorerId],
   );
-  const destinationFolder = URI.from(cwd);
+  const destinationFolder = cwd;
   const destinationFolderStat = await globalThis.modules.fileSystem.resolve(destinationFolder);
   const id = uuid.generateUuid();
   const cancellationTokenSource = new CancellationTokenSource();
@@ -106,8 +101,8 @@ export async function pasteResources(explorerId: string) {
     processesActions.addPasteProcess({
       id,
       pasteShouldMove: draftPasteState.pasteShouldMove,
-      sourceUris: clipboardResources.map((resource) => resource.toJSON()),
-      destinationDirectory: destinationFolder.toJSON(),
+      sourceUris: clipboardResources,
+      destinationDirectory: destinationFolder,
       cancellationTokenSource,
     }),
   );
@@ -131,7 +126,7 @@ export async function pasteResources(explorerId: string) {
           resources.isEqualOrParent(
             destinationFolder,
             uriOfSourceResource,
-            !isLinux /* ignorecase */,
+            !platform.isLinux /* ignorecase */,
           )
         ) {
           throw new CustomError('The destination folder is a subfolder of the source resource', {
@@ -323,7 +318,7 @@ export async function createFolder(explorerId: string, folderName: string): Prom
   const cwd = extractCwdFromExplorerPanel(
     globalThis.modules.store.getState().explorersSlice.explorerPanels[explorerId],
   );
-  const uriOfFolderToCreate = URI.joinPath(URI.from(cwd), folderName);
+  const uriOfFolderToCreate = URI.joinPath(cwd, folderName);
   await globalThis.modules.fileSystem.createFolder(uriOfFolderToCreate);
 
   // refresh resources of the target directory
@@ -443,8 +438,8 @@ export function setScrollTop(
 function findValidPasteTarget(
   targetFolder: IFileStat,
   resourceToPaste: { resource: UriComponents; isDirectory?: boolean; allowOverwrite: boolean },
-): URI {
-  let name = resources.basenameOrAuthority(URI.from(resourceToPaste.resource));
+): UriComponents {
+  let name = resources.basenameOrAuthority(resourceToPaste.resource);
   let candidate = resources.joinPath(targetFolder.resource, name);
 
   if (
@@ -476,8 +471,8 @@ function incrementResourceName(name: string, isFolder: boolean): string {
   let namePrefix = name;
   let extSuffix = '';
   if (!isFolder) {
-    extSuffix = extname(name);
-    namePrefix = basename(name, extSuffix);
+    extSuffix = path.extname(name);
+    namePrefix = path.basename(name, extSuffix);
   }
 
   // name copy 5(.txt) => name copy 6(.txt)

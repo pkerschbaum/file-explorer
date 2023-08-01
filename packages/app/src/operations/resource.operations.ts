@@ -1,14 +1,12 @@
-import type { CancellationTokenSource } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/cancellation';
-import type { ReportProgressArgs } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
-import type { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import * as uuid from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uuid';
-import type { IFileStatWithMetadata } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
-
+import type { CancellationTokenSource } from '@app/base/cancellation';
 import { CustomError } from '@app/base/custom-error';
+import type { IFileStatWithMetadata } from '@app/base/files';
+import type { ReportProgressArgs } from '@app/base/resources';
+import type { UriComponents } from '@app/base/uri';
 import { formatter } from '@app/base/utils/formatter.util';
 import { objects } from '@app/base/utils/objects.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
+import { uuid } from '@app/base/uuid';
 import type {
   DeleteProcess,
   ResourceStatMap,
@@ -60,7 +58,7 @@ export async function runDeleteProcess(deleteProcessId: string, options: { useTr
       deleteProcess.uris.map(async (uri) => {
         let fileStat;
         try {
-          fileStat = await globalThis.modules.fileSystem.resolve(URI.from(uri));
+          fileStat = await globalThis.modules.fileSystem.resolve(uri);
         } catch (err) {
           logger.warn(
             `could not resolve resource which should get deleted --> skipping deletion of the resource.`,
@@ -113,22 +111,17 @@ export function cutOrCopyResources(resources: UriComponents[], cut: boolean) {
     return;
   }
 
-  globalThis.modules.nativeHost.clipboard.writeResources(
-    resources.map((resource) => URI.from(resource)),
-  );
+  globalThis.modules.nativeHost.clipboard.writeResources(resources);
   globalThis.modules.dispatch(actions.cutOrCopyResources({ cut }));
 }
 
 export async function renameResource(resourceURI: UriComponents, uriToRenameTo: UriComponents) {
-  const fileStatOfSourceResource = await globalThis.modules.fileSystem.resolve(
-    URI.from(resourceURI),
-    {
-      resolveMetadata: true,
-    },
-  );
+  const fileStatOfSourceResource = await globalThis.modules.fileSystem.resolve(resourceURI, {
+    resolveMetadata: true,
+  });
   await executeCopyOrMove({
-    sourceResource: { uri: URI.from(resourceURI), fileStat: fileStatOfSourceResource },
-    targetResource: { uri: URI.from(uriToRenameTo) },
+    sourceResource: { uri: resourceURI, fileStat: fileStatOfSourceResource },
+    targetResource: { uri: uriToRenameTo },
     pasteShouldMove: true,
   });
 
@@ -207,7 +200,7 @@ export async function addTagsToResources(resources: UriComponents[], tagIds: str
 
   await Promise.all(
     resources.map(async (resource) => {
-      const statOfResource = await globalThis.modules.fileSystem.resolve(URI.from(resource), {
+      const statOfResource = await globalThis.modules.fileSystem.resolve(resource, {
         resolveMetadata: true,
       });
 
@@ -261,8 +254,8 @@ export async function executeCopyOrMove({
   cancellationTokenSource,
   reportProgress,
 }: {
-  sourceResource: { uri: URI; fileStat: IFileStatWithMetadata };
-  targetResource: { uri: URI };
+  sourceResource: { uri: UriComponents; fileStat: IFileStatWithMetadata };
+  targetResource: { uri: UriComponents };
   pasteShouldMove: boolean;
   cancellationTokenSource?: CancellationTokenSource;
   reportProgress?: (args: ReportProgressArgs) => void;
@@ -358,12 +351,9 @@ async function doPreloadContentsOfResource(resource: ResourceStat) {
     directory: uri,
     resolveMetadata: false,
   };
-  const statsWithMetadata = await globalThis.modules.fileSystem.resolve(
-    URI.from(fetchArgs.directory),
-    {
-      resolveMetadata: fetchArgs.resolveMetadata,
-    },
-  );
+  const statsWithMetadata = await globalThis.modules.fileSystem.resolve(fetchArgs.directory, {
+    resolveMetadata: fetchArgs.resolveMetadata,
+  });
 
   cachedQueryData = getCachedResourcesOfDirectory(fetchArgs.directory);
   if (cachedQueryData) {

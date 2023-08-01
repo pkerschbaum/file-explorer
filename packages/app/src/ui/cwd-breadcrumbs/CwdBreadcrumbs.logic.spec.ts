@@ -1,8 +1,9 @@
-import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
-import * as resources from '@pkerschbaum/code-oss-file-service/out/vs/base/common/resources';
 import { queries } from '@playwright-testing-library/test';
 import { expect, test } from '@playwright/test';
 
+import { network } from '@app/base/network';
+import { resources } from '@app/base/resources';
+import { URI } from '@app/base/uri';
 import { uriHelper } from '@app/base/utils/uri-helper';
 
 import { bootstrap } from '@app-playwright/playwright.util';
@@ -32,14 +33,14 @@ test.describe('CwdBreadcrumbs [logic]', () => {
     const textInClipboard = await page.evaluate(() =>
       globalThis.modules.nativeHost.clipboard.readText(),
     );
-    const actualUri = uriHelper.parseUri(Schemas.file, textInClipboard);
-    const expectedUri = uriHelper.parseUri(Schemas.file, '/home/testdir');
+    const actualUri = uriHelper.parseUri(network.Schemas.file, textInClipboard);
+    const expectedUri = uriHelper.parseUri(network.Schemas.file, '/home/testdir');
     try {
       expect(resources.isEqual(actualUri, expectedUri)).toBeTruthy();
     } catch (e) {
       throw new Error(
         `ActualUri is not equal to ExpectedUri! ` +
-          `actualUri=${actualUri.toString()}, expectedUri=${expectedUri.toString()}`,
+          `actualUri=${URI.toString(actualUri)}, expectedUri=${URI.toString(expectedUri)}`,
       );
     }
   });

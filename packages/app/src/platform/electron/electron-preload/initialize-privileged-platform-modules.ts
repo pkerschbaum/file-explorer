@@ -1,8 +1,8 @@
-import { VSBuffer } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/buffer';
-import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import type { FileService } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/fileService';
 import { clipboard, ipcRenderer } from 'electron';
 
+import { VSBuffer } from '@app/base/buffer';
+import { fileServiceUriInstancesToComponents, PlatformFileService } from '@app/base/fileService';
+import { URI, UriComponents } from '@app/base/uri';
 import { config } from '@app/config';
 import { bootstrapDiskFileService } from '@app/platform/electron/electron-preload/bootstrap-disk-file-service';
 import type { IpcApp } from '@app/platform/electron/ipc/common/app';
@@ -23,7 +23,7 @@ declare global {
 
 type Privileged = {
   processEnv: NodeJS.ProcessEnv;
-  fileService: FileService;
+  fileService: PlatformFileService;
   app: {
     getPath: (args: IpcApp.GetPath.Args) => IpcApp.GetPath.ReturnValue;
   };
@@ -42,8 +42,8 @@ type Privileged = {
   clipboard: {
     readText: () => string;
     writeText: (value: string) => void;
-    readResources: () => URI[];
-    writeResources: (resources: URI[]) => void;
+    readResources: () => UriComponents[];
+    writeResources: (resources: UriComponents[]) => void;
   };
   webContents: {
     fileDragStart: (args: IpcFileDragStart.Args) => IpcFileDragStart.ReturnValue;
@@ -62,7 +62,7 @@ export function initializePrivilegedPlatformModules() {
   window.privileged = {
     // eslint-disable-next-line node/no-process-env
     processEnv: process.env,
-    fileService,
+    fileService: fileServiceUriInstancesToComponents(fileService),
     app: {
       getPath: (...args) => ipcRenderer.invoke(APP_CHANNEL.GET_PATH, ...args),
     },
@@ -100,7 +100,7 @@ export function initializePrivilegedPlatformModules() {
   };
 }
 
-function bufferToResources(buffer: Uint8Array): URI[] {
+function bufferToResources(buffer: Uint8Array): UriComponents[] {
   if (!buffer) {
     return [];
   }
@@ -117,6 +117,6 @@ function bufferToResources(buffer: Uint8Array): URI[] {
   }
 }
 
-function resourcesToBuffer(resources: URI[]): Uint8Array {
-  return VSBuffer.fromString(resources.map((r) => r.toString()).join('\n')).buffer;
+function resourcesToBuffer(resources: UriComponents[]): Uint8Array {
+  return VSBuffer.fromString(resources.map((r) => URI.toString(r)).join('\n')).buffer;
 }

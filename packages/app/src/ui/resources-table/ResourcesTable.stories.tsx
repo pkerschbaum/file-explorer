@@ -1,7 +1,7 @@
-import type { IFileStatWithMetadata } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 import type { ComponentMeta, ComponentStory } from '@storybook/react';
 import invariant from 'tiny-invariant';
 
+import type { IFileStatWithMetadata } from '@app/base/files';
 import { extractCwdSegmentsFromExplorerPanel } from '@app/global-state/slices/explorers.hooks';
 import type { RootStore } from '@app/global-state/store';
 import { createStoreInstance } from '@app/global-state/store';

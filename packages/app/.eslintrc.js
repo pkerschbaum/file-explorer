@@ -105,6 +105,12 @@ module.exports = {
           '`JSON.stringify` does throw on circular references; it might be safe were you attempt to use it, ' +
           'but we suggest to just use `json.safeStringify` from @app/base/utils/json.util.ts instead.',
       },
+      {
+        selector: "MemberExpression[object.name='URI'][property.name='from']",
+        message:
+          '`URI` instances should only be used at the "boundary" to `@pkerschbaum/code-oss-*` packages, ' +
+          'so using `URI.from` is discouraged; consider working with `UriComponents` instead (which is serializable in contrast to `URI`).',
+      },
     ],
     'node/no-deprecated-api': 'off',
     'node/no-missing-import': 'off',
@@ -128,6 +134,13 @@ module.exports = {
           {
             target: /\/src\/base\/utils\/json\.util\.ts$/,
             allowedPatterns: ['safe-stable-stringify'],
+          },
+          {
+            target: /\/src\/base\/.+$/,
+            allowedPatterns: [
+              /^@pkerschbaum\/code-oss-file-service\/out\/vs\/base\/common\/.+/,
+              /^@pkerschbaum\/code-oss-file-service\/out\/vs\/platform\/files\/common\/.+/,
+            ],
           },
           {
             target: /\/src\/global-cache\/.+/,
@@ -231,12 +244,32 @@ module.exports = {
             allowedPatterns: ['@playwright/test', '@playwright-testing-library/test'],
           },
           {
+            target: /\/src\/platform\/electron\/electron-preload\/bootstrap-disk-file-service.ts$/,
+            allowedPatterns: [
+              /^@pkerschbaum\/code-oss-file-service\/out\/vs\/platform\/files\/node\/.+/,
+              /^@pkerschbaum\/code-oss-file-service\/out\/vs\/platform\/log\/common\/log$/,
+            ],
+          },
+          {
+            target:
+              /\/src\/platform\/electron\/electron-preload\/initialize-privileged-platform-modules.ts$/,
+            allowedPatterns: [
+              /^@pkerschbaum\/code-oss-file-service\/out\/vs\/platform\/files\/common\/files$/,
+            ],
+          },
+          {
             target: /\/src\/platform\/electron\/protocol\/electron-main\/app.ts$/,
             allowedPatterns: ['file-type', 'fs', 'sharp'],
           },
           {
             target: /\/src\/platform\/electron\/.+/,
             allowedPatterns: ['electron', 'electron-store'],
+          },
+          {
+            target: /\/src\/platform\/fake\/file-system.ts$/,
+            allowedPatterns: [
+              /^@pkerschbaum\/code-oss-file-service\/out\/vs\/platform\/log\/common\/log$/,
+            ],
           },
           {
             target: /\/src\/platform\/native-host.types.ts$/,
@@ -278,7 +311,6 @@ module.exports = {
               'serialize-error',
               'tiny-invariant',
               /^@app.+/,
-              /^@pkerschbaum\/code-oss-file-service/,
               /^@pkerschbaum\/code-oss-file-icon-theme/,
             ],
           },

@@ -10,6 +10,7 @@
     "lint:fix": "pnpm run --parallel lint:fix",
     "format": "prettier --write --ignore-unknown .",
     "build": "pnpm --recursive run build",
+    "dev": "pnpm --parallel run dev",
     "compile:dry-run": "pnpm --recursive run compile:dry-run"
   },
   "devDependencies": {

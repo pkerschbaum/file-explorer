@@ -1,8 +1,8 @@
-import * as extpath from '@pkerschbaum/code-oss-file-service/out/vs/base/common/extpath';
 import type { KeyboardEvent } from '@react-types/shared';
 import * as React from 'react';
 import styled from 'styled-components';
 
+import { extpath } from '@app/base/extpath';
 import { check } from '@app/base/utils/assert.util';
 import type { ResourceForUI } from '@app/domain/types';
 import { commonStyles } from '@app/ui/common-styles';

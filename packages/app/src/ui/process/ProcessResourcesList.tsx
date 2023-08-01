@@ -1,7 +1,7 @@
-import type { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import React from 'react';
 import styled from 'styled-components';
 
+import type { UriComponents } from '@app/base/uri';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { commonStyles } from '@app/ui/common-styles';
 import { Box, InfoOutlinedIcon, Tooltip, useTooltip } from '@app/ui/components-library';

@@ -1,7 +1,7 @@
-import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
 import { queries } from '@playwright-testing-library/test';
 import { expect, test } from '@playwright/test';
 
+import { network } from '@app/base/network';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import type { ResourceStat } from '@app/domain/types';
 import { QUERY_KEYS } from '@app/global-cache/query-keys';
@@ -15,7 +15,7 @@ test.describe('Refresh resources of currently open directories if any change occ
     const $document = await bootstrap({ page, storybookIdToVisit: 'shell--simple-case' });
     const queryKey = QUERY_KEYS.RESOURCES_OF_DIRECTORY({
       directoryId: uriHelper.getComparisonKey(
-        uriHelper.parseUri(Schemas.file, `/home/testdir`).toJSON(),
+        uriHelper.parseUri(network.Schemas.file, `/home/testdir`),
       ),
       resolveMetadata: true,
     });
@@ -31,9 +31,10 @@ test.describe('Refresh resources of currently open directories if any change occ
     expect(cacheEntriesForCwd).toHaveLength(1);
     const initialCachedResourcesOfCwd = cacheEntriesForCwd[0].state.data as ResourceStat[];
 
-    const uriToCreate = uriHelper
-      .parseUri(Schemas.file, `/home/testdir/name-of-new-folder`)
-      .toJSON();
+    const uriToCreate = uriHelper.parseUri(
+      network.Schemas.file,
+      `/home/testdir/name-of-new-folder`,
+    );
     await page.evaluate(
       (uriToCreate) => globalThis.modules.fileSystem.createFolder(uriToCreate),
       uriToCreate,

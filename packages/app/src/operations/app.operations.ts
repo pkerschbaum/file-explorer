@@ -1,7 +1,5 @@
-import type { UriComponents } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-
 import { CustomError } from '@app/base/custom-error';
+import type { UriComponents } from '@app/base/uri';
 import { check } from '@app/base/utils/assert.util';
 import { formatter } from '@app/base/utils/formatter.util';
 import { objects } from '@app/base/utils/objects.util';
@@ -18,7 +16,7 @@ export async function addExplorerPanel(cwdSegmentsToClone?: CwdSegment[]) {
   if (cwdSegmentsToClone) {
     cwdSegmentsOfNewExplorer = objects.deepCopyJson(cwdSegmentsToClone);
   } else {
-    const defaultExplorerCwd = URI.from(await getDefaultExplorerCwd());
+    const defaultExplorerCwd = await getDefaultExplorerCwd();
     const stats = await globalThis.modules.fileSystem.resolve(defaultExplorerCwd);
     if (!stats.isDirectory) {
       throw new CustomError(

@@ -1,6 +1,5 @@
-import * as path from '@pkerschbaum/code-oss-file-service/out/vs/base/common/path';
-import * as platform from '@pkerschbaum/code-oss-file-service/out/vs/base/common/platform';
-
+import { path } from '@app/base/path';
+import { platform } from '@app/base/platform';
 import { loadCssRules } from '@app/operations/file-icon-theme.operations';
 import type { PlatformFileIconThemeLoader } from '@app/platform/file-icon-theme-loader.types';
 

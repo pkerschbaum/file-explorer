@@ -1,9 +1,9 @@
-import { Emitter } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/event';
-import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
-import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
 import mime from 'mime';
 import invariant from 'tiny-invariant';
 
+import { Emitter } from '@app/base/event';
+import { network } from '@app/base/network';
+import { URI } from '@app/base/uri';
 import { check } from '@app/base/utils/assert.util';
 import { numbers } from '@app/base/utils/numbers.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
@@ -30,7 +30,7 @@ export const createNativeHost = () => {
     app: {
       getPath: async (args) => {
         const fsPath = await window.privileged.app.getPath(args);
-        return uriHelper.parseUri(Schemas.file, fsPath);
+        return uriHelper.parseUri(network.Schemas.file, fsPath);
       },
       isResourceQualifiedForThumbnail: (resource) => {
         if (check.isNullishOrEmptyString(resource.extension)) {
@@ -52,9 +52,7 @@ export const createNativeHost = () => {
         } else {
           invariant(check.isNotNullish(resource.mtime));
           const url = new URL(
-            `${THUMBNAIL_PROTOCOL_SCHEME}:///${encodeURIComponent(
-              URI.from(resource.uri).toString(),
-            )}`,
+            `${THUMBNAIL_PROTOCOL_SCHEME}:///${encodeURIComponent(URI.toString(resource.uri))}`,
           );
           // add mtime as search param so that the browser does not use its cache if the file changed
           url.searchParams.set('mtime', numbers.toString(resource.mtime));
@@ -77,7 +75,7 @@ export const createNativeHost = () => {
           invariant(check.isNotNullish(resource.mtime));
           const url = new URL(
             `${NATIVE_FILE_ICON_PROTOCOL_SCHEME}:///${encodeURIComponent(
-              URI.from(resource.uri).toString(),
+              URI.toString(resource.uri),
             )}`,
           );
           // add mtime as search param so that the browser does not use its cache if the file changed
@@ -89,12 +87,12 @@ export const createNativeHost = () => {
     shell: {
       revealResourcesInOS: async (resources) => {
         for (const resource of resources) {
-          await window.privileged.shell.revealResourcesInOS({ fsPath: URI.from(resource).fsPath });
+          await window.privileged.shell.revealResourcesInOS({ fsPath: URI.fsPath(resource) });
         }
       },
       openPath: async (resources) => {
         for (const resource of resources) {
-          await window.privileged.shell.openPath({ fsPath: URI.from(resource).fsPath });
+          await window.privileged.shell.openPath({ fsPath: URI.fsPath(resource) });
         }
       },
     },
@@ -111,7 +109,7 @@ export const createNativeHost = () => {
       },
       readResources: window.privileged.clipboard.readResources,
       writeResources: (resources) => {
-        window.privileged.clipboard.writeResources(resources.map((r) => URI.from(r)));
+        window.privileged.clipboard.writeResources(resources);
         onClipboardChanged.fire(CLIPBOARD_CHANGED_DATA_TYPE.RESOURCES);
       },
       onClipboardChanged: onClipboardChanged.event,
@@ -119,7 +117,7 @@ export const createNativeHost = () => {
     webContents: {
       startNativeFileDnD: (resources) =>
         window.privileged.webContents.fileDragStart({
-          fsPaths: resources.map((resource) => URI.from(resource).fsPath),
+          fsPaths: resources.map((resource) => URI.fsPath(resource)),
         }),
     },
   };

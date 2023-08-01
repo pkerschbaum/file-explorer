@@ -1,26 +1,25 @@
-import { VSBuffer } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/buffer';
-import { Schemas } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/network';
-import type { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import type { IStat } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
-import { FileService } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/fileService';
-import { InMemoryFileSystemProvider } from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/inMemoryFilesystemProvider';
 import {
   ConsoleMainLogger,
   LogService,
 } from '@pkerschbaum/code-oss-file-service/out/vs/platform/log/common/log';
 import dayjs from 'dayjs';
 
+import { VSBuffer } from '@app/base/buffer';
+import type { IStat } from '@app/base/files';
+import { FileService, fileServiceUriInstancesToComponents } from '@app/base/fileService';
+import { InMemoryFileSystemProvider } from '@app/base/inMemoryFilesystemProvider';
+import { network } from '@app/base/network';
+import { URI, UriComponents } from '@app/base/uri';
 import { assertIsUnreachable } from '@app/base/utils/assert.util';
 import type { Writeable } from '@app/base/utils/types.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
 import { RESOURCE_TYPE } from '@app/domain/types';
-import { convertUriComponentsToURIInstances } from '@app/platform/electron/file-system';
 import type { PlatformFileSystem } from '@app/platform/file-system.types';
 
 type WritableIStat = Writeable<IStat>;
 
 export type FileSystemResourceToCreate = {
-  uri: URI;
+  uri: UriComponents;
   type: RESOURCE_TYPE.FILE | RESOURCE_TYPE.DIRECTORY;
   mtimeIso8601?: string;
 };
@@ -38,13 +37,16 @@ export const createFakeFileSystem: (
   const logService = new LogService(logger);
   const fileService = new FileService(logService);
   const inMemoryFileSystemProvider = new InMemoryFileSystemProvider();
-  fileService.registerProvider(Schemas.file, inMemoryFileSystemProvider);
+  fileService.registerProvider(network.Schemas.file, inMemoryFileSystemProvider);
 
   async function createResource({ type, uri, mtimeIso8601 }: FileSystemResourceToCreate) {
     if (type === RESOURCE_TYPE.DIRECTORY) {
       await fileService.createFolder(uri);
     } else if (type === RESOURCE_TYPE.FILE) {
-      await fileService.createFile(uri, VSBuffer.fromString(`test content of ${uri.toString()}`));
+      await fileService.createFile(
+        uri,
+        VSBuffer.fromString(`test content of ${URI.toString(uri)}`),
+      );
     } else {
       assertIsUnreachable(type);
     }
@@ -58,59 +60,53 @@ export const createFakeFileSystem: (
   await Promise.all(resourcesToCreate.map(createResource));
 
   const instance: PlatformFileSystem = {
-    resolve: fileService.resolve.bind(fileService),
-    copy: fileService.copy.bind(fileService),
-    move: fileService.move.bind(fileService),
-    createFolder: fileService.createFolder.bind(fileService),
-    del: fileService.del.bind(fileService),
+    ...fileServiceUriInstancesToComponents(fileService),
     trash: fileService.del.bind(fileService),
-    watch: fileService.watch.bind(fileService),
-    onDidFilesChange: fileService.onDidFilesChange.bind(fileService),
   };
 
-  return convertUriComponentsToURIInstances(instance);
+  return instance;
 };
 
 const defaultFileSystemResources: FileSystemResourceToCreate[] = [
   {
     type: RESOURCE_TYPE.DIRECTORY,
-    uri: uriHelper.parseUri(Schemas.file, `/home/testdir/aa test folder`),
+    uri: uriHelper.parseUri(network.Schemas.file, `/home/testdir/aa test folder`),
     mtimeIso8601: '2021-05-08T19:01:59.789Z',
   },
   {
     type: RESOURCE_TYPE.DIRECTORY,
-    uri: uriHelper.parseUri(Schemas.file, `/home/testdir/zz test folder`),
+    uri: uriHelper.parseUri(network.Schemas.file, `/home/testdir/zz test folder`),
     mtimeIso8601: '2021-05-08T01:05:15.012Z',
   },
   {
     type: RESOURCE_TYPE.DIRECTORY,
-    uri: uriHelper.parseUri(Schemas.file, `/home/testdir/test folder`),
+    uri: uriHelper.parseUri(network.Schemas.file, `/home/testdir/test folder`),
     mtimeIso8601: '2021-05-08T18:59:01.456Z',
   },
   {
     type: RESOURCE_TYPE.DIRECTORY,
-    uri: uriHelper.parseUri(Schemas.file, `/home/testdir/test-folder`),
+    uri: uriHelper.parseUri(network.Schemas.file, `/home/testdir/test-folder`),
     mtimeIso8601: '2021-05-08T18:59:01.456Z',
   },
   {
     type: RESOURCE_TYPE.FILE,
-    uri: uriHelper.parseUri(Schemas.file, `/home/testdir/testfile1.txt`),
+    uri: uriHelper.parseUri(network.Schemas.file, `/home/testdir/testfile1.txt`),
     mtimeIso8601: '2021-05-08T18:59:01.456Z',
   },
   {
     type: RESOURCE_TYPE.FILE,
-    uri: uriHelper.parseUri(Schemas.file, `/home/testdir/testfile2.docx`),
+    uri: uriHelper.parseUri(network.Schemas.file, `/home/testdir/testfile2.docx`),
     mtimeIso8601: '2021-05-08T18:59:01.456Z',
   },
   {
     type: RESOURCE_TYPE.FILE,
-    uri: uriHelper.parseUri(Schemas.file, `/home/testdir/testfile3.pdf`),
+    uri: uriHelper.parseUri(network.Schemas.file, `/home/testdir/testfile3.pdf`),
     mtimeIso8601: '2021-05-08T18:59:01.456Z',
   },
   {
     type: RESOURCE_TYPE.DIRECTORY,
     uri: uriHelper.parseUri(
-      Schemas.file,
+      network.Schemas.file,
       `/home/testdir/zz test folder/zz test folder sub directory`,
     ),
     mtimeIso8601: '2021-05-08T18:59:01.456Z',
@@ -118,7 +114,7 @@ const defaultFileSystemResources: FileSystemResourceToCreate[] = [
   {
     type: RESOURCE_TYPE.FILE,
     uri: uriHelper.parseUri(
-      Schemas.file,
+      network.Schemas.file,
       `/home/testdir/zz test folder/zz test folder sub directory/testfile1.txt`,
     ),
     mtimeIso8601: '2021-05-08T18:59:01.456Z',
