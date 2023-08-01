@@ -58,7 +58,7 @@ export async function loadCssRules({
         url: path.join(fileIconThemeRelativePath, 'language-extension-points.json'),
       })
     ).data;
-    const allLanguages = languageExtensionPoints.map((elem) => elem.languages).flat();
+    const allLanguages = languageExtensionPoints.flatMap((elem) => elem.languages);
     for (const language of allLanguages) {
       ModesRegistry.registerLanguage(language);
     }

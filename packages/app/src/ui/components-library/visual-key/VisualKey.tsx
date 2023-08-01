@@ -53,11 +53,7 @@ const VisualKeyRoot = styled(Box)<{ styleProps: StyleProps }>`
     if (styleProps.type === 'icon') {
       return '3px';
     } else if (styleProps.type === 'char') {
-      if (styleProps.contentSize === 'md') {
-        return '2px';
-      } else {
-        return '3px';
-      }
+      return styleProps.contentSize === 'md' ? '2px' : '3px';
     } else {
       assertIsUnreachable(styleProps);
     }
@@ -66,11 +62,7 @@ const VisualKeyRoot = styled(Box)<{ styleProps: StyleProps }>`
     if (styleProps.type === 'icon') {
       return undefined;
     } else if (styleProps.type === 'char') {
-      if (styleProps.contentSize === 'md') {
-        return '4px';
-      } else {
-        return '2px';
-      }
+      return styleProps.contentSize === 'md' ? '4px' : '2px';
     } else {
       assertIsUnreachable(styleProps);
     }

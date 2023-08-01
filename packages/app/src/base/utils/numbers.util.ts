@@ -28,14 +28,14 @@ enum Constants {
   /**
    * Max unsigned integer that fits on 16 bits.
    */
-  MAX_UINT_16 = 65535, // 2^16 - 1
+  MAX_UINT_16 = 65_535, // 2^16 - 1
 
   /**
    * Max unsigned integer that fits on 32 bits.
    */
-  MAX_UINT_32 = 4294967295, // 2^32 - 1
+  MAX_UINT_32 = 4_294_967_295, // 2^32 - 1
 
-  UNICODE_SUPPLEMENTARY_PLANE_BEGIN = 0x010000,
+  UNICODE_SUPPLEMENTARY_PLANE_BEGIN = 0x01_00_00,
 }
 
 export const numbers = { Constants, convert, toString, roundToDecimals, sequence };
@@ -43,7 +43,7 @@ export const numbers = { Constants, convert, toString, roundToDecimals, sequence
 function convert(input: unknown): number | undefined {
   // https://stackoverflow.com/a/1421988/1700319
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  if (isNaN(parseFloat(input as any)) || isNaN((input as any) - 0)) {
+  if (Number.isNaN(Number.parseFloat(input as any)) || Number.isNaN((input as any) - 0)) {
     return;
   }
   return Number(input);
@@ -61,7 +61,7 @@ function roundToDecimals(num: number, countOfDecimals: number): number {
 
 function sequence(options: { fromInclusive: number; toInclusive: number }): number[] {
   return Array.from(
-    new Array(options.toInclusive - (options.fromInclusive - 1)),
+    Array.from({ length: options.toInclusive - (options.fromInclusive - 1) }),
     (_, i) => i + options.fromInclusive,
   );
 }

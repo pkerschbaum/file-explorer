@@ -1,5 +1,5 @@
-import { queries } from '@playwright-testing-library/test';
 import { expect, test } from '@playwright/test';
+import { queries } from '@playwright-testing-library/test';
 
 import { bootstrap, retrievePageScreenshot } from '#pkg-playwright/playwright.util';
 
@@ -13,24 +13,24 @@ test.describe('ChangeCwdForm [visual]', () => {
     });
 
     const navBreadcrumbs = await queries.findByRole($document, 'navigation', {
-      name: /Breadcrumbs/i,
+      name: /breadcrumbs/i,
     });
     const buttonActionsMenuTrigger = await queries.findByRole(navBreadcrumbs, 'link', {
       name: /testdir/i,
     });
     await buttonActionsMenuTrigger.click();
     const menuItemChangeCwd = await queries.findByRole($document, 'menuitem', {
-      name: /Change Directory/i,
+      name: /change directory/i,
     });
     await menuItemChangeCwd.click();
 
     expect(await retrievePageScreenshot(page)).toMatchSnapshot('change-cwd-form_1_initial.png');
 
     const formChangeCwd = await queries.findByRole($document, 'form', {
-      name: /Change Directory Form/i,
+      name: /change directory form/i,
     });
     const textboxNewDirectory = await queries.findByRole(formChangeCwd, 'textbox', {
-      name: /Directory/i,
+      name: /directory/i,
     });
     await textboxNewDirectory.click({ clickCount: 3 });
     await page.keyboard.press('Backspace');

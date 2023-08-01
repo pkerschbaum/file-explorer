@@ -50,12 +50,10 @@ export const CwdSegmentStateContextProvider: React.FC<CwdSegmentContextProviderP
     () => ({
       setKeyOfResourceToRename: (newValueOrUpdateFn) => {
         updateExplorerState((draft) => {
-          let newValue;
-          if (typeof newValueOrUpdateFn === 'function') {
-            newValue = newValueOrUpdateFn(draft.keyOfResourceToRename);
-          } else {
-            newValue = newValueOrUpdateFn;
-          }
+          const newValue =
+            typeof newValueOrUpdateFn === 'function'
+              ? newValueOrUpdateFn(draft.keyOfResourceToRename)
+              : newValueOrUpdateFn;
 
           draft.keyOfResourceToRename = newValue;
         });

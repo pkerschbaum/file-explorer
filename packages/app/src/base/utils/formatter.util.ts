@@ -47,7 +47,7 @@ function resourceExtension(resource: Pick<ResourceForUI, 'extension' | 'resource
     return '';
   }
 
-  return resource.extension.substring(1).toUpperCase();
+  return resource.extension.slice(1).toUpperCase();
 }
 
 function resourcePath(resource: UriComponents): string {

@@ -67,7 +67,7 @@ export const useKeyOfLastSelectedResource = (
     const keysOfSelectedResources =
       state.explorersSlice.explorerPanels[explorerId].cwdSegments[segmentIdx].selection
         .keysOfSelectedResources;
-    return keysOfSelectedResources[keysOfSelectedResources.length - 1];
+    return keysOfSelectedResources.at(-1);
   });
 };
 
@@ -94,7 +94,7 @@ export function extractCwdSegmentsFromExplorerPanel(
 
 export function extractCwdFromExplorerPanel(explorerPanel: Pick<ExplorerPanel, 'cwdSegments'>) {
   const cwdSegments = extractCwdSegmentsFromExplorerPanel(explorerPanel);
-  const newestSegmentNotScheduledToRemove = cwdSegments[cwdSegments.length - 1];
+  const newestSegmentNotScheduledToRemove = cwdSegments.at(-1);
   invariant(newestSegmentNotScheduledToRemove);
   return newestSegmentNotScheduledToRemove.uri;
 }

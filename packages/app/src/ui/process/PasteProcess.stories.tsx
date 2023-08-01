@@ -103,16 +103,14 @@ const process_manyResources: NarrowUnion<
   PASTE_PROCESS_STATUS.RUNNING_PERFORMING_PASTE
 > = {
   ...fakePasteProcessBase,
-  sourceUris: [
-    ...numbers
-      .sequence({ fromInclusive: 1, toInclusive: 100 })
-      .map((number) =>
-        uriHelper.parseUri(
-          network.Schemas.file,
-          `/home/testdir/testfile-${number.toString().padStart(5, '0')}.txt`,
-        ),
+  sourceUris: numbers
+    .sequence({ fromInclusive: 1, toInclusive: 100 })
+    .map((number) =>
+      uriHelper.parseUri(
+        network.Schemas.file,
+        `/home/testdir/testfile-${number.toString().padStart(5, '0')}.txt`,
       ),
-  ],
+    ),
   status: PASTE_PROCESS_STATUS.RUNNING_PERFORMING_PASTE,
 };
 export const ManyResources = Template.bind({});

@@ -64,7 +64,7 @@ export async function changeCwd({
 }) {
   const stats = await globalThis.modules.fileSystem.resolve(newCwd);
   if (!stats.isDirectory) {
-    throw Error(
+    throw new Error(
       `could not change directory, reason: uri is not a valid directory. uri: ${formatter.resourcePath(
         newCwd,
       )}`,
@@ -143,10 +143,10 @@ export async function pasteResources(explorerId: string) {
               resolveMetadata: true,
             },
           );
-        } catch (err: unknown) {
+        } catch (error: unknown) {
           logger.error(
             'error during paste process, source resource was probably deleted or moved meanwhile',
-            err,
+            error,
           );
           return;
         }
@@ -195,21 +195,20 @@ export async function pasteResources(explorerId: string) {
 
       const resourceStatMap = await resolveDeep(sourceResource.uri, sourceResource.fileStat);
 
-      Object.entries(resourceStatMap).forEach(([keyOfResource, statOfResource]) => {
+      for (const [keyOfResource, statOfResource] of Object.entries(resourceStatMap)) {
         totalSize += statOfResource.size;
         const resourceType = mapFileStatToResource(statOfResource).resourceType;
-        if (resourceType === RESOURCE_TYPE.FILE) {
-          statusPerResource[keyOfResource] = {
-            type: resourceType,
-            progressDeterminateType: 'INDETERMINATE',
-            bytesProcessed: 0,
-          };
-        } else {
-          statusPerResource[keyOfResource] = {
-            type: resourceType,
-          };
-        }
-      });
+        statusPerResource[keyOfResource] =
+          resourceType === RESOURCE_TYPE.FILE
+            ? {
+                type: resourceType,
+                progressDeterminateType: 'INDETERMINATE',
+                bytesProcessed: 0,
+              }
+            : {
+                type: resourceType,
+              };
+      }
     }),
   );
 
@@ -253,16 +252,17 @@ export async function pasteResources(explorerId: string) {
       bytesProcessed += progressArgs.newBytesRead;
       statusOfResource.bytesProcessed += progressArgs.newBytesRead;
     }
-    if ('progressDeterminateType' in progressArgs && progressArgs.progressDeterminateType) {
+    if (
+      'progressDeterminateType' in progressArgs &&
+      progressArgs.progressDeterminateType &&
       // we only track determinate type for files
-      if (statusOfResource.type === RESOURCE_TYPE.FILE) {
-        statusOfResource.progressDeterminateType = progressArgs.progressDeterminateType;
-        progressOfAtLeastOneSourceIsIndeterminate = Object.values(statusPerResource).some(
-          (status) =>
-            status.type === RESOURCE_TYPE.FILE &&
-            status.progressDeterminateType === 'INDETERMINATE',
-        );
-      }
+      statusOfResource.type === RESOURCE_TYPE.FILE
+    ) {
+      statusOfResource.progressDeterminateType = progressArgs.progressDeterminateType;
+      progressOfAtLeastOneSourceIsIndeterminate = Object.values(statusPerResource).some(
+        (status) =>
+          status.type === RESOURCE_TYPE.FILE && status.progressDeterminateType === 'INDETERMINATE',
+      );
     }
   }
   const intervalId = setInterval(function dispatchProgress() {
@@ -300,12 +300,12 @@ export async function pasteResources(explorerId: string) {
         processesActions.updatePasteProcess({ id, status: PASTE_PROCESS_STATUS.ABORT_SUCCESS }),
       );
     }
-  } catch (err: unknown) {
+  } catch (error: unknown) {
     globalThis.modules.dispatch(
       processesActions.updatePasteProcess({
         id,
         status: PASTE_PROCESS_STATUS.FAILURE,
-        error: err instanceof Error ? err.message : `Unknown error occured`,
+        error: error instanceof Error ? error.message : `Unknown error occured`,
       }),
     );
   } finally {
@@ -353,12 +353,10 @@ export function setReasonForLastSelectionChange(
       segmentIdx
     ].selection.reasonForLastSelectionChange;
 
-  let newValue;
-  if (typeof newValueOrUpdateFn === 'function') {
-    newValue = newValueOrUpdateFn(currentValue);
-  } else {
-    newValue = newValueOrUpdateFn;
-  }
+  const newValue =
+    typeof newValueOrUpdateFn === 'function'
+      ? newValueOrUpdateFn(currentValue)
+      : newValueOrUpdateFn;
 
   globalThis.modules.dispatch(
     explorerActions.updateCwdSegment({
@@ -381,12 +379,10 @@ export function setKeysOfSelectedResources(
       segmentIdx
     ].selection;
 
-  let newValue;
-  if (typeof newValueOrUpdateFn === 'function') {
-    newValue = newValueOrUpdateFn(currentSelection.keysOfSelectedResources);
-  } else {
-    newValue = newValueOrUpdateFn;
-  }
+  const newValue =
+    typeof newValueOrUpdateFn === 'function'
+      ? newValueOrUpdateFn(currentSelection.keysOfSelectedResources)
+      : newValueOrUpdateFn;
 
   globalThis.modules.dispatch(
     explorerActions.updateCwdSegment({
@@ -413,12 +409,10 @@ export function setActiveResourcesView(
       segmentIdx
     ].activeResourcesView;
 
-  let newValue;
-  if (typeof newValueOrUpdateFn === 'function') {
-    newValue = newValueOrUpdateFn(currentValue);
-  } else {
-    newValue = newValueOrUpdateFn;
-  }
+  const newValue =
+    typeof newValueOrUpdateFn === 'function'
+      ? newValueOrUpdateFn(currentValue)
+      : newValueOrUpdateFn;
 
   globalThis.modules.dispatch(
     explorerActions.updateCwdSegment({ explorerId, segmentIdx, activeResourcesView: newValue }),
@@ -481,7 +475,7 @@ function incrementResourceName(name: string, isFolder: boolean): string {
   if (suffixRegex.test(namePrefix)) {
     return (
       namePrefix.replace(suffixRegex, (_, g1?, g2?: string) => {
-        const number = g2 ? parseInt(g2) : 1;
+        const number = g2 ? Number.parseInt(g2) : 1;
         return number === 0
           ? // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
             `${g1}`

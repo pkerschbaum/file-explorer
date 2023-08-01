@@ -44,7 +44,7 @@ export async function createStoreInstance(creationParams?: {
   let focusedExplorerPanelId =
     creationParams?.preloadedState?.explorersSlice?.focusedExplorerPanelId;
 
-  if (Object.keys(explorerPanels).length < 1) {
+  if (Object.keys(explorerPanels).length === 0) {
     logger.debug(`no explorer present --> add default explorer panel`);
     const cwdOfNewExplorer = await getDefaultExplorerCwd();
     const explorerId = generateExplorerId();

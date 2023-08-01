@@ -34,7 +34,7 @@ export const useResourcesOfDirectory = (
 
   let resourcesToUse: undefined | ResourceStat[];
   let isLoading: boolean;
-  let error: undefined | unknown;
+  let error: unknown;
   if (resourcesQueryWithMetadata.data !== undefined) {
     resourcesToUse = resourcesQueryWithMetadata.data;
     isLoading = resourcesQueryWithMetadata.isLoading;

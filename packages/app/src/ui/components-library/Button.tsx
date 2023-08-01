@@ -243,16 +243,14 @@ const ButtonRoot = styled(
   ${variantRules}
 
   ${({ styleProps }) => {
-    if (styleProps.buttonSize === 'sm') {
-      return css`
-        padding: 0 6px;
-        font-size: var(--font-size-sm);
-      `;
-    } else {
-      return css`
-        padding: var(--padding-button-md-block) var(--padding-button-md-inline);
-      `;
-    }
+    return styleProps.buttonSize === 'sm'
+      ? css`
+          padding: 0 6px;
+          font-size: var(--font-size-sm);
+        `
+      : css`
+          padding: var(--padding-button-md-block) var(--padding-button-md-inline);
+        `;
   }}
 
 

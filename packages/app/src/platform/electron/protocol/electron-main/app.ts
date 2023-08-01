@@ -1,8 +1,8 @@
 import type electron from 'electron';
 import { app, protocol } from 'electron';
 import FileType from 'file-type';
-import fs from 'fs';
 import mime from 'mime';
+import fs from 'node:fs';
 import sharp from 'sharp';
 import invariant from 'tiny-invariant';
 
@@ -45,11 +45,11 @@ type ProtocolBufferResponse = electron.ProtocolResponse & {
 };
 
 // Skip resizing of SVGs (because vector images should just get served to the UI)
-const THUMBNAIL_RESIZE_BLOCKLIST = ['image/svg+xml'];
+const THUMBNAIL_RESIZE_BLOCKLIST = new Set(['image/svg+xml']);
 async function getThumbnail(request: electron.ProtocolRequest): Promise<ProtocolStreamResponse> {
   const parsed = new URL(request.url);
   // property "pathname" has a leading slash --> remove that (https://developer.mozilla.org/en-US/docs/Web/API/URL/pathname)
-  const path = parsed.pathname.substring(1);
+  const path = parsed.pathname.slice(1);
   const uri = URI.parse(decodeURIComponent(path));
   const requestedHeight = parsed.searchParams.get('height');
   const parsedHeight = numbers.convert(requestedHeight);
@@ -62,17 +62,15 @@ async function getThumbnail(request: electron.ProtocolRequest): Promise<Protocol
     : mime.getType(extension);
   const finalMimeType = mimeTypeBasedOnContent ?? mimeTypeBasedOnExtension ?? undefined;
 
-  let thumbnailStream;
-  if (finalMimeType === undefined || THUMBNAIL_RESIZE_BLOCKLIST.includes(finalMimeType)) {
-    thumbnailStream = fs.createReadStream(URI.fsPath(uri));
-  } else {
-    thumbnailStream = fs.createReadStream(URI.fsPath(uri)).pipe(
-      sharp({
-        // set animated to `true` to keep animated GIFs and WebPs
-        animated: true,
-      }).resize({ height: parsedHeight }),
-    );
-  }
+  const thumbnailStream =
+    finalMimeType === undefined || THUMBNAIL_RESIZE_BLOCKLIST.has(finalMimeType)
+      ? fs.createReadStream(URI.fsPath(uri))
+      : fs.createReadStream(URI.fsPath(uri)).pipe(
+          sharp({
+            // set animated to `true` to keep animated GIFs and WebPs
+            animated: true,
+          }).resize({ height: parsedHeight }),
+        );
 
   return {
     data: thumbnailStream,
@@ -88,7 +86,7 @@ async function getNativeFileIcon(
 ): Promise<ProtocolBufferResponse> {
   const parsed = new URL(request.url);
   // property "pathname" has a leading slash --> remove that (https://developer.mozilla.org/en-US/docs/Web/API/URL/pathname)
-  const path = parsed.pathname.substring(1);
+  const path = parsed.pathname.slice(1);
   const uri = URI.parse(decodeURIComponent(path));
   const icon = await app.getFileIcon(URI.fsPath(uri), { size: 'large' });
 

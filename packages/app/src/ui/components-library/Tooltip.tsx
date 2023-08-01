@@ -180,42 +180,48 @@ const TooltipArrow = styled(Box)<{ styleProps: StyleProps }>`
   visibility: hidden;
 
   ${({ styleProps }) => {
-    if (styleProps.tooltipInstance.tooltipActualPlacement === 'top') {
-      return css`
-        bottom: var(--arrow-offset-to-apply);
-        transform: translateX(var(--arrow-offset-to-apply));
-        &::before {
-          border-right: var(--border-to-use);
-          border-bottom: var(--border-to-use);
-        }
-      `;
-    } else if (styleProps.tooltipInstance.tooltipActualPlacement === 'bottom') {
-      return css`
-        top: var(--arrow-offset-to-apply);
-        transform: translateX(var(--arrow-offset-to-apply));
-        &::before {
-          border-left: var(--border-to-use);
-          border-top: var(--border-to-use);
-        }
-      `;
-    } else if (styleProps.tooltipInstance.tooltipActualPlacement === 'left') {
-      return css`
-        right: var(--arrow-offset-to-apply);
-        transform: translateY(var(--arrow-offset-to-apply));
-        &::before {
-          border-top: var(--border-to-use);
-          border-right: var(--border-to-use);
-        }
-      `;
-    } else if (styleProps.tooltipInstance.tooltipActualPlacement === 'right') {
-      return css`
-        left: var(--arrow-offset-to-apply);
-        transform: translateY(var(--arrow-offset-to-apply));
-        &::before {
-          border-bottom: var(--border-to-use);
-          border-left: var(--border-to-use);
-        }
-      `;
+    switch (styleProps.tooltipInstance.tooltipActualPlacement) {
+      case 'top': {
+        return css`
+          bottom: var(--arrow-offset-to-apply);
+          transform: translateX(var(--arrow-offset-to-apply));
+          &::before {
+            border-right: var(--border-to-use);
+            border-bottom: var(--border-to-use);
+          }
+        `;
+      }
+      case 'bottom': {
+        return css`
+          top: var(--arrow-offset-to-apply);
+          transform: translateX(var(--arrow-offset-to-apply));
+          &::before {
+            border-left: var(--border-to-use);
+            border-top: var(--border-to-use);
+          }
+        `;
+      }
+      case 'left': {
+        return css`
+          right: var(--arrow-offset-to-apply);
+          transform: translateY(var(--arrow-offset-to-apply));
+          &::before {
+            border-top: var(--border-to-use);
+            border-right: var(--border-to-use);
+          }
+        `;
+      }
+      case 'right': {
+        return css`
+          left: var(--arrow-offset-to-apply);
+          transform: translateY(var(--arrow-offset-to-apply));
+          &::before {
+            border-bottom: var(--border-to-use);
+            border-left: var(--border-to-use);
+          }
+        `;
+      }
+      case 'center': // ignore
     }
   }}
 

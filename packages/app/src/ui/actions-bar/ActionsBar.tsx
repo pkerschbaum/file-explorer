@@ -204,7 +204,7 @@ export const ActionsBar: React.FC = () => {
   });
 
   const singleResourceActionsDisabled = selectedShownResources.length !== 1;
-  const multipleResourcesActionsDisabled = selectedShownResources.length < 1;
+  const multipleResourcesActionsDisabled = selectedShownResources.length === 0;
 
   return (
     <ActionBarContainer role="menubar">

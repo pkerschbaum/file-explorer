@@ -62,39 +62,38 @@ export const CwdSegmentDerivedValuesContextProvider: React.FC<
    * - otherwise, let "match-sorter" do its job for filtering and sorting.
    */
   const resourcesToShow: ResourceForUI[] = React.useMemo(() => {
-    let result;
-
-    if (check.isEmptyString(filterInput)) {
-      result = arrays
-        .wrap(resourcesWithTags)
-        .stableSort((a, b) => {
-          if (a.basename.toLocaleLowerCase() < b.basename.toLocaleLowerCase()) {
-            return -1;
-          } else if (a.basename.toLocaleLowerCase() > b.basename.toLocaleLowerCase()) {
-            return 1;
-          }
-          return 0;
-        })
-        .stableSort((a, b) => {
-          if (a.resourceType === RESOURCE_TYPE.DIRECTORY && b.resourceType === RESOURCE_TYPE.FILE) {
-            return -1;
-          } else if (
-            a.resourceType === RESOURCE_TYPE.FILE &&
-            b.resourceType === RESOURCE_TYPE.DIRECTORY
-          ) {
-            return 1;
-          }
-          return 0;
-        })
-        .getValue();
-    } else {
-      result = arrays
-        .wrap(resourcesWithTags)
-        .matchSort(filterInput, {
-          keys: [(resource) => resource.basename],
-        })
-        .getValue();
-    }
+    const result = check.isEmptyString(filterInput)
+      ? arrays
+          .wrap(resourcesWithTags)
+          .stableSort((a, b) => {
+            if (a.basename.toLocaleLowerCase() < b.basename.toLocaleLowerCase()) {
+              return -1;
+            } else if (a.basename.toLocaleLowerCase() > b.basename.toLocaleLowerCase()) {
+              return 1;
+            }
+            return 0;
+          })
+          .stableSort((a, b) => {
+            if (
+              a.resourceType === RESOURCE_TYPE.DIRECTORY &&
+              b.resourceType === RESOURCE_TYPE.FILE
+            ) {
+              return -1;
+            } else if (
+              a.resourceType === RESOURCE_TYPE.FILE &&
+              b.resourceType === RESOURCE_TYPE.DIRECTORY
+            ) {
+              return 1;
+            }
+            return 0;
+          })
+          .getValue()
+      : arrays
+          .wrap(resourcesWithTags)
+          .matchSort(filterInput, {
+            keys: [(resource) => resource.basename],
+          })
+          .getValue();
 
     return result;
   }, [filterInput, resourcesWithTags]);
@@ -212,7 +211,7 @@ export function useSelectedShownResources() {
 
 export function useIsResourceSelected(resourceKey: string) {
   return useCwdSegmentDerivedValuesSelector((explorerValues) => {
-    const isResourceSelected = !!explorerValues.selectedShownResources.find(
+    const isResourceSelected = explorerValues.selectedShownResources.some(
       (selectedResource) => selectedResource.key === resourceKey,
     );
     return isResourceSelected;

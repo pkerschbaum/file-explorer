@@ -271,7 +271,5 @@ export function computeCwdSegmentsFromUri(uri: UriComponents): CwdSegment[] {
 }
 
 function isExplorerIdPresent(state: ExplorerSliceState, explorerId: string): boolean {
-  return !!Object.keys(state.explorerPanels).find(
-    (existingExplorerId) => existingExplorerId === explorerId,
-  );
+  return !!Object.keys(state.explorerPanels).includes(explorerId);
 }

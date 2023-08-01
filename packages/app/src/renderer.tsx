@@ -32,7 +32,7 @@ async function rendererScriptEntryPoint() {
   const queryClient = createQueryClient();
 
   // render React application
-  const rootContainer = document.getElementById('root');
+  const rootContainer = document.querySelector('#root');
   invariant(rootContainer);
   ReactDOM.createRoot(rootContainer).render(
     <Globals queryClient={queryClient} store={store}>

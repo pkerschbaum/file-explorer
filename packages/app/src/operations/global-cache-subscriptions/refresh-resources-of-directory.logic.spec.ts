@@ -1,5 +1,5 @@
-import { queries } from '@playwright-testing-library/test';
 import { expect, test } from '@playwright/test';
+import { queries } from '@playwright-testing-library/test';
 
 import { network } from '#pkg/base/network';
 import { uriHelper } from '#pkg/base/utils/uri-helper';

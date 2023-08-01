@@ -37,7 +37,7 @@ export type MenuInstance = {
   state: MenuTriggerState;
 };
 
-const HORIZONTAL_DIRECTIONS = ['left', 'right', 'start', 'end'];
+const HORIZONTAL_DIRECTIONS = new Set(['left', 'right', 'start', 'end']);
 
 export function useMenu<TriggerHTMLElement extends HTMLElement>(
   props: UseMenuArgs<TriggerHTMLElement>,
@@ -52,7 +52,7 @@ export function useMenu<TriggerHTMLElement extends HTMLElement>(
   const align = props.menu?.triggerProps?.align;
   let placement: PositionProps['placement'] = direction;
   if (align !== undefined) {
-    if (HORIZONTAL_DIRECTIONS.includes(direction)) {
+    if (HORIZONTAL_DIRECTIONS.has(direction)) {
       if (align === 'start') {
         placement += ' top';
       } else if (align === 'end') {

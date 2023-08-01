@@ -10,7 +10,7 @@ import { ROOTCONTAINER_PADDING_FACTOR } from '#pkg/ui/shell/constants';
 export const ProcessesArea: React.FC = () => {
   const processes = useProcesses();
 
-  if (processes.length < 1) {
+  if (processes.length === 0) {
     return null;
   }
 

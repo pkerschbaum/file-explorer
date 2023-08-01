@@ -18,6 +18,7 @@ module.exports = {
     'plugin:jsx-a11y/recommended',
     'plugin:storybook/recommended',
     'plugin:playwright/playwright-test',
+    'plugin:unicorn/recommended',
     'plugin:eslint-comments/recommended',
     'plugin:regexp/recommended',
   ],
@@ -259,7 +260,7 @@ module.exports = {
           },
           {
             target: /\/src\/platform\/electron\/protocol\/electron-main\/app.ts$/,
-            allowedPatterns: ['file-type', 'fs', 'sharp'],
+            allowedPatterns: ['file-type', 'node:fs', 'sharp'],
           },
           {
             target: /\/src\/platform\/electron\/.+/,
@@ -319,6 +320,19 @@ module.exports = {
     ],
     'playwright/no-force-option': 'off',
     'playwright/no-wait-for-timeout': 'off',
+    'playwright/prefer-web-first-assertions': 'off',
+    'unicorn/filename-case': 'off',
+    'unicorn/no-array-callback-reference': 'off',
+    'unicorn/no-await-expression-member': 'off',
+    'unicorn/no-negated-condition': 'off',
+    'unicorn/no-nested-ternary': 'off',
+    'unicorn/no-null': 'off',
+    'unicorn/no-useless-undefined': 'off',
+    'unicorn/prefer-module': 'off',
+    'unicorn/prefer-string-replace-all': 'off',
+    'unicorn/prefer-ternary': 'off',
+    'unicorn/prefer-top-level-await': 'off',
+    'unicorn/prevent-abbreviations': 'off',
     '@typescript-eslint/ban-types': [
       'error',
       {
@@ -333,6 +347,8 @@ module.exports = {
       'error',
       { overrides: { constructors: 'off' } },
     ],
+    // `no-duplicate-type-constituents` might remove types which can be considered as "documentation" (e.g. `e: WindowEventMap['focus'] | WindowEventMap['blur']`)
+    '@typescript-eslint/no-duplicate-type-constituents': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-floating-promises': 'error',
     '@typescript-eslint/no-meaningless-void-operator': 'error',
@@ -346,6 +362,8 @@ module.exports = {
     ],
     '@typescript-eslint/no-unsafe-assignment': 'off',
     '@typescript-eslint/no-unsafe-call': 'off',
+    // `no-unsafe-enum-comparison` has false positives (numbers compared with number-enums)
+    '@typescript-eslint/no-unsafe-enum-comparison': 'off',
     '@typescript-eslint/no-unsafe-member-access': 'off',
     '@typescript-eslint/no-unsafe-return': 'off',
     '@typescript-eslint/no-unused-vars': [

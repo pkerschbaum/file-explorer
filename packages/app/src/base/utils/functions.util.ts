@@ -41,7 +41,7 @@ function debounce<ThisType, Params extends any[]>(
       clearTimeout(scheduledTimeoutId);
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    // eslint-disable-next-line @typescript-eslint/no-this-alias, unicorn/no-this-assignment
     const that = this;
     lastFnInvocation = () => fn.apply(that, params);
     scheduledTimeoutId = setTimeout(runAndClearScheduledFnInvocation, limit);
@@ -97,7 +97,7 @@ function throttle<ThisType, Params extends any[]>(
         scheduledTimeoutId = setTimeout(finishThrottleWindowAndExecuteTrailingCall, limit);
       }
     } else {
-      // eslint-disable-next-line @typescript-eslint/no-this-alias
+      // eslint-disable-next-line @typescript-eslint/no-this-alias, unicorn/no-this-assignment
       const that = this;
       lastDiscardedFnInvocation = () => fn.apply(that, params);
     }

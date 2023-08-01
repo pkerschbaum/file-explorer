@@ -10,12 +10,11 @@ export const objects = {
 };
 
 function shallowCopy<T>(inObject: T): T {
-  if (typeof inObject !== 'object' || inObject === null) {
-    return inObject; // Return the value if inObject is not an object
-  } else {
-    // shallow copy via object spread
-    return { ...inObject };
-  }
+  return typeof inObject !== 'object' || inObject === null
+    ? // Return the value if inObject is not an object
+      inObject
+    : // shallow copy via object spread
+      { ...inObject };
 }
 
 function deepCopyJson<T>(inObj: IsJsonable<T>): IsJsonable<T> {

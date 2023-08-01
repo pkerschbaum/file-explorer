@@ -1,5 +1,5 @@
-import { queries } from '@playwright-testing-library/test';
 import { expect, test } from '@playwright/test';
+import { queries } from '@playwright-testing-library/test';
 
 import { uriHelper } from '#pkg/base/utils/uri-helper';
 
@@ -16,7 +16,7 @@ test.describe('ActionsBar [logic]', () => {
     const res2 = await queries.findByRole($document, 'row', { name: /testfile1.txt/i });
     await res1.click();
     await res2.click({ modifiers: ['Control'] });
-    const copyButton = await queries.findByRole($document, 'button', { name: /Copy/i });
+    const copyButton = await queries.findByRole($document, 'button', { name: /copy/i });
     await copyButton.click();
 
     // assert clipboard
@@ -77,7 +77,7 @@ test.describe('ActionsBar [logic]', () => {
     const res2 = await queries.findByRole($document, 'row', { name: /testfile1.txt/i });
     await res1.click();
     await res2.click({ modifiers: ['Control'] });
-    const copyButton = await queries.findByRole($document, 'button', { name: /Cut/i });
+    const copyButton = await queries.findByRole($document, 'button', { name: /cut/i });
     await copyButton.click();
 
     // assert clipboard
@@ -139,7 +139,7 @@ test.describe('ActionsBar [logic]', () => {
     expect(resourcesInClipboard).toHaveLength(0);
 
     // set focus on "Open" button by first clicking on the Filter textbox and then tab once
-    const filterInput = await queries.findByRole($document, 'textbox', { name: /Filter/i });
+    const filterInput = await queries.findByRole($document, 'textbox', { name: /filter/i });
     await filterInput.click();
     await page.keyboard.press('Tab');
 

@@ -1,5 +1,5 @@
-import { queries } from '@playwright-testing-library/test';
 import { expect, test } from '@playwright/test';
+import { queries } from '@playwright-testing-library/test';
 
 import { network } from '#pkg/base/network';
 import { resources } from '#pkg/base/resources';
@@ -18,14 +18,14 @@ test.describe('CwdBreadcrumbs [logic]', () => {
     });
 
     const navBreadcrumbs = await queries.findByRole($document, 'navigation', {
-      name: /Breadcrumbs/i,
+      name: /breadcrumbs/i,
     });
     const buttonActionsMenuTrigger = await queries.findByRole(navBreadcrumbs, 'link', {
       name: /testdir/i,
     });
     await buttonActionsMenuTrigger.click();
     const menuItemCopyCwd = await queries.findByRole($document, 'menuitem', {
-      name: /Copy Directory Path/i,
+      name: /copy directory path/i,
     });
     await menuItemCopyCwd.click();
 
@@ -37,7 +37,7 @@ test.describe('CwdBreadcrumbs [logic]', () => {
     const expectedUri = uriHelper.parseUri(network.Schemas.file, '/home/testdir');
     try {
       expect(resources.isEqual(actualUri, expectedUri)).toBeTruthy();
-    } catch (e) {
+    } catch {
       throw new Error(
         `ActualUri is not equal to ExpectedUri! ` +
           `actualUri=${URI.toString(actualUri)}, expectedUri=${URI.toString(expectedUri)}`,

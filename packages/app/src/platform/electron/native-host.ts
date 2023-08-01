@@ -15,13 +15,13 @@ import type { PlatformNativeHost } from '#pkg/platform/native-host.types';
 import { CLIPBOARD_CHANGED_DATA_TYPE } from '#pkg/platform/native-host.types';
 
 const USE_NATIVE_ICON_FOR_REGEX = /exe|ico|dll|iso/i;
-const THUMBNAIL_AVAILABLE_FOR_MIME_TYPE = [
+const THUMBNAIL_AVAILABLE_FOR_MIME_TYPE = new Set([
   'image/png',
   'image/jpeg',
   'image/svg+xml',
   'image/gif',
   'image/webp',
-];
+]);
 
 export const createNativeHost = () => {
   const onClipboardChanged = new Emitter<CLIPBOARD_CHANGED_DATA_TYPE>();
@@ -38,9 +38,7 @@ export const createNativeHost = () => {
         }
 
         const mimeType = mime.getType(resource.extension);
-        return (
-          check.isNonEmptyString(mimeType) && THUMBNAIL_AVAILABLE_FOR_MIME_TYPE.includes(mimeType)
-        );
+        return check.isNonEmptyString(mimeType) && THUMBNAIL_AVAILABLE_FOR_MIME_TYPE.has(mimeType);
       },
       getThumbnailURLForResource: (resource, height) => {
         const isResourceQualifiedForThumbnailURL =

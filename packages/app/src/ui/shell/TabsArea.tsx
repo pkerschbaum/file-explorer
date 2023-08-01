@@ -1,5 +1,6 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
+import invariant from 'tiny-invariant';
 
 import { formatter } from '#pkg/base/utils/formatter.util';
 import type { ExplorerPanelEntry } from '#pkg/global-state/slices/explorers.hooks';
@@ -83,7 +84,8 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow, customTitle
           const formattedUriSegments = formatter.uriSegments(
             extractCwdSegmentsFromExplorerPanel(explorer).map((segment) => segment.uri),
           );
-          const formattedUriSegmentToRender = formattedUriSegments[formattedUriSegments.length - 1];
+          const formattedUriSegmentToRender = formattedUriSegments.at(-1);
+          invariant(formattedUriSegmentToRender);
 
           return (
             <Tab key={explorer.explorerId} value={explorer.explorerId}>
