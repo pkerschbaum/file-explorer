@@ -3,7 +3,7 @@ import * as json from '@pkerschbaum/code-oss-file-icon-theme/out/vs/base/common/
 import type { ILanguageExtensionPoint } from '@pkerschbaum/code-oss-file-icon-theme/out/vs/editor/common/services/modeService';
 import { VSBuffer } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/buffer';
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
-import path from 'path';
+import path from 'node:path';
 
 import { json as jsonUtil } from '#pkg/base/utils/json.util';
 import type { LanguageExtensionPointJsonEntry } from '#pkg/operations/file-icon-theme.operations';
@@ -91,4 +91,4 @@ async function compileLanguageExtensionsIntoJsonFile() {
   );
 }
 
-void compileLanguageExtensionsIntoJsonFile().catch((e) => console.error(e));
+void compileLanguageExtensionsIntoJsonFile().catch((error) => console.error(error));

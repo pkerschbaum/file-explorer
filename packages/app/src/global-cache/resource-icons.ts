@@ -22,11 +22,7 @@ export function useResourceIconClasses({
 
   const [syncLoadedIconClasses] = React.useState(() => {
     const fetchIconClassesResult = fetchIconClasses(resource);
-    if (Array.isArray(fetchIconClassesResult)) {
-      return fetchIconClassesResult;
-    } else {
-      return undefined;
-    }
+    return Array.isArray(fetchIconClassesResult) ? fetchIconClassesResult : undefined;
   });
   const iconClassesQuery = useQuery<string[]>(QUERY_KEYS.RESOURCE_ICON_CLASSES(resource), () =>
     fetchIconClasses(resource),

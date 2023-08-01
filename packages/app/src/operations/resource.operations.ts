@@ -29,7 +29,7 @@ import * as tagOperations from '#pkg/operations/tag.operations';
 const logger = createLogger('resource.operations');
 
 export function scheduleMoveResourcesToTrash(uris: UriComponents[]) {
-  if (uris.length < 1) {
+  if (uris.length === 0) {
     return;
   }
 
@@ -59,7 +59,7 @@ export async function runDeleteProcess(deleteProcessId: string, options: { useTr
         let fileStat;
         try {
           fileStat = await globalThis.modules.fileSystem.resolve(uri);
-        } catch (err) {
+        } catch {
           logger.warn(
             `could not resolve resource which should get deleted --> skipping deletion of the resource.`,
             { uri },
@@ -73,9 +73,9 @@ export async function runDeleteProcess(deleteProcessId: string, options: { useTr
           } else {
             await globalThis.modules.fileSystem.del(uri, { recursive: fileStat.isDirectory });
           }
-        } catch (err) {
-          logger.error(`could not delete resources`, err);
-          throw err;
+        } catch (error) {
+          logger.error(`could not delete resources`, error);
+          throw error;
         }
       }),
     );
@@ -83,12 +83,12 @@ export async function runDeleteProcess(deleteProcessId: string, options: { useTr
     globalThis.modules.dispatch(
       actions.updateDeleteProcess({ id: deleteProcessId, status: DELETE_PROCESS_STATUS.SUCCESS }),
     );
-  } catch (err: unknown) {
+  } catch (error: unknown) {
     globalThis.modules.dispatch(
       actions.updateDeleteProcess({
         id: deleteProcessId,
         status: DELETE_PROCESS_STATUS.FAILURE,
-        error: err instanceof Error ? err.message : `Unknown error occured`,
+        error: error instanceof Error ? error.message : `Unknown error occured`,
       }),
     );
   }
@@ -107,7 +107,7 @@ export async function openFiles(uris: UriComponents[]) {
 }
 
 export function cutOrCopyResources(resources: UriComponents[], cut: boolean) {
-  if (resources.length < 1) {
+  if (resources.length === 0) {
     return;
   }
 
@@ -174,7 +174,7 @@ export function getTagsOfResource(
   const tags = tagOperations.getTags();
   const tagsOfResource = Object.entries(tags)
     .map(([id, otherValues]) => ({ ...otherValues, id }))
-    .filter((tag) => tagIdsOfResource.tags.some((tagId) => tagId === tag.id));
+    .filter((tag) => tagIdsOfResource.tags.includes(tag.id));
 
   logger.debug(`got tags of resource from storage`, { resource, tagsOfResource });
 
@@ -185,9 +185,7 @@ export async function addTagsToResources(resources: UriComponents[], tagIds: str
   logger.debug(`adding tags to resources...`, { resources, tagIds });
 
   const existingTagIds = Object.keys(tagOperations.getTags());
-  const invalidTagIds = tagIds.filter(
-    (tagId) => !existingTagIds.find((existing) => existing === tagId),
-  );
+  const invalidTagIds = tagIds.filter((tagId) => !existingTagIds.includes(tagId));
   if (invalidTagIds.length > 0) {
     throw new CustomError(`at least one tag which should be added is not present in the storage`, {
       invalidTagIds,
@@ -234,7 +232,7 @@ export function removeTagsFromResources(resources: UriComponents[], tagIds: stri
     const existingTagsOfResource = resourcesToTagsMap[uriHelper.getComparisonKey(resource)];
     if (existingTagsOfResource !== undefined) {
       existingTagsOfResource.tags = existingTagsOfResource.tags.filter(
-        (existingTagId) => !tagIds.some((tagIdToRemove) => tagIdToRemove === existingTagId),
+        (existingTagId) => !tagIds.includes(existingTagId),
       );
       resourcesToTagsMap[uriHelper.getComparisonKey(resource)] = existingTagsOfResource;
     }
@@ -288,7 +286,7 @@ export async function executeCopyOrMove({
     if (pasteShouldMove) {
       removeTagsFromResources([sourceResource.uri], tagsOfSourceResource);
     }
-  } catch (err: unknown) {
+  } catch (error: unknown) {
     /*
      * If an error occurs during copy/move, perform cleanup.
      * We can just permanently delete the target file URI (and, if it's a folder, its contents),
@@ -302,11 +300,11 @@ export async function executeCopyOrMove({
       // ignore
     }
 
-    if (objects.hasMessageProp(err) && err.message.includes('due to cancellation')) {
+    if (objects.hasMessageProp(error) && error.message.includes('due to cancellation')) {
       // paste got cancelled --> don't let error bubble up
       return;
     } else {
-      throw err;
+      throw error;
     }
   } finally {
     // invalidate files of the target directory

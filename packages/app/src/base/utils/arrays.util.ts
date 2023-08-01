@@ -12,12 +12,13 @@ export const arrays = {
 };
 
 function flatten<T>(array: T[][]): T[] {
-  return array.reduce((flat, toFlatten) => {
+  let result: T[] = [];
+  for (const toFlatten of array) {
     for (const elem of toFlatten) {
-      flat = flat.concat(elem);
+      result = [...result, elem];
     }
-    return flat;
-  }, []);
+  }
+  return result;
 }
 
 function uniqueValues<T, U>(array: T[], getPropToCompare?: (item: T) => U): T[] {
@@ -36,7 +37,7 @@ function uniqueValues<T, U>(array: T[], getPropToCompare?: (item: T) => U): T[] 
 }
 
 function shallowCopy<T>(array: T[]): T[] {
-  return array.slice();
+  return [...array];
 }
 
 function reverse<T>(array: T[]): T[] {
@@ -63,8 +64,7 @@ function partitionArray<T>(
     for (let i = 0; i < countOfPartitions; i++) {
       partitions[i] = [];
     }
-    for (let i = 0; i < array.length; i++) {
-      const item = array[i];
+    for (const [i, item] of array.entries()) {
       partitions[i % countOfPartitions].push(item);
     }
   } else if ('itemsPerPartition' in options && options.itemsPerPartition !== undefined) {

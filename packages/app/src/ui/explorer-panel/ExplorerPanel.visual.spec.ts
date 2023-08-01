@@ -1,5 +1,5 @@
-import { queries } from '@playwright-testing-library/test';
 import { expect, test } from '@playwright/test';
+import { queries } from '@playwright-testing-library/test';
 
 import { bootstrap, retrievePageScreenshot } from '#pkg-playwright/playwright.util';
 
@@ -20,7 +20,7 @@ test.describe('ExplorerPanel [visual]', () => {
 
     const rowTestfile1 = await queries.findByRole($document, 'row', { name: /testfile1.txt/i });
     await rowTestfile1.click();
-    const buttonRename = await queries.findByRole($document, 'button', { name: /Rename/i });
+    const buttonRename = await queries.findByRole($document, 'button', { name: /rename/i });
     await buttonRename.click();
 
     expect(await retrievePageScreenshot(page)).toMatchSnapshot('rename-resource_1.png');
@@ -31,7 +31,7 @@ test.describe('ExplorerPanel [visual]', () => {
     await textboxRename.click({ clickCount: 3 });
     await page.keyboard.press('Backspace');
     await page.keyboard.type('new-name.txt');
-    const buttonOk = await queries.findByRole($document, 'button', { name: /OK/i });
+    const buttonOk = await queries.findByRole($document, 'button', { name: /ok/i });
     await buttonOk.click();
 
     expect(await retrievePageScreenshot(page)).toMatchSnapshot('rename-resource_2.png');

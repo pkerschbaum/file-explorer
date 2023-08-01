@@ -1,8 +1,8 @@
 /* eslint-disable node/no-process-env */
-import { getDocument } from '@playwright-testing-library/test';
 import type { BrowserContext, PlaywrightTestArgs } from '@playwright/test';
 import { expect } from '@playwright/test';
-import path from 'path';
+import { getDocument } from '@playwright-testing-library/test';
+import path from 'node:path';
 import * as sinon from 'sinon';
 
 const WEB_APP_ORIGIN = process.env.WEB_APP_ORIGIN ?? 'localhost:6006';
@@ -28,7 +28,7 @@ export async function bootstrap({
       `http://${WEB_APP_ORIGIN}/iframe.html?viewMode=story&args=&id=${storybookIdToVisit}`,
       { waitUntil: 'load' },
     ),
-    page.waitForResponse(/fonts\/SegoeUI-VF.ttf/i),
+    page.waitForResponse(/fonts\/segoeui-vf.ttf/i),
   ]);
   const rootContainer = page.locator('#root > *');
   await expect(rootContainer).toHaveCount(1);
@@ -74,11 +74,17 @@ export async function bootstrap({
 
           function collectNodeAndItsDescendents(node: Node) {
             allRemovedNodes.push(node);
-            node.childNodes.forEach(collectNodeAndItsDescendents);
+            // eslint-disable-next-line unicorn/prefer-spread -- spread does not work for NodeListOf
+            for (const childNode of Array.from(node.childNodes)) {
+              collectNodeAndItsDescendents(childNode);
+            }
           }
 
           for (const mutation of mutations) {
-            mutation.removedNodes.forEach(collectNodeAndItsDescendents);
+            // eslint-disable-next-line unicorn/prefer-spread -- spread does not work for NodeListOf
+            for (const removedNode of Array.from(mutation.removedNodes)) {
+              collectNodeAndItsDescendents(removedNode);
+            }
           }
 
           for (const removedNode of allRemovedNodes) {

@@ -58,6 +58,10 @@ export function useUpdatePositionOnAnchorMovement({
       );
     }
 
-    return () => cleanUpFns.forEach((cleanUpFn) => cleanUpFn());
+    return () => {
+      for (const cleanUpFn of cleanUpFns) {
+        cleanUpFn();
+      }
+    };
   }, [anchorElem, isOpen, updatePosition]);
 }

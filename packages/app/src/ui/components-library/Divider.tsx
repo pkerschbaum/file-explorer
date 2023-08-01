@@ -42,18 +42,16 @@ const DividerRoot = styled(Box)<{ styleProps: StyleProps }>`
   border-color: var(--color-darken-1);
   border-style: solid;
   ${({ styleProps }) => {
-    if (styleProps.orientation === 'vertical') {
-      return css`
-        border-bottom-width: 0;
-        border-right-width: var(--border-width-1);
-        height: auto;
-      `;
-    } else {
-      return css`
-        border-bottom-width: var(--border-width-1);
-        border-right-width: 0;
-        width: auto;
-      `;
-    }
+    return styleProps.orientation === 'vertical'
+      ? css`
+          border-bottom-width: 0;
+          border-right-width: var(--border-width-1);
+          height: auto;
+        `
+      : css`
+          border-bottom-width: var(--border-width-1);
+          border-right-width: 0;
+          width: auto;
+        `;
   }};
 `;

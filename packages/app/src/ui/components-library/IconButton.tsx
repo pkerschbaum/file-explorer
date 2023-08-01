@@ -64,12 +64,7 @@ export const IconButton = styled(
     const buttonRef = useObjectRef(ref);
     const { buttonProps } = useButton(reactAriaProps, buttonRef);
 
-    let iconButtonPadding;
-    if (size === 'sm') {
-      iconButtonPadding = DESIGN_TOKENS.SPACING_1_5;
-    } else {
-      iconButtonPadding = DESIGN_TOKENS.SPACING_2;
-    }
+    const iconButtonPadding = size === 'sm' ? DESIGN_TOKENS.SPACING_1_5 : DESIGN_TOKENS.SPACING_2;
 
     /**
      * The IconButton has a rounded shape with some padding. If focused, the IconButton gets a outline

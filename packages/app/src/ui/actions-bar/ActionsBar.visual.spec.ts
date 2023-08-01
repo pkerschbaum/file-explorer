@@ -1,5 +1,5 @@
-import { queries } from '@playwright-testing-library/test';
 import { expect, test } from '@playwright/test';
+import { queries } from '@playwright-testing-library/test';
 
 import { bootstrap, retrievePageScreenshot } from '#pkg-playwright/playwright.util';
 
@@ -14,7 +14,7 @@ test.describe('ActionsBar [visual]', () => {
 
     const rowTestfile1 = await queries.findByRole($document, 'row', { name: /testfile1.txt/i });
     await rowTestfile1.click();
-    const buttonRename = await queries.findByRole($document, 'button', { name: /Rename/i });
+    const buttonRename = await queries.findByRole($document, 'button', { name: /rename/i });
     await buttonRename.click();
     const textboxRename = await queries.findByRole($document, 'textbox', {
       name: /new name for resource/i,
@@ -22,7 +22,7 @@ test.describe('ActionsBar [visual]', () => {
     await textboxRename.click({ clickCount: 3 });
     await page.keyboard.press('Backspace');
     await page.keyboard.type('new-name.txt');
-    const buttonOk = await queries.findByRole($document, 'button', { name: /OK/i });
+    const buttonOk = await queries.findByRole($document, 'button', { name: /ok/i });
     await buttonOk.click();
 
     expect(await retrievePageScreenshot(page)).toMatchSnapshot(
@@ -39,14 +39,14 @@ test.describe('ActionsBar [visual]', () => {
     });
 
     const buttonNewFolder = await queries.findByRole($document, 'button', {
-      name: /New Folder/i,
+      name: /new folder/i,
     });
     await buttonNewFolder.click();
     const textboxNameOfFolder = await queries.findByRole($document, 'textbox', {
-      name: /Name of folder/i,
+      name: /name of folder/i,
     });
     await textboxNameOfFolder.type('name of new folder');
-    const buttonCreateFolder = await queries.findByRole($document, 'button', { name: /Create/i });
+    const buttonCreateFolder = await queries.findByRole($document, 'button', { name: /create/i });
     await buttonCreateFolder.click();
 
     expect(await retrievePageScreenshot(page)).toMatchSnapshot(
@@ -65,7 +65,7 @@ test.describe('ActionsBar [visual]', () => {
     const rowTestfile1 = await queries.findByRole($document, 'row', { name: /testfile1.txt/i });
     await rowTestfile1.click();
     const buttonOpen = await queries.findByRole($document, 'button', {
-      name: /Open/i,
+      name: /open/i,
     });
     await buttonOpen.click();
 

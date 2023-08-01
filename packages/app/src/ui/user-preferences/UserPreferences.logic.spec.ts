@@ -1,5 +1,5 @@
-import { queries } from '@playwright-testing-library/test';
 import { expect, test } from '@playwright/test';
+import { queries } from '@playwright-testing-library/test';
 
 import type { AvailableFileIconTheme } from '#pkg/domain/constants';
 
@@ -17,16 +17,16 @@ test.describe('UserPreferences [logic]', () => {
     expect(activeTheme).toEqual('nord');
 
     const openUserPreferencesButton = await queries.findByRole($document, 'button', {
-      name: /Open User Preferences/i,
+      name: /open user preferences/i,
     });
     await openUserPreferencesButton.click({ force: true });
 
-    const themeRadioGroup = await queries.findByRole($document, 'radiogroup', { name: /Theme/i });
+    const themeRadioGroup = await queries.findByRole($document, 'radiogroup', { name: /theme/i });
     const switchToCoffeeThemeRadio = await queries.findByRole(themeRadioGroup, 'radio', {
-      name: /Coffee/i,
+      name: /coffee/i,
     });
     const switchToFlowThemeRadio = await queries.findByRole(themeRadioGroup, 'radio', {
-      name: /Flow/i,
+      name: /flow/i,
     });
 
     await switchToFlowThemeRadio.click({ force: true });
@@ -66,21 +66,21 @@ test.describe('UserPreferences [logic]', () => {
     expect(activeFileIconTheme).toEqual(vsCodeThemeId);
 
     const openUserPreferencesButton = await queries.findByRole($document, 'button', {
-      name: /Open User Preferences/i,
+      name: /open user preferences/i,
     });
 
     await openUserPreferencesButton.click({ force: true });
 
     const fileIconsRadioGroup = await queries.findByRole($document, 'radiogroup', {
-      name: /File Icons/i,
+      name: /file icons/i,
     });
     const switchToVsCodeFileIconThemeRadio = await queries.findByRole(
       fileIconsRadioGroup,
       'radio',
-      { name: /VS Code/i },
+      { name: /vs code/i },
     );
     const switchToMDFileIconThemeRadio = await queries.findByRole(fileIconsRadioGroup, 'radio', {
-      name: /Material Design/i,
+      name: /material design/i,
     });
 
     await switchToMDFileIconThemeRadio.click({ force: true });

@@ -7,7 +7,7 @@ export async function installExtensions() {
 
   try {
     await Promise.all(extensions.map((name) => installer.default(installer[name], forceDownload)));
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 }

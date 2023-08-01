@@ -4,7 +4,7 @@ import { loadCssRules } from '#pkg/operations/file-icon-theme.operations';
 import type { PlatformFileIconThemeLoader } from '#pkg/platform/file-icon-theme-loader.types';
 
 const FILE_ICON_THEME_RELATIVE_PATH = './icon-theme/';
-const FILE_ICON_THEME_PATH_REPLACE_REGEX = /file:\/\/\//g;
+const FILE_ICON_THEME_PATH_REPLACE_REGEX = /file:\/{3}/g;
 
 export function createStorybookFileIconThemeLoader(): PlatformFileIconThemeLoader {
   return {

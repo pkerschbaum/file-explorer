@@ -83,11 +83,9 @@ export const CwdSegmentOperationsContextProvider: React.FC<
         if (selectedShownResources.length !== 1) {
           return undefined;
         }
-        if (selectedShownResources[0].key === currentKeyOfResourceToRename) {
-          return undefined;
-        } else {
-          return selectedShownResources[0].key;
-        }
+        return selectedShownResources[0].key === currentKeyOfResourceToRename
+          ? undefined
+          : selectedShownResources[0].key;
       });
 
   const renameResource: CwdSegmentOperationsContext['renameResource'] = async (
@@ -185,7 +183,7 @@ export const CwdSegmentOperationsContextProvider: React.FC<
     }
 
     const resource = resourcesToShow[idxOfResource];
-    const resourceIsSelected = !!selectedShownResources.find(
+    const resourceIsSelected = selectedShownResources.some(
       (selectedResource) => selectedResource.key === resource.key,
     );
     function selectResources(resources: ResourceForUI[]) {

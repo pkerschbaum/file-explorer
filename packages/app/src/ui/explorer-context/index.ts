@@ -1,5 +1,3 @@
-import { ExplorerRootContextProvider } from '#pkg/ui/explorer-context/ExplorerRootContext';
-
 export * from '#pkg/ui/explorer-context/ExplorerRootContext';
 
-export const ExplorerContextProvider = ExplorerRootContextProvider;
+export { ExplorerRootContextProvider as ExplorerContextProvider } from '#pkg/ui/explorer-context/ExplorerRootContext';

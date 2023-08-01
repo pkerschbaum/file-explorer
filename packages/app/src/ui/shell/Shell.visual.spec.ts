@@ -1,5 +1,5 @@
-import { queries } from '@playwright-testing-library/test';
 import { expect, test } from '@playwright/test';
+import { queries } from '@playwright-testing-library/test';
 
 import {
   bootstrap,
@@ -26,7 +26,7 @@ test.describe('Shell [visual]', () => {
 
     const rowTestfile2 = await queries.findByRole($document, 'row', { name: /testfile2.docx/i });
     await rowTestfile2.click();
-    const buttonRename = await queries.findByRole($document, 'button', { name: /Rename/i });
+    const buttonRename = await queries.findByRole($document, 'button', { name: /rename/i });
     await buttonRename.click();
 
     expect(await retrievePageScreenshot(page)).toMatchSnapshot(
@@ -41,7 +41,7 @@ test.describe('Shell [visual]', () => {
     });
 
     const buttonOpenUserPreferences = await queries.findByRole($document, 'button', {
-      name: /Open User Preferences/i,
+      name: /open user preferences/i,
     });
     await buttonOpenUserPreferences.click();
 
@@ -50,7 +50,7 @@ test.describe('Shell [visual]', () => {
     );
 
     const buttonDismissUserPreferences = await queries.findByRole($document, 'button', {
-      name: /Dismiss/i,
+      name: /dismiss/i,
     });
     await buttonDismissUserPreferences.click({ force: true });
 
@@ -67,11 +67,11 @@ test.describe('Shell [visual]', () => {
     });
 
     const buttonOpenUserPreferences = await queries.findByRole($document, 'button', {
-      name: /Open User Preferences/i,
+      name: /open user preferences/i,
     });
     await buttonOpenUserPreferences.click();
-    const radiogroupTheme = await queries.findByRole($document, 'radiogroup', { name: /Theme/i });
-    const radioThemeFlow = await queries.findByRole(radiogroupTheme, 'radio', { name: /Flow/i });
+    const radiogroupTheme = await queries.findByRole($document, 'radiogroup', { name: /theme/i });
+    const radioThemeFlow = await queries.findByRole(radiogroupTheme, 'radio', { name: /flow/i });
     await radioThemeFlow.click({ force: true });
 
     // the change of the foreground color (because of the theme change) needs some time to propagate (in Chrome)
@@ -87,14 +87,14 @@ test.describe('Shell [visual]', () => {
     });
 
     const buttonOpenUserPreferences = await queries.findByRole($document, 'button', {
-      name: /Open User Preferences/i,
+      name: /open user preferences/i,
     });
     await buttonOpenUserPreferences.click();
     const radiogroupFileIcons = await queries.findByRole($document, 'radiogroup', {
-      name: /File Icons/i,
+      name: /file icons/i,
     });
     const radioIconsMaterialDesign = await queries.findByRole(radiogroupFileIcons, 'radio', {
-      name: /Material Design/i,
+      name: /material design/i,
     });
     await Promise.all([
       radioIconsMaterialDesign.click({ force: true }),
@@ -134,7 +134,7 @@ test.describe('Shell [visual]', () => {
       'shortcuts-should-be-shown_4_modifier-released_default-shortcuts-should-be-shown.png',
     );
 
-    const buttonOpen = await queries.findByRole($document, 'button', { name: /^Open$/i });
+    const buttonOpen = await queries.findByRole($document, 'button', { name: /^open$/i });
     await buttonOpen.focus();
     expect(await retrievePageScreenshot(page)).toMatchSnapshot(
       'shortcuts-should-be-shown_5_focus-present_no-shortcuts-should-be-shown.png',
@@ -173,14 +173,14 @@ test.describe('Shell [visual]', () => {
       });
 
       const buttonNewFolder = await queries.findByRole($document, 'button', {
-        name: /New Folder/i,
+        name: /new folder/i,
       });
       await buttonNewFolder.click();
       const textboxNameOfFolder = await queries.findByRole($document, 'textbox', {
-        name: /Name of folder/i,
+        name: /name of folder/i,
       });
       await textboxNameOfFolder.type('name of new folder');
-      const buttonCreateFolder = await queries.findByRole($document, 'button', { name: /Create/i });
+      const buttonCreateFolder = await queries.findByRole($document, 'button', { name: /create/i });
       await buttonCreateFolder.click();
 
       await letBrowserUpdateStuffDependingOnClock(page);
@@ -196,7 +196,7 @@ test.describe('Shell [visual]', () => {
         storybookIdToVisit: 'shell--simple-case',
       });
 
-      const textboxFilter = await queries.findByRole($document, 'textbox', { name: /Filter/i });
+      const textboxFilter = await queries.findByRole($document, 'textbox', { name: /filter/i });
       await textboxFilter.type('testf');
       // invoke debounce of filter input
       await letBrowserUpdateStuffDependingOnClock(page);
@@ -224,7 +224,7 @@ test.describe('Shell [visual]', () => {
         storybookIdToVisit: 'shell--simple-case',
       });
 
-      const textboxFilter = await queries.findByRole($document, 'textbox', { name: /Filter/i });
+      const textboxFilter = await queries.findByRole($document, 'textbox', { name: /filter/i });
       await textboxFilter.type('test folder');
       // invoke debounce of filter input
       await letBrowserUpdateStuffDependingOnClock(page);
@@ -257,7 +257,7 @@ test.describe('Shell [visual]', () => {
     });
 
     const navBreadcrumbs = await queries.findByRole($document, 'navigation', {
-      name: /Breadcrumbs/i,
+      name: /breadcrumbs/i,
     });
     const buttonActionsMenuTrigger = await queries.findByRole(navBreadcrumbs, 'link', {
       name: /testdir/i,
@@ -269,7 +269,7 @@ test.describe('Shell [visual]', () => {
     );
 
     const menuItemCopyCwd = await queries.findByRole($document, 'menuitem', {
-      name: /Copy Directory Path/i,
+      name: /copy directory path/i,
     });
     await menuItemCopyCwd.click();
 

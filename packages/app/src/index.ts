@@ -88,32 +88,31 @@ protocol.registerSchemesAsPrivileged([
 const store = new Store();
 const activeTheme: AvailableTheme =
   (store.store as StorageState).userState?.preferences.activeTheme ?? defaultTheme;
-app.on('ready', () => {
-  async function bootstrap() {
-    if (config.isDevEnviroment && !process.argv.includes('--noDevServer')) {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires, node/no-missing-require
-      await require('./electron-devtools').installExtensions();
-    }
-
-    // register IPC handlers
-    registerFileDragStartListeners();
-    registerAppListeners();
-    registerPersistentStoreListeners(store);
-    registerShellListeners();
-    registerWindowListeners(mainWindowRef);
-
-    // register custom protocols
-    registerAppProtocols();
-
-    // create and show window
-    mainWindowRef.current = createMainWindow();
-    mainWindowRef.current.once('ready-to-show', () => {
-      invariant(mainWindowRef.current);
-      mainWindowRef.current.maximize();
-      mainWindowRef.current.show();
-    });
+async function bootstrap() {
+  if (config.isDevEnviroment && !process.argv.includes('--noDevServer')) {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires, node/no-missing-require
+    await require('./electron-devtools').installExtensions();
   }
 
+  // register IPC handlers
+  registerFileDragStartListeners();
+  registerAppListeners();
+  registerPersistentStoreListeners(store);
+  registerShellListeners();
+  registerWindowListeners(mainWindowRef);
+
+  // register custom protocols
+  registerAppProtocols();
+
+  // create and show window
+  mainWindowRef.current = createMainWindow();
+  mainWindowRef.current.once('ready-to-show', () => {
+    invariant(mainWindowRef.current);
+    mainWindowRef.current.maximize();
+    mainWindowRef.current.show();
+  });
+}
+app.on('ready', () => {
   void bootstrap();
 });
 

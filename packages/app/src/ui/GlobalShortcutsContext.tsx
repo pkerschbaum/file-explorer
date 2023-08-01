@@ -120,6 +120,7 @@ export const GlobalShortcutsContextProvider: React.FC<GlobalShortcutsContextProv
     function storeInfoIfSomeElementIsBlockingShortcuts() {
       function updateIsElementBlockingShortcuts() {
         const focusedElements = document.querySelectorAll('*:focus-visible');
+        // eslint-disable-next-line unicorn/prefer-spread -- spread does not work for NodeListOf
         const focusedElementsWhichShouldBlockShortcuts = Array.from(focusedElements).filter(
           (elem) =>
             elem instanceof HTMLElement &&
@@ -167,7 +168,7 @@ export const GlobalShortcutsContextProvider: React.FC<GlobalShortcutsContextProv
         };
 
         let matchingShortcut: Shortcut | undefined;
-        let registeredShortcuts = Array.from(shortcutsMapRef.current.values()).flat();
+        let registeredShortcuts = [...shortcutsMapRef.current.values()].flat();
         if (e.repeat) {
           registeredShortcuts = registeredShortcuts.filter(
             (shortcut) => shortcut.enableForRepeatedKeyboardEvent,

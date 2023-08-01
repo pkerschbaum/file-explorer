@@ -217,6 +217,7 @@ const FRAMER_MOTION_ANIMATIONS_DISABLED: FramerMotionAnimations = {
     ...FRAMER_MOTION_ANIMATIONS.fadeInOut,
     transition: {
       ...FRAMER_MOTION_ANIMATIONS.fadeInOut.transition,
+      // eslint-disable-next-line unicorn/no-useless-spread -- would not compile if `duration` is passed directly
       ...{ duration: 0 },
     },
   },
@@ -224,11 +225,7 @@ const FRAMER_MOTION_ANIMATIONS_DISABLED: FramerMotionAnimations = {
 
 export function useFramerMotionAnimations(): FramerMotionAnimations {
   const isAnimationAllowed = componentLibraryUtils.useIsAnimationAllowed();
-  if (isAnimationAllowed) {
-    return FRAMER_MOTION_ANIMATIONS;
-  } else {
-    return FRAMER_MOTION_ANIMATIONS_DISABLED;
-  }
+  return isAnimationAllowed ? FRAMER_MOTION_ANIMATIONS : FRAMER_MOTION_ANIMATIONS_DISABLED;
 }
 
 const SPACING_1 = 4;
@@ -288,39 +285,36 @@ export const DesignTokenProvider: React.FC<DesignTokenProviderProps> = ({ childr
       assertIsUnreachable(themeConfiguration);
     }
 
-    let animations;
-    if (isAnimationAllowed) {
-      animations = css`
-        --animation-rotate: ${ANIMATIONS.rotate} 2s linear infinite;
-        /* pulsate animation taken from https://mui.com/components/skeleton/#variants */
-        --animation-pulsate: 1.5s ease-in-out 0.5s infinite normal none running
-          ${ANIMATIONS.pulsate};
-        /* move-left-to-right animation taken from https://mui.com/components/progress/#linear-indeterminate */
-        --animation-move-left-to-right-1: 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) 0s infinite
-          normal none running ${ANIMATIONS.moveLeftToRight1};
-        --animation-move-left-to-right-2: 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) 1.15s infinite
-          normal none running ${ANIMATIONS.moveLeftToRight2};
-        --animation-ripple: 500ms linear ${ANIMATIONS.ripple};
-      `;
-    } else {
-      animations = css`
-        --animation-rotate: none;
-        --animation-pulsate: none;
-        --animation-move-left-to-right-1: none;
-        --animation-move-left-to-right-2: none;
-        --animation-ripple: none;
+    const animations = isAnimationAllowed
+      ? css`
+          --animation-rotate: ${ANIMATIONS.rotate} 2s linear infinite;
+          /* pulsate animation taken from https://mui.com/components/skeleton/#variants */
+          --animation-pulsate: 1.5s ease-in-out 0.5s infinite normal none running
+            ${ANIMATIONS.pulsate};
+          /* move-left-to-right animation taken from https://mui.com/components/progress/#linear-indeterminate */
+          --animation-move-left-to-right-1: 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) 0s infinite
+            normal none running ${ANIMATIONS.moveLeftToRight1};
+          --animation-move-left-to-right-2: 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) 1.15s infinite
+            normal none running ${ANIMATIONS.moveLeftToRight2};
+          --animation-ripple: 500ms linear ${ANIMATIONS.ripple};
+        `
+      : css`
+          --animation-rotate: none;
+          --animation-pulsate: none;
+          --animation-move-left-to-right-1: none;
+          --animation-move-left-to-right-2: none;
+          --animation-ripple: none;
 
-        /* disable all animations, https://css-tricks.com/empathetic-animation/#did-we-allow-users-to-opt-out */
-        *,
-        *::before,
-        *::after {
-          animation-duration: 0.01ms !important;
-          animation-iteration-count: 1 !important;
-          transition-duration: 0.01ms !important;
-          scroll-behavior: auto !important;
-        }
-      `;
-    }
+          /* disable all animations, https://css-tricks.com/empathetic-animation/#did-we-allow-users-to-opt-out */
+          *,
+          *::before,
+          *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+            scroll-behavior: auto !important;
+          }
+        `;
 
     return css`
       :root {

@@ -1,5 +1,5 @@
 import glob from 'glob';
-import path from 'path';
+import path from 'node:path';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const moduleAliases = require('../package-module-aliases');

@@ -240,7 +240,7 @@ const FileIconThemeLoader: React.FC<FileIconThemeLoaderProps> = ({ children }) =
       elStyle.type = 'text/css';
       elStyle.textContent = iconThemeCssRules;
       elStyle.dataset.iconTheme = 'active';
-      document.head.appendChild(elStyle);
+      document.head.append(elStyle);
 
       setFileIconThemeCssRulesGotLoaded(true);
     }

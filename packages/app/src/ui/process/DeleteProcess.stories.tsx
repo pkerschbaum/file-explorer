@@ -89,16 +89,14 @@ VeryLongResourceNames.args = { process: process_veryLongResourceNames };
 
 const process_manyResources: NarrowUnion<DeleteProcess, 'status', DELETE_PROCESS_STATUS.RUNNING> = {
   ...fakeDeleteProcessBase,
-  uris: [
-    ...numbers
-      .sequence({ fromInclusive: 1, toInclusive: 100 })
-      .map((number) =>
-        uriHelper.parseUri(
-          network.Schemas.file,
-          `/home/testdir/testfile-${number.toString().padStart(5, '0')}.txt`,
-        ),
+  uris: numbers
+    .sequence({ fromInclusive: 1, toInclusive: 100 })
+    .map((number) =>
+      uriHelper.parseUri(
+        network.Schemas.file,
+        `/home/testdir/testfile-${number.toString().padStart(5, '0')}.txt`,
       ),
-  ],
+    ),
   status: DELETE_PROCESS_STATUS.RUNNING,
 };
 export const ManyResources = Template.bind({});

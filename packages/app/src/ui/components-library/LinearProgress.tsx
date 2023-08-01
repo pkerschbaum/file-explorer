@@ -108,15 +108,13 @@ const ProgressBarIndeterminate = styled(ProgressBarForeground)<{
 
   /* animations are taken from https://mui.com/components/progress/#linear-indeterminate */
   ${({ animationVariant }) => {
-    if (animationVariant === 'variant-1') {
-      return css`
-        animation: var(--animation-move-left-to-right-1);
-      `;
-    } else {
-      return css`
-        animation: var(--animation-move-left-to-right-2);
-      `;
-    }
+    return animationVariant === 'variant-1'
+      ? css`
+          animation: var(--animation-move-left-to-right-1);
+        `
+      : css`
+          animation: var(--animation-move-left-to-right-2);
+        `;
   }}
 `;
 

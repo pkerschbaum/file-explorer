@@ -1,5 +1,5 @@
-import { queries } from '@playwright-testing-library/test';
 import { expect, test } from '@playwright/test';
+import { queries } from '@playwright-testing-library/test';
 
 import { bootstrap } from '#pkg-playwright/playwright.util';
 
@@ -11,7 +11,7 @@ test.describe('TabsArea [logic]', () => {
     expect(await currentlySelectedTab.getAttribute('aria-selected')).toEqual('true');
 
     const closeButton = await queries.findByRole(currentlySelectedTab, 'button', {
-      name: /Close Tab/i,
+      name: /close tab/i,
     });
     await closeButton.click();
 
@@ -35,7 +35,7 @@ test.describe('TabsArea [logic]', () => {
     expect(await nonFocusedTab.getAttribute('aria-selected')).toEqual('false');
 
     const closeButton = await queries.findByRole(nonFocusedTab, 'button', {
-      name: /Close Tab/i,
+      name: /close tab/i,
     });
     await closeButton.click();
 
