@@ -118,5 +118,5 @@ function bufferToResources(buffer: Uint8Array): UriComponents[] {
 }
 
 function resourcesToBuffer(resources: UriComponents[]): Uint8Array {
-  return VSBuffer.fromString(resources.map((r) => r.toString()).join('\n')).buffer;
+  return VSBuffer.fromString(resources.map((r) => URI.toString(r)).join('\n')).buffer;
 }

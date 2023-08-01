@@ -9,7 +9,7 @@ import type { IStat } from '@app/base/files';
 import { FileService, fileServiceUriInstancesToComponents } from '@app/base/fileService';
 import { InMemoryFileSystemProvider } from '@app/base/inMemoryFilesystemProvider';
 import { network } from '@app/base/network';
-import type { UriComponents } from '@app/base/uri';
+import { URI, UriComponents } from '@app/base/uri';
 import { assertIsUnreachable } from '@app/base/utils/assert.util';
 import type { Writeable } from '@app/base/utils/types.util';
 import { uriHelper } from '@app/base/utils/uri-helper';
@@ -43,7 +43,10 @@ export const createFakeFileSystem: (
     if (type === RESOURCE_TYPE.DIRECTORY) {
       await fileService.createFolder(uri);
     } else if (type === RESOURCE_TYPE.FILE) {
-      await fileService.createFile(uri, VSBuffer.fromString(`test content of ${uri.toString()}`));
+      await fileService.createFile(
+        uri,
+        VSBuffer.fromString(`test content of ${URI.toString(uri)}`),
+      );
     } else {
       assertIsUnreachable(type);
     }

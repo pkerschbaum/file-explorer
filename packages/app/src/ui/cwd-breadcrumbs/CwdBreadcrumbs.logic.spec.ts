@@ -3,6 +3,7 @@ import { expect, test } from '@playwright/test';
 
 import { network } from '@app/base/network';
 import { resources } from '@app/base/resources';
+import { URI } from '@app/base/uri';
 import { uriHelper } from '@app/base/utils/uri-helper';
 
 import { bootstrap } from '@app-playwright/playwright.util';
@@ -39,7 +40,7 @@ test.describe('CwdBreadcrumbs [logic]', () => {
     } catch (e) {
       throw new Error(
         `ActualUri is not equal to ExpectedUri! ` +
-          `actualUri=${actualUri.toString()}, expectedUri=${expectedUri.toString()}`,
+          `actualUri=${URI.toString(actualUri)}, expectedUri=${URI.toString(expectedUri)}`,
       );
     }
   });
