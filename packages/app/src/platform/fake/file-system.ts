@@ -6,7 +6,7 @@ import dayjs from 'dayjs';
 
 import { VSBuffer } from '@app/base/buffer';
 import type { IStat } from '@app/base/files';
-import { FileService } from '@app/base/fileService';
+import { FileService, fileServiceUriInstancesToComponents } from '@app/base/fileService';
 import { InMemoryFileSystemProvider } from '@app/base/inMemoryFilesystemProvider';
 import { network } from '@app/base/network';
 import type { UriComponents } from '@app/base/uri';
@@ -57,14 +57,8 @@ export const createFakeFileSystem: (
   await Promise.all(resourcesToCreate.map(createResource));
 
   const instance: PlatformFileSystem = {
-    resolve: fileService.resolve.bind(fileService),
-    copy: fileService.copy.bind(fileService),
-    move: fileService.move.bind(fileService),
-    createFolder: fileService.createFolder.bind(fileService),
-    del: fileService.del.bind(fileService),
+    ...fileServiceUriInstancesToComponents(fileService),
     trash: fileService.del.bind(fileService),
-    watch: fileService.watch.bind(fileService),
-    onDidFilesChange: fileService.onDidFilesChange.bind(fileService),
   };
 
   return instance;

@@ -22,7 +22,7 @@
     "lint:file": "eslint --max-warnings 0",
     "test:unit": "jest --no-cache",
     "test:unit:watch": "jest --no-cache --runInBand --watch",
-    "test:pw": "playwright install && playwright test --config=playwright/playwright.config.ts",
+    "test:pw": "playwright install chromium && playwright test --config=playwright/playwright.config.ts",
     "test:pw:update": "pnpm run test:pw --update-snapshots",
     "test:pw-docker": "docker compose -f ./playwright/docker-compose.yml build playwright-service && docker compose -f ./playwright/docker-compose.yml run --rm playwright-service",
     "test:pw-docker:update": "pnpm run test:pw-docker --update-snapshots",
