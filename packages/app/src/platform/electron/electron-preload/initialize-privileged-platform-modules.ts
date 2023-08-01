@@ -1,3 +1,4 @@
+import type * as codeOSSFiles from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 import { clipboard, ipcRenderer } from 'electron';
 
 import { VSBuffer } from '@app/base/buffer';
@@ -104,30 +105,38 @@ export function initializePrivilegedPlatformModules() {
     // eslint-disable-next-line node/no-process-env
     processEnv: process.env,
     fileService: {
-      resolve(resource, options) {
-        return fileService.resolve(uriComponentsToInstance(resource), options) as unknown as any;
+      async resolve(resource, options) {
+        const result = await fileService.resolve(uriComponentsToInstance(resource), options);
+        fileStatUriInstancesToComponents(result);
+        return result as unknown as any;
       },
       del(resource, options) {
         return fileService.del(uriComponentsToInstance(resource), options);
       },
-      copy(source, target, overwrite, coordinationArgs) {
-        return fileService.copy(
+      async copy(source, target, overwrite, coordinationArgs) {
+        const result = await fileService.copy(
           uriComponentsToInstance(source),
           uriComponentsToInstance(target),
           overwrite,
           coordinationArgs,
         );
+        fileStatUriInstancesToComponents(result);
+        return result;
       },
-      move(source, target, overwrite, coordinationArgs) {
-        return fileService.move(
+      async move(source, target, overwrite, coordinationArgs) {
+        const result = await fileService.move(
           uriComponentsToInstance(source),
           uriComponentsToInstance(target),
           overwrite,
           coordinationArgs,
         );
+        fileStatUriInstancesToComponents(result);
+        return result;
       },
-      createFolder(resource) {
-        return fileService.createFolder(uriComponentsToInstance(resource));
+      async createFolder(resource) {
+        const result = await fileService.createFolder(uriComponentsToInstance(resource));
+        fileStatUriInstancesToComponents(result);
+        return result;
       },
       watch(resource, options) {
         return fileService.watch(uriComponentsToInstance(resource), options);
@@ -205,4 +214,14 @@ function resourcesToBuffer(resources: UriComponents[]): Uint8Array {
 function uriComponentsToInstance(uri: UriComponents) {
   // eslint-disable-next-line no-restricted-syntax -- in this file we have the "boundary" to `@pkerschbaum/code-oss-file-service`, so it is allowed to use `URI.from` here
   return URI.from(uri);
+}
+
+function fileStatUriInstancesToComponents<T extends codeOSSFiles.IFileStat>(stat: T): void {
+  (stat as { -readonly [prop in keyof IFileStat]: IFileStat[prop] }).resource =
+    stat.resource.toJSON();
+  if (stat.children) {
+    for (const child of stat.children) {
+      fileStatUriInstancesToComponents(child);
+    }
+  }
 }

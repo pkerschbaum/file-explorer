@@ -251,6 +251,13 @@ module.exports = {
             ],
           },
           {
+            target:
+              /\/src\/platform\/electron\/electron-preload\/initialize-privileged-platform-modules.ts$/,
+            allowedPatterns: [
+              /^@pkerschbaum\/code-oss-file-service\/out\/vs\/platform\/files\/common\/files$/,
+            ],
+          },
+          {
             target: /\/src\/platform\/electron\/protocol\/electron-main\/app.ts$/,
             allowedPatterns: ['file-type', 'fs', 'sharp'],
           },
