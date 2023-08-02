@@ -1,6 +1,5 @@
 import * as trpcExpress from '@trpc/server/adapters/express';
 import cors from 'cors';
-import type Store from 'electron-store';
 import express from 'express';
 import http from 'node:http';
 
@@ -23,13 +22,7 @@ import {
 
 export type AppRouter = ReturnType<typeof createFileExplorerAgent>['appRouter'];
 
-export function createFileExplorerAgent({
-  store,
-  windowRef,
-}: {
-  store: Store;
-  windowRef: WindowRef;
-}) {
+export function createFileExplorerAgent({ windowRef }: { windowRef: WindowRef }) {
   const app = express();
   app.use(cors());
 
@@ -41,7 +34,7 @@ export function createFileExplorerAgent({
     app: router(createAppProcedures()),
     clipboard: router(createClipboardProcedures()),
     fs: router(createFsProcedures({ pushServer })),
-    persistentStore: router(createPersistentStoreProcedures({ store })),
+    persistentStore: router(createPersistentStoreProcedures()),
     shell: router(createShellProcedures()),
     window: router(createWindowProcedures({ windowRef })),
   });

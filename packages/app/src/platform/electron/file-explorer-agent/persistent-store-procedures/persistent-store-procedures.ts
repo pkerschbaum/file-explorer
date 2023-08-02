@@ -1,9 +1,11 @@
-import type Store from 'electron-store';
+import Store from 'electron-store';
 import { z } from 'zod';
 
 import { publicProcedure } from '#pkg/platform/electron/file-explorer-agent/trcp-router';
 
-export function createPersistentStoreProcedures({ store }: { store: Store }) {
+const store = new Store();
+
+export function createPersistentStoreProcedures() {
   return {
     readPersistedData: publicProcedure.query(() => {
       return store.store;

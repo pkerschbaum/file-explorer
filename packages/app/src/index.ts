@@ -65,9 +65,8 @@ if (!config.isDevEnviroment) {
 }
 
 // Boot application
-const store = new Store();
 const activeTheme: AvailableTheme =
-  (store.store as StorageState).userState?.preferences.activeTheme ?? defaultTheme;
+  (new Store().store as StorageState).userState?.preferences.activeTheme ?? defaultTheme;
 async function bootstrap() {
   if (config.isDevEnviroment && !process.argv.includes('--noDevServer')) {
     // eslint-disable-next-line @typescript-eslint/no-var-requires, node/no-missing-require
@@ -75,7 +74,7 @@ async function bootstrap() {
   }
 
   // start agent
-  const fileExplorerAgent = createFileExplorerAgent({ store, windowRef: mainWindowRef });
+  const fileExplorerAgent = createFileExplorerAgent({ windowRef: mainWindowRef });
   fileExplorerAgent.listen();
 
   // register IPC handlers
