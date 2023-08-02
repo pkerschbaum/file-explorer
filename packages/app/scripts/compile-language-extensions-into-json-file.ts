@@ -7,7 +7,7 @@ import path from 'node:path';
 
 import { json as jsonUtil } from '#pkg/base/utils/json.util';
 import type { LanguageExtensionPointJsonEntry } from '#pkg/operations/file-icon-theme.operations';
-import { bootstrapDiskFileService } from '#pkg/platform/electron/electron-preload/bootstrap-disk-file-service';
+import { bootstrapDiskFileService } from '#pkg/platform/electron/file-explorer-agent/bootstrap-disk-file-service';
 
 const CODE_OSS_FILE_ICON_THEME_LANGUAGES_PATH = URI.file(
   path.resolve(

@@ -246,7 +246,8 @@ module.exports = {
             allowedPatterns: ['@playwright/test', '@playwright-testing-library/test'],
           },
           {
-            target: /\/src\/platform\/electron\/electron-preload\/bootstrap-disk-file-service.ts$/,
+            target:
+              /\/src\/platform\/electron\/file-explorer-agent\/bootstrap-disk-file-service.ts$/,
             allowedPatterns: [
               /^@pkerschbaum\/code-oss-file-service\/out\/vs\/platform\/files\/node\/.+/,
               /^@pkerschbaum\/code-oss-file-service\/out\/vs\/platform\/log\/common\/log$/,
