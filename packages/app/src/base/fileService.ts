@@ -2,10 +2,11 @@ import * as codeOSSUri from '@pkerschbaum/code-oss-file-service/out/vs/base/comm
 import type * as codeOSSFiles from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/files';
 import * as codeOSSFileService from '@pkerschbaum/code-oss-file-service/out/vs/platform/files/common/fileService';
 
-import { VSBuffer, type VSBufferReadable, type VSBufferReadableStream } from '#pkg/base/buffer';
+import type { VSBuffer, VSBufferReadable, VSBufferReadableStream } from '#pkg/base/buffer';
 import type { Event } from '#pkg/base/event';
 import type {
-  FileDeleteOptions,
+  FileDeleteOptionsWithoutTrash,
+  ICreateFileOptions,
   IFileStat,
   IFileStatWithMetadata,
   IResolveFileOptions,
@@ -16,35 +17,16 @@ import type { IDisposable } from '#pkg/base/lifecycle';
 import type { CoordinationArgs } from '#pkg/base/resources';
 import type { UriComponents } from '#pkg/base/uri';
 
-export class FileService extends codeOSSFileService.FileService {
-  public override createFolder(
-    resource: UriComponents,
-  ): Promise<codeOSSFiles.IFileStatWithMetadata> {
-    return super.createFolder(codeOSSUri.URI.from(resource));
-  }
+export const FileService = codeOSSFileService.FileService;
+export type FileService = codeOSSFileService.FileService;
 
-  public override createFile(
-    resource: UriComponents,
-    bufferOrReadableOrStream:
-      | VSBuffer
-      | VSBufferReadable
-      | VSBufferReadableStream = VSBuffer.fromString(''),
-    options?: codeOSSFiles.ICreateFileOptions,
-  ): Promise<codeOSSFiles.IFileStatWithMetadata> {
-    return super.createFile(codeOSSUri.URI.from(resource), bufferOrReadableOrStream, options);
-  }
-}
-
-export type PlatformFileService = {
+export type FileServiceUriComponents = {
   resolve(
     resource: UriComponents,
     options: IResolveMetadataFileOptions,
   ): Promise<IFileStatWithMetadata>;
   resolve(resource: UriComponents, options?: IResolveFileOptions): Promise<IFileStat>;
-  del(
-    resource: UriComponents,
-    options?: Partial<Omit<FileDeleteOptions, 'useTrash'>>,
-  ): Promise<void>;
+  del(resource: UriComponents, options?: Parameters<FileService['del']>[1]): Promise<void>;
   copy(
     source: UriComponents,
     target: UriComponents,
@@ -58,6 +40,11 @@ export type PlatformFileService = {
     coordinationArgs?: CoordinationArgs,
   ): Promise<IFileStatWithMetadata>;
   createFolder(resource: UriComponents): Promise<IFileStatWithMetadata>;
+  createFile(
+    resource: UriComponents,
+    bufferOrReadableOrStream: VSBuffer | VSBufferReadable | VSBufferReadableStream,
+    options?: ICreateFileOptions,
+  ): Promise<IFileStatWithMetadata>;
   watch(resource: UriComponents, options?: IWatchOptions): IDisposable;
   onDidFilesChange: Event<PlatformFileChangesEvent>;
 };
@@ -66,10 +53,42 @@ type PlatformFileChangesEvent = {
   affects(resource: UriComponents): boolean;
 };
 
-export function fileServiceUriInstancesToComponents(fileService: FileService): PlatformFileService {
+export type PlatformFileService = {
+  resolve(
+    resource: UriComponents,
+    options: IResolveMetadataFileOptions,
+  ): Promise<IFileStatWithMetadata>;
+  resolve(resource: UriComponents, options?: IResolveFileOptions): Promise<IFileStat>;
+  del(resource: UriComponents, options?: FileDeleteOptionsWithoutTrash): Promise<void>;
+  copy(
+    source: UriComponents,
+    target: UriComponents,
+    overwrite?: boolean,
+    coordinationArgs?: CoordinationArgs,
+  ): Promise<IFileStatWithMetadata>;
+  move(
+    source: UriComponents,
+    target: UriComponents,
+    overwrite?: boolean,
+    coordinationArgs?: CoordinationArgs,
+  ): Promise<IFileStatWithMetadata>;
+  createFolder(resource: UriComponents): Promise<IFileStatWithMetadata>;
+  watch(resource: UriComponents, options?: IWatchOptions): IDisposable | Promise<IDisposable>;
+  onResourceChanged(
+    resource: UriComponents,
+    onChange: () => void,
+  ): IDisposable | Promise<IDisposable>;
+};
+
+export function fileServiceUriInstancesToComponents(
+  fileService: FileService,
+): FileServiceUriComponents {
   return {
     async resolve(resource, options) {
-      const result = await fileService.resolve(uriComponentsToInstance(resource), options);
+      const result = await fileService.resolve(uriComponentsToInstance(resource), {
+        ...options,
+        resolveTo: options?.resolveTo?.map(uriComponentsToInstance),
+      });
       fileStatUriInstancesToComponents(result);
       return result as unknown as any;
     },
@@ -101,6 +120,15 @@ export function fileServiceUriInstancesToComponents(fileService: FileService): P
       fileStatUriInstancesToComponents(result);
       return result;
     },
+    async createFile(resource, bufferOrReadableOrStream, options) {
+      const result = await fileService.createFile(
+        uriComponentsToInstance(resource),
+        bufferOrReadableOrStream,
+        options,
+      );
+      fileStatUriInstancesToComponents(result);
+      return result;
+    },
     watch(resource, options) {
       return fileService.watch(uriComponentsToInstance(resource), options);
     },
@@ -119,6 +147,7 @@ export function fileServiceUriInstancesToComponents(fileService: FileService): P
 }
 
 function uriComponentsToInstance(uri: UriComponents) {
+  // eslint-disable-next-line no-restricted-syntax -- boundary to `@pkerschbaum/code-oss-file-service` here
   return codeOSSUri.URI.from(uri);
 }
 

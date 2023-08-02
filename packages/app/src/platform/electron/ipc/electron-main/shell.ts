@@ -8,7 +8,6 @@ import { SHELL_CHANNEL } from '#pkg/platform/electron/ipc/common/shell';
 export function registerListeners(): void {
   ipcMain.handle(SHELL_CHANNEL.OPEN_PATH, openPathHandler);
   ipcMain.handle(SHELL_CHANNEL.SHOW_ITEM_IN_FOLDER, showItemInFolderHandler);
-  ipcMain.handle(SHELL_CHANNEL.TRASH_ITEM, trashItemHandler);
 }
 
 async function openPathHandler(
@@ -26,11 +25,4 @@ function showItemInFolderHandler(
   { fsPath }: IpcShell.ShowItemInFolder.Args,
 ): Awaited<IpcShell.ShowItemInFolder.ReturnValue> {
   shell.showItemInFolder(fsPath);
-}
-
-function trashItemHandler(
-  _1: IpcMainInvokeEvent,
-  { fsPath }: IpcShell.TrashItem.Args,
-): IpcShell.TrashItem.ReturnValue {
-  return shell.trashItem(fsPath);
 }

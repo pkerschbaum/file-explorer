@@ -1,10 +1,8 @@
 import { clipboard, ipcRenderer } from 'electron';
 
 import { VSBuffer } from '#pkg/base/buffer';
-import { fileServiceUriInstancesToComponents, PlatformFileService } from '#pkg/base/fileService';
 import { URI, UriComponents } from '#pkg/base/uri';
 import { config } from '#pkg/config';
-import { bootstrapDiskFileService } from '#pkg/platform/electron/electron-preload/bootstrap-disk-file-service';
 import type { IpcApp } from '#pkg/platform/electron/ipc/common/app';
 import { APP_CHANNEL } from '#pkg/platform/electron/ipc/common/app';
 import type { IpcFileDragStart } from '#pkg/platform/electron/ipc/common/file-drag-start';
@@ -23,13 +21,11 @@ declare global {
 
 type Privileged = {
   processEnv: NodeJS.ProcessEnv;
-  fileService: PlatformFileService;
   app: {
     getPath: (args: IpcApp.GetPath.Args) => IpcApp.GetPath.ReturnValue;
   };
   shell: {
     openPath: (args: IpcShell.OpenPath.Args) => IpcShell.OpenPath.ReturnValue;
-    trashItem: (args: IpcShell.TrashItem.Args) => IpcShell.TrashItem.ReturnValue;
     revealResourcesInOS: (
       args: IpcShell.ShowItemInFolder.Args,
     ) => IpcShell.ShowItemInFolder.ReturnValue;
@@ -57,18 +53,14 @@ type Privileged = {
 const CLIPBOARD_FILELIST_FORMAT = `${config.productName}/file-list`;
 
 export function initializePrivilegedPlatformModules() {
-  const fileService = bootstrapDiskFileService();
-
   window.privileged = {
     // eslint-disable-next-line node/no-process-env
     processEnv: process.env,
-    fileService: fileServiceUriInstancesToComponents(fileService),
     app: {
       getPath: (...args) => ipcRenderer.invoke(APP_CHANNEL.GET_PATH, ...args),
     },
     shell: {
       openPath: (...args) => ipcRenderer.invoke(SHELL_CHANNEL.OPEN_PATH, ...args),
-      trashItem: (...args) => ipcRenderer.invoke(SHELL_CHANNEL.TRASH_ITEM, ...args),
       revealResourcesInOS: (...args) =>
         ipcRenderer.invoke(SHELL_CHANNEL.SHOW_ITEM_IN_FOLDER, ...args),
     },

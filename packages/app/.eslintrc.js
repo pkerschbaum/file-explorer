@@ -107,7 +107,8 @@ module.exports = {
           'but we suggest to just use `json.safeStringify` from #pkg/base/utils/json.util.ts instead.',
       },
       {
-        selector: "MemberExpression[object.name='URI'][property.name='from']",
+        selector:
+          "MemberExpression[object.name='URI'][property.name='from'], MemberExpression[object.property.name='URI'][property.name='from']",
         message:
           '`URI` instances should only be used at the "boundary" to `@pkerschbaum/code-oss-*` packages, ' +
           'so using `URI.from` is discouraged; consider working with `UriComponents` instead (which is serializable in contrast to `URI`).',
@@ -264,11 +265,11 @@ module.exports = {
           },
           {
             target: /\/src\/platform\/electron\/file-explorer-agent\/.+$/,
-            allowedPatterns: ['cors', /^@trpc\/server.*/, 'socket.io'],
+            allowedPatterns: ['cors', /^@trpc\/server.*/, 'superjson', 'socket.io'],
           },
           {
             target: /\/src\/platform\/electron\/file-explorer-agent-client\/.+$/,
-            allowedPatterns: ['@trpc/client', 'socket.io-client'],
+            allowedPatterns: ['@trpc/client', 'superjson', 'socket.io-client'],
           },
           {
             target: /\/src\/platform\/electron\/.+/,

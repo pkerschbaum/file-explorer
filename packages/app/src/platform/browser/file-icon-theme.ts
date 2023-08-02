@@ -11,7 +11,7 @@ export function loadFileIconThemeCssRules({
   fileService: IFileService;
 }): Promise<string> {
   return codeOSSFileIconTheme.loadFileIconThemeCssRules({
-    // eslint-disable-next-line no-restricted-syntax -- in this file we have the "boundary" to `@pkerschbaum/code-oss-file-icon-theme`, so it is allowed to use `URI.from` here
+    // eslint-disable-next-line no-restricted-syntax -- boundary to `@pkerschbaum/code-oss-file-icon-theme` here
     fileIconThemeUri: URI.from(fileIconThemeUri),
     fileService,
   });

@@ -1,57 +1,110 @@
 import invariant from 'tiny-invariant';
 
-import { path } from '#pkg/base/path';
+import type { IFileStatWithMetadata, IResolveMetadataFileOptions } from '#pkg/base/files';
 import type { CoordinationArgs } from '#pkg/base/resources';
-import { URI } from '#pkg/base/uri';
-import { PUSH_EVENT } from '#pkg/platform/electron/file-explorer-agent/constants';
-import type { PushEvent } from '#pkg/platform/electron/file-explorer-agent/push-server';
-import { pushSocket, trpc } from '#pkg/platform/electron/file-explorer-agent-client/file-system';
+import { createLogger } from '#pkg/operations/create-logger';
+import { pushSocket, trpc } from '#pkg/platform/electron/file-explorer-agent-client/agent-client';
 import type { PlatformFileSystem } from '#pkg/platform/file-system.types';
 
+const logger = createLogger('store-logger-middleware');
+
 export const createFileSystem = () => {
-  pushSocket.on(PUSH_EVENT, (event: PushEvent) => {
-    const coordinationArgs = operationIdToCoordinationArgs.get(event.payload.operationId);
-    invariant(
-      coordinationArgs,
-      `expected to find element! operationId=${event.payload.operationId}`,
-    );
+  pushSocket.on('CopyOrMoveOperationReportProgress', (payload) => {
+    const coordinationArgs = operationIdToCoordinationArgs.get(payload.operationId);
+    invariant(coordinationArgs, `expected to find element! operationId=${payload.operationId}`);
     invariant(coordinationArgs.reportProgress);
-    coordinationArgs.reportProgress(event.payload.progress);
+    coordinationArgs.reportProgress(payload.progress);
   });
 
-  const operationIdToCoordinationArgs = new Map<string, CoordinationArgs>();
+  pushSocket.on('ResourceChanged', (payload) => {
+    const onChange = operationIdToOnResourceChanged.get(payload.operationId);
+    invariant(onChange, `expected to find element! operationId=${payload.operationId}`);
+    onChange();
+  });
 
-  const instance: PlatformFileSystem = {
-    resolve: window.privileged.fileService.resolve.bind(window.privileged.fileService),
-    del: window.privileged.fileService.del.bind(window.privileged.fileService),
-    trash: async (resource) => {
-      // handle trash operation via IPC because of https://github.com/electron/electron/issues/29598
-      return await window.privileged.shell.trashItem({
-        fsPath: path.normalize(URI.fsPath(resource)),
-      });
-    },
-    copy: async (source, target, overwrite, coordinationArgs) => {
+  // TODO remove elems from `operationIdToCoordinationArgs` when copy/move operation gets finished or aborted
+  const operationIdToCoordinationArgs = new Map</* operationId */ string, CoordinationArgs>();
+  const operationIdToOnResourceChanged = new Map</* operationId */ string, () => void>();
+
+  const copyOrMove: (
+    copyOrMove: 'copy' | 'move',
+  ) => PlatformFileSystem['copy'] | PlatformFileSystem['move'] =
+    (copyOrMove) => async (source, target, overwrite, coordinationArgs) => {
       invariant(coordinationArgs);
       invariant(coordinationArgs.token);
       const operationId = crypto.randomUUID();
       operationIdToCoordinationArgs.set(operationId, coordinationArgs);
       coordinationArgs.token.onCancellationRequested(async () => {
-        await trpc.fileServiceCancelFsOperation.mutate(operationId);
+        await trpc.fs.cancelFsOperation.mutate({ operationId });
       });
-      const result = await trpc.fileServiceDispatchCopy.mutate({
+      const result = await trpc.fs.dispatchCopyOrMove.mutate({
+        copyOrMove,
         operationId,
         source,
         target,
         overwrite,
       });
       return result;
+    };
+
+  const instance: PlatformFileSystem = {
+    async resolve(resource, options) {
+      if (options?.resolveMetadata) {
+        return await trpc.fs.resolveWithMetadata.mutate({
+          resource,
+          options: options as IResolveMetadataFileOptions,
+        });
+      } else {
+        return (await trpc.fs.resolve.mutate({
+          resource,
+          options,
+        })) as IFileStatWithMetadata;
+      }
     },
-    move: window.privileged.fileService.move.bind(window.privileged.fileService),
-    createFolder: window.privileged.fileService.createFolder.bind(window.privileged.fileService),
-    watch: window.privileged.fileService.watch.bind(window.privileged.fileService),
-    onDidFilesChange: window.privileged.fileService.onDidFilesChange.bind(
-      window.privileged.fileService,
-    ),
+
+    async del(resource, options) {
+      return await trpc.fs.del.mutate({ resource, options });
+    },
+
+    async trash(resource) {
+      return await trpc.shell.trash.mutate({ resource });
+    },
+
+    copy: copyOrMove('copy'),
+
+    move: copyOrMove('move'),
+
+    async createFolder(resource) {
+      return await trpc.fs.createFolder.mutate({ resource });
+    },
+
+    async watch(resource, options) {
+      const operationId = crypto.randomUUID();
+      await trpc.fs.watch.mutate({ operationId, resource, options });
+
+      return {
+        dispose: () => {
+          trpc.fs.cancelFsOperation.mutate({ operationId }).catch((error) => {
+            logger.error(`could not cancel FS operation`, error);
+          });
+        },
+      };
+    },
+
+    async onResourceChanged(resource, onChange) {
+      const operationId = crypto.randomUUID();
+      operationIdToOnResourceChanged.set(operationId, onChange);
+      await trpc.fs.onResourceChanged.mutate({ operationId, resource });
+
+      return {
+        dispose() {
+          operationIdToOnResourceChanged.delete(operationId);
+          trpc.fs.cancelFsOperation.mutate({ operationId }).catch((error) => {
+            logger.error(`could not cancel FS operation`, error);
+          });
+        },
+      };
+    },
   };
 
   return instance;

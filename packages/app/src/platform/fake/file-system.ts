@@ -35,9 +35,10 @@ export const createFakeFileSystem: (
 
   const logger = new ConsoleMainLogger();
   const logService = new LogService(logger);
-  const fileService = new FileService(logService);
+  const origFileService = new FileService(logService);
+  const fileService = fileServiceUriInstancesToComponents(origFileService);
   const inMemoryFileSystemProvider = new InMemoryFileSystemProvider();
-  fileService.registerProvider(network.Schemas.file, inMemoryFileSystemProvider);
+  origFileService.registerProvider(network.Schemas.file, inMemoryFileSystemProvider);
 
   async function createResource({ type, uri, mtimeIso8601 }: FileSystemResourceToCreate) {
     if (type === RESOURCE_TYPE.DIRECTORY) {
@@ -60,7 +61,14 @@ export const createFakeFileSystem: (
   await Promise.all(resourcesToCreate.map(createResource));
 
   const instance: PlatformFileSystem = {
-    ...fileServiceUriInstancesToComponents(fileService),
+    ...fileService,
+    onResourceChanged(resource, onChange) {
+      return fileService.onDidFilesChange((e) => {
+        if (e.affects(resource)) {
+          onChange();
+        }
+      });
+    },
     trash: fileService.del.bind(fileService),
   };
 

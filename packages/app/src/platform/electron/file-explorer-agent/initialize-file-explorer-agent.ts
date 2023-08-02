@@ -7,12 +7,14 @@ import {
 } from '#pkg/platform/electron/file-explorer-agent/constants';
 import { createFsProcedures } from '#pkg/platform/electron/file-explorer-agent/fs-procedures/impl';
 import { PushServer } from '#pkg/platform/electron/file-explorer-agent/push-server';
+import { createShellProcedures } from '#pkg/platform/electron/file-explorer-agent/shell-procedures/impl';
 import { router } from '#pkg/platform/electron/file-explorer-agent/trcp-router';
 
 const pushServer = new PushServer();
 
 const appRouter = router({
-  ...createFsProcedures({ pushServer }),
+  fs: router(createFsProcedures({ pushServer })),
+  shell: router(createShellProcedures()),
 });
 export type AppRouter = typeof appRouter;
 

@@ -9,6 +9,7 @@ export function loadIconClasses(
   fileKind: FileKind,
 ): string[] | Promise<string[]> {
   return getIconClasses(
+    // eslint-disable-next-line no-restricted-syntax -- boundary to `@pkerschbaum/code-oss-file-icon-theme` here
     resource === undefined ? undefined : CodeOSSURI.URI.from(resource),
     fileKind,
   );
