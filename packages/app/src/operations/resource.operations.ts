@@ -106,12 +106,12 @@ export async function openFiles(uris: UriComponents[]) {
   await globalThis.modules.nativeHost.shell.openPath(uris);
 }
 
-export function cutOrCopyResources(resources: UriComponents[], cut: boolean) {
+export async function cutOrCopyResources(resources: UriComponents[], cut: boolean) {
   if (resources.length === 0) {
     return;
   }
 
-  globalThis.modules.nativeHost.clipboard.writeResources(resources);
+  await globalThis.modules.nativeHost.clipboard.writeResources(resources);
   globalThis.modules.dispatch(actions.cutOrCopyResources({ cut }));
 }
 

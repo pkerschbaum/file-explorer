@@ -10,10 +10,10 @@ const logger = createLogger('store-logger-middleware');
 
 export const createFileSystem = () => {
   pushSocket.on('CopyOrMoveOperationReportProgress', (payload) => {
-    const coordinationArgs = operationIdToCoordinationArgs.get(payload.operationId);
-    invariant(coordinationArgs, `expected to find element! operationId=${payload.operationId}`);
-    invariant(coordinationArgs.reportProgress);
-    coordinationArgs.reportProgress(payload.progress);
+    const reportProgress = operationIdToReportProgress.get(payload.operationId);
+    if (reportProgress) {
+      reportProgress(payload.progress);
+    }
   });
 
   pushSocket.on('ResourceChanged', (payload) => {
@@ -22,21 +22,28 @@ export const createFileSystem = () => {
     onChange();
   });
 
-  // TODO remove elems from `operationIdToCoordinationArgs` when copy/move operation gets finished or aborted
-  const operationIdToCoordinationArgs = new Map</* operationId */ string, CoordinationArgs>();
+  // TODO remove elems from `operationIdToReportProgress` when copy/move operation gets finished or aborted
+  const operationIdToReportProgress = new Map<
+    /* operationId */ string,
+    Exclude<CoordinationArgs['reportProgress'], undefined>
+  >();
   const operationIdToOnResourceChanged = new Map</* operationId */ string, () => void>();
 
   const copyOrMove: (
     copyOrMove: 'copy' | 'move',
   ) => PlatformFileSystem['copy'] | PlatformFileSystem['move'] =
     (copyOrMove) => async (source, target, overwrite, coordinationArgs) => {
-      invariant(coordinationArgs);
-      invariant(coordinationArgs.token);
       const operationId = crypto.randomUUID();
-      operationIdToCoordinationArgs.set(operationId, coordinationArgs);
-      coordinationArgs.token.onCancellationRequested(async () => {
-        await trpc.fs.cancelFsOperation.mutate({ operationId });
-      });
+
+      if (coordinationArgs?.reportProgress) {
+        operationIdToReportProgress.set(operationId, coordinationArgs.reportProgress);
+      }
+      if (coordinationArgs?.token) {
+        coordinationArgs.token.onCancellationRequested(async () => {
+          await trpc.fs.cancelFsOperation.mutate({ operationId });
+        });
+      }
+
       const result = await trpc.fs.dispatchCopyOrMove.mutate({
         copyOrMove,
         operationId,

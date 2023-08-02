@@ -29,12 +29,12 @@ export function createFakeNativeHost(): PlatformNativeHost {
       close: () => Promise.resolve(),
     },
     clipboard: {
-      readText: () => currentClipboardText,
+      readText: () => Promise.resolve(currentClipboardText),
       writeText: (value) => {
         currentClipboardText = value;
         clipboardChangedEmitter.fire(CLIPBOARD_CHANGED_DATA_TYPE.TEXT);
       },
-      readResources: () => currentClipboardResources,
+      readResources: () => Promise.resolve(currentClipboardResources),
       writeResources: (resources) => {
         currentClipboardResources = resources;
         clipboardChangedEmitter.fire(CLIPBOARD_CHANGED_DATA_TYPE.RESOURCES);
