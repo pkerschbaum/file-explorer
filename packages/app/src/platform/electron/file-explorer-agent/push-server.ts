@@ -1,3 +1,4 @@
+import type http from 'node:http';
 import { Server } from 'socket.io';
 import invariant from 'tiny-invariant';
 
@@ -18,15 +19,15 @@ export type PushEvent = {
 }[keyof PushServer.PushEventMap];
 
 export class PushServer {
-  private readonly io = new Server();
+  private readonly io: Server;
 
-  public listen = (port: number): void => {
-    this.io.listen(port, {
+  constructor(httpServer: http.Server) {
+    this.io = new Server(httpServer, {
       cors: {
         origin: '*',
       },
     });
-  };
+  }
 
   public pushEvent = (event: PushEvent): void => {
     const [firstSocket, ...remainingSockets] = this.io.of('/').sockets.values();

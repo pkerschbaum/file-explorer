@@ -266,7 +266,14 @@ module.exports = {
           },
           {
             target: /\/src\/platform\/electron\/file-explorer-agent\/.+$/,
-            allowedPatterns: ['cors', /^@trpc\/server.*/, 'superjson', 'socket.io'],
+            allowedPatterns: [
+              /^@trpc\/server.*/,
+              'cors',
+              'express',
+              'node:http',
+              'socket.io',
+              'superjson',
+            ],
           },
           {
             target: /\/src\/platform\/electron\/file-explorer-agent-client\/.+$/,

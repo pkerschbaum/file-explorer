@@ -1,12 +1,14 @@
-import { createHTTPServer } from '@trpc/server/adapters/standalone';
+import * as trpcExpress from '@trpc/server/adapters/express';
 import cors from 'cors';
 import type Store from 'electron-store';
+import express from 'express';
+import http from 'node:http';
 
 import { createAppProcedures } from '#pkg/platform/electron/file-explorer-agent/app-procedures/app-procedures';
 import { createClipboardProcedures } from '#pkg/platform/electron/file-explorer-agent/clipboard-procedures/clipboard-procedures';
 import {
-  PORT_PUSH_SERVER,
-  PORT_TRPC_SERVER,
+  AGENT_PORT,
+  TRPC_SERVER_BASE_PATH,
 } from '#pkg/platform/electron/file-explorer-agent/constants';
 import { createFsProcedures } from '#pkg/platform/electron/file-explorer-agent/fs-procedures/fs-procedures';
 import { createPersistentStoreProcedures } from '#pkg/platform/electron/file-explorer-agent/persistent-store-procedures/persistent-store-procedures';
@@ -18,8 +20,6 @@ import {
   WindowRef,
 } from '#pkg/platform/electron/file-explorer-agent/window-procedures/window-procedures';
 
-const pushServer = new PushServer();
-
 export type AppRouter = ReturnType<typeof createFileExplorerAgent>['appRouter'];
 
 export function createFileExplorerAgent({
@@ -29,6 +29,13 @@ export function createFileExplorerAgent({
   store: Store;
   windowRef: WindowRef;
 }) {
+  const app = express();
+  app.use(cors());
+
+  const server = http.createServer(app);
+
+  const pushServer = new PushServer(server);
+
   const appRouter = router({
     app: router(createAppProcedures()),
     clipboard: router(createClipboardProcedures()),
@@ -38,16 +45,17 @@ export function createFileExplorerAgent({
     window: router(createWindowProcedures({ windowRef })),
   });
 
-  const trpcServer = createHTTPServer({
-    router: appRouter,
-    middleware: cors(),
-  });
+  app.use(
+    `/${TRPC_SERVER_BASE_PATH}`,
+    trpcExpress.createExpressMiddleware({
+      router: appRouter,
+    }),
+  );
 
   return {
     appRouter,
     listen() {
-      pushServer.listen(PORT_PUSH_SERVER);
-      trpcServer.listen(PORT_TRPC_SERVER);
+      server.listen(AGENT_PORT);
     },
   };
 }
