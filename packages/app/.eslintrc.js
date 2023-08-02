@@ -261,7 +261,7 @@ module.exports = {
             ],
           },
           {
-            target: /\/src\/platform\/electron\/protocol\/electron-main\/app.ts$/,
+            target: /\/src\/platform\/electron\/file-explorer-agent\/protocol.ts$/,
             allowedPatterns: ['file-type', 'node:fs', 'sharp'],
           },
           {

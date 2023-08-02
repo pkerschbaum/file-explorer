@@ -12,6 +12,7 @@ import {
 } from '#pkg/platform/electron/file-explorer-agent/constants';
 import { createFsProcedures } from '#pkg/platform/electron/file-explorer-agent/fs-procedures/fs-procedures';
 import { createPersistentStoreProcedures } from '#pkg/platform/electron/file-explorer-agent/persistent-store-procedures/persistent-store-procedures';
+import { registerProtocols } from '#pkg/platform/electron/file-explorer-agent/protocol';
 import { PushServer } from '#pkg/platform/electron/file-explorer-agent/push-server';
 import { createShellProcedures } from '#pkg/platform/electron/file-explorer-agent/shell-procedures/shell-procedures';
 import { router } from '#pkg/platform/electron/file-explorer-agent/trcp-router';
@@ -51,6 +52,8 @@ export function createFileExplorerAgent({
       router: appRouter,
     }),
   );
+
+  registerProtocols(app);
 
   return {
     appRouter,

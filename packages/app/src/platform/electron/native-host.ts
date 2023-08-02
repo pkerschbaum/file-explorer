@@ -5,11 +5,9 @@ import { Emitter } from '#pkg/base/event';
 import { URI } from '#pkg/base/uri';
 import { check } from '#pkg/base/utils/assert.util';
 import { numbers } from '#pkg/base/utils/numbers.util';
+import { AGENT_PORT } from '#pkg/platform/electron/file-explorer-agent/constants';
 import { trpc } from '#pkg/platform/electron/file-explorer-agent-client/agent-client';
-import {
-  NATIVE_FILE_ICON_PROTOCOL_SCHEME,
-  THUMBNAIL_PROTOCOL_SCHEME,
-} from '#pkg/platform/electron/protocol/common/app';
+import { NATIVE_FILE_ICON_PATH, THUMBNAIL_PATH } from '#pkg/platform/electron/protocol/common/app';
 import type { PlatformNativeHost } from '#pkg/platform/native-host.types';
 import { CLIPBOARD_CHANGED_DATA_TYPE } from '#pkg/platform/native-host.types';
 
@@ -46,7 +44,9 @@ export const createNativeHost = () => {
         } else {
           invariant(check.isNotNullish(resource.mtime));
           const url = new URL(
-            `${THUMBNAIL_PROTOCOL_SCHEME}:///${encodeURIComponent(URI.toString(resource.uri))}`,
+            `http://localhost:${AGENT_PORT}${THUMBNAIL_PATH}/${encodeURIComponent(
+              URI.toString(resource.uri),
+            )}`,
           );
           // add mtime as search param so that the browser does not use its cache if the file changed
           url.searchParams.set('mtime', numbers.toString(resource.mtime));
@@ -68,7 +68,7 @@ export const createNativeHost = () => {
         } else {
           invariant(check.isNotNullish(resource.mtime));
           const url = new URL(
-            `${NATIVE_FILE_ICON_PROTOCOL_SCHEME}:///${encodeURIComponent(
+            `http://localhost:${AGENT_PORT}${NATIVE_FILE_ICON_PATH}/${encodeURIComponent(
               URI.toString(resource.uri),
             )}`,
           );

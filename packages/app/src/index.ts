@@ -17,17 +17,12 @@ function handleError(error: unknown) {
 process.on('uncaughtException', handleError);
 process.on('unhandledRejection', handleError);
 
-import { BrowserWindow, protocol } from 'electron';
+import { BrowserWindow } from 'electron';
 import Store from 'electron-store';
 import invariant from 'tiny-invariant';
 
 import { config } from '#pkg/config';
 import { registerListeners as registerFileDragStartListeners } from '#pkg/platform/electron/ipc/electron-main/file-drag-start';
-import {
-  NATIVE_FILE_ICON_PROTOCOL_SCHEME,
-  THUMBNAIL_PROTOCOL_SCHEME,
-} from '#pkg/platform/electron/protocol/common/app';
-import { registerProtocols as registerAppProtocols } from '#pkg/platform/electron/protocol/electron-main/app';
 import type { StorageState } from '#pkg/platform/persistent-storage.types';
 import type { AvailableTheme } from '#pkg/ui/components-library';
 import { defaultTheme, THEMES } from '#pkg/ui/components-library';
@@ -69,18 +64,6 @@ if (!config.isDevEnviroment) {
   });
 }
 
-// Register some protocols as privileged
-protocol.registerSchemesAsPrivileged([
-  {
-    scheme: THUMBNAIL_PROTOCOL_SCHEME,
-    privileges: { bypassCSP: true },
-  },
-  {
-    scheme: NATIVE_FILE_ICON_PROTOCOL_SCHEME,
-    privileges: { bypassCSP: true },
-  },
-]);
-
 // Boot application
 const store = new Store();
 const activeTheme: AvailableTheme =
@@ -97,9 +80,6 @@ async function bootstrap() {
 
   // register IPC handlers
   registerFileDragStartListeners();
-
-  // register custom protocols
-  registerAppProtocols();
 
   // create and show window
   mainWindowRef.current = createMainWindow();
