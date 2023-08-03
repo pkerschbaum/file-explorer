@@ -1,4 +1,5 @@
 import type { Query } from 'react-query';
+import invariant from 'tiny-invariant';
 
 import type { IDisposable } from '#pkg/base/lifecycle';
 import { network } from '#pkg/base/network';
@@ -27,7 +28,7 @@ function createFakeFileSystem() {
     allCreatedDisposables.push(newDisposable);
     return newDisposable;
   });
-  const fakeOnDidFilesChange = jest.fn(() => {
+  const fakeOnResourceChanged = jest.fn(() => {
     const newDisposable = new DummyDisposable();
     allCreatedDisposables.push(newDisposable);
     return newDisposable;
@@ -35,13 +36,13 @@ function createFakeFileSystem() {
 
   const fakeFileSystem = {
     watch: fakeWatch,
-    onDidFilesChange: fakeOnDidFilesChange,
+    onResourceChanged: fakeOnResourceChanged,
   } as unknown as PlatformFileSystem;
 
   return {
     allCreatedDisposables,
     fakeWatch,
-    fakeOnDidFilesChange,
+    fakeOnResourceChanged,
     fakeFileSystem,
   };
 }
@@ -49,19 +50,17 @@ function createFakeFileSystem() {
 describe('refresh-resources-of-directory', () => {
   it('dispose() of subscription should dispose all aquired watch() and onDidFilesChange() disposables', async () => {
     await initializeFakePlatformModules();
-    const { allCreatedDisposables, fakeWatch, fakeOnDidFilesChange, fakeFileSystem } =
+    const { allCreatedDisposables, fakeWatch, fakeOnResourceChanged, fakeFileSystem } =
       createFakeFileSystem();
     globalThis.modules.fileSystem = fakeFileSystem;
 
     const refreshResourcesOfDirectorySubscription = createRefreshResourcesOfDirectorySubscription();
 
-    if (
-      !refreshResourcesOfDirectorySubscription.subscription.digestCacheNotifyEvent ||
-      !refreshResourcesOfDirectorySubscription.subscription.digestExistingQuery ||
-      !refreshResourcesOfDirectorySubscription.dispose
-    ) {
-      throw new Error(`digestCacheNotifyEvent, digestExistingQuery and dispose must be defined`);
-    }
+    invariant(
+      refreshResourcesOfDirectorySubscription.subscription.digestCacheNotifyEvent &&
+        refreshResourcesOfDirectorySubscription.subscription.digestExistingQuery &&
+        refreshResourcesOfDirectorySubscription.dispose,
+    );
 
     const fakeQuery: Pick<Query, 'queryKey'> = {
       queryKey: [
@@ -74,9 +73,10 @@ describe('refresh-resources-of-directory', () => {
       ],
     };
     refreshResourcesOfDirectorySubscription.subscription.digestExistingQuery(fakeQuery as Query);
+    await workaround();
 
     expect(fakeWatch).toHaveBeenCalledTimes(1);
-    expect(fakeOnDidFilesChange).toHaveBeenCalledTimes(1);
+    expect(fakeOnResourceChanged).toHaveBeenCalledTimes(1);
     expect(allCreatedDisposables).toHaveLength(2);
     for (const disposable of allCreatedDisposables) {
       expect(disposable.isDisposed).toBe(false);
@@ -98,18 +98,20 @@ describe('refresh-resources-of-directory', () => {
     refreshResourcesOfDirectorySubscription.subscription.digestCacheNotifyEvent(
       fakeCacheNotifyEvent,
     );
+    await workaround();
 
     expect(fakeWatch).toHaveBeenCalledTimes(2);
-    expect(fakeOnDidFilesChange).toHaveBeenCalledTimes(2);
+    expect(fakeOnResourceChanged).toHaveBeenCalledTimes(2);
     expect(allCreatedDisposables).toHaveLength(4);
     for (const disposable of allCreatedDisposables) {
       expect(disposable.isDisposed).toBe(false);
     }
 
     refreshResourcesOfDirectorySubscription.dispose();
+    await workaround();
 
     expect(fakeWatch).toHaveBeenCalledTimes(2);
-    expect(fakeOnDidFilesChange).toHaveBeenCalledTimes(2);
+    expect(fakeOnResourceChanged).toHaveBeenCalledTimes(2);
     expect(allCreatedDisposables).toHaveLength(4);
     for (const disposable of allCreatedDisposables) {
       expect(disposable.isDisposed).toBe(true);
@@ -118,19 +120,17 @@ describe('refresh-resources-of-directory', () => {
 
   it('no second watcher should get set up for already watched directories', async () => {
     await initializeFakePlatformModules();
-    const { allCreatedDisposables, fakeWatch, fakeOnDidFilesChange, fakeFileSystem } =
+    const { allCreatedDisposables, fakeWatch, fakeOnResourceChanged, fakeFileSystem } =
       createFakeFileSystem();
     globalThis.modules.fileSystem = fakeFileSystem;
 
     const refreshResourcesOfDirectorySubscription = createRefreshResourcesOfDirectorySubscription();
 
-    if (
-      !refreshResourcesOfDirectorySubscription.subscription.digestCacheNotifyEvent ||
-      !refreshResourcesOfDirectorySubscription.subscription.digestExistingQuery ||
-      !refreshResourcesOfDirectorySubscription.dispose
-    ) {
-      throw new Error(`digestCacheNotifyEvent, digestExistingQuery and dispose must be defined`);
-    }
+    invariant(
+      refreshResourcesOfDirectorySubscription.subscription.digestCacheNotifyEvent &&
+        refreshResourcesOfDirectorySubscription.subscription.digestExistingQuery &&
+        refreshResourcesOfDirectorySubscription.dispose,
+    );
 
     const fakeQuery1: Pick<Query, 'queryKey'> = {
       queryKey: [
@@ -143,9 +143,10 @@ describe('refresh-resources-of-directory', () => {
       ],
     };
     refreshResourcesOfDirectorySubscription.subscription.digestExistingQuery(fakeQuery1 as Query);
+    await workaround();
 
     expect(fakeWatch).toHaveBeenCalledTimes(1);
-    expect(fakeOnDidFilesChange).toHaveBeenCalledTimes(1);
+    expect(fakeOnResourceChanged).toHaveBeenCalledTimes(1);
     expect(allCreatedDisposables).toHaveLength(2);
     for (const disposable of allCreatedDisposables) {
       expect(disposable.isDisposed).toBe(false);
@@ -162,9 +163,10 @@ describe('refresh-resources-of-directory', () => {
       ],
     };
     refreshResourcesOfDirectorySubscription.subscription.digestExistingQuery(fakeQuery2 as Query);
+    await workaround();
 
     expect(fakeWatch).toHaveBeenCalledTimes(1);
-    expect(fakeOnDidFilesChange).toHaveBeenCalledTimes(1);
+    expect(fakeOnResourceChanged).toHaveBeenCalledTimes(1);
     expect(allCreatedDisposables).toHaveLength(2);
     for (const disposable of allCreatedDisposables) {
       expect(disposable.isDisposed).toBe(false);
@@ -173,19 +175,17 @@ describe('refresh-resources-of-directory', () => {
 
   it('when observer gets removed, the active file watcher should get released', async () => {
     await initializeFakePlatformModules();
-    const { allCreatedDisposables, fakeWatch, fakeOnDidFilesChange, fakeFileSystem } =
+    const { allCreatedDisposables, fakeWatch, fakeOnResourceChanged, fakeFileSystem } =
       createFakeFileSystem();
     globalThis.modules.fileSystem = fakeFileSystem;
 
     const refreshResourcesOfDirectorySubscription = createRefreshResourcesOfDirectorySubscription();
 
-    if (
-      !refreshResourcesOfDirectorySubscription.subscription.digestCacheNotifyEvent ||
-      !refreshResourcesOfDirectorySubscription.subscription.digestExistingQuery ||
-      !refreshResourcesOfDirectorySubscription.dispose
-    ) {
-      throw new Error(`digestCacheNotifyEvent, digestExistingQuery and dispose must be defined`);
-    }
+    invariant(
+      refreshResourcesOfDirectorySubscription.subscription.digestCacheNotifyEvent &&
+        refreshResourcesOfDirectorySubscription.subscription.digestExistingQuery &&
+        refreshResourcesOfDirectorySubscription.dispose,
+    );
 
     const fakeCacheNotifyEvent1 = {
       type: 'observerAdded',
@@ -203,9 +203,10 @@ describe('refresh-resources-of-directory', () => {
     refreshResourcesOfDirectorySubscription.subscription.digestCacheNotifyEvent(
       fakeCacheNotifyEvent1,
     );
+    await workaround();
 
     expect(fakeWatch).toHaveBeenCalledTimes(1);
-    expect(fakeOnDidFilesChange).toHaveBeenCalledTimes(1);
+    expect(fakeOnResourceChanged).toHaveBeenCalledTimes(1);
     expect(allCreatedDisposables).toHaveLength(2);
     for (const disposable of allCreatedDisposables) {
       expect(disposable.isDisposed).toBe(false);
@@ -228,12 +229,22 @@ describe('refresh-resources-of-directory', () => {
     refreshResourcesOfDirectorySubscription.subscription.digestCacheNotifyEvent(
       fakeCacheNotifyEvent2,
     );
+    await workaround();
 
     expect(fakeWatch).toHaveBeenCalledTimes(1);
-    expect(fakeOnDidFilesChange).toHaveBeenCalledTimes(1);
+    expect(fakeOnResourceChanged).toHaveBeenCalledTimes(1);
     expect(allCreatedDisposables).toHaveLength(2);
     for (const disposable of allCreatedDisposables) {
       expect(disposable.isDisposed).toBe(true);
     }
   });
 });
+
+/**
+ * TODO remove me
+ */
+async function workaround() {
+  for (let index = 0; index < 5; index++) {
+    await Promise.resolve();
+  }
+}
