@@ -7,9 +7,7 @@ const store = new Store();
 
 export function createPersistentStoreProcedures() {
   return {
-    readPersistedData: publicProcedure.query(() => {
-      return store.store;
-    }),
+    readPersistedData: publicProcedure.query(() => store.store),
 
     persistData: publicProcedure
       .input(z.object({ data: z.record(z.unknown()) }))

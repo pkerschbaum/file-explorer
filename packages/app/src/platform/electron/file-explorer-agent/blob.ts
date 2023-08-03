@@ -16,7 +16,7 @@ import {
   THUMBNAIL_PATH,
 } from '#pkg/platform/electron/file-explorer-agent/constants';
 
-export function registerRoutes(app: express.Express): void {
+export function registerBlobRoutes(app: express.Express): void {
   app.use(THUMBNAIL_PATH, async (req, res) => {
     const thumbnail = await getThumbnail(req);
 

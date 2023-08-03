@@ -4,7 +4,7 @@ import express from 'express';
 import http from 'node:http';
 
 import { createAppProcedures } from '#pkg/platform/electron/file-explorer-agent/app-procedures/app-procedures';
-import { registerRoutes } from '#pkg/platform/electron/file-explorer-agent/blob';
+import { registerBlobRoutes } from '#pkg/platform/electron/file-explorer-agent/blob';
 import { createClipboardProcedures } from '#pkg/platform/electron/file-explorer-agent/clipboard-procedures/clipboard-procedures';
 import {
   AGENT_PORT,
@@ -32,7 +32,7 @@ export function createFileExplorerAgent({ windowRef }: { windowRef: WindowRef })
 
   const appRouter = router({
     app: router(createAppProcedures()),
-    clipboard: router(createClipboardProcedures()),
+    clipboard: router(createClipboardProcedures({ pushServer })),
     fs: router(createFsProcedures({ pushServer })),
     persistentStore: router(createPersistentStoreProcedures()),
     shell: router(createShellProcedures()),
@@ -46,7 +46,7 @@ export function createFileExplorerAgent({ windowRef }: { windowRef: WindowRef })
     }),
   );
 
-  registerRoutes(app);
+  registerBlobRoutes(app);
 
   return {
     appRouter,

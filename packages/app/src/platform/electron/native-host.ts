@@ -1,11 +1,21 @@
 import { Emitter } from '#pkg/base/event';
 import { URI } from '#pkg/base/uri';
-import { blob, trpc } from '#pkg/platform/electron/file-explorer-agent-client/agent-client';
-import type { PlatformNativeHost } from '#pkg/platform/native-host.types';
-import { CLIPBOARD_CHANGED_DATA_TYPE } from '#pkg/platform/native-host.types';
+import {
+  blob,
+  pushSocket,
+  trpc,
+} from '#pkg/platform/electron/file-explorer-agent-client/agent-client';
+import type {
+  CLIPBOARD_CHANGED_DATA_TYPE,
+  PlatformNativeHost,
+} from '#pkg/platform/native-host.types';
 
 export const createNativeHost = () => {
   const onClipboardChanged = new Emitter<CLIPBOARD_CHANGED_DATA_TYPE>();
+
+  pushSocket.on('ClipboardChanged', (payload) => {
+    onClipboardChanged.fire(payload.dataType);
+  });
 
   const instance: PlatformNativeHost = {
     app: {
@@ -36,12 +46,10 @@ export const createNativeHost = () => {
       readText: trpc.clipboard.readText.query,
       writeText: async (value) => {
         await trpc.clipboard.writeText.mutate({ value });
-        onClipboardChanged.fire(CLIPBOARD_CHANGED_DATA_TYPE.TEXT);
       },
       readResources: trpc.clipboard.readResources.query,
       writeResources: async (resources) => {
         await trpc.clipboard.writeResources.mutate({ resources });
-        onClipboardChanged.fire(CLIPBOARD_CHANGED_DATA_TYPE.RESOURCES);
       },
       onClipboardChanged: onClipboardChanged.event,
     },

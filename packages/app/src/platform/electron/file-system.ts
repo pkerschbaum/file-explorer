@@ -6,7 +6,7 @@ import { createLogger } from '#pkg/operations/create-logger';
 import { pushSocket, trpc } from '#pkg/platform/electron/file-explorer-agent-client/agent-client';
 import type { PlatformFileSystem } from '#pkg/platform/file-system.types';
 
-const logger = createLogger('store-logger-middleware');
+const logger = createLogger('file-system');
 
 export const createFileSystem = () => {
   pushSocket.on('CopyOrMoveOperationReportProgress', (payload) => {

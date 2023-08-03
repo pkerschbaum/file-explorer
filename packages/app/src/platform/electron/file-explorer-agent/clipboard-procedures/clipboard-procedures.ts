@@ -4,16 +4,32 @@ import { z } from 'zod';
 import { VSBuffer } from '#pkg/base/buffer';
 import { URI, UriComponents } from '#pkg/base/uri';
 import { config } from '#pkg/config';
+import type { PushServer } from '#pkg/platform/electron/file-explorer-agent/push-server';
 import { publicProcedure } from '#pkg/platform/electron/file-explorer-agent/trcp-router';
+import { CLIPBOARD_CHANGED_DATA_TYPE } from '#pkg/platform/native-host.types';
+
+declare global {
+  namespace PushServer {
+    interface PushEventMap {
+      ClipboardChanged: {
+        dataType: CLIPBOARD_CHANGED_DATA_TYPE;
+      };
+    }
+  }
+}
 
 const CLIPBOARD_FILELIST_FORMAT = `${config.productName}/file-list`;
 
-export function createClipboardProcedures() {
+export function createClipboardProcedures({ pushServer }: { pushServer: PushServer }) {
   return {
     readText: publicProcedure.query(() => clipboard.readText()),
 
     writeText: publicProcedure.input(z.object({ value: z.string() })).mutation(({ input }) => {
       clipboard.writeText(input.value);
+      pushServer.pushEvent({
+        type: 'ClipboardChanged',
+        payload: { dataType: CLIPBOARD_CHANGED_DATA_TYPE.TEXT },
+      });
     }),
 
     readResources: publicProcedure.query(() =>
@@ -28,6 +44,10 @@ export function createClipboardProcedures() {
           Buffer.from(resourcesToBuffer(input.resources)),
           undefined,
         );
+        pushServer.pushEvent({
+          type: 'ClipboardChanged',
+          payload: { dataType: CLIPBOARD_CHANGED_DATA_TYPE.RESOURCES },
+        });
       }),
   };
 }

@@ -2,6 +2,11 @@ import type { Event } from '#pkg/base/event';
 import type { UriComponents } from '#pkg/base/uri';
 import type { ResourceForUI } from '#pkg/domain/types';
 
+export enum CLIPBOARD_CHANGED_DATA_TYPE {
+  TEXT = 'TEXT',
+  RESOURCES = 'RESOURCES',
+}
+
 export type PlatformNativeHost = {
   app: {
     getPath: (args: { name: 'home' }) => Promise<UriComponents>;
@@ -30,8 +35,3 @@ export type PlatformNativeHost = {
     startNativeFileDnD: (resources: UriComponents[]) => void;
   };
 };
-
-export enum CLIPBOARD_CHANGED_DATA_TYPE {
-  TEXT = 'TEXT',
-  RESOURCES = 'RESOURCES',
-}
