@@ -10,17 +10,15 @@ const CLIPBOARD_FILELIST_FORMAT = `${config.productName}/file-list`;
 
 export function createClipboardProcedures() {
   return {
-    readText: publicProcedure.query(() => {
-      return clipboard.readText();
-    }),
+    readText: publicProcedure.query(() => clipboard.readText()),
 
     writeText: publicProcedure.input(z.object({ value: z.string() })).mutation(({ input }) => {
       clipboard.writeText(input.value);
     }),
 
-    readResources: publicProcedure.query(() => {
-      return bufferToResources(clipboard.readBuffer(CLIPBOARD_FILELIST_FORMAT));
-    }),
+    readResources: publicProcedure.query(() =>
+      bufferToResources(clipboard.readBuffer(CLIPBOARD_FILELIST_FORMAT)),
+    ),
 
     writeResources: publicProcedure
       .input(z.object({ resources: z.array(UriComponents) }))

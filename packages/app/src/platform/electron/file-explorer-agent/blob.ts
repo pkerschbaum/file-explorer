@@ -10,10 +10,13 @@ import { URI } from '#pkg/base/uri';
 import { check } from '#pkg/base/utils/assert.util';
 import { numbers } from '#pkg/base/utils/numbers.util';
 import { uriHelper } from '#pkg/base/utils/uri-helper';
-import { AGENT_PORT } from '#pkg/platform/electron/file-explorer-agent/constants';
-import { NATIVE_FILE_ICON_PATH, THUMBNAIL_PATH } from '#pkg/platform/electron/protocol/common/app';
+import {
+  AGENT_PORT,
+  NATIVE_FILE_ICON_PATH,
+  THUMBNAIL_PATH,
+} from '#pkg/platform/electron/file-explorer-agent/constants';
 
-export function registerProtocols(app: express.Express): void {
+export function registerRoutes(app: express.Express): void {
   app.use(THUMBNAIL_PATH, async (req, res) => {
     const thumbnail = await getThumbnail(req);
 

@@ -10,11 +10,13 @@ import {
 import type { AppRouter } from '#pkg/platform/electron/file-explorer-agent/initialize-file-explorer-agent';
 import type { PushEvent } from '#pkg/platform/electron/file-explorer-agent/push-server';
 
+export { blob } from '#pkg/platform/electron/file-explorer-agent-client/blob';
+
 export const trpc = createTRPCProxyClient<AppRouter>({
   transformer: superjson,
   links: [
     httpBatchLink({
-      url: `http://localhost:${AGENT_PORT}/${TRPC_SERVER_BASE_PATH}`,
+      url: `http://localhost:${AGENT_PORT}${TRPC_SERVER_BASE_PATH}`,
     }),
   ],
 });

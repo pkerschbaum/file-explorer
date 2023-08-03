@@ -261,7 +261,7 @@ module.exports = {
             ],
           },
           {
-            target: /\/src\/platform\/electron\/file-explorer-agent\/protocol.ts$/,
+            target: /\/src\/platform\/electron\/file-explorer-agent\/blob.ts$/,
             allowedPatterns: ['file-type', 'node:fs', 'sharp'],
           },
           {
