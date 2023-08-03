@@ -1,6 +1,6 @@
+import { loadCssRules } from '#pkg/base/file-icon-theme/load-css-rules-http';
 import { path } from '#pkg/base/path';
 import { platform } from '#pkg/base/platform';
-import { loadCssRules } from '#pkg/operations/file-icon-theme.operations';
 import type { PlatformFileIconThemeLoader } from '#pkg/platform/file-icon-theme-loader.types';
 
 const FILE_ICON_THEME_RELATIVE_PATH = './icon-theme/';

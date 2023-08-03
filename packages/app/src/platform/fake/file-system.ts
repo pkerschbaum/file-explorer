@@ -1,13 +1,9 @@
-import {
-  ConsoleMainLogger,
-  LogService,
-} from '@pkerschbaum/code-oss-file-service/out/vs/platform/log/common/log';
 import dayjs from 'dayjs';
 
 import { VSBuffer } from '#pkg/base/buffer';
 import type { IStat } from '#pkg/base/files';
-import { FileService, fileServiceUriInstancesToComponents } from '#pkg/base/fileService';
-import { InMemoryFileSystemProvider } from '#pkg/base/inMemoryFilesystemProvider';
+import { fileServiceUriInstancesToComponents } from '#pkg/base/fileService';
+import { bootstrapInMemoryFileService } from '#pkg/base/in-memory-file-service';
 import { network } from '#pkg/base/network';
 import { URI, UriComponents } from '#pkg/base/uri';
 import { assertIsUnreachable } from '#pkg/base/utils/assert.util';
@@ -33,12 +29,9 @@ export const createFakeFileSystem: (
 ) => Promise<PlatformFileSystem> = async (args) => {
   const resourcesToCreate = args?.resourcesToCreate ?? defaultFileSystemResources;
 
-  const logger = new ConsoleMainLogger();
-  const logService = new LogService(logger);
-  const origFileService = new FileService(logService);
+  const { fileService: origFileService, inMemoryFileSystemProvider } =
+    bootstrapInMemoryFileService();
   const fileService = fileServiceUriInstancesToComponents(origFileService);
-  const inMemoryFileSystemProvider = new InMemoryFileSystemProvider();
-  origFileService.registerProvider(network.Schemas.file, inMemoryFileSystemProvider);
 
   async function createResource({ type, uri, mtimeIso8601 }: FileSystemResourceToCreate) {
     if (type === RESOURCE_TYPE.DIRECTORY) {

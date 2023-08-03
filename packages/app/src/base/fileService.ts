@@ -7,6 +7,7 @@ import type { Event } from '#pkg/base/event';
 import type {
   FileDeleteOptionsWithoutTrash,
   ICreateFileOptions,
+  IFileService,
   IFileStat,
   IFileStatWithMetadata,
   IResolveFileOptions,
@@ -20,7 +21,7 @@ import type { UriComponents } from '#pkg/base/uri';
 export const FileService = codeOSSFileService.FileService;
 export type FileService = codeOSSFileService.FileService;
 
-export type FileServiceUriComponents = {
+export type IFileServiceUriComponents = {
   resolve(
     resource: UriComponents,
     options: IResolveMetadataFileOptions,
@@ -81,8 +82,8 @@ export type PlatformFileService = {
 };
 
 export function fileServiceUriInstancesToComponents(
-  fileService: FileService,
-): FileServiceUriComponents {
+  fileService: IFileService,
+): IFileServiceUriComponents {
   return {
     async resolve(resource, options) {
       const result = await fileService.resolve(uriComponentsToInstance(resource), {

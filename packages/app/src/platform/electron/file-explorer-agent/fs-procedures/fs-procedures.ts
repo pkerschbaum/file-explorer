@@ -12,7 +12,7 @@ import { fileServiceUriInstancesToComponents } from '#pkg/base/fileService';
 import type { ReportProgressArgs } from '#pkg/base/resources';
 import { UriComponents } from '#pkg/base/uri';
 import { assertIsUnreachable } from '#pkg/base/utils/assert.util';
-import { bootstrapDiskFileService } from '#pkg/platform/electron/file-explorer-agent/bootstrap-disk-file-service';
+import { bootstrapDiskFileService } from '#pkg/platform/electron/file-explorer-agent/disk-file-service';
 import type { PushServer } from '#pkg/platform/electron/file-explorer-agent/push-server';
 import { publicProcedure } from '#pkg/platform/electron/file-explorer-agent/trcp-router';
 

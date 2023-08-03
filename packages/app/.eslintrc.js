@@ -142,15 +142,16 @@ module.exports = {
             allowedPatterns: [
               /^@pkerschbaum\/code-oss-file-service\/out\/vs\/base\/common\/.+/,
               /^@pkerschbaum\/code-oss-file-service\/out\/vs\/platform\/files\/common\/.+/,
+              /^@pkerschbaum\/code-oss-file-service\/out\/vs\/platform\/log\/common\/log$/,
             ],
+          },
+          {
+            target: /\/src\/base\/file-icon-theme\/load-css-rules-http\.ts$/,
+            allowedPatterns: ['axios'],
           },
           {
             target: /\/src\/global-cache\/.+/,
             allowedPatterns: ['react'],
-          },
-          {
-            target: /\/src\/operations\/file-icon-theme\.operations\.ts$/,
-            allowedPatterns: ['axios'],
           },
           {
             target: /\/src\/operations\/global-cache-subscriptions\/.+/,
@@ -246,8 +247,7 @@ module.exports = {
             allowedPatterns: ['@playwright/test', '@playwright-testing-library/test'],
           },
           {
-            target:
-              /\/src\/platform\/electron\/file-explorer-agent\/bootstrap-disk-file-service.ts$/,
+            target: /\/src\/platform\/electron\/file-explorer-agent\/disk-file-service.ts$/,
             allowedPatterns: [
               /^@pkerschbaum\/code-oss-file-service\/out\/vs\/platform\/files\/node\/.+/,
               /^@pkerschbaum\/code-oss-file-service\/out\/vs\/platform\/log\/common\/log$/,
@@ -282,12 +282,6 @@ module.exports = {
           {
             target: /\/src\/platform\/electron\/.+/,
             allowedPatterns: ['electron', 'electron-store'],
-          },
-          {
-            target: /\/src\/platform\/fake\/file-system.ts$/,
-            allowedPatterns: [
-              /^@pkerschbaum\/code-oss-file-service\/out\/vs\/platform\/log\/common\/log$/,
-            ],
           },
           {
             target: /\/src\/platform\/native-host.types.ts$/,

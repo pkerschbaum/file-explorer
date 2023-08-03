@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useQuery } from 'react-query';
 
-import { loadIconClasses } from '#pkg/base/file-icon-theme';
+import { loadIconClasses } from '#pkg/base/file-icon-theme/load-icon-classes';
 import type { FileKind } from '#pkg/base/files';
 import type { UriComponents } from '#pkg/base/uri';
 import { QUERY_KEYS } from '#pkg/global-cache/query-keys';
