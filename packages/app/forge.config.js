@@ -24,6 +24,9 @@ module.exports = {
     {
       name: '@electron-forge/plugin-webpack',
       config: {
+        /* enable the electron app to do requests to localhost */
+        devContentSecurityPolicy: '*',
+
         mainConfig: './webpack.main.config.js',
         renderer: {
           config: './webpack.renderer.config.js',

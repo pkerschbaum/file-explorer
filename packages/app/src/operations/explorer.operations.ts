@@ -45,12 +45,12 @@ export async function openResources(explorerId: string, resources: ResourceForUI
   }
 }
 
-export function copyCwdIntoClipboard(explorerId: string) {
+export async function copyCwdIntoClipboard(explorerId: string) {
   const cwdUri = extractCwdFromExplorerPanel(
     globalThis.modules.store.getState().explorersSlice.explorerPanels[explorerId],
   );
   invariant(cwdUri);
-  globalThis.modules.nativeHost.clipboard.writeText(formatter.resourcePath(cwdUri));
+  await globalThis.modules.nativeHost.clipboard.writeText(formatter.resourcePath(cwdUri));
 }
 
 export async function changeCwd({
@@ -79,7 +79,7 @@ export async function changeCwd({
 }
 
 export async function pasteResources(explorerId: string) {
-  const clipboardResources = globalThis.modules.nativeHost.clipboard.readResources();
+  const clipboardResources = await globalThis.modules.nativeHost.clipboard.readResources();
   const draftPasteState = globalThis.modules.store.getState().processesSlice.draftPasteState;
   if (clipboardResources.length === 0 || draftPasteState === undefined) {
     return;

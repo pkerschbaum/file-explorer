@@ -1,3 +1,4 @@
+import * as codeOSSFileIconTheme from '@pkerschbaum/code-oss-file-icon-theme';
 import { ModesRegistry } from '@pkerschbaum/code-oss-file-icon-theme/out/vs/editor/common/modes/modesRegistry';
 import type { ILanguageExtensionPoint } from '@pkerschbaum/code-oss-file-icon-theme/out/vs/editor/common/services/modeService';
 import axios from 'axios';
@@ -9,7 +10,6 @@ import { check } from '#pkg/base/utils/assert.util';
 import { formatter } from '#pkg/base/utils/formatter.util';
 import { json } from '#pkg/base/utils/json.util';
 import type { FileIconTheme } from '#pkg/domain/constants';
-import { loadFileIconThemeCssRules } from '#pkg/platform/browser/file-icon-theme';
 
 export type LanguageExtensionPointJsonEntry = {
   packageName: string;
@@ -64,9 +64,10 @@ export async function loadCssRules({
     }
   }
 
-  const iconThemeCssRules = await loadFileIconThemeCssRules({
-    fileIconThemeUri: URI.file(
-      path.join('/', fileIconThemeRelativePath, fileIconThemePathFragment),
+  const iconThemeCssRules = await codeOSSFileIconTheme.loadFileIconThemeCssRules({
+    // eslint-disable-next-line no-restricted-syntax -- boundary to `@pkerschbaum/code-oss-file-icon-theme` here
+    fileIconThemeUri: URI.from(
+      URI.file(path.join('/', fileIconThemeRelativePath, fileIconThemePathFragment)),
     ),
     fileService: httpIconThemeFileService as IFileService,
   });

@@ -1,24 +1,117 @@
-import { path } from '#pkg/base/path';
-import { URI } from '#pkg/base/uri';
+import invariant from 'tiny-invariant';
+
+import type { IFileStatWithMetadata, IResolveMetadataFileOptions } from '#pkg/base/files';
+import type { CoordinationArgs } from '#pkg/base/resources';
+import { createLogger } from '#pkg/operations/create-logger';
+import { pushSocket, trpc } from '#pkg/platform/electron/file-explorer-agent-client/agent-client';
 import type { PlatformFileSystem } from '#pkg/platform/file-system.types';
 
+const logger = createLogger('file-system');
+
 export const createFileSystem = () => {
-  const instance: PlatformFileSystem = {
-    resolve: window.privileged.fileService.resolve.bind(window.privileged.fileService),
-    del: window.privileged.fileService.del.bind(window.privileged.fileService),
-    trash: async (resource) => {
-      // handle trash operation via IPC because of https://github.com/electron/electron/issues/29598
-      return await window.privileged.shell.trashItem({
-        fsPath: path.normalize(URI.fsPath(resource)),
+  pushSocket.on('CopyOrMoveOperationReportProgress', (payload) => {
+    const reportProgress = operationIdToReportProgress.get(payload.operationId);
+    if (reportProgress) {
+      reportProgress(payload.progress);
+    }
+  });
+
+  pushSocket.on('ResourceChanged', (payload) => {
+    const onChange = operationIdToOnResourceChanged.get(payload.operationId);
+    invariant(onChange, `expected to find element! operationId=${payload.operationId}`);
+    onChange();
+  });
+
+  // TODO remove elems from `operationIdToReportProgress` when copy/move operation gets finished or aborted
+  const operationIdToReportProgress = new Map<
+    /* operationId */ string,
+    Exclude<CoordinationArgs['reportProgress'], undefined>
+  >();
+  const operationIdToOnResourceChanged = new Map</* operationId */ string, () => void>();
+
+  const copyOrMove: (
+    copyOrMove: 'copy' | 'move',
+  ) => PlatformFileSystem['copy'] | PlatformFileSystem['move'] =
+    (copyOrMove) => async (source, target, overwrite, coordinationArgs) => {
+      const operationId = crypto.randomUUID();
+
+      if (coordinationArgs?.reportProgress) {
+        operationIdToReportProgress.set(operationId, coordinationArgs.reportProgress);
+      }
+      if (coordinationArgs?.token) {
+        coordinationArgs.token.onCancellationRequested(async () => {
+          await trpc.fs.cancelFsOperation.mutate({ operationId });
+        });
+      }
+
+      const result = await trpc.fs.dispatchCopyOrMove.mutate({
+        copyOrMove,
+        operationId,
+        source,
+        target,
+        overwrite,
       });
+      return result;
+    };
+
+  const instance: PlatformFileSystem = {
+    async resolve(resource, options) {
+      if (options?.resolveMetadata) {
+        return await trpc.fs.resolveWithMetadata.mutate({
+          resource,
+          options: options as IResolveMetadataFileOptions,
+        });
+      } else {
+        return (await trpc.fs.resolve.mutate({
+          resource,
+          options,
+        })) as IFileStatWithMetadata;
+      }
     },
-    copy: window.privileged.fileService.copy.bind(window.privileged.fileService),
-    move: window.privileged.fileService.move.bind(window.privileged.fileService),
-    createFolder: window.privileged.fileService.createFolder.bind(window.privileged.fileService),
-    watch: window.privileged.fileService.watch.bind(window.privileged.fileService),
-    onDidFilesChange: window.privileged.fileService.onDidFilesChange.bind(
-      window.privileged.fileService,
-    ),
+
+    async del(resource, options) {
+      return await trpc.fs.del.mutate({ resource, options });
+    },
+
+    async trash(resource) {
+      return await trpc.shell.trash.mutate({ resource });
+    },
+
+    copy: copyOrMove('copy'),
+
+    move: copyOrMove('move'),
+
+    async createFolder(resource) {
+      return await trpc.fs.createFolder.mutate({ resource });
+    },
+
+    async watch(resource, options) {
+      const operationId = crypto.randomUUID();
+      await trpc.fs.watch.mutate({ operationId, resource, options });
+
+      return {
+        dispose: () => {
+          trpc.fs.cancelFsOperation.mutate({ operationId }).catch((error) => {
+            logger.error(`could not cancel FS operation`, error);
+          });
+        },
+      };
+    },
+
+    async onResourceChanged(resource, onChange) {
+      const operationId = crypto.randomUUID();
+      operationIdToOnResourceChanged.set(operationId, onChange);
+      await trpc.fs.onResourceChanged.mutate({ operationId, resource });
+
+      return {
+        dispose() {
+          operationIdToOnResourceChanged.delete(operationId);
+          trpc.fs.cancelFsOperation.mutate({ operationId }).catch((error) => {
+            logger.error(`could not cancel FS operation`, error);
+          });
+        },
+      };
+    },
   };
 
   return instance;

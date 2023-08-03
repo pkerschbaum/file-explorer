@@ -69,8 +69,8 @@ export const CwdActionsMenu: React.FC<CwdActionsMenuProps> = ({ explorerId, menu
         <Item
           key={CWD_ACTIONS_MENU_ACTION.COPY_CWD}
           textValue="Copy Directory Path"
-          onAction={() => {
-            copyCwdIntoClipboard(explorerId);
+          onAction={async () => {
+            await copyCwdIntoClipboard(explorerId);
             menuInstance.state.close();
           }}
         >

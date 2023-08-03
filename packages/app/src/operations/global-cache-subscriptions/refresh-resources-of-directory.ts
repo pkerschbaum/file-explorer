@@ -3,7 +3,6 @@ import type { Query } from 'react-query';
 import { DisposableStore, IDisposable } from '#pkg/base/lifecycle';
 import { URI } from '#pkg/base/uri';
 import { functions } from '#pkg/base/utils/functions.util';
-import { json } from '#pkg/base/utils/json.util';
 import { uriHelper } from '#pkg/base/utils/uri-helper';
 import type { ResourcesOfDirectoryKey } from '#pkg/global-cache/query-keys';
 import {
@@ -52,7 +51,9 @@ const createDigestCacheNotifyEvent =
       const queryKey = cacheNotifyEvent.query.queryKey;
       logger.group('OBSERVER_FOR_RESOURCES_OF_DIRECTORY_QUERY_WAS_ADDED');
 
-      addDirectoryWatcherIfNonePresent(queryKey, directoryWatchers);
+      addDirectoryWatcherIfNonePresent(queryKey, directoryWatchers).catch((error) => {
+        logger.error(`could not add directory watcher`, error);
+      });
 
       logger.groupEnd();
     }
@@ -89,11 +90,13 @@ const createDigestCacheNotifyEvent =
 const createDigestExistingQuery =
   (directoryWatchers: Map<string, IDisposable>) => (query: Query) => {
     if (isResourcesOfDirectoryQueryKey(query.queryKey)) {
-      addDirectoryWatcherIfNonePresent(query.queryKey, directoryWatchers);
+      addDirectoryWatcherIfNonePresent(query.queryKey, directoryWatchers).catch((error) => {
+        logger.error(`could not add directory watcher`, error);
+      });
     }
   };
 
-function addDirectoryWatcherIfNonePresent(
+async function addDirectoryWatcherIfNonePresent(
   queryKey: ResourcesOfDirectoryKey,
   directoryWatchers: Map<string, IDisposable>,
 ) {
@@ -109,26 +112,21 @@ function addDirectoryWatcherIfNonePresent(
     logger.debug('directory watcher for the given directory is already present', { queryKey });
   } else {
     logger.debug('no directory watcher present --> creating (throttled) watcher...', { queryKey });
-    const watcherDisposable = globalThis.modules.fileSystem.watch(directoryUri);
+    const watcherDisposable = await globalThis.modules.fileSystem.watch(directoryUri);
     const [throttledRefreshResourcesOfDirectory] = functions.throttle(
       refreshResourcesOfDirectory,
       200,
     );
-    const didFilesChangeDisposable = globalThis.modules.fileSystem.onDidFilesChange((e) => {
-      logger.debug(
-        'did receive onDidFilesChange event --> checking if refreshing resources of directory is necessary...',
-        { queryKey, fileChangesEvent: JSON.parse(json.safeStringify(e)) as {} },
-      );
-      if (e.affects(directoryUri)) {
+    const onResourceChangedDisposable = await globalThis.modules.fileSystem.onResourceChanged(
+      directoryUri,
+      () => {
         logger.debug('refreshing of resources is necessary, trigger refresh...', { queryKey });
         throttledRefreshResourcesOfDirectory({ directory: directoryUri }, { active: true });
-      } else {
-        logger.debug('refreshing of resources is not necessary, skipping.', { queryKey });
-      }
-    });
+      },
+    );
     const disposables = new DisposableStore();
     disposables.add(watcherDisposable);
-    disposables.add(didFilesChangeDisposable);
+    disposables.add(onResourceChangedDisposable);
     directoryWatchers.set(comparisonKey, disposables);
 
     logger.debug('directory watcher created!', { queryKey });
