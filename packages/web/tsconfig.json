@@ -1,0 +1,46 @@
+{
+  "compilerOptions": {
+    /* Language and Environment */
+    "jsx": "react-jsx",
+    "lib": ["ES2017", "dom"],
+    "target": "ES2017",
+
+    /* Modules */
+    "baseUrl": ".",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "paths": {
+      "#pkg/*": ["./src/*"],
+      "#pkg-test/*": ["./test/*"],
+      "#pkg-storybook/*": ["./storybook/*"],
+      "#pkg-playwright/*": ["./playwright/*"]
+    },
+    "types": ["node", "jest"],
+
+    /* Emit */
+    "importsNotUsedAsValues": "error",
+    "outDir": "dist",
+    "sourceMap": true,
+
+    /* Interop Constraints */
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+
+    /* Type Checking */
+    "allowUnreachableCode": false,
+    "noFallthroughCasesInSwitch": true,
+    "strict": true,
+
+    /* Completeness */
+    "skipLibCheck": true,
+
+    /* Plugins */
+    "plugins": [
+      {
+        "name": "typescript-styled-plugin"
+      }
+    ]
+  },
+  "include": ["src/**/*", "test/**/*", "storybook/**/*", "playwright/**/*"]
+}

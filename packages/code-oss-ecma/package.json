@@ -1,0 +1,60 @@
+{
+  "name": "@file-explorer/code-oss-ecma",
+  "version": "1.0.0",
+  "exports": {
+    ".": "./dist/index.js",
+    "./*": "./dist/*.js"
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./dist/*"
+      ]
+    }
+  },
+  "scripts": {
+    "prepare": "ts-patch install -s",
+    "internal:compile": "tsc -p ./tsconfig.build.json",
+    "nuke": "pnpm run nuke:artifacts && del-cli node_modules",
+    "nuke:artifacts": "del-cli dist \"*.tsbuildinfo\"",
+    "build": "pnpm run internal:compile",
+    "dev": "pnpm run build --watch --preserveWatchOutput",
+    "lint": "pnpm run lint:file .",
+    "lint:file": "eslint --max-warnings 0",
+    "lint:fix": "pnpm run lint --fix"
+  },
+  "dependencies": {
+    "@file-explorer/commons-ecma": "workspace:*",
+    "@file-explorer/domain": "workspace:*",
+    "@pkerschbaum/code-oss-file-icon-theme": "^3.1.0",
+    "@pkerschbaum/code-oss-file-service": "^1.65.1",
+    "axios": "^1.2.2",
+    "zod": "^3.21.4"
+  },
+  "devDependencies": {
+    "@file-explorer/config-eslint": "workspace:*",
+    "@file-explorer/config-jest": "workspace:*",
+    "@file-explorer/config-typescript": "workspace:*",
+    "@typescript-eslint/eslint-plugin": "^6.2.1",
+    "@typescript-eslint/parser": "^6.2.1",
+    "eslint": "^8.46.0",
+    "eslint-plugin-code-import-patterns": "^3.0.0",
+    "eslint-plugin-eslint-comments": "^3.2.0",
+    "eslint-plugin-import": "^2.28.0",
+    "eslint-plugin-jsx-a11y": "^6.7.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-only-warn": "^1.1.0",
+    "eslint-plugin-playwright": "^0.15.3",
+    "eslint-plugin-react": "^7.33.1",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-regexp": "^1.15.0",
+    "eslint-plugin-storybook": "^0.6.13",
+    "eslint-plugin-unicorn": "^48.0.1",
+    "ts-patch": "^2.1.0",
+    "typescript": "^4.9.4",
+    "typescript-transform-paths": "^3.4.6"
+  },
+  "engines": {
+    "node": "^16.14.0"
+  }
+}

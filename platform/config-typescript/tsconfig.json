@@ -1,0 +1,48 @@
+{
+  /* based on https://pkerschbaum.com/tidbits/sensible-tsconfig-defaults */
+
+  "compilerOptions": {
+    /* Type Checking */
+    "allowUnreachableCode": false,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "strict": true,
+
+    /* Modules */
+    "module": "commonjs",
+    "types": [],
+
+    /* Emit */
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+
+    /* Interop Constraints */
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "importsNotUsedAsValues": "error",
+    "isolatedModules": true,
+
+    /* Language and Environment */
+    "target": "ES2019",
+
+    /* Projects */
+    "incremental": true,
+
+    /* Completeness */
+    "skipLibCheck": true,
+
+    /* Editor Support */
+    "plugins": [
+      {
+        "transform": "typescript-transform-paths"
+      },
+      {
+        "transform": "typescript-transform-paths",
+        "afterDeclarations": true
+      }
+    ]
+  },
+  "exclude": ["**/node_modules"]
+}

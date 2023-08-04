@@ -1,9 +1,9 @@
 // @ts-check
-const { execSync } = require("child_process");
+const { execSync } = require('child_process');
 
 /** @type {Array<{ name: string; path: string }>} */
 const workspacePackagesInclRoot = JSON.parse(
-  execSync("pnpm --recursive list --json --depth -1").toString("utf-8")
+  execSync('pnpm --recursive list --json --depth -1').toString('utf-8'),
 );
 const workspacePackages = workspacePackagesInclRoot.slice(1);
 
@@ -21,10 +21,7 @@ function computeEslintShellCommandsPerPackage(files) {
 
   for (const file of files) {
     let foundPackage = false;
-    for (const {
-      name: nameOfPackage,
-      path: pathOfPackage,
-    } of workspacePackages) {
+    for (const { name: nameOfPackage, path: pathOfPackage } of workspacePackages) {
       if (file.startsWith(pathOfPackage)) {
         sourceFilesPartitionedByPackage[nameOfPackage].push(file);
         foundPackage = true;
@@ -43,7 +40,7 @@ function computeEslintShellCommandsPerPackage(files) {
     eslintCommandsToExecute.push(
       `pnpm --filter "${nameOfPackage}" run lint:file ${filesList
         .map((file) => `"${file}"`)
-        .join(" ")}`
+        .join(' ')}`,
     );
   }
 
@@ -54,20 +51,15 @@ module.exports = {
   /**
    * @param {string[]} files
    */
-  "**/*.{js,jsx,mjs,cjs,ts,tsx,mts,cts}": (files) => {
+  '**/*.{js,jsx,mjs,cjs,ts,tsx,mts,cts}': (files) => {
     return [
       `pnpm run compile:dry-run`,
       ...computeEslintShellCommandsPerPackage(files),
-      `prettier --write --ignore-unknown ${files
-        .map((file) => `"${file}"`)
-        .join(" ")}`,
+      `prettier --write --ignore-unknown ${files.map((file) => `"${file}"`).join(' ')}`,
     ];
   },
-  "**/*.!({js,jsx,mjs,cjs,ts,tsx,mts,cts})": [
-    "prettier --write --ignore-unknown",
-  ],
-  "pnpm-lock.yaml": [
-    () =>
-      'pnpm run --filter "@file-explorer/app" compile-language-extensions-into-json-file',
+  '**/*.!({js,jsx,mjs,cjs,ts,tsx,mts,cts})': ['prettier --write --ignore-unknown'],
+  'pnpm-lock.yaml': [
+    () => 'pnpm run --filter "@file-explorer/agent" compile-language-extensions-into-json-file',
   ],
 };

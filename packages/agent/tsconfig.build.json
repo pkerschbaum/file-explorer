@@ -1,0 +1,16 @@
+{
+  "extends": "@file-explorer/config-typescript/tsconfig.json",
+  "compilerOptions": {
+    /* Modules */
+    "paths": {
+      "#pkg/*": ["./src/*"]
+    },
+    "rootDir": "./src",
+    "types": ["node"],
+
+    /* Emit */
+    "outDir": "./dist"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["**/node_modules", "**/*.spec.ts"]
+}

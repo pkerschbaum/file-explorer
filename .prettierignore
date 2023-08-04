@@ -1,4 +1,7 @@
 **/node_modules
+**/dist
+**/.webpack
+**/out
 packages/app/out
 packages/app/.webpack
 packages/app/src/static
