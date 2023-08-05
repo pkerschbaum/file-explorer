@@ -1,0 +1,49 @@
+{
+  "extends": "@file-explorer/config-typescript/tsconfig.json",
+  "compilerOptions": {
+    /* Type Checking*/
+    "noPropertyAccessFromIndexSignature": false,
+    "strictNullChecks": true,
+
+    /* Language and Environment */
+    "jsx": "preserve",
+    "lib": ["dom", "dom.iterable", "esnext"],
+
+    /* Modules */
+    "baseUrl": ".",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "paths": {
+      "#pkg/*": ["./src/*"],
+      "#pkg-test/*": ["./test/*"],
+      "#pkg-storybook/*": ["./storybook/*"],
+      "#pkg-playwright/*": ["./playwright/*"]
+    },
+    "resolveJsonModule": true,
+    "types": ["node", "jest"],
+
+    /* Emit */
+    "declaration": false,
+    "declarationMap": false,
+    "noEmit": true,
+
+    /* JavaScript Support */
+    "allowJs": true,
+
+    /* Editor Support */
+    "plugins": [
+      {
+        "transform": "typescript-transform-paths"
+      },
+      {
+        "transform": "typescript-transform-paths",
+        "afterDeclarations": true
+      },
+      {
+        "name": "next"
+      }
+    ]
+  },
+  "include": ["next-env.d.ts", "dist/types/**/*.ts", "**/*.ts", "**/*.tsx"],
+  "exclude": ["**/node_modules"]
+}

@@ -95,3 +95,6 @@ test-results/
 
 # TODO file
 TODO.md
+
+# Output
+dist

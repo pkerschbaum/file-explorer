@@ -1,7 +1,9 @@
-**/node_modules
-packages/app/out
-packages/app/.webpack
-packages/app/src/static
+pnpm-lock.yaml
+
+**/dist
+**/.next
+**/public
+
 packages/app/storybook-static
 packages/app/test-results
-pnpm-lock.yaml
+packages/web/public

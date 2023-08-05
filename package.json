@@ -1,6 +1,11 @@
 {
   "name": "file-explorer",
   "private": true,
+  "author": {
+    "name": "Patrick Kerschbaum",
+    "email": "patrick.kerschbaum@gmail.com"
+  },
+  "license": "MIT",
   "scripts": {
     "prepare": "husky install",
     "nuke": "pnpm run --parallel nuke && pnpm run nuke:node-modules",

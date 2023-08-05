@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.build.json",
+  "compilerOptions": {
+    /* Modules */
+    "paths": {
+      "#pkg/*": ["./src/*"],
+      "#pkg-test/*": ["./test/*"]
+    },
+    "rootDir": null,
+    "rootDirs": ["./src", "./scripts", "./test"]
+  },
+  "include": ["src/**/*", "scripts/**/*", "test/**/*"],
+  "exclude": ["**/node_modules"]
+}
