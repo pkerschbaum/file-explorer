@@ -2,7 +2,7 @@ import { createTRPCProxyClient, httpBatchLink } from '@trpc/client';
 import { io } from 'socket.io-client';
 import superjson from 'superjson';
 
-import { AGENT_PORT, PUSH_EVENT, TRPC_SERVER_BASE_PATH } from '#pkg/file-explorer-agent/constants';
+import { AGENT_PORT, PUSH_EVENT, TRPC_SERVER_BASE_PATH } from '#pkg/constants';
 import type { AppRouter } from '#pkg/file-explorer-agent/initialize-file-explorer-agent';
 import type { PushEvent } from '#pkg/file-explorer-agent/push-server';
 

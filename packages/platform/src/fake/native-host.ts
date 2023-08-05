@@ -36,5 +36,8 @@ export function createFakeNativeHost(): PlatformNativeHost {
       },
       onClipboardChanged: clipboardChangedEmitter.event,
     },
+    nativeDND: {
+      start: () => Promise.resolve(),
+    },
   };
 }

@@ -11,11 +11,7 @@ import { uriHelper } from '@file-explorer/code-oss-ecma/uri-helper';
 import { check } from '@file-explorer/commons-ecma/util/assert.util';
 import { numbers } from '@file-explorer/commons-ecma/util/numbers.util';
 
-import {
-  AGENT_PORT,
-  NATIVE_FILE_ICON_PATH,
-  THUMBNAIL_PATH,
-} from '#pkg/file-explorer-agent/constants';
+import { AGENT_PORT, NATIVE_FILE_ICON_PATH, THUMBNAIL_PATH } from '#pkg/constants';
 
 export function registerBlobRoutes(app: express.Express): void {
   app.use(THUMBNAIL_PATH, async (req, res) => {

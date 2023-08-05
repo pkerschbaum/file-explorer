@@ -79,3 +79,7 @@ export function isResourceQualifiedForNativeIcon(resource: ResourceForUI) {
 export function getNativeIconURLForResource(resource: ResourceForUI) {
   return globalThis.modules.nativeHost.app.getNativeIconURLForResource(resource);
 }
+
+export function startNativeFileDnD(uris: UriComponents[]) {
+  return globalThis.modules.nativeHost.nativeDND.start(uris);
+}

@@ -5,11 +5,7 @@ import { URI, UriComponents } from '@file-explorer/code-oss-ecma/uri';
 import { check } from '@file-explorer/commons-ecma/util/assert.util';
 import { numbers } from '@file-explorer/commons-ecma/util/numbers.util';
 
-import {
-  AGENT_PORT,
-  NATIVE_FILE_ICON_PATH,
-  THUMBNAIL_PATH,
-} from '#pkg/file-explorer-agent/constants';
+import { AGENT_PORT, NATIVE_FILE_ICON_PATH, THUMBNAIL_PATH } from '#pkg/constants';
 
 const USE_NATIVE_ICON_FOR_REGEX = /exe|ico|dll|iso/i;
 const THUMBNAIL_AVAILABLE_FOR_MIME_TYPE = new Set([

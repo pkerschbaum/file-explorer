@@ -5,7 +5,7 @@ import { VSBuffer } from '@file-explorer/code-oss-ecma/buffer';
 import { URI, UriComponents } from '@file-explorer/code-oss-ecma/uri';
 import { CLIPBOARD_CHANGED_DATA_TYPE } from '@file-explorer/platform/native-host.types';
 
-import { NAMESPACE } from '#pkg/file-explorer-agent/constants';
+import { NAMESPACE } from '#pkg/constants';
 import type { PushServer } from '#pkg/file-explorer-agent/push-server';
 import { publicProcedure } from '#pkg/file-explorer-agent/trcp-router';
 

@@ -44,6 +44,9 @@ export const createNativeHost = () => {
       },
       onClipboardChanged: onClipboardChanged.event,
     },
+    nativeDND: {
+      start: (resources) => trpc.nativeDND.start.mutate({ resources }),
+    },
   };
 
   return instance;

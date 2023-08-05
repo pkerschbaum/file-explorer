@@ -26,4 +26,7 @@ export type PlatformNativeHost = {
     writeResources(resources: UriComponents[]): void | Promise<void>;
     onClipboardChanged: Event<CLIPBOARD_CHANGED_DATA_TYPE>;
   };
+  nativeDND: {
+    start: (resources: UriComponents[]) => Promise<void>;
+  };
 };

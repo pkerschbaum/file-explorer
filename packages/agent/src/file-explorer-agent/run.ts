@@ -1,4 +1,7 @@
 import { createFileExplorerAgent } from '#pkg/file-explorer-agent/initialize-file-explorer-agent';
 
-const agent = createFileExplorerAgent();
-agent.listen();
+async function run() {
+  const agent = await createFileExplorerAgent();
+  agent.listen();
+}
+void run();

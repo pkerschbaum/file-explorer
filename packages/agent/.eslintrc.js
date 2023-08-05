@@ -29,7 +29,7 @@ module.exports = {
               /^@trpc\/server.*/,
               'cors',
               'express',
-              'node:http',
+              /^node:.+/,
               'socket.io',
               'superjson',
             ],

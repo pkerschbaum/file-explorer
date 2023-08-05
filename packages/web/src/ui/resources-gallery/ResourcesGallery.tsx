@@ -26,6 +26,7 @@ import {
   useScrollTop,
   useSetKeyOfResourceToRename,
   useSetScrollTop,
+  useStartNativeDnDForSelectedResources,
 } from '#pkg/ui/cwd-segment-context';
 import { useExplorerId } from '#pkg/ui/explorer-context';
 import { ResourceIcon } from '#pkg/ui/resource-icon';
@@ -225,6 +226,7 @@ const ResourceTile: React.FC<ResourceTileProps> = ({ resource, idxOfResource }) 
   const isLastSelectedResource = useIsLastSelectedResource(resource.key);
   const reasonForLastSelectionChange = useReasonForLastSelectionChange();
   const renameResource = useRenameResource();
+  const startNativeDnDForSelectedResources = useStartNativeDnDForSelectedResources();
   const changeSelection = useChangeSelection();
   const keyOfResourceToRename = useKeyOfResourceToRename();
   const setKeyOfResourceToRename = useSetKeyOfResourceToRename();
@@ -269,6 +271,11 @@ const ResourceTile: React.FC<ResourceTileProps> = ({ resource, idxOfResource }) 
       ref={tileRef}
       data-window-keydownhandlers-enabled="true"
       {...animations}
+      draggable={!renameForResourceIsActive}
+      onDragStart={(e) => {
+        e.preventDefault();
+        startNativeDnDForSelectedResources();
+      }}
       onClick={(e) =>
         changeSelection({
           idxOfResource,

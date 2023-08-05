@@ -49,6 +49,7 @@ import {
   useReasonForLastSelectionChange,
   useIsResourceSelected,
   useIsLastSelectedResource,
+  useStartNativeDnDForSelectedResources,
 } from '#pkg/ui/cwd-segment-context';
 import { useExplorerId } from '#pkg/ui/explorer-context';
 import { ResourceIcon } from '#pkg/ui/resource-icon';
@@ -315,6 +316,7 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
   const isLastSelectedResource = useIsLastSelectedResource(resource.key);
   const reasonForLastSelectionChange = useReasonForLastSelectionChange();
   const renameResource = useRenameResource();
+  const startNativeDnDForSelectedResources = useStartNativeDnDForSelectedResources();
   const changeSelection = useChangeSelection();
   const keyOfResourceToRename = useKeyOfResourceToRename();
   const setKeyOfResourceToRename = useSetKeyOfResourceToRename();
@@ -382,10 +384,15 @@ const ResourceRow = React.memo<ResourceRowProps>(function ResourceRow({
       ref={rowRef}
       data-window-keydownhandlers-enabled="true"
       {...animations}
+      draggable={!renameForResourceIsActive}
       isSelectable
       isSelected={isResourceSelected}
       style={rowStyleForVirtualization}
       {...mergeProps(hoverProps, {
+        onDragStart: (e: React.DragEvent<HTMLTableRowElement>) => {
+          e.preventDefault();
+          startNativeDnDForSelectedResources();
+        },
         onClick: (e: React.MouseEvent<HTMLTableRowElement>) =>
           changeSelection({
             idxOfResource,

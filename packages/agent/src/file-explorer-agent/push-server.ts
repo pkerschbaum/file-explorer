@@ -1,7 +1,7 @@
 import type http from 'node:http';
 import { Server } from 'socket.io';
 
-import { PUSH_EVENT } from '#pkg/file-explorer-agent/constants';
+import { PUSH_EVENT } from '#pkg/constants';
 
 declare global {
   namespace PushServer {
