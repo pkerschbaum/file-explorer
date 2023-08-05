@@ -1,6 +1,5 @@
 import type http from 'node:http';
 import { Server } from 'socket.io';
-import invariant from 'tiny-invariant';
 
 import { PUSH_EVENT } from '#pkg/file-explorer-agent/constants';
 
@@ -30,9 +29,10 @@ export class PushServer {
   }
 
   public pushEvent = (event: PushEvent): void => {
-    const [firstSocket, ...remainingSockets] = this.io.of('/').sockets.values();
-    invariant(firstSocket, `expected to find one connected socket, but did not`);
-    invariant(remainingSockets.length === 0, `remainingSockets.length=${remainingSockets.length}`);
-    firstSocket.emit(PUSH_EVENT, event);
+    // TODO avoid pushing to all sockets; maybe get an ID for each browser tab and send push events only to the relevant one?
+    const allSockets = this.io.of('/').sockets.values();
+    for (const socket of allSockets) {
+      socket.emit(PUSH_EVENT, event);
+    }
   };
 }
