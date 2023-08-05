@@ -1,6 +1,6 @@
 {
   "name": "@file-explorer/code-oss-ecma",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "exports": {
     ".": "./dist/index.js",
     "./*": "./dist/*.js"

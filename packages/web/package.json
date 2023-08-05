@@ -1,15 +1,15 @@
 {
   "name": "@file-explorer/web",
   "productName": "file-explorer",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "File Explorer",
   "main": ".webpack/main",
   "scripts": {
     "prepare": "ts-patch install -s",
     "internal:build:next": "next build",
     "internal:compile": "tsc -p ./tsconfig.json",
-    "internal:compile:watch": "pnpm run internal:compile --watch",
-    "dev": "next dev",
+    "dev": "pnpm run internal:compile --watch --preserveWatchOutput",
+    "dev:next": "next dev",
     "start": "next start",
     "nuke": "pnpm run nuke:artifacts && del-cli node_modules",
     "nuke:artifacts": "del-cli dist \".next\" \"*.tsbuildinfo\"",

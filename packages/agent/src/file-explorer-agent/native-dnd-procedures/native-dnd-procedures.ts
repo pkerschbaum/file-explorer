@@ -2,7 +2,7 @@
  * To enable Native File Drag-and-Drop (https://www.electronjs.org/docs/latest/tutorial/native-file-drag-drop)
  * we create a nonvisible electron browser window and start drags via IPC.
  */
-import { BrowserWindow, app, ipcMain } from 'electron';
+import { BrowserWindow, app, ipcMain, session } from 'electron';
 import path from 'node:path';
 import { z } from 'zod';
 
@@ -39,6 +39,16 @@ export async function createNativeDNDProcedures() {
   );
 
   await app.whenReady();
+
+  // get rid of Content-Security-Policy warning, https://www.electronjs.org/docs/latest/tutorial/security#7-define-a-content-security-policy
+  session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+    callback({
+      responseHeaders: {
+        ...details.responseHeaders,
+        'Content-Security-Policy': ["default-src 'none'"],
+      },
+    });
+  });
 
   const win = new BrowserWindow({
     show: false,

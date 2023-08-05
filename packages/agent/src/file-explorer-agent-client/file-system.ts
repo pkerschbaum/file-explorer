@@ -1,5 +1,3 @@
-import invariant from 'tiny-invariant';
-
 import type {
   IFileStatWithMetadata,
   IResolveMetadataFileOptions,
@@ -22,8 +20,9 @@ export const createFileSystem = () => {
 
   pushSocket.on('ResourceChanged', (payload) => {
     const onChange = operationIdToOnResourceChanged.get(payload.operationId);
-    invariant(onChange, `expected to find element! operationId=${payload.operationId}`);
-    onChange();
+    if (onChange) {
+      onChange();
+    }
   });
 
   // TODO remove elems from `operationIdToReportProgress` when copy/move operation gets finished or aborted
