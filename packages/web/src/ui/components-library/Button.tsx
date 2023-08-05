@@ -254,7 +254,7 @@ const ButtonRoot = styled(
   }}
 
 
-  &:focus-visible {
+  &:focus-visible:not(:active) {
     outline: var(--outline);
   }
 

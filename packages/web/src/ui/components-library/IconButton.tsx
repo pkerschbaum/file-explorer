@@ -177,7 +177,7 @@ const FocusAndHoverCircle = styled(Box)<{ styleProps: StyleProps }>`
     border-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 
-  ${IconButton}:focus-visible > & {
+  ${IconButton}:focus-visible:not(:active) > & {
     outline: var(--outline);
   }
 
