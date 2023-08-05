@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import {
   Box,
@@ -9,20 +9,12 @@ import {
   SettingsIcon,
   usePopover,
 } from '#pkg/ui/components-library';
-import {
-  PREFERENCES_BUTTON_WIDTH,
-  ROOTCONTAINER_PADDING_FACTOR,
-  TITLEBAR_HEIGHT,
-} from '#pkg/ui/shell/constants';
+import { PREFERENCES_BUTTON_WIDTH, ROOTCONTAINER_PADDING_FACTOR } from '#pkg/ui/shell/constants';
 import { UserPreferencesArea } from '#pkg/ui/user-preferences/UserPreferencesArea';
 
-type UserPreferencesButtonProps = {
-  customTitleBarUsed: boolean;
-};
+type UserPreferencesButtonProps = {};
 
-export const UserPreferencesButton: React.FC<UserPreferencesButtonProps> = ({
-  customTitleBarUsed,
-}) => {
+export const UserPreferencesButton: React.FC<UserPreferencesButtonProps> = () => {
   const buttonRef = React.useRef<HTMLButtonElement>(null);
 
   const { triggerProps, popoverInstance } = usePopover({
@@ -33,7 +25,7 @@ export const UserPreferencesButton: React.FC<UserPreferencesButtonProps> = ({
 
   return (
     <>
-      <UserPreferencesButtonContainer styleProps={{ customTitleBarUsed }}>
+      <UserPreferencesButtonContainer>
         <IconButton
           ref={buttonRef}
           aria-label={label}
@@ -54,22 +46,10 @@ export const UserPreferencesButton: React.FC<UserPreferencesButtonProps> = ({
   );
 };
 
-type StyleProps = {
-  customTitleBarUsed: boolean;
-};
-
-const UserPreferencesButtonContainer = styled(Box)<{ styleProps: StyleProps }>`
+const UserPreferencesButtonContainer = styled(Box)`
   position: absolute;
 
-  /* If a custom title bar is used, overlap the CwdBreadcrumbs with the WindowDragRegion above it */
-  ${({ styleProps }) =>
-    styleProps.customTitleBarUsed
-      ? css`
-          top: calc(${ROOTCONTAINER_PADDING_FACTOR} * var(--spacing-1) + ${TITLEBAR_HEIGHT}px);
-        `
-      : css`
-          top: calc(${ROOTCONTAINER_PADDING_FACTOR} * var(--spacing-1));
-        `}
+  top: calc(${ROOTCONTAINER_PADDING_FACTOR} * var(--spacing-1));
   right: calc(${ROOTCONTAINER_PADDING_FACTOR} * var(--spacing-1));
 
   width: ${PREFERENCES_BUTTON_WIDTH}px;

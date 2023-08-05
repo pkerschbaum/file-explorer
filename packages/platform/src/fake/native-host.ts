@@ -23,11 +23,6 @@ export function createFakeNativeHost(): PlatformNativeHost {
       revealResourcesInOS: () => Promise.resolve(),
       openPath: () => Promise.resolve(),
     },
-    window: {
-      minimize: () => Promise.resolve(),
-      toggleMaximized: () => Promise.resolve(),
-      close: () => Promise.resolve(),
-    },
     clipboard: {
       readText: () => Promise.resolve(currentClipboardText),
       writeText: (value) => {

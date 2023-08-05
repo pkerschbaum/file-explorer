@@ -73,7 +73,7 @@ const globalStyle = css`
   /* Allow percentage-based heights in the application (https://www.joshwcomeau.com/css/custom-css-reset/#digit-percentage-based-heights) */
   :root,
   body,
-  #root {
+  #__next {
     height: 100%;
   }
 
@@ -83,7 +83,7 @@ const globalStyle = css`
   }
 
   /* Create a root stacking context (https://www.joshwcomeau.com/css/custom-css-reset/#digit-root-stacking-context) */
-  #root {
+  #__next {
     isolation: isolate;
   }
 

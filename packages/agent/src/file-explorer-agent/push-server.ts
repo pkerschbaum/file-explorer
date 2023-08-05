@@ -32,7 +32,7 @@ export class PushServer {
   public pushEvent = (event: PushEvent): void => {
     const [firstSocket, ...remainingSockets] = this.io.of('/').sockets.values();
     invariant(firstSocket, `expected to find one connected socket, but did not`);
-    invariant(remainingSockets.length === 0);
+    invariant(remainingSockets.length === 0, `remainingSockets.length=${remainingSockets.length}`);
     firstSocket.emit(PUSH_EVENT, event);
   };
 }

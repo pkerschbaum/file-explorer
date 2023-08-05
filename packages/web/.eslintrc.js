@@ -14,6 +14,7 @@ module.exports = {
     'plugin:storybook/recommended',
     'plugin:playwright/playwright-test',
   ],
+  ignorePatterns: [...(baseEslintConfig.ignorePatterns ?? []), 'next.config.cjs'],
   rules: {
     ...baseEslintConfig.rules,
     'code-import-patterns/patterns': [
@@ -27,6 +28,10 @@ module.exports = {
           {
             target: /\/src\/operations\/global-cache-subscriptions\/.+/,
             allowedPatterns: ['react'],
+          },
+          {
+            target: /\/src\/pages\/.+/,
+            allowedPatterns: [/^next/],
           },
           {
             target: /\/src\/ui\/components-library\/DesignTokenContext\.tsx$/,
@@ -102,7 +107,6 @@ module.exports = {
               'd3-color',
               'framer-motion',
               'react',
-              'react-dom',
               'styled-components',
               'use-context-selector',
               'use-immer',
@@ -116,14 +120,6 @@ module.exports = {
           {
             target: /\/src\/.+\.logic\.spec\.ts$/,
             allowedPatterns: ['@playwright/test', '@playwright-testing-library/test'],
-          },
-          {
-            target: /\/src\/index\.ts$/,
-            allowedPatterns: ['electron', 'electron-store'],
-          },
-          {
-            target: /\/src\/renderer\.tsx$/,
-            allowedPatterns: ['react-dom/client'],
           },
           {
             target: /\/src\/.+/,
@@ -143,19 +139,22 @@ module.exports = {
           },
           {
             target: /.+/,
-            allowedPatterns: [
-              'dayjs',
-              'serialize-error',
-              'tiny-invariant',
-              'zod',
-              /^#pkg.+/,
-              /^@file-explorer\/.+/,
-            ],
+            allowedPatterns: ['dayjs', 'tiny-invariant', 'zod', /^#pkg.+/, /^@file-explorer\/.+/],
           },
         ],
       },
     ],
   },
+  overrides: [
+    ...(baseEslintConfig.overrides ?? []),
+    {
+      // allow default exports for Next.js pages
+      files: ['src/pages/**/*'],
+      rules: {
+        'import/no-default-export': 'off',
+      },
+    },
+  ],
   settings: {
     react: {
       version: 'detect',

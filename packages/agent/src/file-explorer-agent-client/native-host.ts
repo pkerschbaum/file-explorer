@@ -33,11 +33,6 @@ export const createNativeHost = () => {
         }
       },
     },
-    window: {
-      minimize: trpc.window.minimize.mutate,
-      toggleMaximized: trpc.window.toggleMaximize.mutate,
-      close: trpc.window.close.mutate,
-    },
     clipboard: {
       readText: trpc.clipboard.readText.query,
       writeText: async (value) => {

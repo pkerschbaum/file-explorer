@@ -60,18 +60,6 @@ export function changeFocusedExplorer(newFocusedExplorerId: string) {
   globalThis.modules.dispatch(actions.changeFocusedExplorer({ explorerId: newFocusedExplorerId }));
 }
 
-export async function windowMinimize(): Promise<void> {
-  return await globalThis.modules.nativeHost.window.minimize();
-}
-
-export async function windowToggleMaximized(): Promise<void> {
-  return await globalThis.modules.nativeHost.window.toggleMaximized();
-}
-
-export async function windowClose(): Promise<void> {
-  return await globalThis.modules.nativeHost.window.close();
-}
-
 export async function getDefaultExplorerCwd(): Promise<UriComponents> {
   return await globalThis.modules.nativeHost.app.getPath({ name: 'home' });
 }

@@ -30,7 +30,7 @@ type Logger = {
 };
 
 export function loggerFactory(
-  logWriter: Pick<typeof console, 'debug' | 'info' | 'warn' | 'error' | 'group' | 'groupEnd'>,
+  logWriter: () => Pick<typeof console, 'debug' | 'info' | 'warn' | 'error' | 'group' | 'groupEnd'>,
 ) {
   return function createLogger(context: string): Logger {
     function extendLog<A, B>(
@@ -75,7 +75,7 @@ export function loggerFactory(
         if (extendedLog.verboseLogPayload !== undefined) {
           additionalParams.push(extendedLog.verboseLogPayload);
         }
-        logWriter.debug(extendedLog.message, ...additionalParams);
+        logWriter().debug(extendedLog.message, ...additionalParams);
       },
       info: (...args) => {
         const extendedLog = extendLog(...args);
@@ -87,7 +87,7 @@ export function loggerFactory(
         if (extendedLog.verboseLogPayload !== undefined) {
           additionalParams.push(extendedLog.verboseLogPayload);
         }
-        logWriter.info(extendedLog.message, ...additionalParams);
+        logWriter().info(extendedLog.message, ...additionalParams);
       },
       warn: (...args) => {
         const extendedLog = extendLog(...args);
@@ -99,7 +99,7 @@ export function loggerFactory(
         if (extendedLog.verboseLogPayload !== undefined) {
           additionalParams.push(extendedLog.verboseLogPayload);
         }
-        logWriter.warn(extendedLog.message, ...additionalParams);
+        logWriter().warn(extendedLog.message, ...additionalParams);
       },
       error: <A, B>(
         message: string,
@@ -116,10 +116,10 @@ export function loggerFactory(
         if (extendedLog.verboseLogPayload !== undefined) {
           additionalParams.push(extendedLog.verboseLogPayload);
         }
-        logWriter.error(extendedLog.message, error, ...additionalParams);
+        logWriter().error(extendedLog.message, error, ...additionalParams);
       },
-      group: (...args) => logWriter.group(...args),
-      groupEnd: (...args) => logWriter.groupEnd(...args),
+      group: (...args) => logWriter().group(...args),
+      groupEnd: (...args) => logWriter().groupEnd(...args),
     };
   };
 }

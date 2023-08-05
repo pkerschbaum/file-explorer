@@ -1,13 +1,17 @@
 {
+  "extends": "@file-explorer/config-typescript/tsconfig.json",
   "compilerOptions": {
+    /* Type Checking*/
+    "noPropertyAccessFromIndexSignature": false,
+    "strictNullChecks": true,
+
     /* Language and Environment */
-    "jsx": "react-jsx",
-    "lib": ["ES2017", "dom"],
-    "target": "ES2017",
+    "jsx": "preserve",
+    "lib": ["dom", "dom.iterable", "esnext"],
 
     /* Modules */
     "baseUrl": ".",
-    "module": "commonjs",
+    "module": "esnext",
     "moduleResolution": "node",
     "paths": {
       "#pkg/*": ["./src/*"],
@@ -15,32 +19,31 @@
       "#pkg-storybook/*": ["./storybook/*"],
       "#pkg-playwright/*": ["./playwright/*"]
     },
+    "resolveJsonModule": true,
     "types": ["node", "jest"],
 
     /* Emit */
-    "importsNotUsedAsValues": "error",
-    "outDir": "dist",
-    "sourceMap": true,
+    "declaration": false,
+    "declarationMap": false,
+    "noEmit": true,
 
-    /* Interop Constraints */
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "isolatedModules": true,
+    /* JavaScript Support */
+    "allowJs": true,
 
-    /* Type Checking */
-    "allowUnreachableCode": false,
-    "noFallthroughCasesInSwitch": true,
-    "strict": true,
-
-    /* Completeness */
-    "skipLibCheck": true,
-
-    /* Plugins */
+    /* Editor Support */
     "plugins": [
       {
-        "name": "typescript-styled-plugin"
+        "transform": "typescript-transform-paths"
+      },
+      {
+        "transform": "typescript-transform-paths",
+        "afterDeclarations": true
+      },
+      {
+        "name": "next"
       }
     ]
   },
-  "include": ["src/**/*", "test/**/*", "storybook/**/*", "playwright/**/*"]
+  "include": ["next-env.d.ts", "dist/types/**/*.ts", "**/*.ts", "**/*.tsx"],
+  "exclude": ["**/node_modules"]
 }

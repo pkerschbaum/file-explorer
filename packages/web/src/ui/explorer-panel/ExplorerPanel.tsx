@@ -17,24 +17,15 @@ import { CwdSegmentContextProvider, useActiveResourcesView } from '#pkg/ui/cwd-s
 import { ExplorerContextProvider } from '#pkg/ui/explorer-context';
 import { ResourcesGallery } from '#pkg/ui/resources-gallery';
 import { ResourcesTable } from '#pkg/ui/resources-table';
-import {
-  PREFERENCES_BUTTON_WIDTH,
-  ROOTCONTAINER_PADDING_FACTOR,
-  TITLEBAR_HEIGHT,
-  WINDOW_CONTROLS_WIDTH,
-} from '#pkg/ui/shell/constants';
+import { PREFERENCES_BUTTON_WIDTH, ROOTCONTAINER_PADDING_FACTOR } from '#pkg/ui/shell/constants';
 
 export const EXPLORER_PANEL_GRID_AREA = 'shell-explorer-panel';
 
 type ExplorerPanelProps = {
   explorerId: string;
-  customTitleBarUsed: boolean;
 };
 
-export const ExplorerPanel = React.memo<ExplorerPanelProps>(function ExplorerPanel({
-  explorerId,
-  customTitleBarUsed,
-}) {
+export const ExplorerPanel = React.memo<ExplorerPanelProps>(function ExplorerPanel({ explorerId }) {
   const cwdSegments = useCwdSegments(explorerId);
   const versionOfExplorer = useVersionOfExplorer(explorerId);
   const focusedExplorerId = useIdOfFocusedExplorerPanel();
@@ -42,7 +33,6 @@ export const ExplorerPanel = React.memo<ExplorerPanelProps>(function ExplorerPan
   const isActiveExplorer = explorerId === focusedExplorerId;
 
   const styleProps: StyleProps = {
-    customTitleBarUsed,
     hidden: !isActiveExplorer,
   };
 
@@ -101,7 +91,6 @@ export const ExplorerPanel = React.memo<ExplorerPanelProps>(function ExplorerPan
 });
 
 type StyleProps = {
-  customTitleBarUsed: boolean;
   hidden: boolean;
 };
 
@@ -114,16 +103,6 @@ const ExplorerPanelContainer = styled(Box)<{ styleProps: StyleProps }>`
   min-height: 0;
   height: 100%;
   max-height: 100%;
-
-  /* 
-    If a custom title bar is used, disable pointer events so that the user can click "through" the 
-    explorer panel on the title bar, to drag the window.
-   */
-  ${({ styleProps }) =>
-    styleProps.customTitleBarUsed &&
-    css`
-      pointer-events: none;
-    `}
 
   ${({ styleProps }) =>
     styleProps.hidden &&
@@ -146,22 +125,8 @@ const CwdBreadcrumbsContainer = styled(Box)<{ styleProps: StyleProps }>`
   grid-area: ${CWD_BREADCRUMBS_GRID_AREA};
   justify-self: start;
 
-  ${({ styleProps }) =>
-    styleProps.customTitleBarUsed
-      ? css`
-          /* 
-            If a custom title bar is used, 
-            - add margin-right to avoid overlapping with the window controls 
-            - and add negative margin-top to overlap the CwdBreadcrumbs a little bit with the window drag region above it
-           */
-          margin-right: ${WINDOW_CONTROLS_WIDTH}px;
-          margin-top: calc(-1 * (${TITLEBAR_HEIGHT}px - var(--spacing-1)));
-          -webkit-app-region: no-drag;
-        `
-      : css`
-          /* if no custom title bar is used, add margin-right to avoid overlapping with the user preferences button */
-          margin-right: ${PREFERENCES_BUTTON_WIDTH}px;
-        `}
+  /* add margin-right to avoid overlapping with the user preferences button */
+  margin-right: ${PREFERENCES_BUTTON_WIDTH}px;
 
   /* make sure to restore pointer events for children (needed if a custom title bar is used) */
   & > * {
@@ -172,13 +137,6 @@ const CwdBreadcrumbsContainer = styled(Box)<{ styleProps: StyleProps }>`
 const ActionsBarContainer = styled(Box)<{ styleProps: StyleProps }>`
   grid-area: ${ACTIONS_BAR_GRID_AREA};
   justify-self: start;
-
-  ${({ styleProps }) =>
-    styleProps.customTitleBarUsed &&
-    css`
-      /* if a custom title bar is used, add margin-right to avoid overlapping with the user preferences button */
-      margin-right: ${PREFERENCES_BUTTON_WIDTH}px;
-    `}
 
   /* make sure to restore pointer events for children (needed if a custom title bar is used) */
   & > * {

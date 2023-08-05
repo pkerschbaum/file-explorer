@@ -30,7 +30,7 @@ export async function bootstrap({
     ),
     page.waitForResponse(/fonts\/segoeui-vf.ttf/i),
   ]);
-  const rootContainer = page.locator('#root > *');
+  const rootContainer = page.locator('#__next > *');
   await expect(rootContainer).toHaveCount(1);
   await page.evaluate(() => document.fonts.ready);
 
@@ -50,7 +50,7 @@ export async function bootstrap({
        * get removed.
        */
       function registerAnimationsObserver() {
-        const rootContainerElem = document.querySelector('#root');
+        const rootContainerElem = document.querySelector('#__next');
         if (!rootContainerElem) {
           throw new Error(`could not find root container`);
         }

@@ -1,20 +1,15 @@
 import * as React from 'react';
-import styled, { css } from 'styled-components';
-
-import { platform } from '@file-explorer/code-oss-ecma/platform';
+import styled from 'styled-components';
 
 import { useExplorerPanels } from '#pkg/global-state/slices/explorers.hooks';
 import { Box } from '#pkg/ui/components-library';
 import { ExplorerPanel, EXPLORER_PANEL_GRID_AREA } from '#pkg/ui/explorer-panel/ExplorerPanel';
-import { ROOTCONTAINER_PADDING_FACTOR, TITLEBAR_HEIGHT } from '#pkg/ui/shell/constants';
+import { ROOTCONTAINER_PADDING_FACTOR } from '#pkg/ui/shell/constants';
 import { ProcessesArea } from '#pkg/ui/shell/ProcessesArea';
 import { TabsArea } from '#pkg/ui/shell/TabsArea';
-import { TitleBar, TITLE_BAR_GRID_AREA } from '#pkg/ui/shell/TitleBar';
 import { UserPreferencesButton } from '#pkg/ui/user-preferences';
 
 export const TABS_AND_PROCESSES_GRID_AREA = 'shell-tabs-and-processes';
-
-const useCustomTitleBar = platform.isWindows;
 
 export const Shell = React.memo(function Shell() {
   const explorerPanels = useExplorerPanels();
@@ -23,54 +18,31 @@ export const Shell = React.memo(function Shell() {
 
   return (
     <RootContainer>
-      {useCustomTitleBar && <TitleBar />}
-
       <TabsAndProcesses>
-        <TabsArea explorersToShow={explorersToShow} customTitleBarUsed={useCustomTitleBar} />
+        <TabsArea explorersToShow={explorersToShow} />
         <ProcessesArea />
       </TabsAndProcesses>
 
       {explorersToShow.map(({ explorerId }) => (
-        <ExplorerPanel
-          key={explorerId}
-          explorerId={explorerId}
-          customTitleBarUsed={useCustomTitleBar}
-        />
+        <ExplorerPanel key={explorerId} explorerId={explorerId} />
       ))}
 
-      <UserPreferencesButton customTitleBarUsed={useCustomTitleBar} />
+      <UserPreferencesButton />
     </RootContainer>
   );
 });
-
-const CUSTOM_TITLE_BAR_GRID_CONFIGURATION = css`
-  grid-template-rows: ${TITLEBAR_HEIGHT}px 1fr;
-  grid-template-areas:
-    '${TITLE_BAR_GRID_AREA} ${TITLE_BAR_GRID_AREA}'
-    '${TABS_AND_PROCESSES_GRID_AREA} ${EXPLORER_PANEL_GRID_AREA}';
-`;
-
-const NON_CUSTOM_TITLE_BAR_GRID_CONFIGURATION = css`
-  grid-template-rows: 1fr;
-  grid-template-areas: '${TABS_AND_PROCESSES_GRID_AREA} ${EXPLORER_PANEL_GRID_AREA}';
-`;
 
 const RootContainer = styled(Box)`
   height: 100%;
 
   display: grid;
   grid-template-columns: 250px 1fr;
-  ${useCustomTitleBar
-    ? CUSTOM_TITLE_BAR_GRID_CONFIGURATION
-    : NON_CUSTOM_TITLE_BAR_GRID_CONFIGURATION}
+  grid-template-rows: 1fr;
+  grid-template-areas: '${TABS_AND_PROCESSES_GRID_AREA} ${EXPLORER_PANEL_GRID_AREA}';
   grid-row-gap: var(--spacing-2);
   grid-column-gap: var(--spacing-4);
 
-  ${() =>
-    !useCustomTitleBar &&
-    css`
-      padding-top: calc(${ROOTCONTAINER_PADDING_FACTOR} * var(--spacing-1));
-    `}
+  padding-top: calc(${ROOTCONTAINER_PADDING_FACTOR} * var(--spacing-1));
   padding-right: calc(${ROOTCONTAINER_PADDING_FACTOR} * var(--spacing-1));
   padding-left: calc(${ROOTCONTAINER_PADDING_FACTOR} * var(--spacing-1));
 `;

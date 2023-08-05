@@ -12,14 +12,10 @@ import { createPersistentStoreProcedures } from '#pkg/file-explorer-agent/persis
 import { PushServer } from '#pkg/file-explorer-agent/push-server';
 import { createShellProcedures } from '#pkg/file-explorer-agent/shell-procedures/shell-procedures';
 import { router } from '#pkg/file-explorer-agent/trcp-router';
-import {
-  createWindowProcedures,
-  WindowRef,
-} from '#pkg/file-explorer-agent/window-procedures/window-procedures';
 
 export type AppRouter = ReturnType<typeof createFileExplorerAgent>['appRouter'];
 
-export function createFileExplorerAgent({ windowRef }: { windowRef: WindowRef }) {
+export function createFileExplorerAgent() {
   const app = express();
   app.use(cors());
 
@@ -33,7 +29,6 @@ export function createFileExplorerAgent({ windowRef }: { windowRef: WindowRef })
     fs: router(createFsProcedures({ pushServer })),
     persistentStore: router(createPersistentStoreProcedures()),
     shell: router(createShellProcedures()),
-    window: router(createWindowProcedures({ windowRef })),
   });
 
   app.use(

@@ -75,7 +75,7 @@ export async function loadCssRules({
 
   /**
    * The icon-theme logic of the code-oss project constructs URLs in the CSS which use a resource scheme (e.g. "file://").
-   * But we want to just use a relative path so that it works with the electron-forge setup.
+   * But we want to just use a relative path so that it works with web apps.
    * That's why we replace all occurences of such URLs by relative paths.
    */
   const cssRules = cssRulesPostProcessing(iconThemeCssRules);

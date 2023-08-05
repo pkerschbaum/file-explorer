@@ -19,11 +19,6 @@ export type PlatformNativeHost = {
     revealResourcesInOS(resources: UriComponents[]): Promise<void>;
     openPath: (resources: UriComponents[]) => Promise<void>;
   };
-  window: {
-    minimize: () => Promise<void>;
-    toggleMaximized: () => Promise<void>;
-    close: () => Promise<void>;
-  };
   clipboard: {
     readText(): string | Promise<string>;
     writeText(value: string): void | Promise<void>;

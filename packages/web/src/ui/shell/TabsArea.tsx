@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import invariant from 'tiny-invariant';
 
 import { formatter as formatter2 } from '@file-explorer/code-oss-ecma/formatter.util';
@@ -27,14 +27,12 @@ import {
 } from '#pkg/ui/components-library';
 import { PRINTED_KEY } from '#pkg/ui/constants';
 import { useRegisterGlobalShortcuts } from '#pkg/ui/GlobalShortcutsContext';
-import { TITLEBAR_HEIGHT } from '#pkg/ui/shell/constants';
 
 type TabsAreaProps = {
   explorersToShow: ExplorerPanelEntry[];
-  customTitleBarUsed: boolean;
 };
 
-export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow, customTitleBarUsed }) => {
+export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow }) => {
   const idOfFocusedExplorerPanel = useIdOfFocusedExplorerPanel();
 
   const addTabButtonHandleRef = React.useRef<ButtonHandle>(null);
@@ -75,7 +73,7 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow, customTitle
   const removeExplorerActionDisabled = explorersToShow.length < 2;
 
   return (
-    <TabsAreaContainer styleProps={{ customTitleBarUsed }}>
+    <TabsAreaContainer>
       <Tabs selectedValue={idOfFocusedExplorerPanel} setSelectedValue={changeFocusedExplorer}>
         {explorersToShow.map((explorer, explorerIdx) => {
           const isFocusedExplorer = explorerIdx === focusedExplorerIdx;
@@ -121,25 +119,10 @@ export const TabsArea: React.FC<TabsAreaProps> = ({ explorersToShow, customTitle
   );
 };
 
-type StyleProps = {
-  customTitleBarUsed: boolean;
-};
-
-const TabsAreaContainer = styled(Box)<{ styleProps: StyleProps }>`
+const TabsAreaContainer = styled(Box)`
   display: flex;
   flex-direction: column;
   gap: var(--spacing-2);
-
-  ${({ styleProps }) =>
-    styleProps.customTitleBarUsed &&
-    css`
-      /* 
-          If a custom title bar is used add negative margin-top to overlap a little bit with the 
-          window drag region above it.
-         */
-      margin-top: calc(-1 * (${TITLEBAR_HEIGHT}px - var(--spacing-1)));
-      -webkit-app-region: no-drag;
-    `}
 `;
 
 type ExplorerTabContentProps = {

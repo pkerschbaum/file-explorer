@@ -20,12 +20,6 @@ module.exports = {
             ],
           },
           {
-            target: /\/src\/electron-preload\/initialize-privileged-platform-modules.ts$/,
-            allowedPatterns: [
-              /^@pkerschbaum\/code-oss-file-service\/out\/vs\/platform\/files\/common\/files$/,
-            ],
-          },
-          {
             target: /\/src\/file-explorer-agent\/blob.ts$/,
             allowedPatterns: ['file-type', 'node:fs', 'sharp'],
           },
@@ -55,7 +49,6 @@ module.exports = {
               'electron',
               'electron-store',
               'mime',
-              'serialize-error',
               'tiny-invariant',
               'zod',
               /^#pkg.+/,
