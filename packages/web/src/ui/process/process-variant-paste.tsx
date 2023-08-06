@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import { styled, css } from 'styled-components';
 
 import { formatter as formatter2 } from '@file-explorer/code-oss-ecma/formatter.util';
 import type { PasteProcess as PasteProcessType } from '@file-explorer/code-oss-ecma/types';

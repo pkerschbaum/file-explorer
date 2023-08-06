@@ -5,7 +5,7 @@ export const byteSize = {
   transform,
 };
 
-export type ByteUnit = typeof units[number]['unit'];
+export type ByteUnit = (typeof units)[number]['unit'];
 
 const units = [
   { from: 0, to: 1e3, unit: 'B', long: 'bytes' },

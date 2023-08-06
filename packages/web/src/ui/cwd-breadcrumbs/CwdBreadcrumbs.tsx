@@ -1,6 +1,6 @@
 import { mergeProps } from '@react-aria/utils';
 import * as React from 'react';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 import invariant from 'tiny-invariant';
 
 import { formatter as formatter2 } from '@file-explorer/code-oss-ecma/formatter.util';
@@ -90,10 +90,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
   const { triggerProps: menuTriggerProps, menuInstance } = useMenu({
     triggerRef: buttonRef,
     menu: {
-      triggerProps: {
-        direction: 'bottom',
-        align: 'start',
-      },
+      align: 'start',
     },
   });
 

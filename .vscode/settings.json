@@ -1,6 +1,6 @@
 {
   "editor.rulers": [100],
-  "typescript.tsdk": "packages/app/node_modules/typescript/lib",
+  "typescript.tsdk": "packages/web/node_modules/typescript/lib",
   "search.exclude": {
     "packages/web/public": true
   }

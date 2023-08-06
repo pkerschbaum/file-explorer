@@ -1,6 +1,6 @@
 import type { Meta, StoryFn, StoryObj } from '@storybook/react';
 import type React from 'react';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 
 import type { RootStore } from '#pkg/global-state/store';
 import { createStoreInstance } from '#pkg/global-state/store';

@@ -2,7 +2,7 @@ import { useHover } from '@react-aria/interactions';
 import { mergeProps } from '@react-aria/utils';
 import { AnimatePresence } from 'framer-motion';
 import * as React from 'react';
-import styled, { css } from 'styled-components';
+import { styled, css } from 'styled-components';
 import invariant from 'tiny-invariant';
 
 import type { ResourceForUI } from '@file-explorer/code-oss-ecma/types';
@@ -137,8 +137,8 @@ const ResourcesTableBody: React.FC<ResourcesTableBodyProps> = ({ tableContainerR
   const resourcesToShow = useResourcesToShow();
   const changeSelection = useChangeSelection();
   const keyOfLastSelectedResource = useKeyOfLastSelectedResource();
-  const idxOfLastSelectedResource = resourcesToShow.findIndex((resource) =>
-    keyOfLastSelectedResource?.includes(resource.key),
+  const idxOfLastSelectedResource = resourcesToShow.findIndex(
+    (resource) => keyOfLastSelectedResource?.includes(resource.key),
   );
 
   useRegisterCwdSegmentShortcuts({
@@ -528,7 +528,7 @@ const ResourceRowContent: React.FC<ResourceRowContentProps> = ({
   <>
     <NameDataCell>
       <ResourceIconAndNameAndTags>
-        <ResourceIconAndName fullWidth={!tagsSlot}>
+        <ResourceIconAndName $fullWidth={!tagsSlot}>
           {iconSlot}
           {resourceNameSlot}
         </ResourceIconAndName>
@@ -556,8 +556,8 @@ const ResourceIconAndNameAndTags = styled(Box)`
   gap: var(--spacing-2);
 `;
 
-const ResourceIconAndName = styled(Box)<{ fullWidth: boolean }>`
-  width: ${({ fullWidth }) => fullWidth && '100%'};
+const ResourceIconAndName = styled(Box)<{ $fullWidth: boolean }>`
+  width: ${({ $fullWidth }) => $fullWidth && '100%'};
 
   display: flex;
 `;

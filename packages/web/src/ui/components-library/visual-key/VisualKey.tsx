@@ -1,5 +1,5 @@
 import type * as React from 'react';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 
 import { assertIsUnreachable } from '@file-explorer/commons-ecma/util/assert.util';
 
@@ -24,15 +24,15 @@ export const VisualKey: React.FC<VisualKeyProps> = (props) => {
   const { children } = props;
 
   return (
-    <VisualKeyRoot styleProps={props}>
-      <VisualKeyChild styleProps={props}>{children}</VisualKeyChild>
+    <VisualKeyRoot $styleProps={props}>
+      <VisualKeyChild $styleProps={props}>{children}</VisualKeyChild>
     </VisualKeyRoot>
   );
 };
 
 type StyleProps = VisualKeyProps;
 
-const VisualKeyRoot = styled(Box)<{ styleProps: StyleProps }>`
+const VisualKeyRoot = styled(Box)<{ $styleProps: StyleProps }>`
   /* 
    * The visual keys should be a square not exceeding the containers content. We take the current 
    * font size times the line height to get the height of the surrounding content box, and take that 
@@ -48,24 +48,24 @@ const VisualKeyRoot = styled(Box)<{ styleProps: StyleProps }>`
   align-self: center;
 
   display: flex;
-  justify-content: ${({ styleProps }) => (styleProps.type === 'char' ? 'flex-start' : 'center')};
-  align-items: ${({ styleProps }) => (styleProps.type === 'char' ? 'flex-start' : 'center')};
-  padding-top: ${({ styleProps }) => {
-    if (styleProps.type === 'icon') {
+  justify-content: ${({ $styleProps }) => ($styleProps.type === 'char' ? 'flex-start' : 'center')};
+  align-items: ${({ $styleProps }) => ($styleProps.type === 'char' ? 'flex-start' : 'center')};
+  padding-top: ${({ $styleProps }) => {
+    if ($styleProps.type === 'icon') {
       return '3px';
-    } else if (styleProps.type === 'char') {
-      return styleProps.contentSize === 'md' ? '2px' : '3px';
+    } else if ($styleProps.type === 'char') {
+      return $styleProps.contentSize === 'md' ? '2px' : '3px';
     } else {
-      assertIsUnreachable(styleProps);
+      assertIsUnreachable($styleProps);
     }
   }};
-  padding-left: ${({ styleProps }) => {
-    if (styleProps.type === 'icon') {
+  padding-left: ${({ $styleProps }) => {
+    if ($styleProps.type === 'icon') {
       return undefined;
-    } else if (styleProps.type === 'char') {
-      return styleProps.contentSize === 'md' ? '4px' : '2px';
+    } else if ($styleProps.type === 'char') {
+      return $styleProps.contentSize === 'md' ? '4px' : '2px';
     } else {
-      assertIsUnreachable(styleProps);
+      assertIsUnreachable($styleProps);
     }
   }};
   border-bottom: 3px solid rgba(0, 0, 0, 0.2);
@@ -77,20 +77,20 @@ const VisualKeyRoot = styled(Box)<{ styleProps: StyleProps }>`
   background-color: lightgrey;
 `;
 
-const VisualKeyChild = styled(Box)<{ styleProps: StyleProps }>`
-  font-size: ${({ styleProps }) => {
-    if (styleProps.type === 'icon') {
+const VisualKeyChild = styled(Box)<{ $styleProps: StyleProps }>`
+  font-size: ${({ $styleProps }) => {
+    if ($styleProps.type === 'icon') {
       return '100%';
-    } else if (styleProps.type === 'char') {
-      if (styleProps.contentSize === 'md') {
+    } else if ($styleProps.type === 'char') {
+      if ($styleProps.contentSize === 'md') {
         return '80%';
-      } else if (styleProps.contentSize === 'sm') {
+      } else if ($styleProps.contentSize === 'sm') {
         return '70%';
       } else {
-        assertIsUnreachable(styleProps.contentSize);
+        assertIsUnreachable($styleProps.contentSize);
       }
     } else {
-      assertIsUnreachable(styleProps);
+      assertIsUnreachable($styleProps);
     }
   }};
   line-height: 1;

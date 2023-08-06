@@ -9,4 +9,4 @@ export const FILE_ICON_THEMES = {
   },
 } as const;
 export type AvailableFileIconTheme = keyof typeof FILE_ICON_THEMES;
-export type FileIconTheme = typeof FILE_ICON_THEMES[AvailableFileIconTheme];
+export type FileIconTheme = (typeof FILE_ICON_THEMES)[AvailableFileIconTheme];

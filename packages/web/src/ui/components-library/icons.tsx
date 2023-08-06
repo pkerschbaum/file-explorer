@@ -32,7 +32,7 @@ import MuiSettingsIcon from '@mui/icons-material/Settings';
 import MuiViewComfyIcon from '@mui/icons-material/ViewComfy';
 import { motion } from 'framer-motion';
 import type * as React from 'react';
-import styled, { css } from 'styled-components';
+import { styled, css } from 'styled-components';
 
 type MuiIconComponent = typeof MuiContentCopyOutlinedIcon;
 type MuiIconComponentProps = Parameters<MuiIconComponent>[0];

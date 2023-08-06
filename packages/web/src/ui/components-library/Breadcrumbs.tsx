@@ -5,7 +5,7 @@ import {
 import { mergeProps } from '@react-aria/utils';
 import type { AriaBreadcrumbItemProps, SpectrumBreadcrumbsProps } from '@react-types/breadcrumbs';
 import type * as React from 'react';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 
 import { Box } from '#pkg/ui/components-library/Box';
 

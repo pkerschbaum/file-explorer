@@ -3,7 +3,7 @@ import { createTheme } from '@mui/material';
 import * as d3 from 'd3-color';
 import type { MotionProps, Target } from 'framer-motion';
 import * as React from 'react';
-import type { FlattenSimpleInterpolation } from 'styled-components';
+import type { RuleSet } from 'styled-components';
 import { createGlobalStyle, css, keyframes, ThemeProvider } from 'styled-components';
 import invariant from 'tiny-invariant';
 
@@ -127,7 +127,7 @@ export const THEMES = {
 } as const;
 export type AvailableTheme = keyof typeof THEMES;
 export type ThemeConfiguration = {
-  theme: typeof THEMES[keyof typeof THEMES];
+  theme: (typeof THEMES)[keyof typeof THEMES];
   borderColorToUse: string;
 };
 export const availableThemes = Object.keys(THEMES) as AvailableTheme[];
@@ -413,6 +413,6 @@ export const DesignTokenProvider: React.FC<DesignTokenProviderProps> = ({ childr
   );
 };
 
-const DesignTokensGlobalStyle = createGlobalStyle<{ designTokensCss: FlattenSimpleInterpolation }>`
+const DesignTokensGlobalStyle = createGlobalStyle<{ designTokensCss: RuleSet<object> }>`
   ${({ designTokensCss }) => designTokensCss}
 `;

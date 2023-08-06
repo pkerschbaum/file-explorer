@@ -9,11 +9,9 @@ import { useMenuTriggerState } from '@react-stately/menu';
 import type { TreeProps, TreeState } from '@react-stately/tree';
 import { useTreeState } from '@react-stately/tree';
 import type { AriaButtonProps } from '@react-types/button';
-import type { MenuTriggerProps } from '@react-types/menu';
-import type { PositionProps } from '@react-types/overlays';
 import type { ItemProps as ReactAriaItemProps, Node } from '@react-types/shared';
 import * as React from 'react';
-import styled, { css } from 'styled-components';
+import { styled, css } from 'styled-components';
 
 import { Paper } from '#pkg/ui/components-library/Paper';
 import type { PopoverInstance } from '#pkg/ui/components-library/Popover';
@@ -22,7 +20,7 @@ import { Popover } from '#pkg/ui/components-library/Popover';
 type UseMenuArgs<TriggerHTMLElement extends HTMLElement> = {
   triggerRef: React.RefObject<TriggerHTMLElement>;
   menu?: {
-    triggerProps?: MenuTriggerProps;
+    align: 'start' | 'end';
   };
 };
 
@@ -37,36 +35,21 @@ export type MenuInstance = {
   state: MenuTriggerState;
 };
 
-const HORIZONTAL_DIRECTIONS = new Set(['left', 'right', 'start', 'end']);
-
 export function useMenu<TriggerHTMLElement extends HTMLElement>(
   props: UseMenuArgs<TriggerHTMLElement>,
 ): UseMenuReturnType {
   const popoverRef = React.useRef<HTMLDivElement>(null);
 
-  const state = useMenuTriggerState({ ...props.menu?.triggerProps });
+  const state = useMenuTriggerState({});
   const { menuTriggerProps, menuProps } = useMenuTrigger({}, state, props.triggerRef);
 
   // derive overlay placement from menu trigger props
-  const direction = props.menu?.triggerProps?.direction ?? 'bottom';
-  const align = props.menu?.triggerProps?.align;
-  let placement: PositionProps['placement'] = direction;
-  if (align !== undefined) {
-    if (HORIZONTAL_DIRECTIONS.has(direction)) {
-      if (align === 'start') {
-        placement += ' top';
-      } else if (align === 'end') {
-        placement += ' bottom';
-      }
-    } else {
-      placement += ` ${align}`;
-    }
-  }
+  const placement = `bottom ${props.menu?.align ?? 'start'}` as const;
 
   const { overlayProps: popoverPositionProps } = useOverlayPosition({
     targetRef: props.triggerRef,
     overlayRef: popoverRef,
-    placement: placement as PositionProps['placement'],
+    placement,
     offset: 0,
     isOpen: state.isOpen,
   });
@@ -79,7 +62,7 @@ export function useMenu<TriggerHTMLElement extends HTMLElement>(
         popoverDomProps: popoverPositionProps,
         state,
       },
-      menuDomProps: menuProps,
+      menuDomProps: menuProps as React.HTMLAttributes<HTMLElement>,
       state,
     },
   };
@@ -87,7 +70,7 @@ export function useMenu<TriggerHTMLElement extends HTMLElement>(
 
 type MenuPopupProps<T extends object> = Pick<TreeProps<T>, 'children'> &
   Required<Pick<AriaMenuOptions<unknown>, 'aria-label'>> &
-  Pick<MenuTriggerProps, 'closeOnSelect'> &
+  Pick<AriaMenuItemProps, 'closeOnSelect'> &
   MenuPopupComponentProps;
 
 type MenuPopupComponentProps = {
@@ -159,8 +142,7 @@ const MenuContainer = styled.ul`
   padding: 0;
 `;
 
-type MenuItemProps<T extends object> = Pick<AriaMenuItemProps, 'onClose'> &
-  Pick<MenuTriggerProps, 'closeOnSelect'> &
+type MenuItemProps<T extends object> = Pick<AriaMenuItemProps, 'onClose' | 'closeOnSelect'> &
   MenuItemComponentProps<T>;
 
 type MenuItemComponentProps<T extends object> = {
@@ -196,7 +178,7 @@ function MenuItem<T extends object>(props: MenuItemProps<T>) {
     <MenuItemRoot
       {...mergeProps(menuItemProps, focusProps, itemDomProps)}
       ref={ref}
-      styleProps={styleProps}
+      $styleProps={styleProps}
     >
       {item.rendered}
     </MenuItemRoot>
@@ -207,7 +189,7 @@ type MenuItemStyleProps<T extends object> = MenuItemProps<T> & {
   isFocused: boolean;
 };
 
-const MenuItemRoot = styled.li<{ styleProps: MenuItemStyleProps<any> }>`
+const MenuItemRoot = styled.li<{ $styleProps: MenuItemStyleProps<any> }>`
   padding: var(--padding-button-md-block) var(--padding-button-md-inline);
   display: flex;
   align-items: center;
@@ -215,8 +197,8 @@ const MenuItemRoot = styled.li<{ styleProps: MenuItemStyleProps<any> }>`
 
   cursor: pointer;
 
-  ${({ styleProps }) =>
-    styleProps.isFocused &&
+  ${({ $styleProps }) =>
+    $styleProps.isFocused &&
     css`
       border-color: var(--color-bg-2);
       background-color: var(--color-bg-2);

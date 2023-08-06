@@ -21,8 +21,8 @@
   "devDependencies": {
     "del-cli": "^5.0.0",
     "husky": "^8.0.3",
-    "lint-staged": "^13.1.0",
-    "prettier": "^2.8.1"
+    "lint-staged": "^13.2.3",
+    "prettier": "^3.0.1"
   },
   "pnpm": {
     "overrides": {

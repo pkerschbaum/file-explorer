@@ -27,7 +27,7 @@
     "@file-explorer/code-oss-ecma": "workspace:*",
     "@file-explorer/commons-ecma": "workspace:*",
     "@file-explorer/domain": "workspace:*",
-    "dayjs": "^1.11.7"
+    "dayjs": "^1.11.9"
   },
   "devDependencies": {
     "@file-explorer/config-eslint": "workspace:*",
@@ -53,6 +53,6 @@
     "typescript-transform-paths": "^3.4.6"
   },
   "engines": {
-    "node": "^16.14.0"
+    "node": "^18.17.0"
   }
 }

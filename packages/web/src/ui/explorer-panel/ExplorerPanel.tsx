@@ -1,7 +1,7 @@
 import type { Transition, Variants } from 'framer-motion';
 import { AnimatePresence } from 'framer-motion';
 import * as React from 'react';
-import styled, { css } from 'styled-components';
+import { styled, css } from 'styled-components';
 
 import { uriHelper } from '@file-explorer/code-oss-ecma/uri-helper';
 
@@ -44,8 +44,8 @@ export const ExplorerPanel = React.memo<ExplorerPanelProps>(function ExplorerPan
      * via the ChangeCwd form - no state should be kept then).
      */
     <ExplorerContextProvider explorerId={explorerId} key={versionOfExplorer}>
-      <ExplorerPanelContainer styleProps={styleProps}>
-        <CwdBreadcrumbsContainer styleProps={styleProps}>
+      <ExplorerPanelContainer $styleProps={styleProps}>
+        <CwdBreadcrumbsContainer $styleProps={styleProps}>
           <CwdBreadcrumbs />
         </CwdBreadcrumbsContainer>
 
@@ -60,7 +60,7 @@ export const ExplorerPanel = React.memo<ExplorerPanelProps>(function ExplorerPan
               >
                 {isLastSegment && (
                   <ActionsBarContainer
-                    styleProps={styleProps}
+                    $styleProps={styleProps}
                     /**
                      * If the last segment changes, the resources view is animated using a slide in/out
                      * animation.
@@ -98,14 +98,14 @@ const CWD_BREADCRUMBS_GRID_AREA = 'cwd-breadcrumbs';
 const ACTIONS_BAR_GRID_AREA = 'action-bar';
 const RESOURCES_VIEW_GRID_AREA = 'resources-view';
 
-const ExplorerPanelContainer = styled(Box)<{ styleProps: StyleProps }>`
+const ExplorerPanelContainer = styled(Box)<{ $styleProps: StyleProps }>`
   grid-area: ${EXPLORER_PANEL_GRID_AREA};
   min-height: 0;
   height: 100%;
   max-height: 100%;
 
-  ${({ styleProps }) =>
-    styleProps.hidden &&
+  ${({ $styleProps }) =>
+    $styleProps.hidden &&
     css`
       visibility: hidden;
     `}
@@ -121,7 +121,7 @@ const ExplorerPanelContainer = styled(Box)<{ styleProps: StyleProps }>`
   grid-row-gap: var(--spacing-2);
 `;
 
-const CwdBreadcrumbsContainer = styled(Box)<{ styleProps: StyleProps }>`
+const CwdBreadcrumbsContainer = styled(Box)<{ $styleProps: StyleProps }>`
   grid-area: ${CWD_BREADCRUMBS_GRID_AREA};
   justify-self: start;
 
@@ -134,7 +134,7 @@ const CwdBreadcrumbsContainer = styled(Box)<{ styleProps: StyleProps }>`
   }
 `;
 
-const ActionsBarContainer = styled(Box)<{ styleProps: StyleProps }>`
+const ActionsBarContainer = styled(Box)<{ $styleProps: StyleProps }>`
   grid-area: ${ACTIONS_BAR_GRID_AREA};
   justify-self: start;
 

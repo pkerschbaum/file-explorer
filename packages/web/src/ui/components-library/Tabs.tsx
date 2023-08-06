@@ -1,5 +1,5 @@
 import { mergeProps } from '@react-aria/utils';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 
 import { Box } from '#pkg/ui/components-library/Box';
 import { componentLibraryUtils } from '#pkg/ui/components-library/utils';

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styled, { css } from 'styled-components';
+import { styled, css } from 'styled-components';
 import invariant from 'tiny-invariant';
 
 import { formatter as formatter2 } from '@file-explorer/code-oss-ecma/formatter.util';
@@ -73,8 +73,8 @@ export const ResourcesGallery: React.FC = () => {
     };
   }, []);
 
-  const idxOfLastSelectedResource = resourcesToShow.findIndex((resource) =>
-    keyOfLastSelectedResource?.includes(resource.key),
+  const idxOfLastSelectedResource = resourcesToShow.findIndex(
+    (resource) => keyOfLastSelectedResource?.includes(resource.key),
   );
   useRegisterCwdSegmentShortcuts({
     changeSelectionByKeyboardShortcut: {
@@ -287,7 +287,7 @@ const ResourceTile: React.FC<ResourceTileProps> = ({ resource, idxOfResource }) 
         })
       }
       onDoubleClick={() => openResources(explorerId, [resource])}
-      styleProps={{ isSelectable: true, isSelected: isResourceSelected }}
+      $styleProps={{ isSelectable: true, isSelected: isResourceSelected }}
     >
       <StyledResourceIcon resource={resource} height={TILE_HEIGHT} />
       <ResourceDetails>
@@ -320,7 +320,7 @@ type ResourceTileRootProps = {
   isSelected: boolean;
 };
 
-const ResourceTileRoot = styled(Box)<{ styleProps: ResourceTileRootProps }>`
+const ResourceTileRoot = styled(Box)<{ $styleProps: ResourceTileRootProps }>`
   display: flex;
   flex-direction: column;
 
@@ -330,16 +330,16 @@ const ResourceTileRoot = styled(Box)<{ styleProps: ResourceTileRootProps }>`
   border: var(--border-width-1) solid var(--color-darken-1);
   border-radius: var(--border-radius-2);
 
-  ${({ styleProps }) =>
-    styleProps.isSelectable &&
+  ${({ $styleProps }) =>
+    $styleProps.isSelectable &&
     css`
       &:hover {
         background-color: var(--color-bg-1);
       }
     `}
 
-  ${({ styleProps }) =>
-    styleProps.isSelected
+  ${({ $styleProps }) =>
+    $styleProps.isSelected
       ? css`
           background-color: var(--color-bg-2);
           &:hover {

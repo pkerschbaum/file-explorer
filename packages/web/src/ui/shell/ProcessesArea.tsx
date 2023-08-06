@@ -1,5 +1,5 @@
 import type * as React from 'react';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 
 import { arrays } from '@file-explorer/commons-ecma/util/arrays.util';
 

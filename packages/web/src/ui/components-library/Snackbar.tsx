@@ -1,5 +1,5 @@
 import type * as React from 'react';
-import styled, { css } from 'styled-components';
+import { styled, css } from 'styled-components';
 
 import { assertIsUnreachable, check } from '@file-explorer/commons-ecma/util/assert.util';
 
@@ -30,7 +30,7 @@ export const Snackbar: React.FC<SnackbarProps> = ({ severity, label, detail, act
 
   return (
     <SnackbarContainer {...framerMotionAnimations.fadeInOut}>
-      <IconContainer styleProps={{ severity }}>
+      <IconContainer $styleProps={{ severity }}>
         {severity === SNACKBAR_SEVERITY.ERROR && <ErrorOutlineOutlinedIcon fontSize="sm" />}
       </IconContainer>
       <Label>
@@ -77,20 +77,20 @@ type StyleProps = {
   severity: SNACKBAR_SEVERITY;
 };
 
-const IconContainer = styled(Box)<{ styleProps: StyleProps }>`
+const IconContainer = styled(Box)<{ $styleProps: StyleProps }>`
   grid-area: icon;
 
   display: flex;
-  ${({ styleProps }) =>
-    styleProps.severity === SNACKBAR_SEVERITY.ERROR
+  ${({ $styleProps }) =>
+    $styleProps.severity === SNACKBAR_SEVERITY.ERROR
       ? css`
           color: var(--color-error);
         `
-      : styleProps.severity === SNACKBAR_SEVERITY.WARNING
+      : $styleProps.severity === SNACKBAR_SEVERITY.WARNING
       ? css`
           color: var(--color-warning);
         `
-      : assertIsUnreachable(styleProps.severity)}
+      : assertIsUnreachable($styleProps.severity)}
 `;
 
 const Label = styled(Box)`

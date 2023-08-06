@@ -14,7 +14,7 @@ import type { AriaButtonProps } from '@react-types/button';
 import type { PositionProps } from '@react-types/overlays';
 import { AnimatePresence } from 'framer-motion';
 import * as React from 'react';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 
 import { Backdrop } from '#pkg/ui/components-library/Backdrop';
 import { Box } from '#pkg/ui/components-library/Box';

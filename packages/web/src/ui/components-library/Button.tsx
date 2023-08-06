@@ -3,7 +3,7 @@ import { mergeProps, useObjectRef } from '@react-aria/utils';
 import type { AriaButtonProps } from '@react-types/button';
 import { motion } from 'framer-motion';
 import * as React from 'react';
-import styled, { css } from 'styled-components';
+import { styled, css } from 'styled-components';
 import invariant from 'tiny-invariant';
 
 import { Box } from '#pkg/ui/components-library/Box';
@@ -112,15 +112,15 @@ export const Button = styled(
         {...mergeProps(delegatedProps, buttonProps)}
         ref={buttonRef}
         layout={animateLayout}
-        styleProps={props}
+        $styleProps={props}
       >
-        <ButtonIcon layout={animateLayout} startIconIsPresent={!!startIcon}>
+        <ButtonIcon layout={animateLayout} $startIconIsPresent={!!startIcon}>
           {startIcon}
         </ButtonIcon>
 
         {children && <ButtonContent layout={animateLayout}>{children}</ButtonContent>}
 
-        <ButtonIcon layout={animateLayout} endIconIsPresent={!!endIcon}>
+        <ButtonIcon layout={animateLayout} $endIconIsPresent={!!endIcon}>
           {endIcon}
         </ButtonIcon>
         <TouchRipple handleRef={touchRippleHandleRef} />
@@ -131,9 +131,9 @@ export const Button = styled(
 
 type StyleProps = ButtonProps;
 
-const variantRules = css<{ styleProps: StyleProps }>`
-  ${({ styleProps }) => {
-    if (styleProps.variant === 'contained') {
+const variantRules = css<{ $styleProps: StyleProps }>`
+  ${({ $styleProps }) => {
+    if ($styleProps.variant === 'contained') {
       return css`
         color: var(--color-primary-contrast);
         background-color: var(--color-primary-main);
@@ -156,7 +156,7 @@ const variantRules = css<{ styleProps: StyleProps }>`
           filter: brightness(70%);
         }
       `;
-    } else if (styleProps.variant === 'text') {
+    } else if ($styleProps.variant === 'text') {
       return css`
         color: var(--color-primary-main);
         background-color: transparent;
@@ -217,7 +217,7 @@ const ButtonRoot = styled(
    * Override motion.button type definition because it "onAnimationStart" of framer-motion conflicts with "onAnimationStart" of @types/react
    */
   motion.button as React.FC<ReactMotionProps<'button', HTMLButtonElement>>,
-)<{ styleProps: StyleProps }>`
+)<{ $styleProps: StyleProps }>`
   min-width: 45px;
 
   /* 
@@ -235,15 +235,16 @@ const ButtonRoot = styled(
   border-radius: var(--border-radius-2);
   border-style: solid;
   /* transition taken from @mui/material <Button> component, with duration reduced from 250ms to 150ms */
-  transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+  transition:
+    background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     border-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 
   ${variantRules}
 
-  ${({ styleProps }) => {
-    return styleProps.buttonSize === 'sm'
+  ${({ $styleProps }) => {
+    return $styleProps.buttonSize === 'sm'
       ? css`
           padding: 0 6px;
           font-size: var(--font-size-sm);
@@ -269,9 +270,9 @@ const ButtonContent = styled(Box)`
   gap: var(--spacing-2);
 `;
 
-const ButtonIcon = styled(Box)<{ startIconIsPresent?: boolean; endIconIsPresent?: boolean }>`
-  padding-right: ${({ startIconIsPresent }) => !!startIconIsPresent && 'var(--spacing-2)'};
-  padding-left: ${({ endIconIsPresent }) => !!endIconIsPresent && 'var(--spacing-2)'};
+const ButtonIcon = styled(Box)<{ $startIconIsPresent?: boolean; $endIconIsPresent?: boolean }>`
+  padding-right: ${({ $startIconIsPresent }) => !!$startIconIsPresent && 'var(--spacing-2)'};
+  padding-left: ${({ $endIconIsPresent }) => !!$endIconIsPresent && 'var(--spacing-2)'};
   display: flex;
   align-items: center;
 `;
@@ -297,7 +298,7 @@ const TouchRipple: React.FC<TouchRippleProps> = ({ handleRef }) => {
 
   return (
     <TouchRippleSpan
-      styleProps={{ animating: isAnimating }}
+      $styleProps={{ animating: isAnimating }}
       onAnimationEnd={() => setIsAnimating(false)}
     />
   );
@@ -306,7 +307,7 @@ const TouchRipple: React.FC<TouchRippleProps> = ({ handleRef }) => {
 type TouchRippleStyleProps = { animating: boolean };
 
 // taken from https://css-tricks.com/how-to-recreate-the-ripple-effect-of-material-design-buttons/#react
-const TouchRippleSpan = styled.span<{ styleProps: TouchRippleStyleProps }>`
+const TouchRippleSpan = styled.span<{ $styleProps: TouchRippleStyleProps }>`
   position: absolute;
   height: calc(3 * 1em);
   width: calc(3 * 1em);
@@ -315,8 +316,8 @@ const TouchRippleSpan = styled.span<{ styleProps: TouchRippleStyleProps }>`
   background-color: var(--color-darken-3);
   transform: scale(0);
 
-  ${({ styleProps }) =>
-    styleProps.animating &&
+  ${({ $styleProps }) =>
+    $styleProps.animating &&
     css`
       animation: var(--animation-ripple);
     `}

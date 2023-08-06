@@ -11,7 +11,7 @@ import type {
   RadioGroupProps as ReactAriaRadioGroupProps,
 } from '@react-types/radio';
 import * as React from 'react';
-import styled, { css } from 'styled-components';
+import { styled, css } from 'styled-components';
 
 import { Box } from '#pkg/ui/components-library/Box';
 import { CircleIcon, CircleOutlinedIcon } from '#pkg/ui/components-library/icons';

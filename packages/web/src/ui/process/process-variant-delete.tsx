@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 
 import type { DeleteProcess as DeleteProcessType } from '@file-explorer/code-oss-ecma/types';
 import { DELETE_PROCESS_STATUS } from '@file-explorer/code-oss-ecma/types';

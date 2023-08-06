@@ -3,7 +3,7 @@ import { mergeProps, useObjectRef } from '@react-aria/utils';
 import type { AriaButtonProps } from '@react-types/button';
 import { motion } from 'framer-motion';
 import * as React from 'react';
-import styled, { css } from 'styled-components';
+import { styled, css } from 'styled-components';
 
 import { Box } from '#pkg/ui/components-library/Box';
 import { DESIGN_TOKENS } from '#pkg/ui/components-library/DesignTokenContext';
@@ -101,9 +101,9 @@ export const IconButton = styled(
         <IconButtonRoot
           ref={buttonRef}
           {...mergeProps(delegatedProps, buttonProps, triggerProps)}
-          styleProps={styleProps}
+          $styleProps={styleProps}
         >
-          <FocusAndHoverCircle styleProps={styleProps} />
+          <FocusAndHoverCircle $styleProps={styleProps} />
           <ButtonContent>{children}</ButtonContent>
         </IconButtonRoot>
 
@@ -126,16 +126,15 @@ const IconButtonRoot = styled(
    * Override motion.button type definition because it "onAnimationStart" of framer-motion conflicts with "onAnimationStart" of @types/react
    */
   motion.button as React.FC<ReactMotionProps<'button', HTMLButtonElement>>,
-)<{ styleProps: StyleProps }>`
+)<{ $styleProps: StyleProps }>`
   position: relative;
 
   display: flex;
-  ${({ styleProps: scProps }) =>
-    css`
-      --icon-button-padding: ${scProps.iconButtonPadding}px;
-    `}
+  ${({ $styleProps: scProps }) => css`
+    --icon-button-padding: ${scProps.iconButtonPadding}px;
+  `}
   padding: var(--icon-button-padding);
-  ${({ styleProps: scProps }) =>
+  ${({ $styleProps: scProps }) =>
     scProps.disablePadding &&
     css`
       /* if the padding is disabled (i.e. it should not take up any space), undo padding via negative margin */
@@ -145,7 +144,7 @@ const IconButtonRoot = styled(
   color: var(--color-fg-0);
   background-color: transparent;
   border: none;
-  ${({ styleProps: scProps }) =>
+  ${({ $styleProps: scProps }) =>
     scProps.size === 'sm'
       ? css`
           font-size: var(--icon-size-sm);
@@ -165,14 +164,15 @@ const ButtonContent = styled(Box)`
   display: flex;
 `;
 
-const FocusAndHoverCircle = styled(Box)<{ styleProps: StyleProps }>`
+const FocusAndHoverCircle = styled(Box)<{ $styleProps: StyleProps }>`
   pointer-events: none;
   position: absolute;
   inset: 0;
 
   border-radius: 50%;
   /* transition taken from @mui/material <Button> component, with duration reduced from 250ms to 150ms */
-  transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+  transition:
+    background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     border-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;

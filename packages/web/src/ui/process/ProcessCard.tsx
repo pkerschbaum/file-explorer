@@ -1,5 +1,5 @@
 import type * as React from 'react';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 
 import { commonStyles } from '#pkg/ui/common-styles';
 import {

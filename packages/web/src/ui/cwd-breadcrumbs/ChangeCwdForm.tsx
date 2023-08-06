@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 
 import { path } from '@file-explorer/code-oss-ecma/path';
 import { URI } from '@file-explorer/code-oss-ecma/uri';

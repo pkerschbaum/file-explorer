@@ -1,5 +1,5 @@
 import type * as React from 'react';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 
 import { Box } from '#pkg/ui/components-library/Box';
 import { IconButton } from '#pkg/ui/components-library/IconButton';

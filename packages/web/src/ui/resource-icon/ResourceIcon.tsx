@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styled, { css } from 'styled-components';
+import { styled, css } from 'styled-components';
 
 import type { ResourceForUI } from '@file-explorer/code-oss-ecma/types';
 
@@ -47,7 +47,7 @@ export const ResourceIcon: React.FC<ResourceIconProps> = ({ resource, height, cl
   );
 
   return (
-    <IconWrapper className={classes} styleProps={{ height }}>
+    <IconWrapper className={classes} $styleProps={{ height }}>
       {thumbnailUrl && (
         <img
           src={thumbnailUrl}
@@ -84,23 +84,23 @@ type StyleProps = {
   height: number;
 };
 
-const iconStyles = css<{ styleProps: StyleProps }>`
+const iconStyles = css<{ $styleProps: StyleProps }>`
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
   max-width: 100%;
-  height: ${({ styleProps }) => styleProps.height}px;
+  height: ${({ $styleProps }) => $styleProps.height}px;
   max-height: 100%;
 `;
 
-const IconWrapper = styled(Box)<{ styleProps: StyleProps }>`
+const IconWrapper = styled(Box)<{ $styleProps: StyleProps }>`
   ${iconStyles}
 
   &::before {
     ${iconStyles}
 
-    background-size: 100% ${({ styleProps }) => styleProps.height}px;
+    background-size: 100% ${({ $styleProps }) => $styleProps.height}px;
     background-repeat: no-repeat;
   }
 `;

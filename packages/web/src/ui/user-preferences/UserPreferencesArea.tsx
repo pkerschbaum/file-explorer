@@ -1,5 +1,5 @@
 import type React from 'react';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 
 import type { AvailableFileIconTheme } from '@file-explorer/domain/constants';
 import { FILE_ICON_THEMES } from '@file-explorer/domain/constants';

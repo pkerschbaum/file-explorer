@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 
 import { useExplorerPanels } from '#pkg/global-state/slices/explorers.hooks';
 import { Box } from '#pkg/ui/components-library';

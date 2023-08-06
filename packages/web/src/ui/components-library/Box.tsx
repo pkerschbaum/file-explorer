@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import type * as React from 'react';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 
 import type { ReactMotionProps } from '#pkg/ui/components-library/utils';
 

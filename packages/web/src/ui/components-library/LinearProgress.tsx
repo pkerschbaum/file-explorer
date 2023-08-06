@@ -2,7 +2,7 @@ import { useProgressBar } from '@react-aria/progress';
 import { mergeProps } from '@react-aria/utils';
 import type { AriaProgressBarProps } from '@react-types/progress';
 import * as React from 'react';
-import styled, { css } from 'styled-components';
+import { styled, css } from 'styled-components';
 
 import { check } from '@file-explorer/commons-ecma/util/assert.util';
 

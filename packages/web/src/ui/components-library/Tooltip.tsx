@@ -8,7 +8,7 @@ import type { Placement as ReactAriaPlacement, PlacementAxis } from '@react-type
 import type { TooltipTriggerProps } from '@react-types/tooltip';
 import { AnimatePresence } from 'framer-motion';
 import * as React from 'react';
-import styled, { css } from 'styled-components';
+import { styled, css } from 'styled-components';
 
 import { commonStyles } from '#pkg/ui/common-styles';
 import { Box } from '#pkg/ui/components-library/Box';
@@ -137,7 +137,7 @@ const TooltipInner = styled((props: TooltipProps) => {
         {...framerMotionAnimations.fadeInOut}
         {...mergeProps(delegatedProps, tooltipInstance.tooltipDomProps, tooltipProps)}
       >
-        <TooltipArrow {...tooltipInstance.tooltipArrowDomProps} styleProps={props} />
+        <TooltipArrow {...tooltipInstance.tooltipArrowDomProps} $styleProps={props} />
         <TooltipContent>{children}</TooltipContent>
       </TooltipRoot>
     </OverlayContainer>
@@ -161,7 +161,7 @@ const TooltipRoot = styled(Box)`
   box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.26);
 `;
 
-const TooltipArrow = styled(Box)<{ styleProps: StyleProps }>`
+const TooltipArrow = styled(Box)<{ $styleProps: StyleProps }>`
   position: absolute;
 
   /* 
@@ -179,8 +179,8 @@ const TooltipArrow = styled(Box)<{ styleProps: StyleProps }>`
 
   visibility: hidden;
 
-  ${({ styleProps }) => {
-    switch (styleProps.tooltipInstance.tooltipActualPlacement) {
+  ${({ $styleProps }) => {
+    switch ($styleProps.tooltipInstance.tooltipActualPlacement) {
       case 'top': {
         return css`
           bottom: var(--arrow-offset-to-apply);

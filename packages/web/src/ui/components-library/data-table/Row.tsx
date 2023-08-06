@@ -1,7 +1,7 @@
 import type { HTMLMotionProps } from 'framer-motion';
 import { motion } from 'framer-motion';
 import * as React from 'react';
-import styled, { css } from 'styled-components';
+import { styled, css } from 'styled-components';
 
 import type { ReactMotionProps } from '#pkg/ui/components-library/utils';
 
@@ -26,7 +26,7 @@ export const Row = styled(
     } = props;
 
     return (
-      <RowRoot {...(delegatedProps as HTMLMotionProps<'tr'>)} ref={ref} styleProps={props}>
+      <RowRoot {...(delegatedProps as HTMLMotionProps<'tr'>)} ref={ref} $styleProps={props}>
         {children}
       </RowRoot>
     );
@@ -35,17 +35,17 @@ export const Row = styled(
 
 type StyleProps = RowProps;
 
-const RowRoot = styled(motion.tr)<{ styleProps: StyleProps }>`
-  ${({ styleProps }) =>
-    styleProps.isSelectable &&
+const RowRoot = styled(motion.tr)<{ $styleProps: StyleProps }>`
+  ${({ $styleProps }) =>
+    $styleProps.isSelectable &&
     css`
       &:hover {
         background-color: var(--color-bg-1);
       }
     `}
 
-  ${({ styleProps }) =>
-    styleProps.isSelected
+  ${({ $styleProps }) =>
+    $styleProps.isSelected
       ? css`
           background-color: var(--color-bg-2);
           &:hover {

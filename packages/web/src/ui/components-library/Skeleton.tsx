@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styled, { css } from 'styled-components';
+import { styled, css } from 'styled-components';
 
 import { Box } from '#pkg/ui/components-library/Box';
 
@@ -16,9 +16,9 @@ export const Skeleton = styled(
     return (
       <>
         {variant === 'text' ? (
-          <SkeletonText ref={ref} {...delegatedProps} styleProps={props} />
+          <SkeletonText ref={ref} {...delegatedProps} $styleProps={props} />
         ) : (
-          <SkeletonRectangular ref={ref} {...delegatedProps} styleProps={props} />
+          <SkeletonRectangular ref={ref} {...delegatedProps} $styleProps={props} />
         )}
       </>
     );
@@ -27,8 +27,9 @@ export const Skeleton = styled(
 
 type StyleProps = SkeletonProps;
 
-const skeletonStyles = css<{ styleProps: StyleProps }>`
-  width: ${({ styleProps }) => (styleProps.width !== undefined ? `${styleProps.width}px` : '100%')};
+const skeletonStyles = css<{ $styleProps: StyleProps }>`
+  width: ${({ $styleProps }) =>
+    $styleProps.width !== undefined ? `${$styleProps.width}px` : '100%'};
 
   /* appearance props taken from https://mui.com/components/skeleton/#variants */
   border-radius: 4px;
@@ -36,12 +37,12 @@ const skeletonStyles = css<{ styleProps: StyleProps }>`
   animation: var(--animation-pulsate);
 `;
 
-const SkeletonText = styled(Box)`
+const SkeletonText = styled(Box)<{ $styleProps: StyleProps }>`
   ${skeletonStyles}
   height: 1em;
 `;
 
-const SkeletonRectangular = styled(Box)`
+const SkeletonRectangular = styled(Box)<{ $styleProps: StyleProps }>`
   ${skeletonStyles}
   height: 100%;
 `;

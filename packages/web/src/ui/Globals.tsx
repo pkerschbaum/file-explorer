@@ -2,7 +2,7 @@ import * as React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { Provider as ReactReduxProvider } from 'react-redux';
-import styled, { createGlobalStyle, css } from 'styled-components';
+import { styled, createGlobalStyle, css } from 'styled-components';
 
 import { FILE_ICON_THEMES } from '@file-explorer/domain/constants';
 

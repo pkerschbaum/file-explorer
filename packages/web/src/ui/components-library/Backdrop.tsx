@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 
 import { Box } from '#pkg/ui/components-library/Box';
 import { useFramerMotionAnimations } from '#pkg/ui/components-library/DesignTokenContext';
