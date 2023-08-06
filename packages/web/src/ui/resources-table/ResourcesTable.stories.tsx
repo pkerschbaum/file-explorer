@@ -1,4 +1,4 @@
-import type { ComponentMeta, ComponentStory } from '@storybook/react';
+import type { Meta, StoryFn, StoryObj } from '@storybook/react';
 import invariant from 'tiny-invariant';
 
 import type { IFileStatWithMetadata } from '@file-explorer/code-oss-ecma/files';
@@ -23,9 +23,9 @@ export default {
       </Globals>
     ),
   ],
-} as ComponentMeta<typeof ResourcesTable>;
+} as Meta<typeof ResourcesTable>;
 
-const Template: ComponentStory<typeof ResourcesTable> = (args, { loaded }) => {
+const Template: StoryFn<typeof ResourcesTable> = (args, { loaded }) => {
   const globalState = (loaded.store as RootStore).getState();
   const explorerId = globalState.explorersSlice.focusedExplorerPanelId;
   invariant(explorerId);
@@ -42,27 +42,33 @@ const Template: ComponentStory<typeof ResourcesTable> = (args, { loaded }) => {
   );
 };
 
-export const DefaultCase = Template.bind({});
-DefaultCase.loaders = [
-  async () => {
-    await initializeStorybookPlatformModules();
-    const store = await createStoreInstance();
-    const queryClient = createQueryClient();
-    return { store, queryClient };
-  },
-];
+export const DefaultCas: StoryObj = {
+  render: Template,
 
-export const ResourcesDataNotAvailable = Template.bind({});
-ResourcesDataNotAvailable.loaders = [
-  async () => {
-    await initializeStorybookPlatformModules();
-    // never resolve file-system access in order to show loading state (skeletons)
-    globalThis.modules.fileSystem.resolve = () => {
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      return new Promise<IFileStatWithMetadata>(() => {});
-    };
-    const store = await createStoreInstance();
-    const queryClient = createQueryClient();
-    return { store, queryClient };
-  },
-];
+  loaders: [
+    async () => {
+      await initializeStorybookPlatformModules();
+      const store = await createStoreInstance();
+      const queryClient = createQueryClient();
+      return { store, queryClient };
+    },
+  ],
+};
+
+export const ResourcesDataNotAvailable: StoryObj = {
+  render: Template,
+
+  loaders: [
+    async () => {
+      await initializeStorybookPlatformModules();
+      // never resolve file-system access in order to show loading state (skeletons)
+      globalThis.modules.fileSystem.resolve = () => {
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        return new Promise<IFileStatWithMetadata>(() => {});
+      };
+      const store = await createStoreInstance();
+      const queryClient = createQueryClient();
+      return { store, queryClient };
+    },
+  ],
+};

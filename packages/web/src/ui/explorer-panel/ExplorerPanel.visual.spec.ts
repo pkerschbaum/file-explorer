@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { queries } from '@playwright-testing-library/test';
 
-import { bootstrap, retrievePageScreenshot } from '#pkg-playwright/playwright.util';
+import { bootstrap, retrieveScreenshot } from '#pkg-playwright/playwright.util';
 
 test.describe('ExplorerPanel [visual]', () => {
   test('Default Case', async ({ page }) => {
@@ -9,7 +9,7 @@ test.describe('ExplorerPanel [visual]', () => {
       page,
       storybookIdToVisit: 'explorerpanel--default-case',
     });
-    expect(await retrievePageScreenshot(page)).toMatchSnapshot('default-case_1.png');
+    expect(await retrieveScreenshot(page)).toMatchSnapshot('default-case_1.png');
   });
 
   test('Rename resource', async ({ page }) => {
@@ -23,7 +23,7 @@ test.describe('ExplorerPanel [visual]', () => {
     const buttonRename = await queries.findByRole($document, 'button', { name: /rename/i });
     await buttonRename.click();
 
-    expect(await retrievePageScreenshot(page)).toMatchSnapshot('rename-resource_1.png');
+    expect(await retrieveScreenshot(page)).toMatchSnapshot('rename-resource_1.png');
 
     const textboxRename = await queries.findByRole($document, 'textbox', {
       name: /new name for resource/i,
@@ -34,6 +34,6 @@ test.describe('ExplorerPanel [visual]', () => {
     const buttonOk = await queries.findByRole($document, 'button', { name: /ok/i });
     await buttonOk.click();
 
-    expect(await retrievePageScreenshot(page)).toMatchSnapshot('rename-resource_2.png');
+    expect(await retrieveScreenshot(page)).toMatchSnapshot('rename-resource_2.png');
   });
 });

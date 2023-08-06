@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { queries } from '@playwright-testing-library/test';
 
-import { bootstrap, retrievePageScreenshot } from '#pkg-playwright/playwright.util';
+import { bootstrap, retrieveScreenshot } from '#pkg-playwright/playwright.util';
 
 test.describe('ChangeCwdForm [visual]', () => {
   test('submitting the new directory should only be able if a valid input is given', async ({
@@ -24,7 +24,7 @@ test.describe('ChangeCwdForm [visual]', () => {
     });
     await menuItemChangeCwd.click();
 
-    expect(await retrievePageScreenshot(page)).toMatchSnapshot('change-cwd-form_1_initial.png');
+    expect(await retrieveScreenshot(page)).toMatchSnapshot('change-cwd-form_1_initial.png');
 
     const formChangeCwd = await queries.findByRole($document, 'form', {
       name: /change directory form/i,
@@ -35,13 +35,11 @@ test.describe('ChangeCwdForm [visual]', () => {
     await textboxNewDirectory.click({ clickCount: 3 });
     await page.keyboard.press('Backspace');
 
-    expect(await retrievePageScreenshot(page)).toMatchSnapshot(
-      'change-cwd-form_2_input-is-empty.png',
-    );
+    expect(await retrieveScreenshot(page)).toMatchSnapshot('change-cwd-form_2_input-is-empty.png');
 
     await page.keyboard.type('/home/testdir/testfile1.txt');
 
-    expect(await retrievePageScreenshot(page)).toMatchSnapshot(
+    expect(await retrieveScreenshot(page)).toMatchSnapshot(
       'change-cwd-form_3_input-is-no-valid-directory.png',
     );
 
@@ -49,7 +47,7 @@ test.describe('ChangeCwdForm [visual]', () => {
     await page.keyboard.press('Backspace');
     await page.keyboard.type('/home');
 
-    expect(await retrievePageScreenshot(page)).toMatchSnapshot(
+    expect(await retrieveScreenshot(page)).toMatchSnapshot(
       'change-cwd-form_4_input-is-valid-directory.png',
     );
   });

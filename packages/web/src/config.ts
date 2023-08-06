@@ -9,5 +9,8 @@ export const config = {
     specificIconsForDirectories: false,
     tags: false,
   },
-  showReactQueryDevtools: isDevEnviroment,
+  showReactQueryDevtools:
+    typeof process.env.STORYBOOK_RQDEVTOOLS_ENABLED === 'string'
+      ? process.env.STORYBOOK_RQDEVTOOLS_ENABLED === 'true'
+      : isDevEnviroment,
 } as const;

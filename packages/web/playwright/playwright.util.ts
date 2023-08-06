@@ -1,5 +1,5 @@
 /* eslint-disable node/no-process-env */
-import type { BrowserContext, PlaywrightTestArgs } from '@playwright/test';
+import type { BrowserContext, ElementHandle, PlaywrightTestArgs } from '@playwright/test';
 import { expect } from '@playwright/test';
 import { getDocument } from '@playwright-testing-library/test';
 import path from 'node:path';
@@ -133,9 +133,20 @@ export async function bootstrap({
   return $document;
 }
 
-export async function retrievePageScreenshot(page: PlaywrightTestArgs['page']) {
+export async function retrieveScreenshot(
+  page: PlaywrightTestArgs['page'],
+  options?: { elementHandle?: ElementHandle },
+) {
   await yieldToBrowser(page);
-  return await page.screenshot();
+  /**
+   * TODO
+   * For whatever reason the font flickers in the storybook stories when interacting with the page.
+   * If a test case runs too fast, it might create a screenshot while the font flickers. That's why
+   * we have to add some timeout to get stable screenshot - we need to investigate why the font
+   * flickers...
+   */
+  await new Promise((resolve) => setTimeout(resolve, 2000));
+  return await (options?.elementHandle ?? page).screenshot();
 }
 
 /**

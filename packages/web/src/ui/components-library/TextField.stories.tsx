@@ -1,4 +1,4 @@
-import type { ComponentMeta, ComponentStory } from '@storybook/react';
+import type { Meta, StoryFn, StoryObj } from '@storybook/react';
 import { within, userEvent } from '@storybook/testing-library';
 
 import { createStoreInstance } from '#pkg/global-state/store';
@@ -26,19 +26,24 @@ export default {
       </Globals>
     ),
   ],
-} as ComponentMeta<typeof TextField>;
+} as Meta<typeof TextField>;
 
-const Template: ComponentStory<typeof TextField> = (args) => (
+const Template: StoryFn<typeof TextField> = (args) => (
   <Box style={{ width: 200 }}>
     <TextField placeholder="My Textfield" aria-label="My Textfield" {...args} />
   </Box>
 );
 
-export const NoTextEntered_Default = Template.bind({});
+export const NoTextEntered_Default: StoryObj = {
+  render: Template,
+};
 
-export const NoTextEntered_Focus = Template.bind({});
-NoTextEntered_Focus.play = async ({ canvasElement }) => {
-  const textbox = await within(canvasElement).findByRole('textbox', { name: 'My Textfield' });
-  // eslint-disable-next-line @typescript-eslint/await-thenable
-  await userEvent.click(textbox);
+export const NoTextEntered_Focus: StoryObj = {
+  render: Template,
+
+  play: async ({ canvasElement }) => {
+    const textbox = await within(canvasElement).findByRole('textbox', { name: 'My Textfield' });
+    // eslint-disable-next-line @typescript-eslint/await-thenable
+    await userEvent.click(textbox);
+  },
 };

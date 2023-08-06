@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-import { bootstrap, retrievePageScreenshot } from '#pkg-playwright/playwright.util';
+import { bootstrap, retrieveScreenshot } from '#pkg-playwright/playwright.util';
 
 test.describe('ResourcesGallery [visual]', () => {
   test('Default Case', async ({ page }) => {
@@ -8,6 +8,6 @@ test.describe('ResourcesGallery [visual]', () => {
       page,
       storybookIdToVisit: 'resourcesgallery--default-case',
     });
-    expect(await retrievePageScreenshot(page)).toMatchSnapshot('default-case_1.png');
+    expect(await retrieveScreenshot(page)).toMatchSnapshot('default-case_1.png');
   });
 });

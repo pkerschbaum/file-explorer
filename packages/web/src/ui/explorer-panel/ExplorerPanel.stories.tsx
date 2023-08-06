@@ -1,4 +1,5 @@
-import type { ComponentMeta, ComponentStory } from '@storybook/react';
+import type { Meta, StoryFn, StoryObj } from '@storybook/react';
+import type React from 'react';
 import styled from 'styled-components';
 
 import type { RootStore } from '#pkg/global-state/store';
@@ -19,9 +20,9 @@ export default {
       </Globals>
     ),
   ],
-} as ComponentMeta<typeof ExplorerPanel>;
+} as Meta<typeof ExplorerPanel>;
 
-const Template: ComponentStory<typeof ExplorerPanel> = (args, { loaded }) => (
+const Template: StoryFn<typeof ExplorerPanel> = (args, { loaded }) => (
   <ExplorerPanelGrid>
     <ExplorerPanel
       {...args}
@@ -39,31 +40,37 @@ const ExplorerPanelGrid = styled(Box)`
   grid-row-gap: var(--spacing-2);
 `;
 
-export const DefaultCase = Template.bind({});
-DefaultCase.loaders = [
-  async () => {
-    await initializeStorybookPlatformModules();
-    const store = await createStoreInstance();
-    const queryClient = createQueryClient();
-    return { store, queryClient };
-  },
-];
+export const DefaultCase: StoryObj<React.ComponentProps<typeof ExplorerPanel>> = {
+  render: Template,
 
-export const ErrorsOnCreateFolderAndMove = Template.bind({});
-ErrorsOnCreateFolderAndMove.loaders = [
-  async () => {
-    await initializeStorybookPlatformModules();
-    globalThis.modules.fileSystem.createFolder = () => {
-      throw new Error(`fake error instance on fileSystem.createFolder`);
-    };
-    globalThis.modules.fileSystem.move = () => {
-      throw `fake string error on fileSystem.move`;
-    };
-    globalThis.modules.nativeHost.shell.openPath = () => {
-      throw new Error(`fake error instance on nativeHost.shell.openPath`);
-    };
-    const store = await createStoreInstance();
-    const queryClient = createQueryClient();
-    return { store, queryClient };
-  },
-];
+  loaders: [
+    async () => {
+      await initializeStorybookPlatformModules();
+      const store = await createStoreInstance();
+      const queryClient = createQueryClient();
+      return { store, queryClient };
+    },
+  ],
+};
+
+export const ErrorsOnCreateFolderAndMove: StoryObj<React.ComponentProps<typeof ExplorerPanel>> = {
+  render: Template,
+
+  loaders: [
+    async () => {
+      await initializeStorybookPlatformModules();
+      globalThis.modules.fileSystem.createFolder = () => {
+        throw new Error(`fake error instance on fileSystem.createFolder`);
+      };
+      globalThis.modules.fileSystem.move = () => {
+        throw `fake string error on fileSystem.move`;
+      };
+      globalThis.modules.nativeHost.shell.openPath = () => {
+        throw new Error(`fake error instance on nativeHost.shell.openPath`);
+      };
+      const store = await createStoreInstance();
+      const queryClient = createQueryClient();
+      return { store, queryClient };
+    },
+  ],
+};

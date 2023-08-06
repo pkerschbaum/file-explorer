@@ -1,3 +1,4 @@
+import type { StorybookConfig } from '@storybook/nextjs';
 import glob from 'glob';
 import path from 'node:path';
 
@@ -15,19 +16,30 @@ const getStories = () =>
     ignore: `${srcDirectory}/**/*.png`,
   });
 
-module.exports = {
-  reactOptions: {
-    // disable React StrictMode because @react-aria libs do not support it currently (https://github.com/adobe/react-spectrum/issues/779)
-    strictMode: false,
-  },
-
-  stories: (list: any) => [...list, ...getStories()],
+const config: StorybookConfig = {
+  stories: getStories(),
   addons: [
-    '@storybook/addon-links',
     '@storybook/addon-essentials',
     '@storybook/addon-interactions',
+    '@storybook/addon-links',
   ],
   staticDirs: ['../public'],
+
+  framework: {
+    name: '@storybook/nextjs',
+    options: {},
+  },
+
+  previewHead: (head) => `
+    ${head}
+    <style>
+      :root,
+      body,
+      #storybook-root {
+        height: 100%;
+      }
+    </style>
+  `,
 
   /**
    * - allow #pkg path alias (https://github.com/storybookjs/storybook/issues/11989#issuecomment-715524391)
@@ -62,3 +74,5 @@ module.exports = {
     plugins: [...config.plugins, 'babel-plugin-styled-components'],
   }),
 };
+
+module.exports = config;

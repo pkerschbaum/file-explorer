@@ -154,6 +154,13 @@ module.exports = {
         'import/no-default-export': 'off',
       },
     },
+    {
+      // allow default exports for some Storybook files
+      files: ['storybook/main.ts', 'storybook/preview.tsx'],
+      rules: {
+        'import/no-default-export': 'off',
+      },
+    },
   ],
   settings: {
     react: {

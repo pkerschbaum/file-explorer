@@ -1,4 +1,4 @@
-import type { ComponentMeta, ComponentStory } from '@storybook/react';
+import type { Meta, StoryFn, StoryObj } from '@storybook/react';
 import invariant from 'tiny-invariant';
 
 import { extractCwdSegmentsFromExplorerPanel } from '#pkg/global-state/slices/explorers.hooks';
@@ -21,9 +21,9 @@ export default {
       </Globals>
     ),
   ],
-} as ComponentMeta<typeof ResourcesGallery>;
+} as Meta<typeof ResourcesGallery>;
 
-const Template: ComponentStory<typeof ResourcesGallery> = (args, { loaded }) => {
+const Template: StoryFn<typeof ResourcesGallery> = (args, { loaded }) => {
   const globalState = (loaded.store as RootStore).getState();
   const explorerId = globalState.explorersSlice.focusedExplorerPanelId;
   invariant(explorerId);
@@ -40,12 +40,15 @@ const Template: ComponentStory<typeof ResourcesGallery> = (args, { loaded }) => 
   );
 };
 
-export const DefaultCase = Template.bind({});
-DefaultCase.loaders = [
-  async () => {
-    await initializeStorybookPlatformModules();
-    const store = await createStoreInstance();
-    const queryClient = createQueryClient();
-    return { store, queryClient };
-  },
-];
+export const DefaultCase: StoryObj = {
+  render: Template,
+
+  loaders: [
+    async () => {
+      await initializeStorybookPlatformModules();
+      const store = await createStoreInstance();
+      const queryClient = createQueryClient();
+      return { store, queryClient };
+    },
+  ],
+};

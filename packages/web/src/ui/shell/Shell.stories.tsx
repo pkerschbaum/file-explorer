@@ -1,4 +1,4 @@
-import type { ComponentMeta, ComponentStory } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 
 import { network } from '@file-explorer/code-oss-ecma/network';
 import { PASTE_PROCESS_STATUS, RESOURCE_TYPE } from '@file-explorer/code-oss-ecma/types';
@@ -34,11 +34,9 @@ export default {
       </Globals>
     ),
   ],
-} as ComponentMeta<typeof Shell>;
+} as Meta<typeof Shell>;
 
-const Template: ComponentStory<typeof Shell> = (args) => <Shell {...args} />;
-
-export const SimpleCase = Template.bind({});
+export const SimpleCase: StoryObj = {};
 (SimpleCase as any).loaders = [
   async () => {
     await initializeStorybookPlatformModules();
@@ -48,7 +46,7 @@ export const SimpleCase = Template.bind({});
   },
 ];
 
-export const WithProcesses = Template.bind({});
+export const WithProcesses: StoryObj = {};
 (WithProcesses as any).loaders = [
   async () => {
     await initializeStorybookPlatformModules();
@@ -72,7 +70,7 @@ export const WithProcesses = Template.bind({});
   },
 ];
 
-export const MultipleTabs = Template.bind({});
+export const MultipleTabs: StoryObj = {};
 (MultipleTabs as any).loaders = [
   async () => {
     await initializeStorybookPlatformModules();
@@ -103,7 +101,7 @@ export const MultipleTabs = Template.bind({});
   },
 ];
 
-export const ManyResources = Template.bind({});
+export const ManyResources: StoryObj = {};
 (ManyResources as any).loaders = [
   async () => {
     let resourcesToCreate: FileSystemResourceToCreate[] = [
