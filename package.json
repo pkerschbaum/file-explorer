@@ -7,27 +7,34 @@
     "email": "patrick.kerschbaum@gmail.com"
   },
   "scripts": {
-    "build": "pnpm --recursive run build",
+    "build": "superturbo build",
     "compile:dry-run": "pnpm --recursive run compile:dry-run",
     "dev": "pnpm --parallel run dev",
     "format": "prettier --write --ignore-unknown .",
-    "lint": "pnpm run --parallel lint",
-    "lint:fix": "pnpm run --parallel lint:fix",
-    "nuke": "pnpm run --parallel nuke && pnpm run nuke:node-modules",
-    "nuke:artifacts": "pnpm run --parallel nuke:artifacts",
-    "nuke:node-modules": "del-cli \"**/node_modules\"",
-    "prepare": "husky install"
+    "lint": "superturbo lint",
+    "lint:fix": "superturbo lint:fix",
+    "nuke": "pnpm --parallel run nuke && pnpm run nuke:artifacts && pnpm run nuke:compute-cache && pnpm run nuke:node-modules",
+    "nuke:artifacts": "pnpm --parallel run nuke:artifacts",
+    "nuke:compute-cache": "del-cli --dot=true \"*/**/.turbo\"",
+    "nuke:node-modules": "del-cli --dot=true \"**/node_modules\"",
+    "prepare": "node --eval \"process.exit(process.env.CI === 'true' ? 0 : -1)\" || husky install"
   },
   "devDependencies": {
-    "del-cli": "^5.0.0",
+    "@file-explorer/config-eslint": "workspace:*",
+    "@file-explorer/config-jest": "workspace:*",
+    "@file-explorer/config-typescript": "workspace:*",
+    "@file-explorer/superturbo": "workspace:*",
+    "del-cli": "^5.1.0",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.3",
-    "prettier": "^3.0.1",
-    "prettier-plugin-packagejson": "^2.4.6"
+    "prettier": "^3.0.3",
+    "prettier-plugin-packagejson": "^2.4.6",
+    "turbo": "^1.10.14"
   },
-  "packageManager": "pnpm@8.9.1",
+  "packageManager": "pnpm@8.9.2",
   "engines": {
-    "pnpm": "8.9.1"
+    "npm": "0.0.0",
+    "pnpm": "8.9.2"
   },
   "pnpm": {
     "overrides": {

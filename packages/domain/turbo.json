@@ -1,0 +1,40 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "extends": ["//"],
+  "pipeline": {
+    "build": {
+      "cache": true,
+      "inputs": [
+        "../../platform/config-typescript/tsconfig.json",
+        "src/**",
+        "package.json",
+        "tsconfig.project.json"
+      ],
+      "outputs": ["dist/**", "*.tsbuildinfo"]
+    },
+    "lint": {
+      "cache": true,
+      "inputs": [
+        "../../platform/config-typescript/tsconfig.json",
+        "../../platform/config-eslint/eslint-ecma.cjs",
+        "src/**",
+        ".eslintrc.cjs",
+        "package.json",
+        "tsconfig.project.json"
+      ],
+      "outputs": []
+    },
+    "lint:fix": {
+      "cache": true,
+      "inputs": [
+        "../../platform/config-typescript/tsconfig.json",
+        "../../platform/config-eslint/eslint-ecma.cjs",
+        "src/**",
+        ".eslintrc.cjs",
+        "package.json",
+        "tsconfig.project.json"
+      ],
+      "outputs": ["src/**"]
+    }
+  }
+}

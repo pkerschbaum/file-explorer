@@ -1,4 +1,4 @@
-/* eslint-disable node/no-process-env */
+/* eslint-disable n/no-process-env */
 import type { BrowserContext, ElementHandle, PlaywrightTestArgs } from '@playwright/test';
 import { expect } from '@playwright/test';
 import { getDocument } from '@playwright-testing-library/test';

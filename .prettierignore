@@ -1,8 +1,15 @@
+# dependencies
 pnpm-lock.yaml
 
+# build artifacts
 **/dist
+**/dist-tsc
 **/.next
 **/public
+
+# coverage
+**/.nyc_output
+**/coverage
 
 packages/app/storybook-static
 packages/app/test-results
