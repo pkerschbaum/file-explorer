@@ -13,18 +13,18 @@
     }
   },
   "scripts": {
-    "prepare": "ts-patch install -s",
-    "internal:compile": "tsc -p ./tsconfig.build.json",
-    "nuke": "pnpm run nuke:artifacts && del-cli node_modules",
-    "nuke:artifacts": "del-cli dist \"*.tsbuildinfo\"",
     "build": "pnpm run internal:compile",
+    "compile-language-extensions-into-json-file": "ts-node --project ./tsconfig.json -r tsconfig-paths/register ./scripts/compile-language-extensions-into-json-file.ts && prettier --write ../../packages/web/public/icon-theme/language-extension-points.json",
     "dev": "pnpm run build --watch --preserveWatchOutput",
     "dev:agent": "nodemon --ext \"*\" --watch \"dist\" --watch \"static\" --exec \"clear && pnpm run start\"",
-    "start": "ELECTRON_ENABLE_LOGGING=1 electron --disable-software-rasterizer --disable-gpu ./dist/file-explorer-agent/run.js",
+    "internal:compile": "tsc -p ./tsconfig.build.json",
     "lint": "pnpm run lint:file .",
     "lint:file": "eslint --max-warnings 0",
     "lint:fix": "pnpm run lint --fix",
-    "compile-language-extensions-into-json-file": "ts-node --project ./tsconfig.json -r tsconfig-paths/register ./scripts/compile-language-extensions-into-json-file.ts && prettier --write ../../packages/web/public/icon-theme/language-extension-points.json"
+    "nuke": "pnpm run nuke:artifacts && del-cli node_modules",
+    "nuke:artifacts": "del-cli dist \"*.tsbuildinfo\"",
+    "prepare": "ts-patch install -s",
+    "start": "ELECTRON_ENABLE_LOGGING=1 electron --disable-software-rasterizer --disable-gpu ./dist/file-explorer-agent/run.js"
   },
   "dependencies": {
     "@file-explorer/code-oss-ecma": "workspace:*",

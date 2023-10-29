@@ -1,36 +1,43 @@
 {
   "name": "file-explorer",
   "private": true,
+  "license": "MIT",
   "author": {
     "name": "Patrick Kerschbaum",
     "email": "patrick.kerschbaum@gmail.com"
   },
-  "license": "MIT",
   "scripts": {
-    "prepare": "husky install",
+    "build": "pnpm --recursive run build",
+    "compile:dry-run": "pnpm --recursive run compile:dry-run",
+    "dev": "pnpm --parallel run dev",
+    "format": "prettier --write --ignore-unknown .",
+    "lint": "pnpm run --parallel lint",
+    "lint:fix": "pnpm run --parallel lint:fix",
     "nuke": "pnpm run --parallel nuke && pnpm run nuke:node-modules",
     "nuke:artifacts": "pnpm run --parallel nuke:artifacts",
     "nuke:node-modules": "del-cli \"**/node_modules\"",
-    "lint": "pnpm run --parallel lint",
-    "lint:fix": "pnpm run --parallel lint:fix",
-    "format": "prettier --write --ignore-unknown .",
-    "build": "pnpm --recursive run build",
-    "dev": "pnpm --parallel run dev",
-    "compile:dry-run": "pnpm --recursive run compile:dry-run"
+    "prepare": "husky install"
   },
   "devDependencies": {
     "del-cli": "^5.0.0",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.3",
-    "prettier": "^3.0.1"
+    "prettier": "^3.0.1",
+    "prettier-plugin-packagejson": "^2.4.6"
+  },
+  "packageManager": "pnpm@8.9.1",
+  "engines": {
+    "pnpm": "8.9.1"
   },
   "pnpm": {
     "overrides": {
-      "@mui/styled-engine": "npm:@mui/styled-engine-sc@^5.10.6"
+      "@mui/styled-engine": "npm:@mui/styled-engine-sc@^5.14.2"
+    },
+    "peerDependencyRules": {
+      "allowedVersions": {
+        "@mui/styled-engine-sc>styled-components": "^6",
+        "react-virtual>react": "^18"
+      }
     }
-  },
-  "engines": {
-    "pnpm": "^8.1.1"
-  },
-  "packageManager": "pnpm@8.1.1"
+  }
 }

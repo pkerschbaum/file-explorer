@@ -13,15 +13,15 @@
     }
   },
   "scripts": {
-    "prepare": "ts-patch install -s",
-    "internal:compile": "tsc -p ./tsconfig.build.json",
-    "nuke": "pnpm run nuke:artifacts && del-cli node_modules",
-    "nuke:artifacts": "del-cli dist \"*.tsbuildinfo\"",
     "build": "pnpm run internal:compile",
     "dev": "pnpm run build --watch --preserveWatchOutput",
+    "internal:compile": "tsc -p ./tsconfig.build.json",
     "lint": "pnpm run lint:file .",
     "lint:file": "eslint --max-warnings 0",
-    "lint:fix": "pnpm run lint --fix"
+    "lint:fix": "pnpm run lint --fix",
+    "nuke": "pnpm run nuke:artifacts && del-cli node_modules",
+    "nuke:artifacts": "del-cli dist \"*.tsbuildinfo\"",
+    "prepare": "ts-patch install -s"
   },
   "dependencies": {
     "@file-explorer/commons-ecma": "workspace:*"
