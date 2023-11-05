@@ -59,17 +59,15 @@ export const createFileSystem = () => {
 
   const instance: PlatformFileSystem = {
     async resolve(resource, options) {
-      if (options?.resolveMetadata) {
-        return await trpc.fs.resolveWithMetadata.mutate({
-          resource,
-          options: options as IResolveMetadataFileOptions,
-        });
-      } else {
-        return (await trpc.fs.resolve.mutate({
-          resource,
-          options,
-        })) as IFileStatWithMetadata;
-      }
+      return options?.resolveMetadata
+        ? await trpc.fs.resolveWithMetadata.mutate({
+            resource,
+            options: options as IResolveMetadataFileOptions,
+          })
+        : ((await trpc.fs.resolve.mutate({
+            resource,
+            options,
+          })) as IFileStatWithMetadata);
     },
 
     async del(resource, options) {

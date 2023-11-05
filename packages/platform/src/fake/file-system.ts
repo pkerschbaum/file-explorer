@@ -35,15 +35,21 @@ export const createFakeFileSystem: (
   const fileService = fileServiceUriInstancesToComponents(origFileService);
 
   async function createResource({ type, uri, mtimeIso8601 }: FileSystemResourceToCreate) {
-    if (type === RESOURCE_TYPE.DIRECTORY) {
-      await fileService.createFolder(uri);
-    } else if (type === RESOURCE_TYPE.FILE) {
-      await fileService.createFile(
-        uri,
-        VSBuffer.fromString(`test content of ${URI.toString(uri)}`),
-      );
-    } else {
-      assertIsUnreachable(type);
+    switch (type) {
+      case RESOURCE_TYPE.DIRECTORY: {
+        await fileService.createFolder(uri);
+        break;
+      }
+      case RESOURCE_TYPE.FILE: {
+        await fileService.createFile(
+          uri,
+          VSBuffer.fromString(`test content of ${URI.toString(uri)}`),
+        );
+        break;
+      }
+      default: {
+        assertIsUnreachable(type);
+      }
     }
 
     if (mtimeIso8601 !== undefined) {

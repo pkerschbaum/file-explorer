@@ -12,9 +12,11 @@ export class CustomError extends Error {
     // restore prototype chain
     const actualProto = new.target.prototype;
 
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (Object.setPrototypeOf) {
       Object.setPrototypeOf(this, actualProto);
     } else {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
       (this as any).__proto__ = actualProto;
     }
   }

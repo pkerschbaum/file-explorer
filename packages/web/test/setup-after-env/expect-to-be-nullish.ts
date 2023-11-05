@@ -1,7 +1,8 @@
 declare global {
   namespace jest {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
     interface Matchers<R> {
-      toBeNullish(): R;
+      toBeNullish: () => R;
     }
   }
 }

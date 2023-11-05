@@ -31,19 +31,17 @@ const UPDATE_INTERVAL_MS = 500;
 const logger = createLogger('explorer.hooks');
 
 export async function openResources(explorerId: string, resources: ResourceForUI[]) {
-  if (resources.length === 1 && resources[0].resourceType === RESOURCE_TYPE.DIRECTORY) {
-    await changeCwd({
-      explorerId,
-      newCwd: resources[0].uri,
-      keepExistingCwdSegments: true,
-    });
-  } else {
-    await openFiles(
-      resources
-        .filter((resource) => resource.resourceType === RESOURCE_TYPE.FILE)
-        .map((resource) => resource.uri),
-    );
-  }
+  await (resources.length === 1 && resources[0].resourceType === RESOURCE_TYPE.DIRECTORY
+    ? changeCwd({
+        explorerId,
+        newCwd: resources[0].uri,
+        keepExistingCwdSegments: true,
+      })
+    : openFiles(
+        resources
+          .filter((resource) => resource.resourceType === RESOURCE_TYPE.FILE)
+          .map((resource) => resource.uri),
+      ));
 }
 
 export async function copyCwdIntoClipboard(explorerId: string) {
@@ -119,8 +117,10 @@ export async function pasteResources(explorerId: string) {
   const pasteInfos = (
     await Promise.all(
       clipboardResources.map(async (uriOfSourceResource) => {
-        // Destination folder must not be a subfolder of any source resource. Imagine copying
-        // a folder "test" and paste it (and its content) *into* itself, that would not work.
+        /*
+         * Destination folder must not be a subfolder of any source resource. Imagine copying
+         * a folder "test" and paste it (and its content) *into* itself, that would not work.
+         */
         if (
           uriHelper.getComparisonKey(destinationFolder) !==
             uriHelper.getComparisonKey(uriOfSourceResource) &&
@@ -470,8 +470,10 @@ function incrementResourceName(name: string, isFolder: boolean): string {
     namePrefix = path.basename(name, extSuffix);
   }
 
-  // name copy 5(.txt) => name copy 6(.txt)
-  // name copy(.txt) => name copy 2(.txt)
+  /*
+   * name copy 5(.txt) => name copy 6(.txt)
+   * name copy(.txt) => name copy 2(.txt)
+   */
   const suffixRegex = /^(.+ copy)( \d+)?$/;
   if (suffixRegex.test(namePrefix)) {
     return (

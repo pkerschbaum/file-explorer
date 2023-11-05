@@ -18,9 +18,9 @@ type IconButtonProps = IconButtonAriaProps &
     keyof IconButtonAriaProps | keyof IconButtonComponentProps
   >;
 
-type IconButtonAriaProps = Required<Pick<AriaButtonProps<'button'>, 'aria-label'>> &
-  Pick<AriaButtonProps<'button'>, 'children' | 'onPress' | 'isDisabled'> & {
-    ariaButtonProps?: AriaButtonProps<'button'>;
+type IconButtonAriaProps = Required<Pick<AriaButtonProps, 'aria-label'>> &
+  Pick<AriaButtonProps, 'children' | 'onPress' | 'isDisabled'> & {
+    ariaButtonProps?: AriaButtonProps;
   };
 
 type IconButtonComponentProps = {
@@ -51,7 +51,7 @@ export const IconButton = styled(
       /* other props */
       ...delegatedProps
     } = props;
-    const reactAriaProps: AriaButtonProps<'button'> = mergeProps(
+    const reactAriaProps: AriaButtonProps = mergeProps(
       {
         'aria-label': ariaLabel,
         children,

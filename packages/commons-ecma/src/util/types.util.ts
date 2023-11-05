@@ -5,9 +5,11 @@ type DefinitelyNotJsonable = (...args: unknown[]) => unknown;
 
 export type JsonObject<T> = { [prop: string]: IsJsonable<T> };
 export type IsJsonable<T> =
-  // Check if there are any non-jsonable types represented in the union
-  // Note: use of tuples in this first condition side-steps distributive conditional types
-  // (see https://github.com/microsoft/TypeScript/issues/29368#issuecomment-453529532)
+  /*
+   * Check if there are any non-jsonable types represented in the union
+   * Note: use of tuples in this first condition side-steps distributive conditional types
+   * (see https://github.com/microsoft/TypeScript/issues/29368#issuecomment-453529532)
+   */
   [Extract<T, DefinitelyNotJsonable>] extends [never]
     ? // Non-jsonable type union was found empty
       T extends primitive
@@ -34,8 +36,10 @@ export type IsJsonable<T> =
     : // Otherwise non-jsonable type union was found not empty
       never;
 
-// merge and flatten unions
-// https://www.roryba.in/programming/2019/10/12/flattening-typescript-union-types.html#flattenunion
+/*
+ * merge and flatten unions
+ * https://www.roryba.in/programming/2019/10/12/flattening-typescript-union-types.html#flattenunion
+ */
 /**
  * Converts a union of two types into an intersection
  * i.e. A | B -> A & B

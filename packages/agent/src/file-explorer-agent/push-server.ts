@@ -5,7 +5,7 @@ import { PUSH_EVENT } from '#pkg/constants';
 
 declare global {
   namespace PushServer {
-    // eslint-disable-next-line @typescript-eslint/no-empty-interface -- used to allow augmentation from outside
+    // eslint-disable-next-line @typescript-eslint/consistent-type-definitions -- used to allow augmentation from outside
     interface PushEventMap {}
   }
 }

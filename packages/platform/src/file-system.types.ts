@@ -3,5 +3,5 @@ import type { PlatformFileService } from '@file-explorer/code-oss-ecma/fileServi
 import type { UriComponents } from '@file-explorer/code-oss-ecma/uri';
 
 export type PlatformFileSystem = PlatformFileService & {
-  trash(resource: UriComponents, options?: FileDeleteOptionsWithoutTrash): Promise<void>;
+  trash: (resource: UriComponents, options?: FileDeleteOptionsWithoutTrash) => Promise<void>;
 };

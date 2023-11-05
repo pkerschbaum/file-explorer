@@ -14,6 +14,7 @@ import { uriHelper } from '@file-explorer/code-oss-ecma/uri-helper';
 import { AGENT_PORT, NATIVE_FILE_ICON_PATH, THUMBNAIL_PATH } from '#pkg/constants';
 
 export function registerBlobRoutes(app: express.Express): void {
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   app.use(THUMBNAIL_PATH, async (req, res) => {
     const thumbnail = await getThumbnail(req);
 
@@ -25,6 +26,7 @@ export function registerBlobRoutes(app: express.Express): void {
     thumbnail.data.pipe(res);
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   app.use(NATIVE_FILE_ICON_PATH, async (req, res) => {
     const nativeFileIcon = await getNativeFileIcon(req);
 

@@ -26,7 +26,7 @@ const httpIconThemeFileService: { readFile: IFileService['readFile'] } = {
       );
     }
 
-    const resourceJson = (
+    const resourceJson: unknown = (
       await axios.request({
         method: 'GET',
         url: `.${relativeUrlToFetch}`,

@@ -7,5 +7,5 @@ export function deepCopyJson<T>(inObj: IsJsonable<T>): IsJsonable<T> {
   if (stringified === undefined) {
     return inObj;
   }
-  return JSON.parse(stringified);
+  return JSON.parse(stringified) as IsJsonable<T>;
 }

@@ -4,7 +4,7 @@ import 'csstype';
 type CSSCustomProperty = `--${string}`;
 
 declare module 'csstype' {
-  interface Properties {
+  type Properties = {
     [customProp: CSSCustomProperty]: string | undefined;
-  }
+  };
 }

@@ -42,6 +42,7 @@ export async function createNativeDNDProcedures() {
 
   // get rid of Content-Security-Policy warning, https://www.electronjs.org/docs/latest/tutorial/security#7-define-a-content-security-policy
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+    // eslint-disable-next-line n/no-callback-literal
     callback({
       responseHeaders: {
         ...details.responseHeaders,

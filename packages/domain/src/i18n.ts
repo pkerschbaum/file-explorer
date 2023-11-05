@@ -1,5 +1,7 @@
-// localization constants. currently all constants are hard-coded configured for en-US
-// used e.g. by numbers formatter
+/*
+ * localization constants. currently all constants are hard-coded configured for en-US
+ * used e.g. by numbers formatter
+ */
 
 const langLocale = 'en-US';
 const dateLocale = 'de-AT';

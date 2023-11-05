@@ -12,16 +12,18 @@ import { useActiveTheme } from '#pkg/global-state/slices/user.hooks';
 import { componentLibraryUtils } from '#pkg/ui/components-library/utils';
 
 declare module '@mui/material/styles' {
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface Theme {
     isAnimationAllowed: boolean;
   }
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface ThemeOptions {
     isAnimationAllowed: boolean;
   }
 }
 
 declare module 'styled-components' {
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   export interface DefaultTheme extends Theme {}
 }
 
@@ -242,9 +244,9 @@ export const DESIGN_TOKENS = {
   OUTLINE_WIDTH: 2,
 } as const;
 
-interface DesignTokenProviderProps {
+type DesignTokenProviderProps = {
   children: React.ReactNode;
-}
+};
 
 export const DesignTokenProvider: React.FC<DesignTokenProviderProps> = ({ children }) => {
   const activeTheme = useActiveTheme();

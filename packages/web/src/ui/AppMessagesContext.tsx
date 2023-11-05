@@ -47,8 +47,9 @@ export const AppMessagesContext: React.FC<AppMessagesContextProps> = ({ children
       onPress: removeCurrentMessage,
     },
   ];
-  if (currentMessage?.retryAction) {
+  if (currentMessage.retryAction) {
     const retry = currentMessage.retryAction.onPress;
+    // eslint-disable-next-line no-inner-declarations
     async function retryAndDismiss() {
       await retry();
       removeCurrentMessage();

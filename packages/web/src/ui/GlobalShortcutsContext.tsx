@@ -130,7 +130,7 @@ export const GlobalShortcutsContextProvider: React.FC<GlobalShortcutsContextProv
       }
 
       let blurTimeoutId: NodeJS.Timeout;
-      const eventListener = (e: WindowEventMap['focus'] | WindowEventMap['blur']) => {
+      const eventListener = (e: WindowEventMap['focus']) => {
         if (e.type === 'focus') {
           if (blurTimeoutId) {
             /**
@@ -227,7 +227,7 @@ export const GlobalShortcutsContextProvider: React.FC<GlobalShortcutsContextProv
   );
 
   React.useEffect(function setModifiersOnKeydownAndKeyup() {
-    const eventListener = (e: WindowEventMap['keydown'] | WindowEventMap['keyup']) => {
+    const eventListener = (e: WindowEventMap['keydown']) => {
       const newActiveModifiers: Modifiers = {
         ctrl: e.ctrlKey ? 'SET' : 'NOT_SET',
         alt: e.altKey ? 'SET' : 'NOT_SET',
@@ -270,10 +270,7 @@ export const GlobalShortcutsContextProvider: React.FC<GlobalShortcutsContextProv
   );
 };
 
-function shouldEventGetProcessed(
-  e: WindowEventMap['keydown'] | WindowEventMap['keyup'],
-  isFocusSomewhereVisible: boolean,
-) {
+function shouldEventGetProcessed(e: WindowEventMap['keydown'], isFocusSomewhereVisible: boolean) {
   return e.target instanceof HTMLElement && !isFocusSomewhereVisible && !isReservedKey(e.key);
 }
 

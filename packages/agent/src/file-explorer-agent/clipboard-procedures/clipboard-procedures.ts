@@ -11,6 +11,7 @@ import { publicProcedure } from '#pkg/file-explorer-agent/trcp-router';
 
 declare global {
   namespace PushServer {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
     interface PushEventMap {
       ClipboardChanged: {
         dataType: CLIPBOARD_CHANGED_DATA_TYPE;
@@ -53,7 +54,7 @@ export function createClipboardProcedures({ pushServer }: { pushServer: PushServ
   };
 }
 
-function bufferToResources(buffer: Uint8Array): UriComponents[] {
+function bufferToResources(buffer?: Uint8Array): UriComponents[] {
   if (!buffer) {
     return [];
   }

@@ -19,10 +19,10 @@ type ButtonProps = ButtonAriaProps &
   >;
 
 type ButtonAriaProps = Pick<
-  AriaButtonProps<'button'>,
+  AriaButtonProps,
   'children' | 'onPress' | 'onKeyDown' | 'isDisabled' | 'type'
 > & {
-  ariaButtonProps?: AriaButtonProps<'button'>;
+  ariaButtonProps?: AriaButtonProps;
 };
 
 type ButtonComponentProps = {
@@ -60,7 +60,7 @@ export const Button = styled(
       /* other props */
       ...delegatedProps
     } = props;
-    const reactAriaProps: AriaButtonProps<'button'> = mergeProps(
+    const reactAriaProps: AriaButtonProps = mergeProps(
       {
         children,
         onPress,

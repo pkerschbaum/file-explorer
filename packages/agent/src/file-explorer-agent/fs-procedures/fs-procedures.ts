@@ -19,6 +19,7 @@ import { publicProcedure } from '#pkg/file-explorer-agent/trcp-router';
 
 declare global {
   namespace PushServer {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
     interface PushEventMap {
       ResourceChanged: {
         operationId: string;

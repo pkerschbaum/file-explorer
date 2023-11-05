@@ -22,63 +22,63 @@ export const FileService = codeOSSFileService.FileService;
 export type FileService = codeOSSFileService.FileService;
 
 export type IFileServiceUriComponents = {
-  resolve(
+  resolve: ((
     resource: UriComponents,
     options: IResolveMetadataFileOptions,
-  ): Promise<IFileStatWithMetadata>;
-  resolve(resource: UriComponents, options?: IResolveFileOptions): Promise<IFileStat>;
-  del(resource: UriComponents, options?: Parameters<FileService['del']>[1]): Promise<void>;
-  copy(
+  ) => Promise<IFileStatWithMetadata>) &
+    ((resource: UriComponents, options?: IResolveFileOptions) => Promise<IFileStat>);
+  del: (resource: UriComponents, options?: Parameters<FileService['del']>[1]) => Promise<void>;
+  copy: (
     source: UriComponents,
     target: UriComponents,
     overwrite?: boolean,
     coordinationArgs?: CoordinationArgs,
-  ): Promise<IFileStatWithMetadata>;
-  move(
+  ) => Promise<IFileStatWithMetadata>;
+  move: (
     source: UriComponents,
     target: UriComponents,
     overwrite?: boolean,
     coordinationArgs?: CoordinationArgs,
-  ): Promise<IFileStatWithMetadata>;
-  createFolder(resource: UriComponents): Promise<IFileStatWithMetadata>;
-  createFile(
+  ) => Promise<IFileStatWithMetadata>;
+  createFolder: (resource: UriComponents) => Promise<IFileStatWithMetadata>;
+  createFile: (
     resource: UriComponents,
     bufferOrReadableOrStream: VSBuffer | VSBufferReadable | VSBufferReadableStream,
     options?: ICreateFileOptions,
-  ): Promise<IFileStatWithMetadata>;
-  watch(resource: UriComponents, options?: IWatchOptions): IDisposable;
+  ) => Promise<IFileStatWithMetadata>;
+  watch: (resource: UriComponents, options?: IWatchOptions) => IDisposable;
   onDidFilesChange: Event<PlatformFileChangesEvent>;
 };
 
 type PlatformFileChangesEvent = {
-  affects(resource: UriComponents): boolean;
+  affects: (resource: UriComponents) => boolean;
 };
 
 export type PlatformFileService = {
-  resolve(
+  resolve: ((
     resource: UriComponents,
     options: IResolveMetadataFileOptions,
-  ): Promise<IFileStatWithMetadata>;
-  resolve(resource: UriComponents, options?: IResolveFileOptions): Promise<IFileStat>;
-  del(resource: UriComponents, options?: FileDeleteOptionsWithoutTrash): Promise<void>;
-  copy(
+  ) => Promise<IFileStatWithMetadata>) &
+    ((resource: UriComponents, options?: IResolveFileOptions) => Promise<IFileStat>);
+  del: (resource: UriComponents, options?: FileDeleteOptionsWithoutTrash) => Promise<void>;
+  copy: (
     source: UriComponents,
     target: UriComponents,
     overwrite?: boolean,
     coordinationArgs?: CoordinationArgs,
-  ): Promise<IFileStatWithMetadata>;
-  move(
+  ) => Promise<IFileStatWithMetadata>;
+  move: (
     source: UriComponents,
     target: UriComponents,
     overwrite?: boolean,
     coordinationArgs?: CoordinationArgs,
-  ): Promise<IFileStatWithMetadata>;
-  createFolder(resource: UriComponents): Promise<IFileStatWithMetadata>;
-  watch(resource: UriComponents, options?: IWatchOptions): IDisposable | Promise<IDisposable>;
-  onResourceChanged(
+  ) => Promise<IFileStatWithMetadata>;
+  createFolder: (resource: UriComponents) => Promise<IFileStatWithMetadata>;
+  watch: (resource: UriComponents, options?: IWatchOptions) => IDisposable | Promise<IDisposable>;
+  onResourceChanged: (
     resource: UriComponents,
     onChange: () => void,
-  ): IDisposable | Promise<IDisposable>;
+  ) => IDisposable | Promise<IDisposable>;
 };
 
 export function fileServiceUriInstancesToComponents(
@@ -91,7 +91,7 @@ export function fileServiceUriInstancesToComponents(
         resolveTo: options?.resolveTo?.map(uriComponentsToInstance),
       });
       fileStatUriInstancesToComponents(result);
-      return result as unknown as any;
+      return result as IFileStatWithMetadata;
     },
     del(resource, options) {
       return fileService.del(uriComponentsToInstance(resource), options);
@@ -136,6 +136,7 @@ export function fileServiceUriInstancesToComponents(
     onDidFilesChange(listener, ...delegated) {
       return fileService.onDidFilesChange(
         (e) =>
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-return
           listener({
             affects(resource) {
               return e.affects(uriComponentsToInstance(resource));

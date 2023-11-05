@@ -16,14 +16,14 @@ export type PlatformNativeHost = {
     getNativeIconURLForResource: (resource: ResourceForUI) => string | undefined;
   };
   shell: {
-    revealResourcesInOS(resources: UriComponents[]): Promise<void>;
+    revealResourcesInOS: (resources: UriComponents[]) => Promise<void>;
     openPath: (resources: UriComponents[]) => Promise<void>;
   };
   clipboard: {
-    readText(): string | Promise<string>;
-    writeText(value: string): void | Promise<void>;
-    readResources(): UriComponents[] | Promise<UriComponents[]>;
-    writeResources(resources: UriComponents[]): void | Promise<void>;
+    readText: () => string | Promise<string>;
+    writeText: (value: string) => void | Promise<void>;
+    readResources: () => UriComponents[] | Promise<UriComponents[]>;
+    writeResources: (resources: UriComponents[]) => void | Promise<void>;
     onClipboardChanged: Event<CLIPBOARD_CHANGED_DATA_TYPE>;
   };
   nativeDND: {

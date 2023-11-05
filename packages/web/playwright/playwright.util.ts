@@ -145,7 +145,9 @@ export async function retrieveScreenshot(
    * we have to add some timeout to get stable screenshot - we need to investigate why the font
    * flickers...
    */
-  await new Promise((resolve) => setTimeout(resolve, 2000));
+  await new Promise((resolve) => {
+    setTimeout(resolve, 2000);
+  });
   return await (options?.elementHandle ?? page).screenshot();
 }
 
@@ -186,17 +188,21 @@ export async function letBrowserUpdateStuffDependingOnClock(page: PlaywrightTest
  * processed, and `requestIdleCallback` waits for the browser to become idle.
  */
 async function yieldToBrowser(page: PlaywrightTestArgs['page']) {
-  // eslint-disable-next-line no-restricted-syntax -- wait with 1ms timeout "yields" to the browser
+  // eslint-disable-next-line no-restricted-syntax
   await page.waitForTimeout(1);
   await page.evaluate(() => {
-    const p = new Promise((resolve) => setTimeout(resolve, 0));
+    const p = new Promise((resolve) => {
+      setTimeout(resolve, 0);
+    });
     if (window.__clock) {
       window.__clock.tick(1000);
     }
     return p;
   });
   await page.evaluate(() => {
-    const p = new Promise((resolve) => requestIdleCallback(resolve));
+    const p = new Promise((resolve) => {
+      requestIdleCallback(resolve);
+    });
     if (window.__clock) {
       window.__clock.tick(1000);
     }

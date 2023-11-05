@@ -75,11 +75,9 @@ export async function runDeleteProcess(deleteProcessId: string, options: { useTr
         }
 
         try {
-          if (options.useTrash) {
-            await globalThis.modules.fileSystem.trash(uri, { recursive: fileStat.isDirectory });
-          } else {
-            await globalThis.modules.fileSystem.del(uri, { recursive: fileStat.isDirectory });
-          }
+          await (options.useTrash
+            ? globalThis.modules.fileSystem.trash(uri, { recursive: fileStat.isDirectory })
+            : globalThis.modules.fileSystem.del(uri, { recursive: fileStat.isDirectory }));
         } catch (error) {
           logger.error(`could not delete resources`, error);
           throw error;

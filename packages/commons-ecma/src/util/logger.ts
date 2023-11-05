@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument */
 import { objects } from '@pkerschbaum/commons-ecma/util/objects';
 
 import { CustomError } from '#pkg/util/custom-error';
@@ -39,8 +39,10 @@ export function loggerFactory(
       logPayload?: JsonObject<A>,
       verboseLogPayload?: JsonObject<B>,
     ) {
-      // if CustomErrors get passed in a payload, extract the data prop of the error and
-      // append it to the payload
+      /*
+       * if CustomErrors get passed in a payload, extract the data prop of the error and
+       * append it to the payload
+       */
       const customLogPayload = objects.shallowCopy(logPayload);
       if (customLogPayload !== undefined) {
         for (const [prop, value] of Object.entries(customLogPayload)) {

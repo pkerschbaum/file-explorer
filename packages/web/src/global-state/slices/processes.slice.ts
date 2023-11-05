@@ -83,7 +83,7 @@ export const actions = {
   addDeleteProcess: createAction<AddDeleteProcessPayload>('DELETE_PROCESS_ADDED'),
   updateDeleteProcess: createAction<UpdateDeleteProcessPayload>('DELETE_PROCESS_UPDATED'),
   removeProcess: createAction<RemoveProcessPayload>('PROCESS_REMOVED'),
-  clearDraftPasteState: createAction<void>('DRAFT_PASTE_STATE_CLEARED'),
+  clearDraftPasteState: createAction('DRAFT_PASTE_STATE_CLEARED'),
 };
 export const reducer = createReducer(INITIAL_STATE, (builder) =>
   builder
