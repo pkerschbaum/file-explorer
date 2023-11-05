@@ -3,7 +3,7 @@ const stripJsonComments = require('strip-json-comments');
 const { pathsToModuleNameMapper } = require('ts-jest');
 
 const { compilerOptions } = JSON.parse(
-  stripJsonComments(fs.readFileSync('./tsconfig.json', 'utf8')),
+  stripJsonComments(fs.readFileSync('./tsconfig.project.json', 'utf8')),
 );
 const moduleNameMapper = pathsToModuleNameMapper(compilerOptions.paths, {
   prefix: '<rootDir>/../',

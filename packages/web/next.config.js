@@ -11,6 +11,7 @@ let nextConfig = {
   },
 
   typescript: {
+    tsconfigPath: './tsconfig.build.json',
     ignoreBuildErrors: true,
   },
 

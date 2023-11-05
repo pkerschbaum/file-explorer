@@ -17,13 +17,14 @@
     "nuke:artifacts": "pnpm --parallel run nuke:artifacts",
     "nuke:compute-cache": "del-cli --dot=true \"*/**/.turbo\"",
     "nuke:node-modules": "del-cli --dot=true \"**/node_modules\"",
-    "prepare": "node --eval \"process.exit(process.env.CI === 'true' ? 0 : -1)\" || husky install"
+    "prepare": "node --eval \"process.exit(process.env.CI === 'true' ? 0 : -1)\" || (husky install && pnpm exec add-all-tsconfigs-as-project-references --monorepo-path=.)"
   },
   "devDependencies": {
     "@file-explorer/config-eslint": "workspace:*",
     "@file-explorer/config-jest": "workspace:*",
     "@file-explorer/config-typescript": "workspace:*",
     "@file-explorer/superturbo": "workspace:*",
+    "@pkerschbaum/pkg-management": "^1.2.0",
     "del-cli": "^5.1.0",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.3",

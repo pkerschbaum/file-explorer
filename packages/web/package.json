@@ -17,7 +17,7 @@
     "dev": "pnpm run internal:compile --watch --preserveWatchOutput",
     "dev:next": "next dev",
     "internal:build:next": "next build",
-    "internal:compile": "tsc -p ./tsconfig.json",
+    "internal:compile": "tsc -p ./tsconfig.project.json",
     "lint": "pnpm run lint:eslint",
     "lint:eslint": "pnpm run lint:file .",
     "lint:file": "eslint --max-warnings 0",

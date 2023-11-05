@@ -5,19 +5,12 @@
     "noPropertyAccessFromIndexSignature": false,
     "strictNullChecks": true,
 
-    /* Language and Environment */
-    "jsx": "preserve",
-    "lib": ["dom", "dom.iterable", "esnext"],
-
     /* Modules */
     "baseUrl": ".",
     "module": "esnext",
     "moduleResolution": "node",
     "paths": {
-      "#pkg/*": ["./src/*"],
-      "#pkg-test/*": ["./test/*"],
-      "#pkg-storybook/*": ["./storybook/*"],
-      "#pkg-playwright/*": ["./playwright/*"]
+      "#pkg/*": ["./src/*"]
     },
     "resolveJsonModule": true,
     "types": ["node", "jest"],
@@ -42,8 +35,12 @@
       {
         "name": "next"
       }
-    ]
+    ],
+
+    /* Language and Environment */
+    "jsx": "preserve",
+    "lib": ["dom", "dom.iterable", "esnext"]
   },
-  "include": ["next-env.d.ts", "dist/types/**/*.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["**/node_modules"]
 }

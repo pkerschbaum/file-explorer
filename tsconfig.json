@@ -1,0 +1,11 @@
+{
+  "references": [
+    { "path": "./packages/agent/tsconfig.project.json" },
+    { "path": "./packages/code-oss-ecma/tsconfig.project.json" },
+    { "path": "./packages/commons-ecma/tsconfig.project.json" },
+    { "path": "./packages/domain/tsconfig.project.json" },
+    { "path": "./packages/platform/tsconfig.project.json" },
+    { "path": "./packages/web/tsconfig.project.json" },
+    { "path": "./platform/superturbo/tsconfig.project.json" }
+  ]
+}

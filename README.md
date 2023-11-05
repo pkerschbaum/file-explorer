@@ -11,16 +11,18 @@
 
 ### Prerequisites
 
-- Follow the "Prerequisites" installation guide of [microsoft/vscode/wiki/How-to-Contribute#prerequisites](https://github.com/microsoft/vscode/wiki/How-to-Contribute#prerequisites).
-  - You can skip the installation of `yarn`, it is not needed for this repository.
-  - For the NodeJS version to use, please refer to the file [.nvmrc](./.nvmrc) of this project. This is the version of NodeJS the project should be developed with.  
-    It is recommended to use [nvm](https://github.com/nvm-sh/nvm) and run `nvm use`, this will automatically switch to the NodeJS version mentioned in `.nvmrc`.
-- This monorepo ("workspace") uses [`pnpm`](https://pnpm.io/) as package manager.  
-  For installation instructions see [pnpm.io/installation](https://pnpm.io/installation); it should boil down to this command:
+- **Node.js:** It is recommended to use [nvm](https://github.com/nvm-sh/nvm) and run `nvm use`, this will automatically switch to the Node.js version mentioned in the file [`.nvmrc`](./.nvmrc).  
+   Alternatively you can install Node.js directly, please refer to `.nvmrc` of this project to determine the Node.js version to use.
+- **pnpm:** This monorepo ("workspace") uses [`pnpm`](https://pnpm.io/) as package manager.  
+  It is recommended to use `corepack` of Node.js, just run:
 
   ```sh
-  npm i -g pnpm
+  corepack enable
   ```
+
+  `pnpm` commands should now be available (and the `pnpm` version specified in `package.json#packageManager` will be automatically used).
+
+- **Toolchain for native Node.js modules:** Run the installation instructions "A C/C++ compiler tool chain for your platform" of [microsoft/vscode/wiki/How-to-Contribute#prerequisites](https://github.com/microsoft/vscode/wiki/How-to-Contribute#prerequisites).
 
 ### Build & Run
 

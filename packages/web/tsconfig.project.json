@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.build.json",
+  "compilerOptions": {
+    /* Modules */
+    "paths": {
+      "#pkg/*": ["./src/*"],
+      "#pkg-test/*": ["./test/*"],
+      "#pkg-storybook/*": ["./storybook/*"],
+      "#pkg-playwright/*": ["./playwright/*"]
+    }
+  },
+  "exclude": ["**/node_modules"]
+}

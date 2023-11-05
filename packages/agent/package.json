@@ -14,7 +14,7 @@
   },
   "scripts": {
     "build": "pnpm run internal:compile",
-    "compile-language-extensions-into-json-file": "ts-node --project ./tsconfig.json -r tsconfig-paths/register ./scripts/compile-language-extensions-into-json-file.ts && prettier --write ../../packages/web/public/icon-theme/language-extension-points.json",
+    "compile-language-extensions-into-json-file": "ts-node --project ./tsconfig.project.json -r tsconfig-paths/register ./scripts/compile-language-extensions-into-json-file.ts && prettier --write ../../packages/web/public/icon-theme/language-extension-points.json",
     "dev": "pnpm run build --watch --preserveWatchOutput",
     "dev:agent": "nodemon --ext \"*\" --watch \"dist\" --watch \"static\" --exec \"clear && pnpm run start\"",
     "internal:compile": "tsc -p ./tsconfig.build.json",
