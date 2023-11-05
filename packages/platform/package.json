@@ -25,8 +25,8 @@
   },
   "dependencies": {
     "@file-explorer/code-oss-ecma": "workspace:*",
-    "@file-explorer/commons-ecma": "workspace:*",
     "@file-explorer/domain": "workspace:*",
+    "@pkerschbaum/commons-ecma": "^2.1.2",
     "dayjs": "^1.11.9"
   },
   "devDependencies": {

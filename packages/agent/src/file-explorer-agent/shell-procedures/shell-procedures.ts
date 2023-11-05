@@ -1,9 +1,9 @@
+import { check } from '@pkerschbaum/commons-ecma/util/assert';
 import { shell } from 'electron';
 import { z } from 'zod';
 
 import { path } from '@file-explorer/code-oss-ecma/path';
 import { URI, UriComponents } from '@file-explorer/code-oss-ecma/uri';
-import { check } from '@file-explorer/commons-ecma/util/assert.util';
 
 import { publicProcedure } from '#pkg/file-explorer-agent/trcp-router';
 

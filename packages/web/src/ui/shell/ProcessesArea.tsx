@@ -1,7 +1,6 @@
+import { arrays } from '@pkerschbaum/commons-ecma/util/arrays';
 import type * as React from 'react';
 import { styled } from 'styled-components';
-
-import { arrays } from '@file-explorer/commons-ecma/util/arrays.util';
 
 import { useProcesses } from '#pkg/global-state/slices/processes.hooks';
 import { Box } from '#pkg/ui/components-library';

@@ -1,4 +1,4 @@
-import { check } from '@file-explorer/commons-ecma/util/assert.util';
+import { check } from '@pkerschbaum/commons-ecma/util/assert';
 
 import { platform } from '#pkg/platform';
 import { resources } from '#pkg/resources';

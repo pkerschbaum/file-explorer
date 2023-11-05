@@ -1,4 +1,4 @@
-import type { ObjectLiteral } from '#pkg/util/types.util';
+import type { ObjectLiteral } from '@pkerschbaum/commons-ecma/util/types';
 
 // https://stackoverflow.com/a/48342359/1700319
 export class CustomError extends Error {

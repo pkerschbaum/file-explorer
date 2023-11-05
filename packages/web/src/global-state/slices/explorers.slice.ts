@@ -1,10 +1,10 @@
+import { check } from '@pkerschbaum/commons-ecma/util/assert';
 import { createAction, createReducer } from '@reduxjs/toolkit';
 
 import { resources } from '@file-explorer/code-oss-ecma/resources';
 import type { UriComponents } from '@file-explorer/code-oss-ecma/uri';
 import { uriHelper } from '@file-explorer/code-oss-ecma/uri-helper';
 import { uuid } from '@file-explorer/code-oss-ecma/uuid';
-import { check } from '@file-explorer/commons-ecma/util/assert.util';
 
 export type ExplorerSliceState = {
   explorerPanels: ExplorersMap;

@@ -1,9 +1,9 @@
+import { check } from '@pkerschbaum/commons-ecma/util/assert';
 import * as React from 'react';
 import { styled } from 'styled-components';
 
 import { path } from '@file-explorer/code-oss-ecma/path';
 import { URI } from '@file-explorer/code-oss-ecma/uri';
-import { check } from '@file-explorer/commons-ecma/util/assert.util';
 
 import { Box, Button, commonComponentStyles, TextField } from '#pkg/ui/components-library';
 import { useResourcesOfDirectory } from '#pkg/ui/hooks/resources.hooks';

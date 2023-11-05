@@ -1,9 +1,9 @@
+import { arrays } from '@pkerschbaum/commons-ecma/util/arrays';
 import * as React from 'react';
 
 import type { ResourceForUI } from '@file-explorer/code-oss-ecma/types';
 import { URI } from '@file-explorer/code-oss-ecma/uri';
 import { uriHelper } from '@file-explorer/code-oss-ecma/uri-helper';
-import { arrays } from '@file-explorer/commons-ecma/util/arrays.util';
 import { errorsUtil } from '@file-explorer/commons-ecma/util/errors.util';
 
 import { REASON_FOR_SELECTION_CHANGE } from '#pkg/global-state/slices/explorers.slice';

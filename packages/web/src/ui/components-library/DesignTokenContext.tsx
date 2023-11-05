@@ -1,13 +1,12 @@
 import type { Theme } from '@mui/material';
 import { createTheme } from '@mui/material';
+import { assertIsUnreachable } from '@pkerschbaum/commons-ecma/util/assert';
 import * as d3 from 'd3-color';
 import type { MotionProps, Target } from 'framer-motion';
 import * as React from 'react';
 import type { RuleSet } from 'styled-components';
 import { createGlobalStyle, css, keyframes, ThemeProvider } from 'styled-components';
 import invariant from 'tiny-invariant';
-
-import { assertIsUnreachable } from '@file-explorer/commons-ecma/util/assert.util';
 
 import { useActiveTheme } from '#pkg/global-state/slices/user.hooks';
 import { componentLibraryUtils } from '#pkg/ui/components-library/utils';

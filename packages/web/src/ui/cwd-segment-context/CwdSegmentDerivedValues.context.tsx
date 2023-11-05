@@ -1,9 +1,10 @@
+import { arrays } from '@pkerschbaum/commons-ecma/util/arrays';
+import { check } from '@pkerschbaum/commons-ecma/util/assert';
 import * as React from 'react';
 
 import type { ResourceForUI } from '@file-explorer/code-oss-ecma/types';
 import { RESOURCE_TYPE } from '@file-explorer/code-oss-ecma/types';
-import { arrays } from '@file-explorer/commons-ecma/util/arrays.util';
-import { check } from '@file-explorer/commons-ecma/util/assert.util';
+import { matchSorter } from '@file-explorer/commons-ecma/util/match-sort.util';
 
 import { useSegmentUri } from '#pkg/global-state/slices/explorers.hooks';
 import { REASON_FOR_SELECTION_CHANGE } from '#pkg/global-state/slices/explorers.slice';
@@ -64,9 +65,8 @@ export const CwdSegmentDerivedValuesContextProvider: React.FC<
    */
   const resourcesToShow: ResourceForUI[] = React.useMemo(() => {
     const result = check.isEmptyString(filterInput)
-      ? arrays
-          .wrap(resourcesWithTags)
-          .stableSort((a, b) => {
+      ? [...resourcesWithTags]
+          .sort((a, b) => {
             if (a.basename.toLocaleLowerCase() < b.basename.toLocaleLowerCase()) {
               return -1;
             } else if (a.basename.toLocaleLowerCase() > b.basename.toLocaleLowerCase()) {
@@ -74,7 +74,7 @@ export const CwdSegmentDerivedValuesContextProvider: React.FC<
             }
             return 0;
           })
-          .stableSort((a, b) => {
+          .sort((a, b) => {
             if (
               a.resourceType === RESOURCE_TYPE.DIRECTORY &&
               b.resourceType === RESOURCE_TYPE.FILE
@@ -88,13 +88,9 @@ export const CwdSegmentDerivedValuesContextProvider: React.FC<
             }
             return 0;
           })
-          .getValue()
-      : arrays
-          .wrap(resourcesWithTags)
-          .matchSort(filterInput, {
-            keys: [(resource) => resource.basename],
-          })
-          .getValue();
+      : matchSorter([...resourcesWithTags], filterInput, {
+          keys: [(resource) => resource.basename],
+        });
 
     return result;
   }, [filterInput, resourcesWithTags]);

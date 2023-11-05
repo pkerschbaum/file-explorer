@@ -1,3 +1,4 @@
+import { assertIsUnreachable } from '@pkerschbaum/commons-ecma/util/assert';
 import invariant from 'tiny-invariant';
 import { z } from 'zod';
 
@@ -11,7 +12,6 @@ import {
 import { fileServiceUriInstancesToComponents } from '@file-explorer/code-oss-ecma/fileService';
 import type { ReportProgressArgs } from '@file-explorer/code-oss-ecma/resources';
 import { UriComponents } from '@file-explorer/code-oss-ecma/uri';
-import { assertIsUnreachable } from '@file-explorer/commons-ecma/util/assert.util';
 
 import { bootstrapDiskFileService } from '#pkg/file-explorer-agent/disk-file-service';
 import type { PushServer } from '#pkg/file-explorer-agent/push-server';

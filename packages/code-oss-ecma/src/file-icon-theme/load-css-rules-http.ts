@@ -1,10 +1,10 @@
 import * as codeOSSFileIconTheme from '@pkerschbaum/code-oss-file-icon-theme';
 import { ModesRegistry } from '@pkerschbaum/code-oss-file-icon-theme/out/vs/editor/common/modes/modesRegistry';
 import type { ILanguageExtensionPoint } from '@pkerschbaum/code-oss-file-icon-theme/out/vs/editor/common/services/modeService';
+import { check } from '@pkerschbaum/commons-ecma/util/assert';
+import { jsonUtil } from '@pkerschbaum/commons-ecma/util/json';
 import axios from 'axios';
 
-import { check } from '@file-explorer/commons-ecma/util/assert.util';
-import { json } from '@file-explorer/commons-ecma/util/json.util';
 import type { FileIconTheme } from '@file-explorer/domain/constants';
 
 import type { IFileContent, IFileService } from '#pkg/files';
@@ -35,7 +35,7 @@ const httpIconThemeFileService: { readFile: IFileService['readFile'] } = {
 
     return {
       value: {
-        toString: () => json.safeStringify(resourceJson),
+        toString: () => jsonUtil.safeStringify(resourceJson),
       },
     } as IFileContent;
   },

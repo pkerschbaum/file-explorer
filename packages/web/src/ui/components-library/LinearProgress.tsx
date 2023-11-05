@@ -1,10 +1,9 @@
+import { check } from '@pkerschbaum/commons-ecma/util/assert';
 import { useProgressBar } from '@react-aria/progress';
 import { mergeProps } from '@react-aria/utils';
 import type { AriaProgressBarProps } from '@react-types/progress';
 import * as React from 'react';
 import { styled, css } from 'styled-components';
-
-import { check } from '@file-explorer/commons-ecma/util/assert.util';
 
 import { Box } from '#pkg/ui/components-library/Box';
 import { componentLibraryUtils } from '#pkg/ui/components-library/utils';

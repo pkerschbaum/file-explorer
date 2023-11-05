@@ -1,5 +1,6 @@
-import { arrays } from '@file-explorer/commons-ecma/util/arrays.util';
-import { check } from '@file-explorer/commons-ecma/util/assert.util';
+import { arrays } from '@pkerschbaum/commons-ecma/util/arrays';
+import { check } from '@pkerschbaum/commons-ecma/util/assert';
+
 import { CustomError } from '@file-explorer/commons-ecma/util/custom-error';
 
 import { network } from '#pkg/network';
@@ -20,8 +21,10 @@ function parseUri(scheme: string, path: string): UriComponents {
     throw new Error(`empty uri is not allowed`);
   }
 
-  // use Uri.file to handle specifics of fs paths, see
-  // https://github.com/Microsoft/vscode-uri/blob/42f608bc8c934d066127b849081a5eeb7614bb30/src/index.ts#L682-L700
+  /*
+   * use Uri.file to handle specifics of fs paths, see
+   * https://github.com/Microsoft/vscode-uri/blob/42f608bc8c934d066127b849081a5eeb7614bb30/src/index.ts#L682-L700
+   */
   return scheme === network.Schemas.file ? URI.file(path) : URI.parse(`${scheme}://${path}`);
 }
 

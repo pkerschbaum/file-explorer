@@ -1,3 +1,4 @@
+import { assertIsUnreachable } from '@pkerschbaum/commons-ecma/util/assert';
 import { useHover } from '@react-aria/interactions';
 import { mergeProps } from '@react-aria/utils';
 import { AnimatePresence } from 'framer-motion';
@@ -7,7 +8,6 @@ import invariant from 'tiny-invariant';
 
 import type { ResourceForUI } from '@file-explorer/code-oss-ecma/types';
 import { RESOURCE_TYPE } from '@file-explorer/code-oss-ecma/types';
-import { assertIsUnreachable } from '@file-explorer/commons-ecma/util/assert.util';
 import { formatter } from '@file-explorer/domain/formatter.util';
 
 import { REASON_FOR_SELECTION_CHANGE } from '#pkg/global-state/slices/explorers.slice';

@@ -1,3 +1,4 @@
+import { arrays } from '@pkerschbaum/commons-ecma/util/arrays';
 import { createAction, createReducer } from '@reduxjs/toolkit';
 
 import type { CancellationTokenSource } from '@file-explorer/code-oss-ecma/cancellation';
@@ -8,7 +9,6 @@ import {
   DELETE_PROCESS_STATUS,
 } from '@file-explorer/code-oss-ecma/types';
 import type { UriComponents } from '@file-explorer/code-oss-ecma/uri';
-import { arrays } from '@file-explorer/commons-ecma/util/arrays.util';
 
 import { createLogger } from '#pkg/operations/create-logger';
 

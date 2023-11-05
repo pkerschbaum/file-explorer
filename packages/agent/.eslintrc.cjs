@@ -54,6 +54,7 @@ module.exports = {
               /^#pkg.+/,
               /^@file-explorer\/.+/,
               /^@pkerschbaum\/code-oss-file-icon-theme/,
+              /^@pkerschbaum\/commons-ecma\/.+/,
             ],
           },
         ],

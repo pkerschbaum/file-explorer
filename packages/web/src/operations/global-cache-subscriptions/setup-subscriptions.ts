@@ -1,7 +1,6 @@
+import { check } from '@pkerschbaum/commons-ecma/util/assert';
 import * as React from 'react';
 import type { Query, QueryCache } from 'react-query';
-
-import { check } from '@file-explorer/commons-ecma/util/assert.util';
 
 import { createRefreshResourcesOfDirectorySubscription } from '#pkg/operations/global-cache-subscriptions/refresh-resources-of-directory';
 

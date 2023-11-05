@@ -3,10 +3,10 @@ import * as json from '@pkerschbaum/code-oss-file-icon-theme/out/vs/base/common/
 import type { ILanguageExtensionPoint } from '@pkerschbaum/code-oss-file-icon-theme/out/vs/editor/common/services/modeService';
 import { VSBuffer } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/buffer';
 import { URI } from '@pkerschbaum/code-oss-file-service/out/vs/base/common/uri';
+import { jsonUtil } from '@pkerschbaum/commons-ecma/util/json';
 import path from 'node:path';
 
 import type { LanguageExtensionPointJsonEntry } from '@file-explorer/code-oss-ecma/file-icon-theme/load-css-rules-http';
-import { json as jsonUtil } from '@file-explorer/commons-ecma/util/json.util';
 
 import { bootstrapDiskFileService } from '#pkg/file-explorer-agent/disk-file-service';
 

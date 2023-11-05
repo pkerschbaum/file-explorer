@@ -1,9 +1,8 @@
+import { check } from '@pkerschbaum/commons-ecma/util/assert';
 import mime from 'mime';
 import invariant from 'tiny-invariant';
 
 import { URI, UriComponents } from '@file-explorer/code-oss-ecma/uri';
-import { check } from '@file-explorer/commons-ecma/util/assert.util';
-import { numbers } from '@file-explorer/commons-ecma/util/numbers.util';
 
 import { AGENT_PORT, NATIVE_FILE_ICON_PATH, THUMBNAIL_PATH } from '#pkg/constants';
 
@@ -45,8 +44,8 @@ export const blob = {
         )}`,
       );
       // add mtime as search param so that the browser does not use its cache if the file changed
-      url.searchParams.set('mtime', numbers.toString(resource.mtime));
-      url.searchParams.set('height', numbers.toString(height));
+      url.searchParams.set('mtime', `${resource.mtime}`);
+      url.searchParams.set('height', `${height}`);
       return url.toString();
     }
   },
@@ -68,7 +67,7 @@ export const blob = {
         )}`,
       );
       // add mtime as search param so that the browser does not use its cache if the file changed
-      url.searchParams.set('mtime', numbers.toString(resource.mtime));
+      url.searchParams.set('mtime', `${resource.mtime}`);
       return url.toString();
     }
   },

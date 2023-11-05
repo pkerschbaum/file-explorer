@@ -1,9 +1,10 @@
+import { check } from '@pkerschbaum/commons-ecma/util/assert';
+
 import { formatter as formatter2 } from '@file-explorer/code-oss-ecma/formatter.util';
 import type { ResourceForUI } from '@file-explorer/code-oss-ecma/types';
 import type { UriComponents } from '@file-explorer/code-oss-ecma/uri';
-import { check } from '@file-explorer/commons-ecma/util/assert.util';
 import { CustomError } from '@file-explorer/commons-ecma/util/custom-error';
-import { objects } from '@file-explorer/commons-ecma/util/objects.util';
+import { deepCopyJson } from '@file-explorer/commons-ecma/util/deep-copy-json';
 
 import type { CwdSegment } from '#pkg/global-state/slices/explorers.slice';
 import {
@@ -15,7 +16,7 @@ import {
 export async function addExplorerPanel(cwdSegmentsToClone?: CwdSegment[]) {
   let cwdSegmentsOfNewExplorer;
   if (cwdSegmentsToClone) {
-    cwdSegmentsOfNewExplorer = objects.deepCopyJson(cwdSegmentsToClone);
+    cwdSegmentsOfNewExplorer = deepCopyJson(cwdSegmentsToClone);
   } else {
     const defaultExplorerCwd = await getDefaultExplorerCwd();
     const stats = await globalThis.modules.fileSystem.resolve(defaultExplorerCwd);

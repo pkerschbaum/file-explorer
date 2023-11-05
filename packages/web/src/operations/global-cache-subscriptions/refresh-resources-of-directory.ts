@@ -1,9 +1,9 @@
+import { functions } from '@pkerschbaum/commons-ecma/util/functions';
 import type { Query } from 'react-query';
 
 import { DisposableStore, IDisposable } from '@file-explorer/code-oss-ecma/lifecycle';
 import { URI } from '@file-explorer/code-oss-ecma/uri';
 import { uriHelper } from '@file-explorer/code-oss-ecma/uri-helper';
-import { functions } from '@file-explorer/commons-ecma/util/functions.util';
 
 import type { ResourcesOfDirectoryKey } from '#pkg/global-cache/query-keys';
 import {

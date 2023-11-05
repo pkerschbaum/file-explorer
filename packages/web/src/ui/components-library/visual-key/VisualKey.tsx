@@ -1,7 +1,6 @@
+import { assertIsUnreachable } from '@pkerschbaum/commons-ecma/util/assert';
 import type * as React from 'react';
 import { styled } from 'styled-components';
-
-import { assertIsUnreachable } from '@file-explorer/commons-ecma/util/assert.util';
 
 import { Box } from '#pkg/ui/components-library/Box';
 import { DESIGN_TOKENS } from '#pkg/ui/components-library/DesignTokenContext';

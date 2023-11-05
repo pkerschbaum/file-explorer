@@ -33,6 +33,7 @@
     "@file-explorer/platform": "workspace:*",
     "@pkerschbaum/code-oss-file-icon-theme": "^3.1.0",
     "@pkerschbaum/code-oss-file-service": "^1.65.1",
+    "@pkerschbaum/commons-ecma": "^2.1.2",
     "@trpc/client": "^10.37.1",
     "@trpc/server": "^10.37.1",
     "bufferutil": "^4.0.7",

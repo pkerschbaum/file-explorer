@@ -1,3 +1,5 @@
+import { check } from '@pkerschbaum/commons-ecma/util/assert';
+
 import type { CancellationTokenSource } from '@file-explorer/code-oss-ecma/cancellation';
 import type { IFileStatWithMetadata } from '@file-explorer/code-oss-ecma/files';
 import { formatter as formatter2 } from '@file-explorer/code-oss-ecma/formatter.util';
@@ -18,7 +20,7 @@ import type { UriComponents } from '@file-explorer/code-oss-ecma/uri';
 import { uriHelper } from '@file-explorer/code-oss-ecma/uri-helper';
 import { uuid } from '@file-explorer/code-oss-ecma/uuid';
 import { CustomError } from '@file-explorer/commons-ecma/util/custom-error';
-import { objects } from '@file-explorer/commons-ecma/util/objects.util';
+import { deepCopyJson } from '@file-explorer/commons-ecma/util/deep-copy-json';
 
 import {
   getCachedResourcesOfDirectory,
@@ -197,7 +199,7 @@ export async function addTagsToResources(resources: UriComponents[], tagIds: str
     });
   }
 
-  const resourcesToTagsMap = objects.deepCopyJson(
+  const resourcesToTagsMap = deepCopyJson(
     globalThis.modules.store.getState().tagsSlice.resourcesToTags,
   );
 
@@ -229,7 +231,7 @@ export async function addTagsToResources(resources: UriComponents[], tagIds: str
 export function removeTagsFromResources(resources: UriComponents[], tagIds: string[]) {
   logger.debug(`removing tags from resources...`, { resources, tagIds });
 
-  const resourcesToTagsMap = objects.deepCopyJson(
+  const resourcesToTagsMap = deepCopyJson(
     globalThis.modules.store.getState().tagsSlice.resourcesToTags,
   );
 
@@ -305,7 +307,11 @@ export async function executeCopyOrMove({
       // ignore
     }
 
-    if (objects.hasMessageProp(error) && error.message.includes('due to cancellation')) {
+    if (
+      check.isNotNullish(error) &&
+      typeof error['message'] === 'string' &&
+      error['message'].includes('due to cancellation')
+    ) {
       // paste got cancelled --> don't let error bubble up
       return;
     } else {

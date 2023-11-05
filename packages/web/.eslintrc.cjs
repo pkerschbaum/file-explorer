@@ -139,7 +139,14 @@ module.exports = {
           },
           {
             target: /.+/,
-            allowedPatterns: ['dayjs', 'tiny-invariant', 'zod', /^#pkg.+/, /^@file-explorer\/.+/],
+            allowedPatterns: [
+              'dayjs',
+              'tiny-invariant',
+              'zod',
+              /^#pkg.+/,
+              /^@file-explorer\/.+/,
+              /^@pkerschbaum\/commons-ecma\/.+/,
+            ],
           },
         ],
       },

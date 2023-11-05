@@ -22,9 +22,8 @@
  * still be active for that element (in order to allow rapid filtering/navigation via keyboard).
  */
 
+import { objects } from '@pkerschbaum/commons-ecma/util/objects';
 import * as React from 'react';
-
-import { objects } from '@file-explorer/commons-ecma/util/objects.util';
 
 import { KEY_TO_VISUALIZATION_MAP } from '#pkg/ui/components-library/visual-key';
 import { PRINTED_KEY, doesKeyboardEventKeyMatchPrintedKey } from '#pkg/ui/constants';

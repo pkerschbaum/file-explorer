@@ -1,4 +1,4 @@
-import { functions } from '@file-explorer/commons-ecma/util/functions.util';
+import { functions } from '@pkerschbaum/commons-ecma/util/functions';
 
 import type { PlatformLogWriter } from '#pkg/log-writer.types';
 

@@ -1,7 +1,6 @@
+import { check } from '@pkerschbaum/commons-ecma/util/assert';
 import * as React from 'react';
 import { styled } from 'styled-components';
-
-import { check } from '@file-explorer/commons-ecma/util/assert.util';
 
 import type { ButtonHandle } from '#pkg/ui/components-library';
 import {

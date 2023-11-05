@@ -1,3 +1,5 @@
+import { assertIsUnreachable } from '@pkerschbaum/commons-ecma/util/assert';
+import type { Writeable } from '@pkerschbaum/commons-ecma/util/types';
 import dayjs from 'dayjs';
 
 import { VSBuffer } from '@file-explorer/code-oss-ecma/buffer';
@@ -8,8 +10,6 @@ import { network } from '@file-explorer/code-oss-ecma/network';
 import { RESOURCE_TYPE } from '@file-explorer/code-oss-ecma/types';
 import { URI, UriComponents } from '@file-explorer/code-oss-ecma/uri';
 import { uriHelper } from '@file-explorer/code-oss-ecma/uri-helper';
-import { assertIsUnreachable } from '@file-explorer/commons-ecma/util/assert.util';
-import type { Writeable } from '@file-explorer/commons-ecma/util/types.util';
 
 import type { PlatformFileSystem } from '#pkg/file-system.types';
 

@@ -1,9 +1,9 @@
+import { assertIsUnreachable } from '@pkerschbaum/commons-ecma/util/assert';
 import { styled, css } from 'styled-components';
 
 import { formatter as formatter2 } from '@file-explorer/code-oss-ecma/formatter.util';
 import type { PasteProcess as PasteProcessType } from '@file-explorer/code-oss-ecma/types';
 import { PASTE_PROCESS_STATUS } from '@file-explorer/code-oss-ecma/types';
-import { assertIsUnreachable } from '@file-explorer/commons-ecma/util/assert.util';
 import { byteSize } from '@file-explorer/commons-ecma/util/byte-size.util';
 import { numbers } from '@file-explorer/commons-ecma/util/numbers.util';
 import { formatter } from '@file-explorer/domain/formatter.util';

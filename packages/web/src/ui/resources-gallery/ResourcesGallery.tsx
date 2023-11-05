@@ -1,3 +1,4 @@
+import { assertIsUnreachable, check } from '@pkerschbaum/commons-ecma/util/assert';
 import * as React from 'react';
 import { styled, css } from 'styled-components';
 import invariant from 'tiny-invariant';
@@ -5,7 +6,6 @@ import invariant from 'tiny-invariant';
 import { formatter as formatter2 } from '@file-explorer/code-oss-ecma/formatter.util';
 import type { ResourceForUI } from '@file-explorer/code-oss-ecma/types';
 import { RESOURCE_TYPE } from '@file-explorer/code-oss-ecma/types';
-import { assertIsUnreachable, check } from '@file-explorer/commons-ecma/util/assert.util';
 import { formatter } from '@file-explorer/domain/formatter.util';
 
 import { REASON_FOR_SELECTION_CHANGE } from '#pkg/global-state/slices/explorers.slice';

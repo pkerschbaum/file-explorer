@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
+import { objects } from '@pkerschbaum/commons-ecma/util/objects';
+
 import { CustomError } from '#pkg/util/custom-error';
-import { objects } from '#pkg/util/objects.util';
 import type { JsonObject } from '#pkg/util/types.util';
 
 type Logger = {

@@ -1,10 +1,10 @@
+import { check } from '@pkerschbaum/commons-ecma/util/assert';
 import type { KeyboardEvent } from '@react-types/shared';
 import * as React from 'react';
 import { styled } from 'styled-components';
 
 import { extpath } from '@file-explorer/code-oss-ecma/extpath';
 import type { ResourceForUI } from '@file-explorer/code-oss-ecma/types';
-import { check } from '@file-explorer/commons-ecma/util/assert.util';
 
 import { commonStyles } from '#pkg/ui/common-styles';
 import { Button, FocusScope, TextField } from '#pkg/ui/components-library';

@@ -24,7 +24,8 @@
     "prepare": "ts-patch install -s"
   },
   "dependencies": {
-    "@file-explorer/commons-ecma": "workspace:*"
+    "@file-explorer/commons-ecma": "workspace:*",
+    "@pkerschbaum/commons-ecma": "^2.1.2"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^6.2.1",

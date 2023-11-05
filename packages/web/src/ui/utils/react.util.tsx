@@ -1,9 +1,9 @@
+import { functions } from '@pkerschbaum/commons-ecma/util/functions';
+import type { FunctionType } from '@pkerschbaum/commons-ecma/util/types';
 import * as React from 'react';
 import * as useContextSelectorLib from 'use-context-selector';
 
 import type { Event } from '@file-explorer/code-oss-ecma/event';
-import { functions } from '@file-explorer/commons-ecma/util/functions.util';
-import type { FunctionType } from '@file-explorer/commons-ecma/util/types.util';
 
 export type EventHandler<E extends keyof WindowEventMap> = {
   condition: (e: WindowEventMap[E]) => boolean;

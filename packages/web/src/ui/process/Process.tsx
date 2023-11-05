@@ -1,8 +1,8 @@
+import { assertIsUnreachable } from '@pkerschbaum/commons-ecma/util/assert';
 import type * as React from 'react';
 
 import type { AppProcess } from '@file-explorer/code-oss-ecma/types';
 import { PROCESS_TYPE } from '@file-explorer/code-oss-ecma/types';
-import { assertIsUnreachable } from '@file-explorer/commons-ecma/util/assert.util';
 
 import { removeProcess } from '#pkg/operations/resource.operations';
 import { computeProcessCardPropsFromDeleteProcess } from '#pkg/ui/process/process-variant-delete';

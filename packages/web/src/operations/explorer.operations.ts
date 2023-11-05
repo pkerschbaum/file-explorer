@@ -1,3 +1,4 @@
+import { check } from '@pkerschbaum/commons-ecma/util/assert';
 import invariant from 'tiny-invariant';
 
 import { CancellationTokenSource } from '@file-explorer/code-oss-ecma/cancellation';
@@ -11,7 +12,6 @@ import { PASTE_PROCESS_STATUS, RESOURCE_TYPE } from '@file-explorer/code-oss-ecm
 import { URI, UriComponents } from '@file-explorer/code-oss-ecma/uri';
 import { uriHelper } from '@file-explorer/code-oss-ecma/uri-helper';
 import { uuid } from '@file-explorer/code-oss-ecma/uuid';
-import { check } from '@file-explorer/commons-ecma/util/assert.util';
 import { CustomError } from '@file-explorer/commons-ecma/util/custom-error';
 import { numbers } from '@file-explorer/commons-ecma/util/numbers.util';
 

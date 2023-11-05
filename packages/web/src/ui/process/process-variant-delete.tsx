@@ -1,9 +1,9 @@
+import { assertIsUnreachable } from '@pkerschbaum/commons-ecma/util/assert';
 import { styled } from 'styled-components';
 
 import type { DeleteProcess as DeleteProcessType } from '@file-explorer/code-oss-ecma/types';
 import { DELETE_PROCESS_STATUS } from '@file-explorer/code-oss-ecma/types';
 import { uriHelper } from '@file-explorer/code-oss-ecma/uri-helper';
-import { assertIsUnreachable } from '@file-explorer/commons-ecma/util/assert.util';
 
 import { removeProcess, runDeleteProcess } from '#pkg/operations/resource.operations';
 import {

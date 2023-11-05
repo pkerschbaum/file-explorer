@@ -45,6 +45,7 @@
     "@mui/material": "^5.14.3",
     "@mui/styled-engine": "npm:@mui/styled-engine-sc@^5.14.2",
     "@mui/utils": "^5.14.3",
+    "@pkerschbaum/commons-ecma": "^2.1.2",
     "@react-aria/breadcrumbs": "^3.5.3",
     "@react-aria/button": "^3.8.0",
     "@react-aria/dialog": "^3.5.3",

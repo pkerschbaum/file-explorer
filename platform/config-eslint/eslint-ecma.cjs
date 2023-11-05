@@ -104,7 +104,7 @@ module.exports = {
         selector: "MemberExpression[object.name='JSON'][property.name='stringify']",
         message:
           '`JSON.stringify` does throw on circular references; it might be safe were you attempt to use it, ' +
-          'but we suggest to just use `json.safeStringify` from #pkg/base/utils/json.util.ts instead.',
+          'but we suggest to just use `jsonUtil.safeStringify` from @pkerschbaum/commons-ecma/util/json instead.',
       },
       {
         selector:

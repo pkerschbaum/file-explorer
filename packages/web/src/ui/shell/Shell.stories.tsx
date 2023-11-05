@@ -1,10 +1,10 @@
+import { numbers } from '@pkerschbaum/commons-ecma/util/numbers';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { network } from '@file-explorer/code-oss-ecma/network';
 import { PASTE_PROCESS_STATUS, RESOURCE_TYPE } from '@file-explorer/code-oss-ecma/types';
 import { URI } from '@file-explorer/code-oss-ecma/uri';
 import { uriHelper } from '@file-explorer/code-oss-ecma/uri-helper';
-import { numbers } from '@file-explorer/commons-ecma/util/numbers.util';
 import type { FileSystemResourceToCreate } from '@file-explorer/platform/fake/file-system';
 
 import { computeCwdSegmentsFromUri } from '#pkg/global-state/slices/explorers.slice';

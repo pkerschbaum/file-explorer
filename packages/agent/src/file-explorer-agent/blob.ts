@@ -1,3 +1,5 @@
+import { check } from '@pkerschbaum/commons-ecma/util/assert';
+import { numbers } from '@pkerschbaum/commons-ecma/util/numbers';
 import { app } from 'electron';
 import type express from 'express';
 import FileType from 'file-type';
@@ -8,8 +10,6 @@ import invariant from 'tiny-invariant';
 
 import { URI } from '@file-explorer/code-oss-ecma/uri';
 import { uriHelper } from '@file-explorer/code-oss-ecma/uri-helper';
-import { check } from '@file-explorer/commons-ecma/util/assert.util';
-import { numbers } from '@file-explorer/commons-ecma/util/numbers.util';
 
 import { AGENT_PORT, NATIVE_FILE_ICON_PATH, THUMBNAIL_PATH } from '#pkg/constants';
 
