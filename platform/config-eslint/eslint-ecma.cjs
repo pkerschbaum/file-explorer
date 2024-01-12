@@ -166,6 +166,7 @@ module.exports = {
     'n/no-unsupported-features/es-syntax': 'off',
     // disable "n/no-unsupported-features/node-builtins" --> covered by TypeScript
     'n/no-unsupported-features/node-builtins': 'off',
+    'regexp/no-unused-capturing-group': ['error', { allowNamed: true }],
     'unicorn/better-regex': 'off',
     'unicorn/consistent-destructuring': 'off',
     'unicorn/consistent-function-scoping': 'off',
